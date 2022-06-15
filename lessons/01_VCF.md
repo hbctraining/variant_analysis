@@ -6,7 +6,7 @@ date: "May 20, 2022"
 
 ## Learning Objectives
 - Identify different fields within a VCF file
-- Discern a typical entry in a VCF file
+- Discern a data line entry in a VCF file
 
 ## Variant Call Format
 
@@ -44,9 +44,9 @@ Meta-information lines always begin with `##`. Let's analyze a few of the meta-i
 
 The first line `##fileformat=VCFv4.2` is telling us the version of the VCF file. 
 
-The third line `##source=myImputationProgramV3.1` is describing the software that was used to create the VCF file. 
+The third line `##source=myImputationProgramV3.1` is stating the software that was used to create the VCF file. 
 
-The fourth line `##reference=file:///seq/references/1000GenomesPilot-NCBI36.fasta` is telling us which reference genome was used in the creation of this VCF file. 
+The fourth line `##reference=file:///seq/references/1000GenomesPilot-NCBI36.fasta` is stating the full path to the reference genome that was used in the creation of this VCF file. 
 
 The lines starting with `##INFO`, `##FILTER` and `##FORMAT` will define abbreviations for us that we will see in the INFO, FILTER and FORMAT fields of the data lines, respectively.
 
@@ -74,18 +74,20 @@ The header line always starts with just a single `#` followed by eight mandatory
 | AF | Allele Frequency for the ALT allele |
 | DP | Combined Depth across all samples |
 | NS | Number of samples with data |
-* **FORMAT** - A colon-separated list of abbrecviated catergories corresponding to the colon-separated genotype fields. For example, this colon-separated list generally begins with 'GT', which stands for genotype. Thus, the first element in the subsequent genotype field(s) for each sample will be the inferred genotype. Common catergories include:
+
+* **FORMAT** - A colon-separated list of abbreviated catergories corresponding to the colon-separated genotype fields. For example, this colon-separated list generally begins with 'GT', which stands for genotype. Thus, the first element in the subsequent genotype field(s) for each sample will be the inferred genotype. If the second element in the colon-sperated list is `GQ`, then the second element in each of the colon-separated genotype fieds will be a genotype quality score. Common catergories include:
 
 | Abbreviation | Data Type |
 |--------------|-----------|
 | GT* | Genotype |
 | DP | Depth of the sample |
 | GQ | Genotype Quality |
-| HQ | Haplotype Quality |
+| HQ | Commma-separated list of Haplotype Qualities |
 
 \* The genotype field will have two integers for a diploid sample separated by either a `/` or a `|`. The integers correspond to the alleles with 0 being the reference allele, 1 being the first allele listed in the ALT field, 2 being the second allele listed in the ALT field, etc. A `/` denotes an unphased genotype, while `|` denotes a phased genotype.
-* **Genotype Fields** - A list of information about a given sample that corresponds to the categories outlined in the FORMAT field. The fields will be equal to the number of samples investigated.
+* **Genotype Fields** - A colon-separated list of genotype information about a given sample that corresponds to the categories outlined in the FORMAT field. The fields will be equal to the number of samples investigated. In the case of the sample VCF, these are the fields titled NA00001, NA00002 and NA00003.
 
+The abbreviations for the INFO and FORMAT fields given in the aforementioned tables is not exhaustive. Generally, these abbreviations with be outlined in the meta-information lines at the top of the file or can be found on pages 5 and 6 of the [VCF manual](https://samtools.github.io/hts-specs/VCFv4.2.pdf).
 
 ### Data Lines
 
@@ -99,15 +101,29 @@ The data lines are where the variant calls will be found with each field corresp
 20  1234567 microsat1 GTC G,GTCT  50  PASS  NS=3;DP=9;AA=G  GT:GQ:DP  0/1:35:4  0/2:17:2  1/1:40:3   
 ```
 
-Right click and select 'Download Linked File As...' the following [link](). This will include a small sample VCF that will be used in the following exercises.
+Let's analyze the first line more closely:
+
+```
+20  14370 rs6054257 G A 29  PASS  NS=3;DP=14;AF=0.5;DB;H2 GT:GQ:DP:HQ 0|0:48:1:51,51  1|0:48:8:51,51  1/1:43:5:.,.
+```
+
+This variant is on Chromosome 20 at position 14370. It is annotated as rs6054257 in dbSNP. The reference allele in the position was a G and a variant allele, A, was found. This variant passed all filters. There were three samples investigated, with a total depth across all three of 14 reads. The allele frequency of the ALT allele in these samples is 0.5. This SNP is included in dbSNP and HapMap2. For each sample we will have information on the genotype, genotype quality, depth of the sample and haplotype quality. 
+
+The first sample has phased information for an individual that is homozygous for the reference allele and a genotype quality of 48. One read is supporting this with haplotype quality scores of 51 supporting it. 
+
+The second sample has phased information for a heterzygous individual with a genotype score of 48. This sample is supported by eight reads and the haplotype quality scores for both haplotypes is 51. 
+
+The last sample has unphased information for an individual who is homozygous for the ALT allele with a genotype quality score of 43. There are five reads supporting this genotype call and since this sample is unphased data, there are no haplotype quality scores as indicated by the `.,.`
 
 ## Exercises
 
-1. Using `grep`, extract only the meta-information lines from the sample VCF file. 
+Let's analzye our VCF file in `[insert path here]`.
+
+1. Using `grep`, extract only the meta-information lines from the VCF file. 
 
 grep '^##' smaple.vcf
 
-2. What reference genome was used in the creation of this sample VCF file?
+2. What reference genome was used in the creation of this VCF file?
 
 3. For the sample at position A on chromosome B, what is the read depth at this position for sample C?
 
