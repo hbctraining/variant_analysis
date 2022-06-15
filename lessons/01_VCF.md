@@ -107,7 +107,7 @@ Let's analyze the first line more closely:
 20  14370 rs6054257 G A 29  PASS  NS=3;DP=14;AF=0.5;DB;H2 GT:GQ:DP:HQ 0|0:48:1:51,51  1|0:48:8:51,51  1/1:43:5:.,.
 ```
 
-This variant is on Chromosome 20 at position 14370. It is annotated as rs6054257 in dbSNP. The reference allele in the position was a G and a variant allele, A, was found. This variant passed all filters. There were three samples investigated, with a total depth across all three of 14 reads. The allele frequency of the ALT allele in these samples is 0.5. This SNP is included in dbSNP and HapMap2. For each sample we will have information on the genotype, genotype quality, depth of the sample and haplotype quality. 
+This variant is on Chromosome 20 at position 14370. It is annotated as rs6054257 in dbSNP. The reference allele in the position was a G and a variant allele, A, was found. This variant passed all filters. There were three samples investigated with a total depth across all three of 14 reads. The allele frequency of the ALT allele in these samples is 0.5. This SNP is included in dbSNP and HapMap2. For each sample we will have information on the genotype, genotype quality, depth of the sample and haplotype quality. 
 
 The first sample has phased information for an individual that is homozygous for the reference allele and a genotype quality of 48. One read is supporting this with haplotype quality scores of 51 supporting it. 
 
