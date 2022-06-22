@@ -16,7 +16,6 @@ Options to consider:
 
 ```
 --max-alt-allele-count <integer>
-
 ```
 
 Next?
@@ -100,8 +99,15 @@ http://pcingola.github.io/SnpEff/ss_dbnsfp/
 java -jar SnpSift.jar dbnsfp -v missense_variants.vcf > missense_variants.scored.vcf
 
 I'm not sure exactly how this output looks or much about this tool. Input is welcome.
+ 
+Alternative to dbNSFP 
+ 
+Tool: open-cravat
 
-
+Website: https://opencravat.org/resources.html 
+ 
+This seems like a web interface but supposedly seems give similar output as dbNSFP (maybe?).
+ 
 # Oncoprint Creation
 
 Once we have the VCF file the way we want it. We can create the input file for creating an Oncoprint.
@@ -125,6 +131,16 @@ https://www.cbioportal.org/oncoprinter
 
 Pull up several tumor/normal bam files in IGV. Subset them down to like 2-3 genes so that participants can just download them.
   
-
+# Mutational Signature Analysis
+ 
+ ***Needs R Background***
+ 
+ ***Also, not designed for WES, but rather WGS***
+ 
+ https://github.com/Nik-Zainal-Group/signature.tools.lib
   
-  
+# Copy Number Variant Analysis
+ 
+ I think we nixed this from the initial course, but Sergey linked a great paper comparing six different CNV detection algorrithms, so this could be a starting place if we want to do this. I am adding the paper here for posterity.
+ 
+ https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-021-07686-z
