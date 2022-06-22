@@ -54,9 +54,9 @@ Option to consider:
 ```
 -cancer
 -cancerSamples <file>
-``
-The cancer samples file is a tab-delimited file with original<tab>derived.
+``` 
 
+The cancer samples file is a tab-delimited file with original<tab>derived.
 
 # Variant Prioritization
 
@@ -99,3 +99,15 @@ The Extract fields function in SNPSift will be useful for this step.
 
 Pull out a set of genes using SNPSift.
 
+Plug text file into OncoPrinter
+
+https://www.cbioportal.org/oncoprinter
+  
+  
+# Visualize in IGV
+
+Pull up several tumor/normal bam files in IGV. Subset them down to like 2-3 genes so that participants can just download them.
+  
+
+  
+  
