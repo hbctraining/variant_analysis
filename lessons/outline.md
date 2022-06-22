@@ -4,6 +4,23 @@ Raw VCF file with tumor and normal samples
 
 # Filtering 
 
+Tool: FilterMutectCalls
+
+Manual: https://gatk.broadinstitute.org/hc/en-us/articles/360036856831-FilterMutectCalls
+
+```
+ gatk FilterMutectCalls -V somatic.vcf -R reference_genome.fasta -O filtered.vcf.gz
+```
+
+Options to consider:
+
+```
+--max-alt-allele-count <integer>
+
+```
+
+Next?
+
 Tool: VCFtools 
 
 Manual: http://vcftools.sourceforge.net/man_latest.html
