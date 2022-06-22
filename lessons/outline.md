@@ -141,6 +141,6 @@ Pull up several tumor/normal bam files in IGV. Subset them down to like 2-3 gene
   
 # Copy Number Variant Analysis
  
- I think we nixed this from the initial course, but Sergey linked a great paper comparing six different CNV detection algorrithms, so this could be a starting place if we want to do this. I am adding the paper here for posterity.
+ I think we nixed this from the initial course, but Sergey suggested it as a 'future direction' and linked a paper comparing six different CNV detection algorrithms, so this could be a starting place if we want to do this. I am adding the paper here for posterity.
  
  https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-021-07686-z
