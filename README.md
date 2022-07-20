@@ -12,6 +12,8 @@
 
 ### Lessons
 
+[Workshop schedule (trainer-led learning)](schedule/)
+
 ### Installation Requirements
 
 #### Applications
