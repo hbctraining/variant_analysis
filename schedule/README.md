@@ -12,7 +12,7 @@
 
 I. Please **study the contents** and **work through all the code** within the following lessons:
 
-  1. [Sequence Read Alignment]()
+  1. [Sequence Read Alignment](../lessons/sequence_alignment_theory.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>This lesson will cover:<br>
