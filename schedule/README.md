@@ -4,7 +4,7 @@
 
 | Time |  Topic  | Instructor |
 |:-----------:|:----------:|:--------:|
-| 9:30 - 10:10 | [Workshop introduction]() | Will |
+| 9:30 - 10:10 | [Workshop Introduction]() | Will |
 | 10:10 - 11:40 | [Introduction to Variant Calling]() | Sergey |
 | 11:40 - 12:00 | Overview of self-learning materials and homework submission | Will |
 
@@ -60,8 +60,8 @@ II. **Complete the exercises**:
 |:-----------:|:----------:|:--------:|
 | 9:30 - 10:15 | Self-learning lessons review | All |
 | 10:15 - 11:00 | [Variant Calling](../lessons/variant_calling.md) | Will |
-| 11:00 - 11:15 | [Variant Filtering](../lessons/variant_filtering.md) | Will |
-| 11:15 - 12:00 | [Variant Annotation with SnpEff](../lessons/variant_annotation.md) | Will |
+| 11:00 - 11:45 | [Variant Annotation with SnpEff](../lessons/variant_annotation.md) | Will |
+| 11:45 - 12:00 | [Variant Filtering](../lessons/variant_filtering.md) | Will |
 
 ### Before the next class:
 
