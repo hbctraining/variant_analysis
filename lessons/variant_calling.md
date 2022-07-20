@@ -22,7 +22,7 @@ gatk Mutect2 \
 --normal-sample syn3-normal \
 --annotation ClippingRankSumTest --annotation DepthPerSampleHC --annotation MappingQualityRankSumTest --annotation MappingQualityZero --annotation QualByDepth --annotation ReadPosRankSumTest --annotation RMSMappingQuality --annotation FisherStrand --annotation MappingQuality --annotation DepthPerAlleleBySample --annotation Coverage \
 -O vcf_files/syn3_GRCh38.p7-raw.vcf.gz
-
+```
 
 ***
 
