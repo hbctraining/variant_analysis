@@ -20,7 +20,7 @@ I. Please **study the contents** and **work through all the code** within the fo
              - <br><br>
         </details>
         
-  2. [Alignment File Quality Control]()
+  2. [Alignment File Quality Control](../lessons/alignment_QC.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>This lesson will cover:<br>
@@ -28,7 +28,7 @@ I. Please **study the contents** and **work through all the code** within the fo
              - <br><br>
         </details>
         
- 3. [File Formats]()
+ 3. [File Formats](../lessons/file_formats.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>This lesson will cover:<br>
@@ -59,8 +59,9 @@ II. **Complete the exercises**:
 | Time |  Topic  | Instructor |
 |:-----------:|:----------:|:--------:|
 | 9:30 - 10:15 | Self-learning lessons review | All |
-| 10:15 - 11:15 | [Variant Calling]() | Will |
-| 11:15 - 12:00 | [Variant Annotation with SnpEff]() | Will |
+| 10:15 - 11:00 | [Variant Calling](../lessons/variant_calling.md) | Will |
+| 11:00 - 11:15 | [Variant Filtering](../lessons/variant_filtering.md) | Will |
+| 11:15 - 12:00 | [Variant Annotation with SnpEff](../lessons/variant_annotation.md) | Will |
 
 ### Before the next class:
 
@@ -95,9 +96,9 @@ II. **Complete the exercises**:
 | Time |  Topic  | Instructor |
 |:-----------:|:----------:|:--------:|
 | 9:30 - 10:00 | Self-learning lessons review | All |
-| 10:00 - 10:45 | [Variant Prioritization with SnpSift]() | Will |
-| 10:45 - 11:25 | [Visualization in IGV]() | Jihe |
-| 11:25 - 11:45 | [Oncoprint Creation]() | Jihe |
+| 10:00 - 10:45 | [Variant Prioritization with SnpSift](../lessons/variant_prioritization.md) | Will |
+| 10:45 - 11:25 | [Visualization in IGV](../lessons/IGV.md) | Jihe |
+| 11:25 - 11:45 | [Oncoprint Creation?](../lessons/oncoprint_creation.md) | Jihe |
 | 11:45 - 12:00 | [Wrap up]() | Will |
 
 ***
