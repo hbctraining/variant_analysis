@@ -6,12 +6,77 @@
 -
 -
 
+## FilterMutectCalls
+
+The output from `Mutect2` is a raw variant calling output and the calls need to be filtered to ensure against errors such as:
+
+- Technical artifacts
+- Non-somatic mutations
+- Sequencing Errors
+
+`FilterMutectCalls` evaluates the raw variant calls for each of these types of errors using a probabilitic model for errors. It then uses this model to determine the probability of an error and applies this filter across all of the variants. There are also "hard filters" that immediately flag a variant call for filtering. These include:
+
+- Too many alternate alleles
+- Low median base quality scores 
+- Low median alignment quality scores
+
+> NOTE: While we are not concerned with cross-sample contamination for this dataset, if you were concerned about cross-sample contamination, then you would need to run `CalculateContamination` program within `GATK` to obtain a contamination table which you can input into `FilterMutectCells` with the `--contamination-table` option.
+
+
+
 ```
 gatk FilterMutectCalls \
 --reference /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa \
 --variant vcf_files/syn3_GRCh38.p7-raw.vcf.gz \
 --output vcf_files/syn3_GRCh38.p7-raw-filt.vcf.gz
 ```
+
+More information on `FilterMutectCalls` can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360036856831-FilterMutectCalls) and a more technical guide to the filtering can be found [here](https://github.com/broadinstitute/gatk/blob/master/docs/mutect/mutect.pdf) in Section II.
+
+## Low-Complexity Regions
+
+Low-complexity regions of the genome represent regions that have simple sequence repeats and variant callers are prone to make errors within these regions (see [Li, 2014](https://academic.oup.com/bioinformatics/article/30/20/2843/2422145)). They identified many insertions and deletions (Indels) were erroreously called within these low-complexity regions by various variant callers. They found:
+
+> "low-complexity regions (LCRs), 2% of the human genome, harbor 80–90% of heterozygous INDEL calls and up to 60% of heterozygous SNPs" with false positive rates ranging from "10% to as high as 40%".
+
+As a result of these high error rates in low-complexity regions, they recommend removal of these regions with high error rates until better methods for variant calling in low-complexity regions can become established.
+
+### BED file format
+
+**B**rowser **E**xtensible **D**ata (BED) is a tab-delimited file format that contains information on genomic features. A BED file's first three columns (Chromosome, Starting Position and Ending Position) are required fields. Some BED files have additional columns but these are not required.
+
+<p align="center">
+<img src="../img/bed.png" width="600">
+</p>
+
+It is important to note that BED files positioning have ***zero-based indexing***. What does this mean? There are two ways to express genomic coordinates:
+
+- **Zero-based** is shown at the top of the image
+- **One-based** is shown at the bottom of the image
+
+<p align="center">
+<img src="../img/Interbase.png" width="300">
+</p>
+
+The benefits to having a **zero-based** system is the ease of calculating distance or length of sequences. We can easily determine the length of the `ATG` sequence using the zero-based coordinates by subtracting the start from the end, whereas for one-based coordinates we would need to add one after the subtraction. Therefore, many file formats used in computation, including the BED file format, use zero-based coordinates.
+
+### Using `bedtools` to remove LCRs
+
+The BED file (explained below) containing the LCRs for GRCh38 can be obtained from the supplementary files or directly downloaded from this link:
+
+```
+curl -o LCR-hs38.bed.gz -L https://github.com/lh3/varcmp/blob/master/scripts/LCR-hs38.bed.gz?raw=true
+```
+
+We can then unpack the gzipped files using the following command:
+
+```
+gunzip -c LCR-hs38.bed.gz > LCR-hs38.bed
+```
+
+When we can inspect our BED file we can see that it simply has the required 3 columns denoting the positioning of low-complexitiy regions in GRCh38.
+
+[`bedtools`](https://bedtools.readthedocs.io/en/latest/index.html) is an useful suite of tools to use when handling BED files. It also has functionality for handling VCF files. We will be using the `intersect` command with the `-v` option. 
 
 ```
 module load gcc/6.2.0 bedtools/2.27.1
@@ -21,6 +86,20 @@ bedtools intersect \
 -a vcf_files/syn3_GRCh38.p7-raw-filt.snpeff.vcf \
 -b LCR_GRCh38.p7.bed > vcf_files/syn3_GRCh38.p7-LCR-filt.snpeff.vcf
 ```
+
+`bedtools intersect` calls `bedtools` to run the `intersect` command
+
+`-v` Traditionally, `bedtools intersect` will report the intersection of the file following `-a`and the file following `-b`. However, the `-v` option alters this behavior to find positions in the `-a` file not in `-b` file.
+
+`-a vcf_files/syn3_GRCh38.p7-raw-filt.snpeff.vcf` VCF file that we want filtered
+
+`-b LCR_GRCh38.p7.bed > vcf_files/syn3_GRCh38.p7-LCR-filt.snpeff.vcf` BED file containing genomic coordinates for sites in the VCF file to exclude and redirected into an output file.
+
+Now, we have successfuly filtered our raw VCF file to only include high-qulaity variant calls.
+
+[Next lesson >>](variant_filtering.md)
+
+[Back to Schedule](../schedule/variant_prioritization.md)
 
 
 ***
