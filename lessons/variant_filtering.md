@@ -99,7 +99,7 @@ Now, we have successfuly filtered our raw VCF file to only include high-qulaity 
 
 [Next lesson >>](variant_prioritization.md)
 
-[Back to Schedule](../schedule/README.txt)
+[Back to Schedule](../schedule/README.md)
 
 
 ***
