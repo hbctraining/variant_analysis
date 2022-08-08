@@ -232,7 +232,7 @@ awk '{print "sample_1","\t",$0}' > vcf_files/syn3_GRCh38.p7.missense_variants.tx
 
 [Next Lesson >>>](IGV.md)
 
-[Back to Schedule](../schedule/README.md)
+[Back to Schedule](../schedule/README.md#day-3)
 
 ***
 
