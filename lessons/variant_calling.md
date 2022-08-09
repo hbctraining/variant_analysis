@@ -77,6 +77,7 @@ gnomAD
 ## Additional Resources
 
 [BroadE: GATK - Intro to Somatic Variant Discovery](https://www.youtube.com/watch?v=0q5_e2Nfph4)
+
 [BroadE: GATK - Somatic SNVs and Indels](https://www.youtube.com/watch?v=T5IqadGoxow)
 
 [Next Lesson >>>](variant_annotation.md)
