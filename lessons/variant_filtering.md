@@ -2,9 +2,8 @@
 
 ## Learning Objectives
 
--
--
--
+- Filter raw variant calls using `FilterMutectCells` to reduce errors
+- Remove Low-Complexity Regions from the called variants to further reduce errors
 
 ## FilterMutectCalls
 
