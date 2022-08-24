@@ -60,8 +60,9 @@ II. **Complete the exercises**:
 |:-----------:|:----------:|:--------:|
 | 9:30 - 10:15 | Self-learning lessons review | All |
 | 10:15 - 11:00 | [Variant Calling](../lessons/variant_calling.md) | Will |
-| 11:00 - 11:45 | [Variant Annotation with SnpEff](../lessons/variant_annotation.md) | Will |
-| 11:45 - 12:00 | [Variant Filtering](../lessons/variant_filtering.md) | Will |
+| 11:00 - 11:30 | [Variant Filtering](../lessons/variant_filtering.md) | Will |
+| 11:30 - 12:00 | [Variant Annotation with SnpEff](../lessons/variant_annotation.md) | Will |
+
 
 ### Before the next class:
 
