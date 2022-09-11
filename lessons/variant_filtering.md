@@ -3,7 +3,7 @@
 ## Learning Objectives
 
 - Filter raw variant calls using `FilterMutectCells` to reduce errors
-- Remove Low-Complexity Regions from the called variants to further reduce errors
+- Remove Low-Complexity Regions from the called variants using `SnpSift` to further reduce errors
 
 ## FilterMutectCalls
 
@@ -59,6 +59,80 @@ It is important to note that BED files positioning have ***zero-based indexing**
 
 The benefits to having a **zero-based** system is the ease of calculating distance or length of sequences. We can easily determine the length of the `ATG` sequence using the zero-based coordinates by subtracting the start from the end, whereas for one-based coordinates we would need to add one after the subtraction. Therefore, many file formats used in computation, including the BED file format, use zero-based coordinates.
 
+### Using `SnpSift` to remove LCRs
+
+The BED file (explained below) containing the LCRs for GRCh38 can be obtained from the supplementary files or directly downloaded from this link:
+
+```
+curl -o LCR-hs38.bed.gz -L https://github.com/lh3/varcmp/blob/master/scripts/LCR-hs38.bed.gz?raw=true
+```
+
+We can then unpack the gzipped files using the following command:
+
+```
+gunzip -c LCR-hs38.bed.gz > LCR-hs38.bed
+```
+
+When we can inspect our BED file we can see that it simply has the required 3 columns denoting the positioning of low-complexitiy regions in GRCh38.
+
+```
+less LCR-hs38.bed
+```
+
+In order to remove the LCRs from the VCF file, we will be using `SnpSift`, which is part of the [`SnpEff and SnpSift suite`](http://pcingola.github.io/SnpEff/) of tools. We will be later be using SnpEff to annotate our variants and SnpSift to priotize our variants, but for now were are going to focus on using the `intervals` command build into `SnpSift`.
+
+The syntax for running the `filter` command in `SnpSift` on a VCF file and remove all sites that overlap with the BED file is:
+
+```
+java -jar $SNPEFF/SnpSift.jar intervals -x -i input_file.vcf[.gz] blacklisted_sites.bed > output_file.vcf
+```
+
+- `-x` This option tells `SnpSift` to *exclude* sites found in the BED file. The default behavior of `SnpSift filter` is to only *include* sites found in the BED file.
+
+- `-i input_file.vcf` This is the VCF file that we would like to be filtered. I can either be `.gz` compressed or not. 
+
+- `blacklisted_sites.bed` This represents the BED file you want to use to filter your VCF file with. While in this example we only have one BED file, you can use multiple BED files if you have several filters that you wanted to apply. 
+
+- `> output_file.vcf` Lastly, this is just redirecting the output into a new, filtered VCF to a file.
+
+So, to analyze our data, we are going to use the following command:
+
+```
+module load snpEff/4.3g
+
+java -jar $SNPEFF/SnpSift.jar intervals -x -i vcf_files/syn3_GRCh38.p7-raw-filt.vcf.gz LCR-hs38.bed > vcf_files/syn3_GRCh38.p7-LCR-filt.vcf
+```
+
+We can look at this VCF file and note a few items that have been added to the meta-information lines:
+
+```
+less vcf_files/syn3_GRCh38.p7-LCR-filt.vcf
+```
+
+Scroll down the VCF file past all of the contigs and you should see a line starting with:
+
+```
+##filtering_status=
+```
+
+Let's inspect these lines a little:
+
+```
+##filtering_status=These calls have been filtered by FilterMutectCalls to label false positives with a list of failed filters and true positives with PASS.
+##normal_sample=syn3-normal
+##source=FilterMutectCalls
+##source=Mutect2
+##tumor_sample=syn3-tumor
+##SnpSiftVersion="SnpSift 4.3g (build 2016-11-28 08:32), by Pablo Cingolani"
+##SnpSiftCmd="SnpSift int -x -i syn3_GRCh38.p7-raw-filt.vcf.gz ../LCR-hs38.bed"
+```
+
+
+
+---
+
+Likely to be removed.
+
 ### Using `bedtools` to remove LCRs
 
 The BED file (explained below) containing the LCRs for GRCh38 can be obtained from the supplementary files or directly downloaded from this link:
@@ -93,6 +167,8 @@ bedtools intersect \
 `-a vcf_files/syn3_GRCh38.p7-raw-filt.snpeff.vcf` VCF file that we want filtered
 
 `-b LCR_GRCh38.p7.bed > vcf_files/syn3_GRCh38.p7-LCR-filt.snpeff.vcf` BED file containing genomic coordinates for sites in the VCF file to exclude and redirected into an output file.
+
+---
 
 Now, we have successfuly filtered our raw VCF file to only include high-qulaity variant calls.
 
