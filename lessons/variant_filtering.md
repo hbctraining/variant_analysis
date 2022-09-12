@@ -127,7 +127,11 @@ Let's inspect these lines a little:
 ##SnpSiftCmd="SnpSift int -x -i syn3_GRCh38.p7-raw-filt.vcf.gz ../LCR-hs38.bed"
 ```
 
+The first five lines have been added to our VCF file by GATK. They give information on the programs that have been run on the data, which is listed on the `##source=` lines. These lines also define the column header in the VCF file that corresponds to the normal (`##normal_sample=`) and tumor sample (`##tumor_sample=`). 
 
+`##SnpSiftVersion=` states the version of SnpSift that was used to produce this file.
+
+`##SnpSiftCmd=` provides the command that was used in SnpSift to carry out the LCR filtering.
 
 ---
 
