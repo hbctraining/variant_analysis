@@ -10,9 +10,21 @@
 
 ### SAM
 
+SAM files are tab-delimited files that store alignment data for reads that have attempted to be aligned (sometimes also referred to as mapped) to a reference sequence, such as a reference genome or transcriptome. They also store information on reads that were unable to be aligned to the reference sequence. The format has 11 mandatory fields with additional optional fields. The fields are:
+
+|  Field Name  | Description |
+|--------------|-------------|
+| QNAME | Read Identifier | 
+| FLAG | Bit-wise flag (see below for more information) |
+| RNAME | Reference sequence name, such as the chromosome or contig of an alignment | 
+| POS | 1-based (see below) position of the leftmost alignment |
+| MAPQ | Mapping quality |
+| CIGAR | CIGAR String (see below) | 
+| RNEXT | 
+
 ### BAM
 
-(Briefly)
+As you might suspect, because SAM files hold alignment information for all of the reads in an sequencing run and there are oftentimes millions of sequence reads, SAM files are very large and cumbersome to store. As a result, SAM files are often stored in a binary compressed version called a BAM file. Most software packages are agnostic to this difference and will accept both SAM and BAM files, despite BAM files not being human readable. It is generally considered best practice to your data in BAM format for long periods of time unless you specifically need the SAM version of the alignment in order to reduce unnecessary storage on a shared computing cluster.
 
 ## VCF
 
@@ -121,7 +133,7 @@ The second sample has phased information for a heterzygous individual with a gen
 
 The last sample has unphased information for an individual who is homozygous for the ALT allele with a genotype quality score of 43. There are five reads supporting this genotype call and since this sample is unphased data, there are no haplotype quality scores as indicated by the `.,.`
 
-## Exercises
+### Exercises
 
 Let's analzye our VCF file in `[insert path here]`.
 
