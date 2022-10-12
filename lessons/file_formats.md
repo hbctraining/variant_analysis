@@ -6,6 +6,20 @@
 -
 -
 
+## Indexing
+
+Depending on your file format, position data for next-generation analyses is stored in one of two ways. 
+
+- **Zero-based** is shown at the top of the image
+- **One-based** is shown at the bottom of the image
+
+<p align="center">
+<img src="../img/Interbase.png" width="300">
+</p>
+
+The benefits to having a **zero-based** system is the ease of calculating distance or length of sequences. We can easily determine the length of the `ATG` sequence using the zero-based coordinates by subtracting the start from the end, whereas for one-based coordinates we would need to add one after the subtraction. As we go through the various file formats, it will be important to note which are 0-based and which are 1-based.
+
+
 ## Alignment Files
 
 ### SAM
@@ -17,10 +31,53 @@ SAM files are tab-delimited files that store alignment data for reads that have 
 | QNAME | Read Identifier | 
 | FLAG | Bit-wise flag (see below for more information) |
 | RNAME | Reference sequence name, such as the chromosome or contig of an alignment | 
-| POS | 1-based (see below) position of the leftmost alignment |
+| POS | 1-based position of the leftmost alignment |
 | MAPQ | Mapping quality |
 | CIGAR | CIGAR String (see below) | 
-| RNEXT | 
+| RNEXT | Reference sequence name for the mate pair or next read |
+| PNEXT | Position for the mate pair or next read | 
+| TLEN | The observed distance of the alignment |
+| SEQ | The nucleotide sequence. If '\*' then the sequence is not stored. If '=', the seqeunce matches the reference. |
+| QUAL | The base quality in Phred +33 standard. If '\*' base quality is not stored.
+
+Information on the additional optional fields can be found [here](https://samtools.github.io/hts-specs/SAMv1.pdf).
+
+#### SAM FLAG
+
+The bit-wise flags that SAM files use are very helpful for giving the user a rough understanding of the read. Details such as whether the read is paired, has an alignment to the provided reference sequence or is a PCR duplicate can all be encoded into the FLAG. 
+
+The simplest way to consider a unique flag is that it is the sum of many bit-wise toggle. The table below tries to illustrate this concept.
+
+|  Value   | Interpretation |  Value  | Interpretation |
+|----------|----------------|---------|----------------|
+| 0 | Unpaired read | 1 | Paired read |
+| 0 | Reads were not properly paired | 2 | Paired-end reads both mapped and were near each other |
+| 0 | Read is unmapped | 4 | Read is mapped |
+| 0 | Mate-pair read is unmapped | 8 | Mate-pair read is mapped  |
+| 0 | Read is on the forward strand | 16 | Read is on the reverse strand |
+| 0 | Mate-pair read is on the forward strand | 32 | Mate-pair read is on the reverse strand |
+| 0 | Read is not the first read in a pair | 64 | Read is the first read in a pair |
+| 0 | Read is not the second read in a pair | 128 | Read is the second read in a pair |
+| 0 | This is the primary alignment | 256 | This is not the primary alignment |
+| 0 | Read passing QC checks | 512 | Read not passing QC checks |
+| 0 | Read is not a PCR or optical duplicate | 1028 | Read is a PCR or optical duplicate |
+| 0 | This is a supplementary alignment | 2056 | This is not a supplementary alignment |
+
+For each alignment, an aligner goes through this table and assigns the alignement a score for each row. The scores are summed up and that produces the flag. This [tool on the Broad's Website](https://broadinstitute.github.io/picard/explain-flags.html) can be very helpful for decoding the SAM FLAGs that you can encounter.
+
+**Exercise**
+
+Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on the Broad's Website](https://broadinstitute.github.io/picard/explain-flags.html). 
+
+1. An alignment has a FLAG of 115. What do we know about this read?
+
+2. What would be the FLAG for an read alignment for the first read in a pair-end read, the first read was unmapped while the second read was mapped to the reverse strand?
+
+
+
+
+
+
 
 ### BAM
 
@@ -155,16 +212,7 @@ grep '^##' sample.vcf
 <img src="../img/bed.png" width="600">
 </p>
 
-It is important to note that BED files positioning have ***zero-based indexing***. What does this mean? There are two ways to express genomic coordinates:
-
-- **Zero-based** is shown at the top of the image
-- **One-based** is shown at the bottom of the image
-
-<p align="center">
-<img src="../img/Interbase.png" width="300">
-</p>
-
-The benefits to having a **zero-based** system is the ease of calculating distance or length of sequences. We can easily determine the length of the `ATG` sequence using the zero-based coordinates by subtracting the start from the end, whereas for one-based coordinates we would need to add one after the subtraction. Therefore, many file formats used in computation, including the BED file format, use zero-based coordinates.
+It is important to note that BED files positioning have ***zero-based indexing***. 
 
 ***
 
