@@ -2,9 +2,11 @@
 
 ## Learning Objectives
 
--
--
--
+- Describe the difference between 0-based and 1-based indexing
+- Decode a FLAG in a SAM file in order to reveal information about the nature of the read's alignment
+- Create a CIGAR string for an alignment
+- Parse out variant information from a VCF file
+- Create a BED file
 
 ## Indexing
 
@@ -33,7 +35,7 @@ SAM files are tab-delimited files that store alignment data for reads that have 
 | RNAME | Reference sequence name, such as the chromosome or contig of an alignment | 
 | POS | 1-based position of the leftmost alignment |
 | MAPQ | Mapping quality |
-| CIGAR | CIGAR String (see below) | 
+| CIGAR | CIGAR String (see below for more information) | 
 | RNEXT | Reference sequence name for the mate pair or next read |
 | PNEXT | Position for the mate pair or next read | 
 | TLEN | The observed distance of the alignment |
@@ -42,7 +44,7 @@ SAM files are tab-delimited files that store alignment data for reads that have 
 
 Information on the additional optional fields can be found [here](https://samtools.github.io/hts-specs/SAMv1.pdf).
 
-#### SAM FLAG
+#### FLAG
 
 The bit-wise flags that SAM files use are very helpful for giving the user a rough understanding of the read. Details such as whether the read is paired, has an alignment to the provided reference sequence or is a PCR duplicate can all be encoded into the FLAG. 
 
@@ -65,19 +67,46 @@ The simplest way to consider a unique flag is that it is the sum of many bit-wis
 
 For each alignment, an aligner goes through this table and assigns the alignement a score for each row. The scores are summed up and that produces the flag. This [tool on the Broad's Website](https://broadinstitute.github.io/picard/explain-flags.html) can be very helpful for decoding the SAM FLAGs that you can encounter.
 
+---
+
 **Exercise**
 
 Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on the Broad's Website](https://broadinstitute.github.io/picard/explain-flags.html). 
 
 1. An alignment has a FLAG of 115. What do we know about this read?
 
-2. What would be the FLAG for an read alignment for the first read in a pair-end read, the first read was unmapped while the second read was mapped to the reverse strand?
+2. What would be the FLAG be for a read alignment for the first read in a pair-end read, where the first read was unmapped while the second read was mapped to the reverse strand?
 
+---
 
+#### CIGAR
 
+The CIGAR string is an alphanumeric string to help give the user a better understanding of the alignment. There are several categories used in the CIGAR string, but the four most common ones that we are likely to encounter are:
 
+| Abbreviation | Explanation |
+|----------|----------------|
+| M | Match |
+| X | Mismatch |
+| I | Insertion |
+| D | Deletion |
 
+A CIGAR string is expressed from the left of the read and going to the right. It will describe the bases observed or not observed in the read. Each base is categorized and then the categorizations are notated by a value representing the number of consecutive bases with a given categorization followed by the abbreviation for that categorization. This is continued until the end of the read. An example alignment and resulting CIGAR string can be found below: 
 
+<p align="center">
+<img src="../img/CIGAR_string.png" width="600">
+</p>
+
+---
+
+**Exercise**
+
+1. Below is an alignment, what would be the CIGAR string for this alignment?
+
+<p align="center">
+<img src="../img/CIGAR_exercise.png" width="600">
+</p>
+
+---
 
 ### BAM
 
