@@ -6,6 +6,10 @@
 -
 -
 
+<p align="center">
+<img src="../img/Variant_calling_workflow.png" width="300">
+</p>
+
 ## Content
 
 Convert slides 
