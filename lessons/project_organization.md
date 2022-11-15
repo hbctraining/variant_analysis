@@ -102,7 +102,7 @@ pwd
 
 This should let us know that we are located at: `/home/rc_trainingXX`
 
-Once we have established our location, let's begin by making the directory that we will be using to hold our work in our `home` workspace:
+Once we have established our location, let's begin by making the directory that we will be using to hold our work in the `home` workspace:
 
 ```
 mkdir variant_calling
@@ -115,7 +115,7 @@ cd variant_calling
 mkdir scripts results figures raw_data
 ```
 
-Let's move into our `raw_data` directory and download the FASTQ data:
+Let's move into our `raw_data` directory and copy the FASTQ data that we are going to use for our analysis:
 
 ```
 cd raw_data
