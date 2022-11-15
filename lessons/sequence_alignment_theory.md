@@ -101,13 +101,14 @@ Now that we have the module load command for `bwa` in our SBATCH script, we are 
 ```
 # Assign files to bash variables
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
-LEFT_READS=~/variant_calling/fastq_files/synthetic_challenge_set3_normal_NGv3_1.fq.gz
-RIGHT_READS=~/variant_calling/fastq_files/synthetic_challenge_set3_normal_NGv3_2.fq.gz
-SAM_FILE=~/variant_calling/alignments/normal_GRCh38.p7.sam
+LEFT_READS=/n/data1/cores/bcbio/gammerdinger/variant_calling/fastq_files/synthetic_challenge_set3_normal_NGv3_1.fq.gz
+RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
+SAM_FILE=/n/data1/cores/bcbio/gammerdinger/variant_calling/alignments/normal_GRCh38.p7.sam
 BAM_FILE=`echo ${SAM_FILE%sam}bam`
+REMOVED_DUPLICATES_BAM_FILE=`echo ${BAM_FILE%bam}removed_duplicates.bam`
 ```
 
-Most of these variable assignment are straightforward and are simply assigning paths to known files to `bash` variables. However, BAM_FILE as a little `bash` trick in it in order to swap the `.sam` extension for `.bam`. While we could have simply written `BAM_FILE=~/variant_calling/alignments/normal_GRCh38.p7.bam`, we chose to do it this way for two reasons:
+Some of these variable assignment are straightforward and are simply assigning paths to known files to `bash` variables. However, RIGHT_READS, BAM_FILE and REMOVED_DUPLICATES_BAM_FILE all use a little `bash` trick in it in order to swap the last parts of their name. While we could have simply written `RIGHT_READS=/n/data1/cores/bcbio/gammerdinger/variant_calling/fastq_files/synthetic_challenge_set3_normal_NGv3_2.fq.gz`, `BAM_FILE=~/variant_calling/alignments/normal_GRCh38.p7.bam` and `REMOVED_DUPLICATES_BAM_FILE=~/variant_calling/alignments/normal_GRCh38.p7.removed_duplicates.bam`, we chose to do it this way for two reasons:
 1. Each time we use this script moving forward, we will never need to edit the `BAM_FILE` variable
 2. Reduces the chance for typos
 
@@ -291,10 +292,11 @@ module load samtools/1.15.1
 
 # Assign files to bash variables
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
-LEFT_READS=~/variant_calling/fastq_files/synthetic_challenge_set3_normal_NGv3_1.fq.gz
-RIGHT_READS=~/variant_calling/fastq_files/synthetic_challenge_set3_normal_NGv3_2.fq.gz
-SAM_FILE=~/variant_calling/alignments/normal_GRCh38.p7.sam
+LEFT_READS=/n/data1/cores/bcbio/gammerdinger/variant_calling/fastq_files/synthetic_challenge_set3_normal_NGv3_1.fq.gz
+RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
+SAM_FILE=/n/data1/cores/bcbio/gammerdinger/variant_calling/alignments/normal_GRCh38.p7.sam
 BAM_FILE=`echo ${SAM_FILE%sam}bam`
+REMOVED_DUPLICATES_BAM_FILE=`echo ${BAM_FILE%bam}removed_duplicates.bam`
 
 # Align reads with bwa
 bwa mem \
