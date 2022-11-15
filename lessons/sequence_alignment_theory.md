@@ -101,9 +101,9 @@ Now that we have the module load command for `bwa` in our SBATCH script, we are 
 ```
 # Assign files to bash variables
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
-LEFT_READS=/n/data1/cores/bcbio/gammerdinger/variant_calling/fastq_files/synthetic_challenge_set3_normal_NGv3_1.fq.gz
+LEFT_READS=/home/$USER/variant_calling/syn3_normal_1.fq.gz
 RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
-SAM_FILE=/n/data1/cores/bcbio/gammerdinger/variant_calling/alignments/normal_GRCh38.p7.sam
+SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/normal_GRCh38.p7.sam
 BAM_FILE=`echo ${SAM_FILE%sam}bam`
 REMOVED_DUPLICATES_BAM_FILE=`echo ${BAM_FILE%bam}removed_duplicates.bam`
 ```
@@ -111,14 +111,15 @@ REMOVED_DUPLICATES_BAM_FILE=`echo ${BAM_FILE%bam}removed_duplicates.bam`
 Some of these variable assignment are straightforward and are simply assigning paths to known files to `bash` variables. However, `RIGHT_READS`, `BAM_FILE` and `REMOVED_DUPLICATES_BAM_FILE` all use a little `bash` trick in it in order to swap the last parts of their name. Instead, we could have simply written:
 
 ```
-RIGHT_READS=/n/data1/cores/bcbio/gammerdinger/variant_calling/fastq_files/synthetic_challenge_set3_normal_NGv3_2.fq.gz
-BAM_FILE=~/variant_calling/alignments/normal_GRCh38.p7.bam
-REMOVED_DUPLICATES_BAM_FILE=~/variant_calling/alignments/normal_GRCh38.p7.removed_duplicates.bam
+RIGHT_READS=/home/$USER/variant_calling/syn3_normal_2.fq.gz
+BAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/normal_GRCh38.p7.bam
+REMOVED_DUPLICATES_BAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/normal_GRCh38.p7.removed_duplicates.bam
 ```
 
 However, we chose to do it this way for two reasons:
 1. Each time we use this script moving forward, we will never need to edit the `RIGHT_READS`, `BAM_FILE` and `REMOVED_DUPLICATES_BAM_FILE` variables
 2. Reduces the chance for typos
+3. Can help keep filenames nonmenclature consistent across files
 
 
 #### Brieft `bash` Text Manipulation 
@@ -300,9 +301,9 @@ module load samtools/1.15.1
 
 # Assign files to bash variables
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
-LEFT_READS=/n/data1/cores/bcbio/gammerdinger/variant_calling/fastq_files/synthetic_challenge_set3_normal_NGv3_1.fq.gz
+LEFT_READS=/home/$USER/variant_calling/syn3_normal_1.fq.gz
 RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
-SAM_FILE=/n/data1/cores/bcbio/gammerdinger/variant_calling/alignments/normal_GRCh38.p7.sam
+SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/normal_GRCh38.p7.sam
 BAM_FILE=`echo ${SAM_FILE%sam}bam`
 REMOVED_DUPLICATES_BAM_FILE=`echo ${BAM_FILE%bam}removed_duplicates.bam`
 
