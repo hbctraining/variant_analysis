@@ -5,7 +5,8 @@
 | Time |  Topic  | Instructor |
 |:-----------:|:----------:|:--------:|
 | 9:30 - 10:10 | [Workshop Introduction]() | Will |
-| 10:10 - 11:40 | [Introduction to Variant Calling]() | Sergey |
+| 10:00 - 11:30 | [Introduction to Variant Calling]() | Sergey |
+| 11:30 - 11:50 | [Project Organization](../lessons/project_organization.md) | Will |
 | 11:40 - 12:00 | Overview of self-learning materials and homework submission | Will |
 
 ### Before the next class:
