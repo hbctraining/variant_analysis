@@ -67,7 +67,7 @@ Now that we have indexed the reference sequence, we can align sequence reads to 
 ```
 cd ~/variant_calling/scripts/
 
-vim bwa_alignment_samtools_sorting_index_normal.sbatch
+vim bwa_alignment_samtools_processing_normal.sbatch
 ```
 
 Now that we have opened up `vim` we need to enter `insert-mode` by pressing `i`. Once in `insert-mode`, we can copy and paste the following shebang line and `sbatch` directives:
@@ -343,13 +343,13 @@ The `s` before `/pattern/replacement/` is telling `sed` that we are going to use
 In our case, we are hoping to replace each instance of "normal" with "tumor". Therefore, we could call `sed` to do this using:
 
 ```
-sed 's/normal/tumor/g' bwa_alignment_samtools_sorting_index_normal.sbatch 
+sed 's/normal/tumor/g' bwa_alignment_samtools_processing_normal.sbatch
 ```
 
 We can see that all instances of "normal" have been replaced with "tumor". Now we would like to redirect this output to a file called `bwa_alignment_samtools_sorting_index_tumor.sbatch` rather than standard output, se we need to add redirection to the end of out command:
 
 ```
-sed 's/normal/tumor/g' bwa_alignment_samtools_sorting_index_normal.sbatch > bwa_alignment_samtools_sorting_index_tumor.sbatch
+sed 's/normal/tumor/g' bwa_alignment_samtools_processing_normal.sbatch >  bwa_alignment_samtools_processing_tumor.sbatch 
 ```
 
 If we look at the out
