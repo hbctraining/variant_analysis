@@ -60,6 +60,22 @@ This process may take up to 30+ minutes to run depending on the reference sequen
 - `reference_sequence.fasta.ann` Notations regarding the reference sequence
 - `reference_sequence.fasta.amb` Notations regarding base ambiguities (mostly Ns, but also other base ambiguities) in the reference sequence
 
+## `samtools` and `Picard`
+
+The processing of the BAM files can be done either with [`samtools`](https://github.com/samtools/samtools) or [`Picard`](https://broadinstitute.github.io/picard/) and they are for the most part interchangable. The cases for either are below:
+
+`samtools`
+- The software we will be using to call variants (GATK) can be picky about how the files are formatted and so you need to be careful about the formatting as to not produce an error in GATK
+- More user-friendly
+- Multi-threaded
+
+`Picard`
+- Maintained by the Broad Institute, so it has excellent integration with GATK (also maintained by the Broad Institute)
+- Written in Java and the error messages are not as easily interpretable 
+- Single-threaded
+
+If implemented correctly, they largely provide the same output. In this workshop, we will be using `samtools`, but the `Picard` code will be provided in a dropdown for each section if you would like to know how to do the step in `Picard`.
+
 ### Setting up our `sbatch` Submission Script
 
 Now that we have indexed the reference sequence, we can align sequence reads to our indexed reference sequence. To align reads to the reference sequence, we will need to create and `sbatch` submission script in `vim`.
@@ -122,7 +138,7 @@ However, we chose to do it this way for two reasons:
 3. Can help keep filenames nonmenclature consistent across files
 
 
-#### Brieft `bash` Text Manipulation 
+#### Brief `bash` Text Manipulation 
 
 Let's briefly explore how this works and discuss why we choose this way of doing it. In order to discuss this, let's create a toy example of a path:
 
@@ -555,7 +571,9 @@ We won't exhaustively go through each line of this script as most of it should b
 
 1. There are several lines like this one: 
 
-`SAMPLE_COLUMN=`awk 'NR==1{for (i=1; i<=NF; i++) { if ($i == "sample") { print i } }}' $METADATA_FILE``
+```
+SAMPLE_COLUMN=`awk 'NR==1{for (i=1; i<=NF; i++) { if ($i == "sample") { print i } }}' $METADATA_FILE`
+```
 
 This is an `awk` command that is looping through every element in the header line and finding the one that matches a particular pattern (in this case, "sample"). When it finds that match it saves the column number to a variable (in this case, "SAMPLE_COLUMN"). The reason we do this way is that it allows there be more flexible in the order of the columns. 
 
