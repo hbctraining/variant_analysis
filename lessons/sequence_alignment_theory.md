@@ -120,8 +120,10 @@ REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_gen
 LEFT_READS=/home/$USER/variant_calling/raw_data/syn3_normal_1.fq.gz
 RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/normal_GRCh38.p7.sam
-BAM_FILE=`echo ${SAM_FILE%sam}bam`
-REMOVED_DUPLICATES_BAM_FILE=`echo ${BAM_FILE%bam}removed_duplicates.bam`
+QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
+FIXMATE_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}fixmates.bam`
+COORDINATE_SORTED_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}coordinate_sorted.bam`
+FINAL_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}final.bam`
 ```
 
 Some of these variable assignment are straightforward and are simply assigning paths to known files to `bash` variables. However, `RIGHT_READS`, `BAM_FILE` and `REMOVED_DUPLICATES_BAM_FILE` all use a little `bash` trick in it in order to swap the last parts of their name. Instead, we could have simply written:
@@ -234,18 +236,18 @@ More information about Read Groups and some fields we didn't discuss can be foun
 
 Now you have written your command to run `bwa` you are ready to run alignment. However, there are a few steps that we are going to add to the script so that they run immediately after the alignemnt finishes.
 
-## Sorting Reads and SAM to BAM Conversion
+## Query-name Sorted Reads and SAM to BAM Conversion
 
-Now that we have aligned our reads to the reference, we would see if we opened up the SAM file that the alignments are in the order they were processed by `bwa` and not in any particular order that would be useful for downstream analyses. So, we are going to sort them into a coordinate ordered format that downstream tools can use. 
+Now that we have aligned our reads to the reference, we would see if we opened up the SAM file that the alignments are in the order they were processed by `bwa` and not in any particular order that would be useful for downstream analyses. So, we are going to ***sort them into order by read name*** for the `fixmates` tool in `samtools` downstream. It should be noted that we are going to sort our BAM file by coordinate later in the processing and when people discuss a "sorted SAM/BAM" file they are usually referring to a BAM file that is coordinate sorted.
 
 Additionally, while SAM files are nice due to their human readability, they are typically quite large files and it is not an efficient use of space on the cluster. Fortunately, there is a binary compression version of SAM called BAM. While we sort the reads, we are going to use a very common tool, `samtools`, to convert our SAM files to BAM files. 
 
 ```
-# Sort SAM file and convert it to a BAM file
+# Sort SAM file and convert it to a query name sorted BAM file
 samtools sort \
 -@ 8 \
--O bam \
--o $BAM_FILE \
+-n \
+-o $QUERY_SORTED_BAM_FILE \
 $SAM_FILE
 ```
 
@@ -255,31 +257,72 @@ Let's go ahead and break down this command:
 
 `-@ 8` This tells `samtools` to use 8 threads when it multithreads this task. Since we requested 8 cores for this `sbatch` submission, let's go ahead and use them all.
 
+`-n` This argument tells `samtools sort` to sort by read name as opposed the the default sorting which is done by coordinate.
+
 `-O bam` This is declaring the output format of `bam`.
 
-`-o $BAM_FILE` This is a `bash` variable that holds the path to the output file of the `samtools sort` command.
+`-o $QUERY_SORTED_BAM_FILE` This is a `bash` variable that holds the path to the output file of the `samtools sort` command.
 
 `$SAM_FILE` This is a `bash` variable holding the path to the input SAM file.
+
+## Fix Mates
+
+Next, we are going to add more mate-pair information to the alignments including the insert size and mate pair coordinates. It is important to note with this command that `samtools` relies on positional parameters for assigning the the input and ouptut BAM files. In this case the input BAM file (`$QUERY_SORTED_BAM_FILE`) needs to come before the output file (`$FIXMATE_BAM_FILE `):
+
+```
+# Score mates
+samtools fixmate \
+-m \
+$QUERY_SORTED_BAM_FILE \
+$FIXMATE_BAM_FILE   
+```
+
+The parts of this command are:
+
+`samtools fixmate` This calls the `fixmate` command in `samtools`
+
+`-m` This will add the mate score tag that will be critically important later for `samtools markdup`
+
+`$QUERY_SORTED_BAM_FILE` Bash variable that holds the path to the input file 
+
+`$FIXMATE_BAM_FILE` Bash variable that holds the path to the input file
+
+## Coordinate Sorting
+
+Now that we have added the `fixmate` information, we need to sort out BAM file into a format that will be used for most processes. Most software packages expect your BAM file to be **sorted by coordinate**, so we can do that now: 
+
+```
+# Sort BAM file by coordinate   
+samtools sort \
+-@ 8 \
+-o $COORDINATE_SORTED_BAM_FILE \
+$FIXMATE_BAM_FILE
+```
+
+We have gone through all of the these paramters already in the previous `samtools sort` command. The only difference in this command is that we are not using the `-n` option, which tell `samtools` to sort by read name. Now, we are sorting by coordinates, the default setting.
 
 ## Marking and Removing Duplicates
 
 An important step in processing a BAM file is to mark and remove PCR duplicates. These PCR duplicates can introduce artifacts because regions that have preferential PCR amplification could be over-represented. These reads are flagged by having identical mapping locations in the BAM file. Importantly, it is impossible to distinguish between PCR duplicates and identical fragments. However, one can reduce the latter by doing paired-end sequencing and providing appropriate amounts of input material. We can mark and remove duplicates in `samtools` as well:
 
 ```
-samtools markdup \ 
+# Mark and remove duplicates and then index the output file
+samtools markdup \
 -r \
 --write-index \
 -@ 8 \
-$BAM_FILE \ 
-$REMOVED_DUPLICATES_BAM_FILE
+$COORDINATE_SORTED_BAM_FILE \
+${REMOVED_DUPLICATES_BAM_FILE}##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai
 ```
 
 `samtools markdup` calls the mark duplicates software in `samtools`
 `-r` removes the duplicate reads
-`--write-index` writes an BAM index file (see next section for more information on BAM index files) of the output
+`--write-index` writes an index file (see next section for more information on BAM index files) of the output
 `-@ 8 \` sets that we will be using 8 threads
 `$BAM_FILE` this is out BAM input file
-`$REMOVED_DUPLICATES_BAM_FILE` this is our BAM output file with the duplicates removed from it
+`${REMOVED_DUPLICATES_BAM_FILE}##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai` This has two parts:
+1. The first part (`${REMOVED_DUPLICATES_BAM_FILE}`) is our BAM output file with the duplicates removed from it
+2. The second part (`##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai`) is a shortcut to creating a `.bai` index of the BAM file. If we use the `--write-index` option without this second part, it will create a `.csi` index file. `.bai` index files are a specific type of `.csi` files, so we need to specify it with the second part of this command to ensure that a `.bai` index file is created rather than a `.csi` index file. 
 
 ## Indexing the `BAM` File
 
@@ -343,8 +386,10 @@ REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_gen
 LEFT_READS=/home/$USER/variant_calling/raw_data/syn3_normal_1.fq.gz
 RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/normal_GRCh38.p7.sam
-BAM_FILE=`echo ${SAM_FILE%sam}bam`
-REMOVED_DUPLICATES_BAM_FILE=`echo ${BAM_FILE%bam}removed_duplicates.bam`
+QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
+FIXMATE_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}fixmates.bam`
+COORDINATE_SORTED_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}coordinate_sorted.bam`
+FINAL_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}final.bam`
 
 # Align reads with bwa
 bwa mem \
@@ -356,20 +401,32 @@ $LEFT_READS \
 $RIGHT_READS \
 -o $SAM_FILE
 
-# Sort SAM file and convert it to a BAM file
+# Sort SAM file and convert it to a query name sorted BAM file
 samtools sort \
 -@ 8 \
--O bam \
--o $BAM_FILE \
+-n \
+-o $QUERY_SORTED_BAM_FILE \
 $SAM_FILE
 
-# Mark and remove duplicates and then index the output file  
-samtools markdup \ 
+# Score mates
+samtools fixmate \
+-m \
+$QUERY_SORTED_BAM_FILE \
+$FIXMATE_BAM_FILE  
+
+# Sort BAM file by coordinate   
+samtools sort \
+-@ 8 \
+-o $COORDINATE_SORTED_BAM_FILE \
+$FIXMATE_BAM_FILE
+
+# Mark and remove duplicates and then index the output file
+samtools markdup \
 -r \
 --write-index \
 -@ 8 \
-$BAM_FILE \ 
-$REMOVED_DUPLICATES_BAM_FILE
+$COORDINATE_SORTED_BAM_FILE \
+${FINAL_BAM_FILE}##idx##${FINAL_BAM_FILE}.bai
 ```
 
 ## Creating Tumor `sbatch` script
@@ -423,8 +480,10 @@ REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_gen
 LEFT_READS=/home/$USER/variant_calling/raw_data/syn3_tumor_1.fq.gz
 RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/tumor_GRCh38.p7.sam
-BAM_FILE=`echo ${SAM_FILE%sam}bam`
-REMOVED_DUPLICATES_BAM_FILE=`echo ${BAM_FILE%bam}removed_duplicates.bam`
+QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
+FIXMATE_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}fixmates.bam`
+COORDINATE_SORTED_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}coordinate_sorted.bam`
+FINAL_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}final.bam`
 
 # Align reads with bwa
 bwa mem \
@@ -436,20 +495,32 @@ $LEFT_READS \
 $RIGHT_READS \
 -o $SAM_FILE
 
-# Sort SAM file and convert it to a BAM file
+# Sort SAM file and convert it to a query name sorted BAM file
 samtools sort \
 -@ 8 \
--O bam \
--o $BAM_FILE \
+-n \
+-o $QUERY_SORTED_BAM_FILE \
 $SAM_FILE
 
+# Score mates
+samtools fixmate \
+-m \
+$QUERY_SORTED_BAM_FILE \
+$FIXMATE_BAM_FILE  
+
+# Sort BAM file by coordinate   
+samtools sort \
+-@ 8 \
+-o $COORDINATE_SORTED_BAM_FILE \
+$FIXMATE_BAM_FILE
+
 # Mark and remove duplicates and then index the output file
-samtools markdup \ 
+samtools markdup \
 -r \
 --write-index \
 -@ 8 \
-$BAM_FILE \ 
-$REMOVED_DUPLICATES_BAM_FILE
+$COORDINATE_SORTED_BAM_FILE \
+${FINAL_BAM_FILE}##idx##${FINAL_BAM_FILE}.bai
 ```
 
 ## Creating many `sbatch` scripts
