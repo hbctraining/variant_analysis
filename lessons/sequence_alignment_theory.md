@@ -245,11 +245,34 @@ Let's go ahead and break down this command:
 
 `$SAM_FILE` This is a `bash` variable holding the path to the input SAM file.
 
-## Indexing the `BAM` File
+## Marking and Removing Duplicates
 
-Similar to the index of a book. Many software packages want an index of your BAM file in order to facilitate fast look-ups of a BAM file. While not all software packages that use a BAM file will require this, many will and thus it is a good practice to just go ahead and index your BAM file at this point. The command to index our BAM files with `samtools` is:
+An important step in processing a BAM file is to mark and remove PCR duplicates. These PCR duplicates can introduce artifacts because regions that have preferential PCR amplification could be over-represented. These reads are flagged by having identical mapping locations in the BAM file. Importantly, it is impossible to distinguish between PCR duplicates and identical fragments. However, one can reduce the latter by doing paired-end sequencing and providing appropriate amounts of input material. We can mark and remove duplicates in `samtools` as well:
 
 ```
+samtools markdup \ 
+-r \
+--write-index \
+-@ 8 \
+$BAM_FILE \ 
+$REMOVED_DUPLICATES_BAM_FILE
+```
+
+`samtools markdup` calls the mark duplicates software in `samtools`
+`-r` removes the duplicate reads
+`--write-index` writes an BAM index file (see next section for more information on BAM index files) of the output
+`-@ 8 \` sets that we will be using 8 threads
+`$BAM_FILE` this is out BAM input file
+`$REMOVED_DUPLICATES_BAM_FILE` this is our BAM output file with the duplicates removed from it
+
+## Indexing the `BAM` File
+
+Similar to the index of a book. Many software packages want an index of your BAM file in order to facilitate fast look-ups of a BAM file. While not all software packages that use a BAM file will require this, many will and thus it is a good practice to just index your BAM file. In our previous line of `samtools` command, we provided it with the `--write-index` option, so it automatically created an index for us after marking and removing duplicates. This option exists in the `markdup` command because this is often the last step of BAM file processing that people carry out, so it makes sense to offer the ability to index the BAM file at this point.
+
+If for some reason we needed to index a BAM file, the command to index a BAM file with `samtools` would be:
+
+```
+#### SKIP THIS STEP
 # Index the BAM file
 samtools index \
 -@ 8 \
@@ -324,10 +347,13 @@ samtools sort \
 -o $BAM_FILE \
 $SAM_FILE
 
-# Index the BAM file
-samtools index \
+# Mark and remove duplicates and then index the output file  
+samtools markdup \ 
+-r \
+--write-index \
 -@ 8 \
-$BAM_FILE
+$BAM_FILE \ 
+$REMOVED_DUPLICATES_BAM_FILE
 ```
 
 ## Creating Tumor `sbatch` script
@@ -352,29 +378,217 @@ We can see that all instances of "normal" have been replaced with "tumor". Now w
 sed 's/normal/tumor/g' bwa_alignment_samtools_processing_normal.sbatch >  bwa_alignment_samtools_processing_tumor.sbatch 
 ```
 
-If we look at the out
+If we look at the output with:
 
 ```
-module load gcc/6.2.0 bwa/0.7.17 samtools/1.15.1 
+cat bwa_alignment_samtools_processing_tumor.sbatch 
+```
 
+Then it should look like this:
+
+```
+#!/bin/bash
+
+# Assign sbatch directives
+#SBATCH -p priority
+#SBATCH -t 0-04:00:00
+#SBATCH -c 8
+#SBATCH --mem 16G
+#SBATCH -o bwa_alignment_samtools_sorting_index_tumor_%j.out
+#SBATCH -e bwa_alignment_samtools_sorting_index_tumor_%j.err
+
+# Load modules
+module load gcc/6.2.0
+module load bwa/0.7.17
+module load samtools/1.15.1 
+
+# Assign files to bash variables
+REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
+LEFT_READS=/home/$USER/variant_calling/raw_data/syn3_tumor_1.fq.gz
+RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
+SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/tumor_GRCh38.p7.sam
+BAM_FILE=`echo ${SAM_FILE%sam}bam`
+REMOVED_DUPLICATES_BAM_FILE=`echo ${BAM_FILE%bam}removed_duplicates.bam`
+
+# Align reads with bwa
 bwa mem \
 -M \
 -t 8 \
 -R '@RG\tID:syn3-tumor\tPL:illumina\tPU:syn3-tumor\tSM:syn3-tumor' \
-/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa \
-fastq_files/synthetic_challenge_set3_tumor_NGv3_1.fq.gz \
-fastq_files/synthetic_challenge_set3_tumor_NGv3_2.fq.gz \
--o alignments/tumor_GRCh38.p7.sam
+$REFERENCE_SEQUENCE \
+$LEFT_READS \
+$RIGHT_READS \
+-o $SAM_FILE
 
+# Sort SAM file and convert it to a BAM file
 samtools sort \
 -@ 8 \
 -O bam \
--o alignments/tumor_sorted_GRCh38.p7.bam \
-alignments/tumor_GRCh38.p7.sam
+-o $BAM_FILE \
+$SAM_FILE
 
-samtools index \
-alignments/tumor_sorted_GRCh38.p7.bam
+# Mark and remove duplicates and then index the output file
+samtools markdup \ 
+-r \
+--write-index \
+-@ 8 \
+$BAM_FILE \ 
+$REMOVED_DUPLICATES_BAM_FILE
 ```
+
+## Creating many `sbatch` scripts
+
+***YOU DO NOT NEED TO RUN THIS FOR THE WORKSHOP!***
+
+The example we have given above works fine for our limited example. However, you may encounter issues if you have:
+
+- Multiple read groups per sample
+- Many samples
+
+In the former case, you will need to manually go through each sample and assign it a unique read group ID, which will be error-prone and cumbersome. In the latter case, it could be time-consuming, tedious and also error-prone. As a result, we have created a script below (alignment_and_processing_script_generator.sh) that will create an `sbatch` script for each read group that you provide it with in a tab-delimited text file. The aim of this is to provide you with a reproducible set of `sbatch` scripts that will carry out your alignment and BAM file processing in parallel. ***ONCE AGAIN, YOU DO NOT NEED TO RUN THIS FOR THE WORKSHOP!***
+
+```
+#!/bin/bash                                                                                                                                    
+# This is a script that will write your bwa alignment and samtools processing steps                                                            
+
+#######                                                                                                                                        
+
+# EDIT THESE THREE VARIABLES                                                                                                                   
+REFERENCE_SEQUENCE=/PATH/TO/YOUR/reference_sequence.fa
+METADATA_FILE=/PATH/TO/YOUR/metadata_file.txt
+ALIGNMENT_DIRECTORY=/PATH/TO/YOUR/alignments/
+
+#######                                                                                                                                        
+
+# Retrieve column number for various metadata from the metadata file                                                                           
+SAMPLE_COLUMN=`awk 'NR==1{for (i=1; i<=NF; i++) { if ($i == "sample") { print i } }}' $METADATA_FILE`
+FASTQ_FILE_COLUMN=`awk  'NR==1{for (i=1; i<=NF; i++) { if ($i == "fastq_1_file") { print i } }}' $METADATA_FILE`
+RGID_COLUMN=`awk  'NR==1{for (i=1; i<=NF; i++) { if ($i == "RGID") { print i } }}' $METADATA_FILE`
+RGPL_COLUMN=`awk  'NR==1{for (i=1; i<=NF; i++) { if ($i == "RGPL") { print i } }}' $METADATA_FILE`
+RGPU_COLUMN=`awk  'NR==1{for (i=1; i<=NF; i++) { if ($i == "RGPU") { print i } }}' $METADATA_FILE`
+RGSM_COLUMN=`awk  'NR==1{for (i=1; i<=NF; i++) { if ($i == "RGSM") { print i } }}' $METADATA_FILE`
+
+# Set header boolean                                                                                                                           
+HEADER=TRUE
+
+# Read in each line of the metadata file                                                                                                       
+while read -r line; do
+    # If the line is the header, then we are going set out header boolean to FALSE and skip this line                                          
+    if [[ $HEADER = "TRUE" ]]; then
+        HEADER=FALSE
+        continue
+    fi
+    # Retrieve data from each column in the metadata file and set it equal to variables                                                        
+    sample_name=`echo $line | awk -v sample_column=$SAMPLE_COLUMN '{ print $sample_column }'`
+    sample_file_1=`echo $line | awk -v fastq_file_column=$FASTQ_FILE_COLUMN '{ print $fastq_file_column }'`
+    RGID=`echo $line | awk -v rgid_column=$RGID_COLUMN '{ print $rgid_column }'`
+    RGPL=`echo $line | awk -v rgpl_column=$RGPL_COLUMN '{ print $rgpl_column }'`
+    RGPU=`echo $line | awk -v rgpu_column=$RGPU_COLUMN '{ print $rgpu_column }'`
+    RGSM=`echo $line | awk -v rgsm_column=$RGSM_COLUMN '{ print $rgsm_column }'`
+    # Create a variable to hold the sbatch file                                                                                                
+    SBATCH_FILE=${sample_name}.alignment_processing.sbatch
+
+    # Write the shebang line and sbatch directives                                                                                             
+    echo -e "#!/bin/bash\n" > $SBATCH_FILE
+    echo -e "#SBATCH -p short" >> $SBATCH_FILE
+    echo -e "#SBATCH -t 0-04:00:00" >> $SBATCH_FILE
+    echo -e "#SBATCH -c 8" >> $SBATCH_FILE
+    echo -e "#SBATCH --mem 16G" >> $SBATCH_FILE
+    echo -e "#SBATCH -o alignment_and_processing_${sample_name}_%j.out" >> $SBATCH_FILE
+    echo -e "#SBATCH -e alignment_and_processing_${sample_name}_%j.err\n" >> $SBATCH_FILE
+
+    # Write the modules that need to be loaded                                                                                                 
+    echo -e "module load gcc/6.2.0" >> $SBATCH_FILE
+    echo -e "module load bwa/0.7.17" >> $SBATCH_FILE
+    echo -e "module load samtools/1.15.1\n" >> $SBATCH_FILE
+    
+    # Assign more variables that we will use that are derived from variables that we've already assigned                                       
+    LEFT_READS=$sample_file_1
+    RIGHT_READS=`echo ${sample_file_1%1.fq.gz}2.fq.gz`
+    SAM_FILE=${ALIGNMENT_DIRECTORY}${sample_name}.sam
+    BAM_FILE=`echo ${ALIGNMENT_DIRECTORY}${sample_name}.bam`
+    REMOVED_DUPLICATES_BAM_FILE=`echo ${ALIGNMENT_DIRECTORY}${sample_name}.removed_duplicates.bam`
+
+    # Write the bwa alignment command                                                                                                          
+    echo -e "bwa mem \\" >> $SBATCH_FILE
+    echo -e "\t-M \\" >> $SBATCH_FILE
+    echo -e "\t-t 8 \\" >> $SBATCH_FILE
+    echo -e "\t-R '@RG\tID:$RGID\tPL:$RGPL\tPU:$RGPU\tSM:$RGSM' \\" >> $SBATCH_FILE
+    echo -e "\t$REFERENCE_SEQUENCE \\" >> $SBATCH_FILE
+    echo -e "\t$LEFT_READS \\" >> $SBATCH_FILE
+    echo -e "\t$RIGHT_READS \\" >> $SBATCH_FILE
+    echo -e "\t-o $SAM_FILE\\n" >> $SBATCH_FILE
+    
+    # Write the samtools sort command                                                                                                          
+    echo -e "samtools sort \\" >> $SBATCH_FILE
+    echo -e "\t-@ 8 \\" >> $SBATCH_FILE
+    echo -e "\t-O bam \\" >> $SBATCH_FILE
+    echo -e "\t-o $BAM_FILE \\" >> $SBATCH_FILE
+    echo -e "\t$SAM_FILE\\n" >> $SBATCH_FILE
+
+    # Write the samtools markdup command                                                                                                       
+    echo -e "samtools markdup \\" >> $SBATCH_FILE
+    echo -e "\t-r \\" >> $SBATCH_FILE
+    echo -e "\t--write-index \\" >> $SBATCH_FILE
+    echo -e "\t-@ 8 \\" >> $SBATCH_FILE
+    echo -e "\t$BAM_FILE \\" >> $SBATCH_FILE
+    echo -e "\t$REMOVED_DUPLICATES_BAM_FILE\n" >> $SBATCH_FILE
+done < $METADATA_FILE
+```
+
+The `metadata_file.txt` for our in-class example would look like:
+
+```
+sample	fastq_1_file	RGID	RGPL	RGPU	RGSM
+syn3-normal /home/$USER/variant_calling/raw_data/syn3_normal_1.fq.gz    syn3-normal illumina    syn3-normal syn3-normal
+syn3-tumor  /home/$USER/variant_calling/raw_data/syn3_tumor_1.fq.gz syn3-tumor illumina   syn3-tumor  syn3-tumor
+```
+> NOTE: The order of the columns does not matter.
+
+To run this script you need enter the following command in the directory with the `alignment_and_processing_script_generator.sh` script:
+
+```
+sh alignment_and_processing_script_generator.sh
+```
+
+We won't exhaustively go through each line of this script as most of it should be readable to you. However, we will briefly discuss a  few lines:
+
+1. There are several lines like this one: 
+
+`SAMPLE_COLUMN=`awk 'NR==1{for (i=1; i<=NF; i++) { if ($i == "sample") { print i } }}' $METADATA_FILE``
+
+This is an `awk` command that is looping through every element in the header line and finding the one that matches a particular pattern (in this case, "sample"). When it finds that match it saves the column number to a variable (in this case, "SAMPLE_COLUMN"). The reason we do this way is that it allows there be more flexible in the order of the columns. 
+
+2. The `while` loop 
+ 
+```
+while read -r line; do
+...
+done < $METADATA_FILE
+```
+
+This is called a `while` loop and it is a great way to read in lines from a file. Essentially, we are reading in data line-by-line from the file attached to the variable `METADATA_FILE` *while* there are still lines to read in. Each line is assigned to the variable `line`. Once there are no more lines to read in, the loop stops.
+
+3. The header boolean and the `if` statement
+
+```
+HEADER=TRUE
+...
+if [[ $HEADER = "TRUE" ]]; then
+    HEADER=FALSE
+    continue
+fi
+```
+
+We are setting a variable `HEADER` equal to `TRUE` outside of the loop, so that the first time it goes through the loop this conditional statement will return true and it will change the `HEADER` variable to `FALSE` and ignore the rest of the loop for this line of input.
+
+4. Extracting information from a column
+
+```
+sample_name=`echo $line | awk -v sample_column=$SAMPLE_COLUMN '{ print $sample_column }'`
+```
+
+Since, we know which column holds which information (see Explanation 1 above), we are going to provide that column number to awk and ask it to save the content of that column to a variable (in this case, `sample_name`).
 
 ***
 
