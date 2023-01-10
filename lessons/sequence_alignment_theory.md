@@ -273,13 +273,31 @@ The processing of the alignment files (SAM/BAM files) can be done either with [`
 
 If implemented correctly, they largely provide the same output. In this workshop, we will be using `Picard`, but the `samtools` code will be provided in a dropdown for each section if you would like to know how to do the step in `samtools`.
 
-Let's go ahead and start making a new `sbatch`
+### Pipeline for processing alignment file with `Picard`
+
+Before we start processing our alignment SAM file provided by `bwa`, let's briefly discuss the steps that we will be doing in this pipeline. Several goals need to be accomplished:
+
+1) **Compress SAM file to BAM file.** The output of `bwa` is a SAM file and it is human readbale. However, it is quite large and we need to compress it to a binary version (BAM) which is much smaller.
+2) **Query-sort our alignment file.** Alignment file are initally ordered by the order of the reads in the FASTQ file, which is not particularly useful. `Picard` can more exhaustively look for duplicates if the file is sorted by read-name (query-sorted). We will discuss **query**-sorted and **coordinate**-sorted alignment files soon.
+3) **Mark and Remove Duplicates.** Duplicates can introduce bias into our analysis so it is considered best practice to remove them prior to variant calling.
+4) **Coordinate-sort our alignment file.** Most downstream software packages require that alignment files be **coordinate**-sorted, so we will need to re-sort our alignment file by **coordinates** now that we have remove the duplicates.
+5) **Index the alignment file.** Like the index for a book, indicies for alignment files help direct downstream software packages to where to they can find specific reads. Many software packages require the alignment file that you are analyzing to have an index file, usually with the same name as you alignment file, with the additional `.bai` (BAM-index) extension. Both `Picard` and `samtools` have a way of integrating this indexing as part of their sorting protocols and that is what we will be using. However, both packages have commands for indexing a BAM file independent of their sorting protocol ([BuildBamIndex](https://gatk.broadinstitute.org/hc/en-us/articles/360037057932-BuildBamIndex-Picard-) for `Picard` and [index](http://www.htslib.org/doc/samtools-index.html) for `samtools`).
+
+Below is a flow chart of the `Picard` pipeline that we will be using:
+
+<p align="center">
+<img src="../img/Picard_pipeline.png" width="800">
+</p>
+
+### Creating our `sbatch` script
+
+Let's go ahead and start making a new `sbatch` within `vim`:
 
 ```
 vim picard_alignment_processing_normal.sbatch
 ```
 
-Let's start the `sbatch` script with our shebang line, description of the script and our `sbatch` directives. 
+Start the `sbatch` script with our shebang line, description of the script and our `sbatch` directives. 
 
 ```
 #!/bin/bash
@@ -313,7 +331,7 @@ module load picard/2.8.0
 
 **Note: `Picard` is one of the pieces of software that does NOT require gcc/6.2.0 to also be loaded** 
 
-## Sorting and Removing Duplicates
+### Sorting and Removing Duplicates
 
 In order to appropriately flag and remove duplicates, we first need to ***query*** sort our SAM file. Oftentimes, when people discuss sorted BAM/SAM files, they are refering to **coordinate**-sorted BAM/SAM files. 
 
@@ -326,7 +344,7 @@ In order to appropriately flag and remove duplicates, we first need to ***query*
 
 `Picard` can mark and remove duplicates in either coordinate-sorted or query-sorted BAM/SAM files, however, if the alignments are query-sorted it can test secondary alignments for duplicates. A brief discussion of this nuance is discussed in the [`MarkDuplicates` manual of `Picard`](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-). As a result, we will first **query**-sort our SAM file and convert it to a BAM file:
 
-### Query-sort the Alignment File
+#### Query-sort the Alignment File
 
 ```
 java -jar $PICARD/picard-2.8.0.jar SortSam \
@@ -345,7 +363,7 @@ The components of this command are:
 
 `SORT_ORDER=queryname` The method with which we would like the file to be sorted. The options here are either `queryname` or `coordinate`.
 
-### Mark and Remove Duplicates
+#### Mark and Remove Duplicates
 
 Now we will add the command to our script that allows us to mark and remove duplicates:
 
@@ -369,7 +387,7 @@ The componetns of this command are:
 
 `REMOVE_DUPLICATES=true` Not only are we going to mark/flag our duplicates, we can also remove them. By setting the `REMOVE_DUPLICATES` parameter equal to `true` to can remove the duplicates.
 
-### Coordinate-sort the Alignment File
+#### Coordinate-sort the Alignment File
 
 For most downstream processes, coordinate-sorted alignment files are required. As a result, we will need to change our alignemnt file from being **query**-sorted to being **coordinate**-sorted and we will once again use the `SortSam` command within `Picard` to accomplish this.
 
