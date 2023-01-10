@@ -257,6 +257,75 @@ If so, go ahead and submit the our `sbatch` script to the cluster:
 sbatch bwa_alignment_normal.sbatch
 ```
 
+## Creating Tumor `sbatch` script
+
+Now that we have created the `sbatch` script for our normal samples, we need to repeat the process for our tumor samples. All of the parameters will stay the same, we just need to edit the SBATCH error file, SBATCH output file, LEFT_READS variable, RIGHT_READS variable, SAM_FILE variable and the read group information within the `bwa` command. You could very well do this by hand and it would be just fine. However, to cut down on typos we are going to use `sed`. `sed` is a powerful tool within `bash` and [has a wide variety of applications](https://hbctraining.github.io/Training-modules/Intermediate_shell/lessons/sed.html). However, one of the most common uses for `sed` is as a "find-and-replace" tool. The syntax for this type of task is:
+
+```
+sed 's/pattern/replacement/g' file.txt 
+```
+
+The `s` before `/pattern/replacement/` is telling `sed` that we are going to use its **substittion** function and the `g` after `/pattern/replacement/` is telling `sed` that we want to apply that change **globally**, or every instance in the file. `pattern` represents the pattern that we are looking for and `replacement` is what we wish to replace the `pattern` with. Lastly, we need to provide `sed` some text source to apply this "find-and-replace" function, so we have provided it with `file.txt`, but you can also pipe in a string or file to apply this function to. 
+
+In our case, we are hoping to replace each instance of "normal" with "tumor". Therefore, we could call `sed` to do this using:
+
+```
+sed 's/normal/tumor/g' bwa_alignment_tumor.sbatch
+```
+
+We can see that all instances of "normal" have been replaced with "tumor". Now we would like to redirect this output to a file called `bwa_alignment_tumor.sbatch` rather than standard output, se we need to add redirection to the end of out command:
+
+```
+sed 's/normal/tumor/g' bwa_alignment_normal.sbatch >  bwa_alignment_tumor.sbatch
+```
+
+If we look at the output with:
+
+```
+cat bwa_alignment_tumor.sbatch 
+```
+
+Then it should look like this:
+
+```
+#!/bin/bash
+# This script is for aligning sequencing reads against a reference genome using bwa
+
+# Assign sbatch directives
+#SBATCH -p priority
+#SBATCH -t 0-04:00:00
+#SBATCH -c 8
+#SBATCH --mem 16G
+#SBATCH -o bwa_alignment_tumor_%j.out
+#SBATCH -e bwa_alignment_tumor_%j.err
+
+# Load modules
+module load gcc/6.2.0
+module load bwa/0.7.17
+
+# Assign files to bash variables
+REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
+LEFT_READS=/home/$USER/variant_calling/raw_data/syn3_tumor_1.fq.gz
+RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
+SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/tumor_GRCh38.p7.sam
+
+# Align reads with bwa
+bwa mem \
+-M \
+-t 8 \
+-R '@RG\tID:syn3-tumor\tPL:illumina\tPU:syn3-tumor\tSM:syn3-tumor' \
+$REFERENCE_SEQUENCE \
+$LEFT_READS \
+$RIGHT_READS \
+-o $SAM_FILE
+```
+
+Once we have created this script we can go ahead and submit it for processing:
+
+```
+sbatch bwa_alignment_tumor.sbatch 
+```
+
 ## Alignment file processing with `samtools` and `Picard`
 
 The processing of the alignment files (SAM/BAM files) can be done either with [`samtools`](https://github.com/samtools/samtools) or [`Picard`](https://broadinstitute.github.io/picard/) and they are for the most part interchangable. The arguments for either are below:
@@ -346,6 +415,10 @@ In order to appropriately flag and remove duplicates, we first need to ***query*
 
 #### Query-sort the Alignment File
 
+With our reads aligned to the reference, we would see if we opened up the SAM file that the alignments are in the order they were processed by `bwa` and not in any particular order that would be useful for downstream analyses. So, we are going to ***sort them into order by query (read) name*** for the downstream `MarkDuplicates` tool. As a reminder, we are going to sort our BAM file by **coordinates** later in the processing and when people discuss a "sorted BAM/SAM" file they are usually referring to a BAM/SAM file that is **coordinate**-sorted.
+
+Additionally, while SAM files are nice due to their human readability, they are typically quite large files and it is not an efficient use of space on the cluster. Fortunately, there is a binary compression version of SAM called BAM. While we sort the reads, we are going to use to convert our SAM file to a BAM file. We don't need to specify this SAM-to-BAM conversion explicitly, because `Picard` will make this change by interpretting the file extensions that we provide in the `INPUT` and `OUTPUT` file options.
+
 ```
 java -jar $PICARD/picard-2.8.0.jar SortSam \
 INPUT=$SAM_FILE \
@@ -365,7 +438,7 @@ The components of this command are:
 
 #### Mark and Remove Duplicates
 
-Now we will add the command to our script that allows us to mark and remove duplicates:
+An important step in processing a BAM file is to mark and remove PCR duplicates. These PCR duplicates can introduce artifacts because regions that have preferential PCR amplification could be over-represented. These reads are flagged by having identical mapping locations in the BAM file. Importantly, it is impossible to distinguish between PCR duplicates and identical fragments. However, one can reduce the latter by doing paired-end sequencing and providing appropriate amounts of input material. Now we will add the command to our script that allows us to mark and remove duplicates in `Picard`:
 
 ```
 java -jar $PICARD/picard-2.8.0.jar MarkDuplicates \
@@ -389,7 +462,7 @@ The componetns of this command are:
 
 #### Coordinate-sort the Alignment File
 
-For most downstream processes, coordinate-sorted alignment files are required. As a result, we will need to change our alignemnt file from being **query**-sorted to being **coordinate**-sorted and we will once again use the `SortSam` command within `Picard` to accomplish this.
+For most downstream processes, coordinate-sorted alignment files are required. As a result, we will need to change our alignemnt file from being **query**-sorted to being **coordinate**-sorted and we will once again use the `SortSam` command within `Picard` to accomplish this. Since this BAM file will be the final BAM file that we make and will use for downstream analyses, we will need to create an index for it. The command we will be using for **coordinate**-sorting and indexing out BAM file is:
 
 ```
 java -jar $PICARD/picard-2.8.0.jar SortSam \
@@ -407,7 +480,7 @@ The components of this command are:
 
 - `OUTPUT=COORDINATE_SORTED_BAM_FILE` Our BAM output file sorted by coordinates.
 
-- `CREATE_INDEX=true` Since this BAM file will be the final BAM file that we make and will use for downstream analyses, we will need to create an index for it. Setting the `CREATE_INDEX` equal to `true` will create an index of the final BAM output. The task can also be accomplished by using the `BuildBamIndex` command within `Picard`, but this `CREATE_INDEX` functionality is built into many `Picard` function, so you can often use it at the last stage of processing your BAM file to save having to run `BuildBamIndex` after.
+- `CREATE_INDEX=true` Setting the `CREATE_INDEX` equal to `true` will create an index of the final BAM output. The index creation can also be accomplished by using the `BuildBamIndex` command within `Picard`, but this `CREATE_INDEX` functionality is built into many `Picard` functions, so you can often use it at the last stage of processing your BAM file to save having to run `BuildBamIndex` after.
 
 ---
 
@@ -628,24 +701,27 @@ ${REMOVED_DUPLICATES_BAM_FILE}##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai<br>
 </details>
 
 
-## Query-name Sorted Reads and SAM to BAM Conversion
+## Indexing a `BAM` File
 
-Now that we have aligned our reads to the reference, we would see if we opened up the SAM file that the alignments are in the order they were processed by `bwa` and not in any particular order that would be useful for downstream analyses. So, we are going to ***sort them into order by read name*** for the `fixmates` tool in `samtools` downstream. It should be noted that we are going to sort our BAM file by coordinate later in the processing and when people discuss a "sorted SAM/BAM" file they are usually referring to a BAM file that is coordinate sorted.
+Many software packages want an index of your BAM file in order to facilitate fast look-ups of a BAM file. While not all software packages that use a BAM file will require this, many will and thus it is a good practice to index your BAM file while processing it. In our previous line of `Picard` command, we provided it with the `CREATE_INDEX=true` option, so it automatically created an index for us after **coordinate**-sorting our BAM file. If for some reason we needed to create an BAM-index for a **coordinate**-sorted BAM file, we would run a command that looks like this:
 
-Additionally, while SAM files are nice due to their human readability, they are typically quite large files and it is not an efficient use of space on the cluster. Fortunately, there is a binary compression version of SAM called BAM. While we sort the reads, we are going to use a very common tool, `samtools`, to convert our SAM files to BAM files. 
+```
+# SKIP THIS STEP
+# Index the BAM file
+java -jar $PICARD/picard-2.8.0.jar BuildBamIndex \
+INPUT=$BAM_FILE
+```
+    
+The components of this command are:
+    
+    - `java -jar $PICARD/picard-2.8.0.jar BuildBamIndex` This calls the `BuildBamIndex` tools within `Picard`
+    
+    - `INPUT=$BAM_FILE` This is the BAM file that you wish to index. 
 
+> NOTE: BAM indexes can only be made from **coordinate**-sorted BAM files.    
 
-## Marking and Removing Duplicates
-
-An important step in processing a BAM file is to mark and remove PCR duplicates. These PCR duplicates can introduce artifacts because regions that have preferential PCR amplification could be over-represented. These reads are flagged by having identical mapping locations in the BAM file. Importantly, it is impossible to distinguish between PCR duplicates and identical fragments. However, one can reduce the latter by doing paired-end sequencing and providing appropriate amounts of input material. We can mark and remove duplicates in `samtools` as well:
-
-
-
-## Indexing the `BAM` File
-
-Similar to the index of a book. Many software packages want an index of your BAM file in order to facilitate fast look-ups of a BAM file. While not all software packages that use a BAM file will require this, many will and thus it is a good practice to just index your BAM file. In our previous line of `samtools` command, we provided it with the `--write-index` option, so it automatically created an index for us after marking and removing duplicates. This option exists in the `markdup` command because this is often the last step of BAM file processing that people carry out, so it makes sense to offer the ability to index the BAM file at this point.
-
-<h2>BAM-Indexing within <code>Samtools</code></h2>
+<details>
+<summary>Click here for BAM-Indexing within <code>Samtools</code></summary>
     
 In the previous step, we have already indexed our BAM file. But if for some reason we needed to index a BAM file, the command to index a BAM file with <code>samtools</code> would be:
 
@@ -656,188 +732,20 @@ samtools index \
 $BAM_FILE
 </pre>
 
-<code>samtools index</code> Calls the <code>index</code> function within <code>samtools</code>
+The components of this command are:
+    
+<ul><li><code>samtools index</code> Calls the <code>index</code> function within <code>samtools</code></li>
 
-<code>$BAM_FILE</code> This is a `bash` variable that holds the path to the BAM file that we want to index.
+<li><code>$BAM_FILE</code> This is a `bash` variable that holds the path to the BAM file that we want to index.</li>
 
-We don't need to provide an output file for <code>samtools index</code>, by default it will generate a new file using the same path and filename as the BAM file, but add `bai` as the extension to denote that it is a BAM-index file.
-
+We don't need to provide an output file for <code>samtools index</code>, by default it will generate a new file using the same path and filename as the BAM file, but add `.bai` as the extension to denote that it is a BAM-index file.
+</details>
 
 The tool we will be using for variant calling is called `GATK` and it was developed and maintained by the Broad Institute. The Broad Institute also maintains a tool that does many of the functions that `samtools` does and it is called `Picard`. In the dropdown below, we show the command you can use for sorting a SAM file in `Picard`. 
 
-<details>
-  <summary>SAM to BAM conversion in <code>Picard</code></summary>
-  
-  One benefit of using Picard for this task is that it will convert the SAM file to BAM and do the indexing of the BAM file in the same step. However, Picard doesn't support multithreading, so it is slower than `samtools`. Additionally, given that we requested 8 cores, we would be wasting 7 cores while running `Picard`, so the best practice be to put the below `Picard` command in a separate `sbatch` script. 
-  
-  <pre>
-  module load picard/2.8.0
-  
-  java -jar $PICARD/picard-2.8.0.jar SortSam INPUT=$SAM_FILE OUTPUT=$BAM_FILE SORT_ORDER=coordinate CREATE_INDEX=true
-  </pre>
-</details>
-
 ---
 
-The final script for your normal sample should look like:
 
-```
-#!/bin/bash
-
-# Assign sbatch directives
-#SBATCH -p priority
-#SBATCH -t 0-04:00:00
-#SBATCH -c 8
-#SBATCH --mem 16G
-#SBATCH -o bwa_alignment_samtools_sorting_index_normal_%j.out
-#SBATCH -e bwa_alignment_samtools_sorting_index_normal_%j.err
-
-# Load modules
-module load gcc/6.2.0
-module load bwa/0.7.17
-module load samtools/1.15.1 
-
-# Assign files to bash variables
-REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
-LEFT_READS=/home/$USER/variant_calling/raw_data/syn3_normal_1.fq.gz
-RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
-SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/normal_GRCh38.p7.sam
-QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
-FIXMATE_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}fixmates.bam`
-COORDINATE_SORTED_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}coordinate_sorted.bam`
-FINAL_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}final.bam`
-
-# Align reads with bwa
-bwa mem \
--M \
--t 8 \
--R '@RG\tID:syn3-normal\tPL:illumina\tPU:syn3-normal\tSM:syn3-normal' \
-$REFERENCE_SEQUENCE \
-$LEFT_READS \
-$RIGHT_READS \
--o $SAM_FILE
-
-# Sort SAM file and convert it to a query name sorted BAM file
-samtools sort \
--@ 8 \
--n \
--o $QUERY_SORTED_BAM_FILE \
-$SAM_FILE
-
-# Score mates
-samtools fixmate \
--m \
-$QUERY_SORTED_BAM_FILE \
-$FIXMATE_BAM_FILE  
-
-# Sort BAM file by coordinate   
-samtools sort \
--@ 8 \
--o $COORDINATE_SORTED_BAM_FILE \
-$FIXMATE_BAM_FILE
-
-# Mark and remove duplicates and then index the output file
-samtools markdup \
--r \
---write-index \
--@ 8 \
-$COORDINATE_SORTED_BAM_FILE \
-${FINAL_BAM_FILE}##idx##${FINAL_BAM_FILE}.bai
-```
-
-## Creating Tumor `sbatch` script
-
-Now that we have created the `sbatch` script for our normal samples, we need to repeat the process for our tumor samples. All of the parameters will stay the same, we just need to edit the SBATCH error file, SBATCH output file, LEFT_READS variable, RIGHT_READS variable, SAM_FILE variable and the read group information within the `bwa` command. You could very well do this by hand and it would be just fine. However, to cut down on typos we are going to use `sed`. `sed` is a powerful tool within `bash` and [has a wide variety of applications](https://hbctraining.github.io/Training-modules/Intermediate_shell/lessons/sed.html). However, one of the most common uses for `sed` is as a "find-and-replace" tool. The syntax for this type of task is:
-
-```
-sed 's/pattern/replacement/g' file.txt 
-```
-
-The `s` before `/pattern/replacement/` is telling `sed` that we are going to use its **substittion** function and the `g` after `/pattern/replacement/` is telling `sed` that we want to apply that change **globally**, or every instance in the file. `pattern` represents the pattern that we are looking for and `replacement` is what we wish to replace the `pattern` with. Lastly, we need to provide `sed` some text source to apply this "find-and-replace" function, so we have provided it with `file.txt`, but you can also pipe in a string or file to apply this function to. 
-
-In our case, we are hoping to replace each instance of "normal" with "tumor". Therefore, we could call `sed` to do this using:
-
-```
-sed 's/normal/tumor/g' bwa_alignment_samtools_processing_normal.sbatch
-```
-
-We can see that all instances of "normal" have been replaced with "tumor". Now we would like to redirect this output to a file called `bwa_alignment_samtools_sorting_index_tumor.sbatch` rather than standard output, se we need to add redirection to the end of out command:
-
-```
-sed 's/normal/tumor/g' bwa_alignment_samtools_processing_normal.sbatch >  bwa_alignment_samtools_processing_tumor.sbatch 
-```
-
-If we look at the output with:
-
-```
-cat bwa_alignment_samtools_processing_tumor.sbatch 
-```
-
-Then it should look like this:
-
-```
-#!/bin/bash
-
-# Assign sbatch directives
-#SBATCH -p priority
-#SBATCH -t 0-04:00:00
-#SBATCH -c 8
-#SBATCH --mem 16G
-#SBATCH -o bwa_alignment_samtools_sorting_index_tumor_%j.out
-#SBATCH -e bwa_alignment_samtools_sorting_index_tumor_%j.err
-
-# Load modules
-module load gcc/6.2.0
-module load bwa/0.7.17
-module load samtools/1.15.1 
-
-# Assign files to bash variables
-REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
-LEFT_READS=/home/$USER/variant_calling/raw_data/syn3_tumor_1.fq.gz
-RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
-SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/tumor_GRCh38.p7.sam
-QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
-FIXMATE_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}fixmates.bam`
-COORDINATE_SORTED_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}coordinate_sorted.bam`
-FINAL_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}final.bam`
-
-# Align reads with bwa
-bwa mem \
--M \
--t 8 \
--R '@RG\tID:syn3-tumor\tPL:illumina\tPU:syn3-tumor\tSM:syn3-tumor' \
-$REFERENCE_SEQUENCE \
-$LEFT_READS \
-$RIGHT_READS \
--o $SAM_FILE
-
-# Sort SAM file and convert it to a query name sorted BAM file
-samtools sort \
--@ 8 \
--n \
--o $QUERY_SORTED_BAM_FILE \
-$SAM_FILE
-
-# Score mates
-samtools fixmate \
--m \
-$QUERY_SORTED_BAM_FILE \
-$FIXMATE_BAM_FILE  
-
-# Sort BAM file by coordinate   
-samtools sort \
--@ 8 \
--o $COORDINATE_SORTED_BAM_FILE \
-$FIXMATE_BAM_FILE
-
-# Mark and remove duplicates and then index the output file
-samtools markdup \
--r \
---write-index \
--@ 8 \
-$COORDINATE_SORTED_BAM_FILE \
-${FINAL_BAM_FILE}##idx##${FINAL_BAM_FILE}.bai
-```
 
 ## Creating many `sbatch` scripts
 
