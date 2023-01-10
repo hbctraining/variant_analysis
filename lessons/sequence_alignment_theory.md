@@ -320,6 +320,10 @@ In order to appropriately flag and remove duplicates, we first need to ***query*
 - **Query**-sorted BAM/SAM files are sorted based upon their read names and order lexiographically
 - **Coordinate**-sorted BAM/SAM files are sorted by their sequence name (chromosome/linkage group/scaffold) and position 
 
+<p align="center">
+<img src="../img/SAM_sorting.png" width="800">
+</p>
+
 `Picard` can mark and remove duplicates in either coordinate-sorted or query-sorted BAM/SAM files, however, if the alignments are query-sorted it can test secondary alignments for duplicates. A brief discussion of this nuance is discussed in the [`MarkDuplicates` manual of `Picard`](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-). As a result, we will first **query**-sort our SAM file and convert it to a BAM file:
 
 ### Query-sort the Alignment File
