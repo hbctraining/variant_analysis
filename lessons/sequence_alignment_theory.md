@@ -355,13 +355,13 @@ SORT_ORDER=queryname
 
 The components of this command are:
 
-`java -jar $PICARD/picard-2.8.0.jar SortSam ` Calls `Picard`'s `SortSam` software package
+- `java -jar $PICARD/picard-2.8.0.jar SortSam ` Calls `Picard`'s `SortSam` software package
 
-`INPUT=$SAM_FILE` This is where we provide the SAM input file
+- `INPUT=$SAM_FILE` This is where we provide the SAM input file
 
-`OUTPUT=$QUERY_SORTED_BAM_FILE` This is the BAM output file. Because the extension is `.bam` rather than `.sam`, `Picard` will recognize this and create the output as a BAM file rather than the SAM inoput we have provided it.
+- `OUTPUT=$QUERY_SORTED_BAM_FILE` This is the BAM output file. Because the extension is `.bam` rather than `.sam`, `Picard` will recognize this and create the output as a BAM file rather than the SAM inoput we have provided it.
 
-`SORT_ORDER=queryname` The method with which we would like the file to be sorted. The options here are either `queryname` or `coordinate`.
+- `SORT_ORDER=queryname` The method with which we would like the file to be sorted. The options here are either `queryname` or `coordinate`.
 
 #### Mark and Remove Duplicates
 
@@ -377,15 +377,15 @@ REMOVE_DUPLICATES=true
 
 The componetns of this command are:
 
-`java -jar $PICARD/picard-2.8.0.jar MarkDuplicates` Calls `Picard`'s `MarkDuplicates` program
+- `java -jar $PICARD/picard-2.8.0.jar MarkDuplicates` Calls `Picard`'s `MarkDuplicates` program
 
-`INPUT=$QUERY_SORTED_BAM_FILE` Uses our query-sorted BAM file as input
+- `INPUT=$QUERY_SORTED_BAM_FILE` Uses our query-sorted BAM file as input
 
-`OUTPUT=$REMOVE_DUPLICATES_BAM_FILE` Write the output to a BAM file
+- `OUTPUT=$REMOVE_DUPLICATES_BAM_FILE` Write the output to a BAM file
 
-`METRICS_FILE=$METRICS_FILE` Creates a metrics file (required by `Picard MarkDuplicates`)
+- `METRICS_FILE=$METRICS_FILE` Creates a metrics file (required by `Picard MarkDuplicates`)
 
-`REMOVE_DUPLICATES=true` Not only are we going to mark/flag our duplicates, we can also remove them. By setting the `REMOVE_DUPLICATES` parameter equal to `true` to can remove the duplicates.
+- `REMOVE_DUPLICATES=true` Not only are we going to mark/flag our duplicates, we can also remove them. By setting the `REMOVE_DUPLICATES` parameter equal to `true` to can remove the duplicates.
 
 #### Coordinate-sort the Alignment File
 
@@ -401,13 +401,13 @@ CREATE_INDEX=true
 
 The components of this command are:
 
-`java -jar $PICARD/picard-2.8.0.jar SortSam` Calls `Picard`'s `SortSam` program
+- `java -jar $PICARD/picard-2.8.0.jar SortSam` Calls `Picard`'s `SortSam` program
 
-`INPUT=$REMOVE_DUPLICATES_BAM_FILE` Our BAM file once we have removed our duplicates. **NOTE: Even though the software is called `SortSam`, it can use BAM or SAM files as input and also BAM or SAM files as output.**
+- `INPUT=$REMOVE_DUPLICATES_BAM_FILE` Our BAM file once we have removed our duplicates. **NOTE: Even though the software is called `SortSam`, it can use BAM or SAM files as input and also BAM or SAM files as output.**
 
-`OUTPUT=COORDINATE_SORTED_BAM_FILE` Our BAM output file sorted by coordinates.
+- `OUTPUT=COORDINATE_SORTED_BAM_FILE` Our BAM output file sorted by coordinates.
 
-`CREATE_INDEX=true` Since this BAM file will be the final BAM file that we make and will use for downstream analyses, we will need to create an index for it. Setting the `CREATE_INDEX` equal to `true` will create an index of the final BAM output. The task can also be accomplished by using the `BuildBamIndex` command within `Picard`, but this `CREATE_INDEX` functionality is built into many `Picard` function, so you can often use it at the last stage of processing your BAM file to save having to run `BuildBamIndex` after.
+- `CREATE_INDEX=true` Since this BAM file will be the final BAM file that we make and will use for downstream analyses, we will need to create an index for it. Setting the `CREATE_INDEX` equal to `true` will create an index of the final BAM output. The task can also be accomplished by using the `BuildBamIndex` command within `Picard`, but this `CREATE_INDEX` functionality is built into many `Picard` function, so you can often use it at the last stage of processing your BAM file to save having to run `BuildBamIndex` after.
 
 ---
 
@@ -495,17 +495,17 @@ $SAM_FILE
     
 The components of this line of code are:
     
-<code>samtools sort</code> This calls the sort function within <code>samtools</code>.
+<ul><li><code>samtools sort</code> This calls the sort function within <code>samtools</code>.</li>
 
-<code>-@ 8</code> This tells <code>samtools</code> to use 8 threads when it multithreads this task. Since we requested 8 cores for this <code>sbatch</code> submission, let's go ahead and use them all.
+<li><code>-@ 8</code> This tells <code>samtools</code> to use 8 threads when it multithreads this task. Since we requested 8 cores for this <code>sbatch</code> submission, let's go ahead and use them all.</li>
 
-<code>-n</code> This argument tells <code>samtools sort</code> to sort by read name as opposed the the default sorting which is done by coordinate.
+<li><code>-n</code> This argument tells <code>samtools sort</code> to sort by read name as opposed the the default sorting which is done by coordinate.</li>
 
-<code>-O bam</code> This is declaring the output format of `bam`.
+<li><code>-O bam</code> This is declaring the output format of `bam`.</li>
 
-<code>-o $QUERY_SORTED_BAM_FILE</code> This is a <code>bash</code> variable that holds the path to the output file of the <code>samtools sort</code> command.
+<li><code>-o $QUERY_SORTED_BAM_FILE</code> This is a <code>bash</code> variable that holds the path to the output file of the <code>samtools sort</code> command.</li>
 
-<code>$SAM_FILE</code> This is a <code>bash</code> variable holding the path to the input SAM file.
+<li><code>$SAM_FILE</code> This is a <code>bash</code> variable holding the path to the input SAM file.</li></ul>
 </details></li>
 
 <li><details>    
@@ -522,13 +522,13 @@ $FIXMATE_BAM_FILE
 
 The parts of this command are:
 
-<code>samtools fixmate</code> This calls the <code>fixmate</code> command in <code>samtools</code>
+<ul><li><code>samtools fixmate</code> This calls the <code>fixmate</code> command in <code>samtools</code></li>
 
-<code>-m</code> This will add the mate score tag that will be critically important later for <code>samtools markdup</code>
+<li><code>-m</code> This will add the mate score tag that will be critically important later for <code>samtools markdup</code></li>
 
-<code>$QUERY_SORTED_BAM_FILE</code> Bash variable that holds the path to the input file 
+<li><code>$QUERY_SORTED_BAM_FILE</code> Bash variable that holds the path to the input file</li>
 
-<code>$FIXMATE_BAM_FILE</code> Bash variable that holds the path to the input file
+<li><code>$FIXMATE_BAM_FILE</code> Bash variable that holds the path to the input file</li></ul>
 </details></li>
 
 <li><details>
@@ -560,19 +560,21 @@ $COORDINATE_SORTED_BAM_FILE \
 ${REMOVED_DUPLICATES_BAM_FILE}##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai
 </pre> 
 
-<code>samtools markdup</code> calls the mark duplicates software in <code>samtools</code>
+The components of this command are:    
     
-<code>-r</code> removes the duplicate reads
+<ul><li><code>samtools markdup</code> calls the mark duplicates software in <code>samtools</code></li>
     
-<code>--write-index</code> writes an index file (see next section for more information on BAM index files) of the output
+<li><code>-r</code> removes the duplicate reads</li>
     
-<code>-@ 8</code> sets that we will be using 8 threads
+<li><code>--write-index</code> writes an index file (see next section for more information on BAM index files) of the output</li>
     
-<code>$BAM_FILE</code> this is out BAM input file
+<li><code>-@ 8</code> sets that we will be using 8 threads</li>
     
-<code>${REMOVED_DUPLICATES_BAM_FILE}##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai</code>This has two parts:
+<li><code>$BAM_FILE</code> this is out BAM input file</li>
+    
+<li><code>${REMOVED_DUPLICATES_BAM_FILE}##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai</code>This has two parts:
 <ol><li>The first part (<code>${REMOVED_DUPLICATES_BAM_FILE}</code>) is our BAM output file with the duplicates removed from it</li>
-<li>The second part (<code>##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai</code>) is a shortcut to creating a <code>.bai</code> index of the BAM file. If we use the <code>--write-index</code> option without this second part, it will create a <code>.csi</code> index file. <code>.bai</code> index files are a specific type of <code>.csi</code> files, so we need to specify it with the second part of this command to ensure that a <code>.bai</code> index file is created rather than a <code>.csi</code> index file.</li></ol>
+<li>The second part (<code>##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai</code>) is a shortcut to creating a <code>.bai</code> index of the BAM file. If we use the <code>--write-index</code> option without this second part, it will create a <code>.csi</code> index file. <code>.bai</code> index files are a specific type of <code>.csi</code> files, so we need to specify it with the second part of this command to ensure that a <code>.bai</code> index file is created rather than a <code>.csi</code> index file.</li></ol><li></ul>
 </details></li>
 
 <li><details>
