@@ -196,15 +196,15 @@ Let's breakdown this `bwa` command.
 
 - `-R '@RG\tID:syn3-normal\tPL:illumina\tPU:syn3-normal\tSM:syn3-normal'` This adds what is called Read Group information. Some software packages, such as `GATK`, require Read Groups, while others are agnostic towards them. However, they can provide important metadata about your reads and thus it is considered best practice to include Read Group Information at the alignment step. This Read Group information consists of several fields separated by tab-characters (\t), including:
 
-**ID**: This is the identification for a given batch of reads. This ***MUST*** be unique to your experiment. 
+    - **ID**: This is the identification for a given batch of reads. This ***MUST*** be unique to your experiment. 
 
-**PL**: This is the platform that the sequencing was run on. For aligning Illumina reads, you should use "illumina" here.
+    - **PL**: This is the platform that the sequencing was run on. For aligning Illumina reads, you should use "illumina" here.
 
-**PU**: This is the platform unit and it is ideally supposed to hold `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`, where `<FLOWCELL_BARCODE>` is the barcode of the flowcell, `<LANE>` is the lane the data was run on and `<SAMPLE_BARCODE>` is supposed to be a library/sample specific identifer. In some software packages **PU** can take precedence over the **ID** field. If you don't happen to have the `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`, just make this field something useful that will help identify the sample. In this case, we didn't have that information so we are re-using the **ID** field here. 
+    - **PU**: This is the platform unit and it is ideally supposed to hold `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`, where `<FLOWCELL_BARCODE>` is the barcode of the flowcell, `<LANE>` is the lane the data was run on and `<SAMPLE_BARCODE>` is supposed to be a library/sample specific identifer. In some software packages **PU** can take precedence over the **ID** field. If you don't happen to have the `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`, just make this field something useful that will help identify the sample. In this case, we didn't have that information so we are re-using the **ID** field here. 
 
-**SM**: This is to mark which *sample* your reads are coming from. Note, this does not need to be unique like the **ID** field, since you may have multiple Read Group **ID**s coming from a single sample. For example, you may be merging alignment (BAM/SAM) files that originated from the same individual, but we sequenced on different lanes or machines. In this case, those would have different Read Group **ID**s, but the same **SM** value.
+    - **SM**: This is to mark which *sample* your reads are coming from. Note, this does not need to be unique like the **ID** field, since you may have multiple Read Group **ID**s coming from a single sample. For example, you may be merging alignment (BAM/SAM) files that originated from the same individual, but we sequenced on different lanes or machines. In this case, those would have different Read Group **ID**s, but the same **SM** value.
 
-More information about Read Groups and some fields we didn't discuss can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035890671-Read-groups).
+    - More information about Read Groups and some fields we didn't discuss can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035890671-Read-groups).
   
 - `$REFERENCE_SEQUENCE` This calls the variable that holds the path to our reference sequence (`/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa`).
   
@@ -329,7 +329,10 @@ In order to appropriately flag and remove duplicates, we first need to ***query*
 ### Query-sort the Alignment File
 
 ```
-java -jar $PICARD/picard-2.8.0.jar SortSam INPUT=$SAM_FILE OUTPUT=$QUERY_SORTED_BAM_FILE SORT_ORDER=queryname
+java -jar $PICARD/picard-2.8.0.jar SortSam \
+INPUT=$SAM_FILE \
+OUTPUT=$QUERY_SORTED_BAM_FILE \
+SORT_ORDER=queryname
 ```
 
 The components of this command are:
@@ -347,7 +350,11 @@ The components of this command are:
 Now we will add the command to our script that allows us to mark and remove duplicates:
 
 ```
-java -jar $PICARD/picard-2.8.0.jar MarkDuplicates INPUT=$QUERY_SORTED_BAM_FILE OUTPUT=$REMOVE_DUPLICATES_BAM_FILE METRICS_FILE=$METRICS_FILE REMOVE_DUPLICATES=true
+java -jar $PICARD/picard-2.8.0.jar MarkDuplicates \
+INPUT=$QUERY_SORTED_BAM_FILE \
+OUTPUT=$REMOVE_DUPLICATES_BAM_FILE \
+METRICS_FILE=$METRICS_FILE \
+REMOVE_DUPLICATES=true
 ```
 
 The componetns of this command are:
@@ -367,7 +374,11 @@ The componetns of this command are:
 For most downstream processes, coordinate-sorted alignment files are required. As a result, we will need to change our alignemnt file from being **query**-sorted to being **coordinate**-sorted and we will once again use the `SortSam` command within `Picard` to accomplish this.
 
 ```
-java -jar $PICARD/picard-2.8.0.jar SortSam INPUT=$REMOVE_DUPLICATES_BAM_FILE OUTPUT=COORDINATE_SORTED_BAM_FILE SORT_ORDER=coordinate CREATE_INDEX=true
+java -jar $PICARD/picard-2.8.0.jar SortSam \
+INPUT=$REMOVE_DUPLICATES_BAM_FILE \
+OUTPUT=COORDINATE_SORTED_BAM_FILE \
+SORT_ORDER=coordinate \
+CREATE_INDEX=true
 ```
 
 The components of this command are:
@@ -405,17 +416,28 @@ COORDINATE_SORTED_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}coordi
 
 module load picard/2.8.0
 
-java -jar $PICARD/picard-2.8.0.jar SortSam INPUT=$SAM_FILE OUTPUT=$QUERY_SORTED_BAM_FILE SORT_ORDER=queryname
+java -jar $PICARD/picard-2.8.0.jar SortSam \
+INPUT=$SAM_FILE \
+OUTPUT=$QUERY_SORTED_BAM_FILE \
+SORT_ORDER=queryname
 
-java -jar $PICARD/picard-2.8.0.jar MarkDuplicates INPUT=$QUERY_SORTED_BAM_FILE OUTPUT=$REMOVE_DUPLICATES_BAM_FILE METRICS_FILE=$METRICS_FILE REMOVE_DUPLICATES=true
+java -jar $PICARD/picard-2.8.0.jar MarkDuplicates \
+INPUT=$QUERY_SORTED_BAM_FILE \
+OUTPUT=$REMOVE_DUPLICATES_BAM_FILE \
+METRICS_FILE=$METRICS_FILE \
+REMOVE_DUPLICATES=true
 
-java -jar $PICARD/picard-2.8.0.jar SortSam INPUT=$REMOVE_DUPLICATES_BAM_FILE OUTPUT=COORDINATE_SORTED_BAM_FILE SORT_ORDER=coordinate CREATE_INDEX=true
+java -jar $PICARD/picard-2.8.0.jar SortSam \
+INPUT=$REMOVE_DUPLICATES_BAM_FILE \
+OUTPUT=COORDINATE_SORTED_BAM_FILE \
+SORT_ORDER=coordinate \
+CREATE_INDEX=true
 ```
 
 <details>
-  <summary>Alignment file processing using <code>Samtools</code></summary>
-<br><details>
-    <summary>BAM/SAM Processing within <code>Samtools</code></summary>
+  <summary>Click here for alignment file processing using <code>Samtools</code></summary>
+<br><ol><li><details>
+    <summary>Click here for setting up a <code>sbatch</code> script BAM/SAM Processing for the <code>Samtools</code> pipeline</summary>
 <br>Below is the pipeline and explanation for how you would carry out the similar SAM/BAM processing steps within <code>Samtools</code>.<br>
 <h2>Setting up <code>sbatch</code> Script</h2>
 First we are going to need to set-up our <code>sbatch</code> submission script with our shebang line, <code>sbatch</code> directives, modules to load and file variables.
@@ -438,10 +460,10 @@ FIXMATE_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}fixmates.bam`
 COORDINATE_SORTED_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}coordinate_sorted.bam`
 FINAL_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}final.bam`<br>
 </pre>
-</details>
+</details></li>
 
-<details>
-    <summary><b>Query</b>-sort SAM file and Convert it to BAM for <code>Samtools</code> Pipeline</summary>
+<li><details>
+    <summary>Click here for <b>Query</b>-sorting a SAM file and converting it to BAM for the <code>Samtools</code> pipeline</summary>
 Similarly to <code>Picard</code>, we are going to need to initally <b>query</b>-sort our alignment. We are also going to be converting the SAM file into a BAM file at this step. Also similarly to <code>Picard</code>, we don't need to specify that our input or output files are BAM or SAM files. <code>Samtools</code> will use the extensions you provide it in your file names as guidance for whether you are providing it a BAM/SAM and whether you want the output to be a BAM/SAM file. Below is the code we will use to <b>query</b>-sort our SAM file and convert it into a BAM file:<br>
     
 <pre>
@@ -466,9 +488,10 @@ The components of this line of code are:
 <code>-o $QUERY_SORTED_BAM_FILE</code> This is a <code>bash</code> variable that holds the path to the output file of the <code>samtools sort</code> command.
 
 <code>$SAM_FILE</code> This is a <code>bash</code> variable holding the path to the input SAM file.
-</details>   
-<details>    
-<summary>Fix Mate Information for <code>Samtools</code> Pipeline</summary>
+</details></li>
+
+<li><details>    
+<summary>Click here for fixing mate information for the <code>Samtools</code> pipeline</summary>
 Next, we are going to add more mate-pair information to the alignments including the insert size and mate pair coordinates. It is important to note with this command that <code>samtools</code> relies on positional parameters for assigning the the input and output BAM files. In this case the input BAM file (<code>$QUERY_SORTED_BAM_FILE</code>) needs to come before the output file (<code>$FIXMATE_BAM_FILE</code>):
     
 <pre>
@@ -488,10 +511,10 @@ The parts of this command are:
 <code>$QUERY_SORTED_BAM_FILE</code> Bash variable that holds the path to the input file 
 
 <code>$FIXMATE_BAM_FILE</code> Bash variable that holds the path to the input file
-</details>
+</details></li>
 
-<details>
-<summary><b>Coordinate</b>-sort SAM file and Convert it to BAM for <code>Samtools</code> Pipeline</summary>
+<li><details>
+<summary><b>Click here for coordinate</b>-sorting a BAM file for the <code>Samtools</code> pipeline</summary>
     
 Now that we have added the <code>fixmate</code> information, we need to <b>coordinate</b>-sort the BAM file. We can do that by: 
 
@@ -504,9 +527,10 @@ $FIXMATE_BAM_FILE
 </pre>
 
 We have gone through all of the these paramters already in the previous <code>samtools sort</code> command. The only difference in this command is that we are not using the <code>-n</code> option, which tell <code>samtools</code> to sort by read name. Now, we are sorting by coordinates, the default setting.
-</details>
-<details>
-<summary>Mark and Remove Duplicates for <code>Samtools</code> Pipeline</summary>
+</details></li>
+    
+<li><details>
+<summary>Click here for marking and removing duplicates for the <code>Samtools</code> pipeline</summary>
 
 <pre>
 # Mark and remove duplicates and then index the output file
@@ -531,10 +555,10 @@ ${REMOVED_DUPLICATES_BAM_FILE}##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai
 <code>${REMOVED_DUPLICATES_BAM_FILE}##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai</code>This has two parts:
 <ol><li>The first part (<code>${REMOVED_DUPLICATES_BAM_FILE}</code>) is our BAM output file with the duplicates removed from it</li>
 <li>The second part (<code>##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai</code>) is a shortcut to creating a <code>.bai</code> index of the BAM file. If we use the <code>--write-index</code> option without this second part, it will create a <code>.csi</code> index file. <code>.bai</code> index files are a specific type of <code>.csi</code> files, so we need to specify it with the second part of this command to ensure that a <code>.bai</code> index file is created rather than a <code>.csi</code> index file.</li></ol>
-</details>
+</details></li>
 
-<details>
-<summary>Final BAM/SAM processing for <code>Samtools</code> Pipeline</summary>
+<li><details>
+<summary>Click here for the final <code>sbatch</code> script to do the BAM/SAM processing for the <code>Samtools</code> pipeline</summary>
 
 The final script should look like:
     
@@ -580,7 +604,7 @@ samtools markdup \
 $COORDINATE_SORTED_BAM_FILE \
 ${REMOVED_DUPLICATES_BAM_FILE}##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai<br>
 </pre>
-</details>
+</details></li>
 </details>
 
 
