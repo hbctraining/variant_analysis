@@ -716,9 +716,9 @@ INPUT=$BAM_FILE
     
 The components of this command are:
     
-    - `java -jar $PICARD/picard-2.8.0.jar BuildBamIndex` This calls the `BuildBamIndex` tools within `Picard`
+- `java -jar $PICARD/picard-2.8.0.jar BuildBamIndex` This calls the `BuildBamIndex` tools within `Picard`
     
-    - `INPUT=$BAM_FILE` This is the BAM file that you wish to index. 
+- `INPUT=$BAM_FILE` This is the BAM file that you wish to index. 
 
 > NOTE: BAM indexes can only be made from **coordinate**-sorted BAM files.    
 
