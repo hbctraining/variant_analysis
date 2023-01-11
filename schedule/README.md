@@ -29,7 +29,7 @@ I. Please **study the contents** and **work through all the code** within the fo
              - <br><br>
         </details>
 
-  3. [Alignment File Processing ](../lessons/sequence_alignment_theory.md)
+  3. [Alignment File Processing ](../lessons/alignment_file_processing.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>This lesson will cover:<br>
