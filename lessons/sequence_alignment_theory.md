@@ -529,9 +529,12 @@ CREATE_INDEX=true
 
 <details>
   <summary>Click here for alignment file processing using <code>Samtools</code></summary>
+<br><code>Samtools</code> is another popular tools used for processing BAM/SAM files. The output from <code>Samtools</code> compared to <code>Picard</code> is laregly the same. Below is the pipeline and explanation for how you would carry out the similar SAM/BAM processing steps within <code>Samtools</code>.<br>
+<p align="center">
+<img src="../img/Samtools_pipeline.png" width="800">
+</p>
 <br><ol><li><details>
     <summary>Click here for setting up a <code>sbatch</code> script BAM/SAM Processing for the <code>Samtools</code> pipeline</summary>
-<br>Below is the pipeline and explanation for how you would carry out the similar SAM/BAM processing steps within <code>Samtools</code>.<br>
 <h2>Setting up <code>sbatch</code> Script</h2>
 First we are going to need to set-up our <code>sbatch</code> submission script with our shebang line, <code>sbatch</code> directives, modules to load and file variables.
 <pre>
@@ -703,24 +706,25 @@ ${REMOVED_DUPLICATES_BAM_FILE}##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai<br>
 </details>
 
 
-## Indexing a `BAM` File
+<details>
+<summary>Click here for information on indexing a <code>BAM</code> file</summary>
 
-Many software packages want an index of your BAM file in order to facilitate fast look-ups of a BAM file. While not all software packages that use a BAM file will require this, many will and thus it is a good practice to index your BAM file while processing it. In our previous line of `Picard` command, we provided it with the `CREATE_INDEX=true` option, so it automatically created an index for us after **coordinate**-sorting our BAM file. If for some reason we needed to create an BAM-index for a **coordinate**-sorted BAM file, we would run a command that looks like this:
+<br>Many software packages want an index of your BAM file in order to facilitate fast look-ups of a BAM file. While not all software packages that use a BAM file will require this, many will and thus it is a good practice to index your BAM file while processing it. In our previous line of <code>Picard</code> command, we provided it with the <code>CREATE_INDEX=true</code> option, so it automatically created an index for us after <b>coordinate</b>-sorting our BAM file. If for some reason we needed to create an BAM-index for a <b>coordinate</b>-sorted BAM file, we would run a command that looks like this:
 
-```
+<pre>
 # SKIP THIS STEP
 # Index the BAM file
 java -jar $PICARD/picard-2.8.0.jar BuildBamIndex \
 INPUT=$BAM_FILE
-```
+</pre>
     
 The components of this command are:
-    
-- `java -jar $PICARD/picard-2.8.0.jar BuildBamIndex` This calls the `BuildBamIndex` tools within `Picard`
-    
-- `INPUT=$BAM_FILE` This is the BAM file that you wish to index. 
 
-> NOTE: BAM indexes can only be made from **coordinate**-sorted BAM files.    
+<ul><li><code>java -jar $PICARD/picard-2.8.0.jar BuildBamIndex</code> This calls the <code>BuildBamIndex</code> tools within <code>Picard</code></li>
+    
+<li><code>INPUT=$BAM_FILE</code> This is the BAM file that you wish to index.</li></ul>
+
+<b>NOTE: BAM indexes can only be made from coordinate-sorted BAM files.</b>    
 
 <details>
 <summary>Click here for BAM-Indexing within <code>Samtools</code></summary>
@@ -741,6 +745,7 @@ The components of this command are:
 <li><code>$BAM_FILE</code> This is a `bash` variable that holds the path to the BAM file that we want to index.</li>
 
 We don't need to provide an output file for <code>samtools index</code>, by default it will generate a new file using the same path and filename as the BAM file, but add `.bai` as the extension to denote that it is a BAM-index file.
+</details>
 </details>
 
 The tool we will be using for variant calling is called `GATK` and it was developed and maintained by the Broad Institute. The Broad Institute also maintains a tool that does many of the functions that `samtools` does and it is called `Picard`. In the dropdown below, we show the command you can use for sorting a SAM file in `Picard`. 
