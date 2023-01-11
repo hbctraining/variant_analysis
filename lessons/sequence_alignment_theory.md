@@ -440,7 +440,13 @@ The components of this command are:
 
 #### Mark and Remove Duplicates
 
-An important step in processing a BAM file is to mark and remove PCR duplicates. These PCR duplicates can introduce artifacts because regions that have preferential PCR amplification could be over-represented. These reads are flagged by having identical mapping locations in the BAM file. Importantly, it is impossible to distinguish between PCR duplicates and identical fragments. However, one can reduce the latter by doing paired-end sequencing and providing appropriate amounts of input material. Now we will add the command to our script that allows us to mark and remove duplicates in `Picard`:
+An important step in processing a BAM file is to mark and remove PCR duplicates. These PCR duplicates can introduce artifacts because regions that have preferential PCR amplification could be over-represented. These reads are flagged by having identical mapping locations in the BAM file. Importantly, it is impossible to distinguish between PCR duplicates and identical fragments. However, one can reduce the latter by doing paired-end sequencing and providing appropriate amounts of input material. 
+
+<p align="center">
+<img src="../img/Duplicate_reads.png" width="800">
+</p>
+
+Now we will add the command to our script that allows us to mark and remove duplicates in `Picard`:
 
 ```
 java -jar $PICARD/picard-2.8.0.jar MarkDuplicates \
