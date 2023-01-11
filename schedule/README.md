@@ -13,7 +13,31 @@
 
 I. Please **study the contents** and **work through all the code** within the following lessons:
 
-  1. [Sequence Read Alignment](../lessons/sequence_alignment_theory.md)
+  1. [File Formats](../lessons/file_formats.md)
+      <details>
+       <summary><i>Click here for a preview of this lesson</i></summary>
+         <br>This lesson will cover:<br>
+             - <br>
+             - <br><br>
+        </details>
+
+  2. [Sequence Read Alignment](../lessons/sequence_alignment_theory.md)
+      <details>
+       <summary><i>Click here for a preview of this lesson</i></summary>
+         <br>This lesson will cover:<br>
+             - <br>
+             - <br><br>
+        </details>
+
+  3. [Alignment File Processing ](../lessons/sequence_alignment_theory.md)
+      <details>
+       <summary><i>Click here for a preview of this lesson</i></summary>
+         <br>This lesson will cover:<br>
+             - <br>
+             - <br><br>
+        </details>
+
+  4. [Alignment File Quality Control](../lessons/alignment_QC.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>This lesson will cover:<br>
@@ -21,21 +45,7 @@ I. Please **study the contents** and **work through all the code** within the fo
              - <br><br>
         </details>
         
-  2. [Alignment File Quality Control](../lessons/alignment_QC.md)
-      <details>
-       <summary><i>Click here for a preview of this lesson</i></summary>
-         <br>This lesson will cover:<br>
-             - <br>
-             - <br><br>
-        </details>
-        
- 3. [File Formats](../lessons/file_formats.md)
-      <details>
-       <summary><i>Click here for a preview of this lesson</i></summary>
-         <br>This lesson will cover:<br>
-             - <br>
-             - <br><br>
-        </details>
+
 
 > **NOTE:** To run through the code above, you will need to be **logged into O2** and **working on a compute node** (i.e. your command prompt should have the word `compute` in it).
 > 1. Log in using `ssh rc_trainingXX@o2.hms.harvard.edu` and enter your password (replace the "XX" in the username with the number you were [assigned in class](https://docs.google.com/spreadsheets/d/1kBlYowhjjHJC9ZovmbBULmbqozKpprM17vZ2wPlhNg0/edit?usp=sharing)). 
