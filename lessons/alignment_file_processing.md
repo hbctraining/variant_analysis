@@ -1,3 +1,9 @@
+# Learning objectives
+
+- Differentiate between query-sorted and coordinate-sorted alignment files
+- Describe and remove duplicatge reads
+- Process a raw SAM file for input into a BAM for GATK
+
 # Alignment file processing with `samtools` and `Picard`
 
 The processing of the alignment files (SAM/BAM files) can be done either with [`samtools`](https://github.com/samtools/samtools) or [`Picard`](https://broadinstitute.github.io/picard/) and they are for the most part interchangable. The arguments for either are below:
