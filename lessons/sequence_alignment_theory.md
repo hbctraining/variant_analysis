@@ -756,6 +756,9 @@ We don't need to provide an output file for <code>samtools index</code>, by defa
 
 The tool we will be using for variant calling is called `GATK` and it was developed and maintained by the Broad Institute. The Broad Institute also maintains a tool that does many of the functions that `samtools` does and it is called `Picard`. In the dropdown below, we show the command you can use for sorting a SAM file in `Picard`. 
 
+## Creating the Tumor SAM/BAM procressing
+    
+    
 ---
 
 
