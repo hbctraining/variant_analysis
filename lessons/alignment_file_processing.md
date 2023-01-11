@@ -434,3 +434,72 @@ The tool we will be using for variant calling is called `GATK` and it was develo
 
 ## Creating the Tumor SAM/BAM procressing
     
+Similarly to the `bwa` script, we will now need use `sed` to create a `sbtach` script that will be used for processing the tumor SAM file into a BAM file that can be used as input to GATK. The `sed` command to do this would be:
+  
+```
+sed 's/normal/tumor/g' picard_alignment_processing_normal.sbatch > picard_alignment_processing_tumor.sbatch  
+```
+
+As a result your tumor `Picard` processing script should look like:
+  
+```
+#!/bin/bash
+# This sbatch script is for processing the alignment output from bwa and preparing it for use in GATK using Picard 
+
+# Assign sbatch directives
+#SBATCH -p priority
+#SBATCH -t 0-02:00:00
+#SBATCH -c 1
+#SBATCH --mem 8G
+#SBATCH -o picard_alignment_processing_tumor_%j.out
+#SBATCH -e picard_alignment_processing_tumor_%j.err
+
+# Assign file paths to variables 
+SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/tumor_GRCh38.p7.sam
+QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
+REMOVE_DUPLICATES_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}remove_duplicates.bam`
+METRICS_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}remove_duplicates_metrics.txt`
+COORDINATE_SORTED_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}coordinate_sorted.bam`
+
+module load picard/2.8.0
+
+java -jar $PICARD/picard-2.8.0.jar SortSam \
+INPUT=$SAM_FILE \
+OUTPUT=$QUERY_SORTED_BAM_FILE \
+SORT_ORDER=queryname
+
+java -jar $PICARD/picard-2.8.0.jar MarkDuplicates \
+INPUT=$QUERY_SORTED_BAM_FILE \
+OUTPUT=$REMOVE_DUPLICATES_BAM_FILE \
+METRICS_FILE=$METRICS_FILE \
+REMOVE_DUPLICATES=true
+
+java -jar $PICARD/picard-2.8.0.jar SortSam \
+INPUT=$REMOVE_DUPLICATES_BAM_FILE \
+OUTPUT=COORDINATE_SORTED_BAM_FILE \
+SORT_ORDER=coordinate \
+CREATE_INDEX=true  
+```  
+
+# Submitting `Picard` processing
+  
+Now we are ready to submit our normal and tumor `Picard` processing scripts to the O2 cluster. However, we might have a problem. If you managed to go quickly into this lesson from the previous lesson, your `bwa` alignment scripts may still be running and your SAM files are not complete yet!
+  
+First, we need to check the status of our `bwa` scripts and we can do this with the command:
+  
+```
+squeue -u $USER
+```
+  
+__*** If you have `bwa` jobs still running,***__ then wait for them to complete (less than 2 hours) before continuing. There are ways to queue jobs together in SLURM using the `--dependency` option in `sbatch`. We will go over this in the automation lesson, but for now just hang tight until your jobs have finished.
+  
+__***If the only job running is your interactive job,***__ then it should be time to start your `Picard` processing scripts. You can go ahead and submit your `sbatch` scripts for `Picard` processing with:
+  
+```
+sbatch picard_alignment_processing_normal.sbatch
+sbatch picard_alignment_processing_tumor.sbatch
+```
+  
+***
+
+*This lesson has been developed by members of the teaching team at the [Harvard Chan Bioinformatics Core (HBC)](http://bioinformatics.sph.harvard.edu/). These are open access materials distributed under the terms of the [Creative Commons Attribution license](https://creativecommons.org/licenses/by/4.0/) (CC BY 4.0), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.*
