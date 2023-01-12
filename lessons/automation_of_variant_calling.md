@@ -65,12 +65,6 @@ Now our `bwa` submission script should look like:
 # This script is the automated versin for aligning sequencing reads against a reference genome using bwa
 
 # Assign sbatch directives
-#SBATCH -p priority
-#SBATCH -t 0-04:00:00
-#SBATCH -c 8
-#SBATCH --mem 16G
-#SBATCH -o bwa_alignment_${1}_%j.out
-#SBATCH -e bwa_alignment_${1}_%j.err
 
 # Load modules
 module load gcc/6.2.0
@@ -128,12 +122,6 @@ Now your `Picard` alignment processing script should look like:
 ```
 #!/bin/bash
 # This sbatch script is for processing the alignment output from bwa and preparing it for use in GATK using Picard 
-
-# Assign sbatch directives
-#SBATCH -p priority
-#SBATCH -t 0-02:00:00
-#SBATCH -c 1
-#SBATCH --mem 8G
 
 # Assign file paths to variables 
 SAM_FILE=$1
@@ -205,12 +193,6 @@ gatk Mutect2 \
 #!/bin/bash
 # This sbatch script is for variant calling with GATK's MuTect2
 
-# Assign sbatch directives
-#SBATCH -p priority
-#SBATCH -t 1-00:00:00
-#SBATCH -c 1
-#SBATCH --mem 16G
-
 module load gatk/4.1.9.0
 
 REFERENCE_SEQUENCE=$1
@@ -272,12 +254,6 @@ vim variant_filtering_automated.sbatch
 #!/bin/bash
 # This sbatch script is for variant filtering 
 
-# Assign sbatch directives
-#SBATCH -p priority
-#SBATCH -t 0-02:00:00
-#SBATCH -c 1
-#SBATCH --mem 8G
-
 module load gatk/4.1.9.0
 module load snpEff/4.3g
 
@@ -334,12 +310,6 @@ vim variant_annotation_automated.sbatch
 ```
 #!/bin/bash
 # This sbatch script is for variant annotation 
-
-# Assign sbatch directives
-#SBATCH -p priority
-#SBATCH -t 0-02:00:00
-#SBATCH -c 1
-#SBATCH --mem 8G
 
 module load snpEff/4.3g
 
@@ -448,13 +418,13 @@ for SAMPLE in $FASTQ_DIRECTORY*_1.fq.gz; do
   # Assign a path and name for the alignments
   SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.sam
   # Submit the bwa sbatch script and save the output to a variable named $BWA_JOB_SUBMISSION
-  BWA_JOB_SUBMISSION=$(sbatch -o bwa_alignment_${SAMPLE_NAME}_%j.out -e bwa_alignment_${SAMPLE_NAME}_%j.err bwa_alignment_automated.sbatch $REFERENCE_SEQUENCE $SAMPLE $SAM_FILE)
+  BWA_JOB_SUBMISSION=$(sbatch -p priority -t 0-04:00:00 -c 8 --mem 16G -o bwa_alignment_${SAMPLE_NAME}_%j.out -e bwa_alignment_${SAMPLE_NAME}_%j.err bwa_alignment_automated.sbatch $REFERENCE_SEQUENCE $SAMPLE $SAM_FILE)
   # Parse out the job ID from outout from the bwa submission
   BWA_JOB_ID=`echo $BWA_JOB_SUBMISSION | cut -d ' ' -f 4`
   # Print to standard output the job that has been submitted
   echo -e "bwa job for sample $SAMPLE_NAME submitted as job ID $BWA_JOB_ID"
   # Submit the picard sbatch script and save the output to a variable named $PICARD_JOB_SUBMISSION
-  PICARD_JOB_SUBMISSION=$(sbatch -o picard_alignment_processing_${SAMPLE_NAME}_%j.out -e picard_alignment_processing_${SAMPLE_NAME}_%j.err --dependency=afterok:$BWA_JOB_ID picard_alignment_processing_automated.sbatch $SAM_FILE)
+  PICARD_JOB_SUBMISSION=$(sbatch -p priority -t 0-02:00:00 -c 1 --mem 8G -o picard_alignment_processing_${SAMPLE_NAME}_%j.out -e picard_alignment_processing_${SAMPLE_NAME}_%j.err --dependency=afterok:$BWA_JOB_ID picard_alignment_processing_automated.sbatch $SAM_FILE)
   # Parse out the job ID from output from the Picard submission
   PICARD_JOB_ID=`echo $PICARD_JOB_SUBMISSION | cut -d ' ' -f 4`
   # Print to standard output the job that has been submitted
@@ -483,7 +453,7 @@ TUMOR_BAM_MUTECT_INPUT=${COORDINATE_SORTED_BAM_ARRAY[$TUMOR_ARRAY_POSITION]}
 MUTECT2_VCF_OUTPUT=`echo -e "/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2${SAMPLE_NAME_STRING}_${REFERENCE_SEQUENCE_NAME}-raw.vcf.gz"`
 
 # Submit the Mutect2 sbatch script and save the output to a variable named $MUTECT2_JOB_SUBMISSION 
-MUTECT2_JOB_SUBMISSION=$(sbatch -o mutect2_variant_calling${SAMPLE_NAME_STRING}_%j.out -e mutect2_variant_calling${SAMPLE_NAME_STRING}_%j.err --dependency=afterok${DEPENDENT_PICARD_JOB_IDS} mutect2_automated.sbatch  $REFERENCE_SEQUENCE $NORMAL_BAM_MUTECT_INPUT $NORMAL_SAMPLE $TUMOR_BAM_MUTECT_INPUT $TUMOR_SAMPLE $MUTECT2_VCF_OUTPUT)
+MUTECT2_JOB_SUBMISSION=$(sbatch -p priority -t 1-00:00:00 -c 1 --mem 16G -o mutect2_variant_calling${SAMPLE_NAME_STRING}_%j.out -e mutect2_variant_calling${SAMPLE_NAME_STRING}_%j.err --dependency=afterok${DEPENDENT_PICARD_JOB_IDS} mutect2_automated.sbatch  $REFERENCE_SEQUENCE $NORMAL_BAM_MUTECT_INPUT $NORMAL_SAMPLE $TUMOR_BAM_MUTECT_INPUT $TUMOR_SAMPLE $MUTECT2_VCF_OUTPUT)
 
 # Parse out the job ID from output from the Mutect2 submission
 MUTECT2_JOB_ID=`echo $MUTECT2_JOB_SUBMISSION | cut -d ' ' -f 4`
@@ -494,7 +464,7 @@ echo -e "Mutect2 job submitted as job ID $MUTECT2_JOB_ID"
 MUTECT2_VCF_OUTPUT_FILTERED=`echo -e "${MUTECT2_VCF_OUTPUT%raw.vcf.gz}filt.vcf.gz"`
 
 # Submit the variant filtering sbatch script and save the output to a variable named $VARIANT_FILTERING_JOB_SUBMISSION
-VARIANT_FILTERING_JOB_SUBMISSION=$(sbatch -o variant_filtering${SAMPLE_NAME_STRING}_%j.out -e variant_filtering${SAMPLE_NAME_STRING}_%j.err --dependency=afterok:$MUTECT2_JOB_ID variant_filtering_automated.sbatch $SAMPLE_NAME_STRING $REFERENCE_SEQUENCE $MUTECT2_VCF_OUTPUT $MUTECT2_VCF_OUTPUT_FILTERED)
+VARIANT_FILTERING_JOB_SUBMISSION=$(sbatch -p priority -t 0-02:00:00 -c 1 --mem 8G -o variant_filtering${SAMPLE_NAME_STRING}_%j.out -e variant_filtering${SAMPLE_NAME_STRING}_%j.err --dependency=afterok:$MUTECT2_JOB_ID variant_filtering_automated.sbatch $SAMPLE_NAME_STRING $REFERENCE_SEQUENCE $MUTECT2_VCF_OUTPUT $MUTECT2_VCF_OUTPUT_FILTERED)
 
 # Parse out the job ID from output from the variant filtering submission
 VARIANT_FILTERING_JOB_ID=`echo $VARIANT_FILTERING_JOB_SUBMISSION | cut -d ' ' -f 4`
@@ -507,7 +477,7 @@ HTML_REPORT=`echo -e "${REPORTS_DIRECTORY}annotation${SAMPLE_NAME_STRING}_${REFE
 ANNOTATED_VCF_FILE=`echo -e "${MUTECT2_VCF_OUTPUT_FILTERED%vcf.gz}snpeff.vcf"`
 
 # Submit the variant annotation sbatch script
-VARIANT_ANNOTATION_JOB_SUBMISSION=$(sbatch -o variant_annotation${SAMPLE_NAME_STRING}_%j.out -e variant_annotation${SAMPLE_NAME_STRING}_%j.err --dependency=afterok:$VARIANT_FILTERING_JOB_ID variant_annotation_automated.sbatch $CSV_STATS $HTML_REPORT $SNPEFF_DATABASE $MUTECT2_VCF_OUTPUT_FILTERED $ANNOTATED_VCF_FILE)
+VARIANT_ANNOTATION_JOB_SUBMISSION=$(sbatch -p priority -t 0-02:00:00 -c 1 --mem 8G -o variant_annotation${SAMPLE_NAME_STRING}_%j.out -e variant_annotation${SAMPLE_NAME_STRING}_%j.err --dependency=afterok:$VARIANT_FILTERING_JOB_ID variant_annotation_automated.sbatch $CSV_STATS $HTML_REPORT $SNPEFF_DATABASE $MUTECT2_VCF_OUTPUT_FILTERED $ANNOTATED_VCF_FILE)
 
 # Parse out the job ID from output from the variant annotation submission
 VARIANT_ANNOTATION_JOB_ID=`echo $VARIANT_ANNOTATION_JOB_SUBMISSION | cut -d ' ' -f 4`
