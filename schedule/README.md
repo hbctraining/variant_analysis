@@ -79,7 +79,7 @@ II. **Complete the exercises**:
 
 I. Please **study the contents** and **work through all the code** within the following lessons:
 
-1. [Placeholder]()
+1. [Automation of Variant Calling Pipeline](../lessons/automation_of_variant_calling.md)
 
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
