@@ -65,9 +65,9 @@ Next, let's define some variables that we will be using:
 # Assign file paths to variables 
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/normal_GRCh38.p7.sam
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
-REMOVE_DUPLICATES_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}remove_duplicates.bam`
-METRICS_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}remove_duplicates_metrics.txt`
-COORDINATE_SORTED_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}coordinate_sorted.bam`
+REMOVE_DUPLICATES_BAM_FILE=`echo ${SAM_FILE%sam}remove_duplicates.bam`
+METRICS_FILE=`echo ${SAM_FILE%sam}remove_duplicates_metrics.txt`
+COORDINATE_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}coordinate_sorted.bam`
 ```
 
 Load the `Picard` module: 
@@ -185,9 +185,9 @@ Your final `sbatch` script for `Picard` should look like:
 # Assign file paths to variables 
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/normal_GRCh38.p7.sam
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
-REMOVE_DUPLICATES_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}remove_duplicates.bam`
-METRICS_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}remove_duplicates_metrics.txt`
-COORDINATE_SORTED_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}coordinate_sorted.bam`
+REMOVE_DUPLICATES_BAM_FILE=`echo ${SAM_FILE%sam}remove_duplicates.bam`
+METRICS_FILE=`echo ${SAM_FILE%sam}remove_duplicates_metrics.txt`
+COORDINATE_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}coordinate_sorted.bam`
 
 module load picard/2.8.0
 
@@ -457,9 +457,9 @@ As a result your tumor `Picard` processing script should look like:
 # Assign file paths to variables 
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/tumor_GRCh38.p7.sam
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
-REMOVE_DUPLICATES_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}remove_duplicates.bam`
-METRICS_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}remove_duplicates_metrics.txt`
-COORDINATE_SORTED_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}coordinate_sorted.bam`
+REMOVE_DUPLICATES_BAM_FILE=`echo ${SAM_FILE%sam}remove_duplicates.bam`
+METRICS_FILE=`echo ${SAM_FILE%sam}remove_duplicates_metrics.txt`
+COORDINATE_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}coordinate_sorted.bam``
 
 module load picard/2.8.0
 
