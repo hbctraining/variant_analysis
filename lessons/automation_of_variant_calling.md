@@ -529,7 +529,7 @@ HTML_REPORT=`echo -e "${REPORTS_DIRECTORY}annotation${SAMPLE_NAME_STRING}_${REFE
 ANNOTATED_VCF_FILE=`echo -e "${MUTECT2_VCF_OUTPUT_FILTERED%vcf.gz}snpeff.vcf"`
 
 # Submit the variant annotation sbatch script
-VARIANT_ANNOTATION_JOB_SUBMISSION=$(sbatch --dependency=afterok:$VARIANT_FILTERING_JOB_ID variant_annotation_automated.sbatch $SAMPLE_NAME_STRING $CSV_STATS $HTML_REPORT $SNPEFF_DATABASE $MUTECT2_VCF_OUTPUT_FILTERED $ANNOTATED_VCF_FILE
+VARIANT_ANNOTATION_JOB_SUBMISSION=$(sbatch --dependency=afterok:$VARIANT_FILTERING_JOB_ID variant_annotation_automated.sbatch $SAMPLE_NAME_STRING $CSV_STATS $HTML_REPORT $SNPEFF_DATABASE $MUTECT2_VCF_OUTPUT_FILTERED $ANNOTATED_VCF_FILE)
 
 # Parse out the job ID from output from the variant annotation submission
 VARIANT_ANNOTATION_JOB_ID=`echo $VARIANT_ANNOTATION_JOB_SUBMISSION | cut -d ' ' -f 4`
