@@ -165,7 +165,7 @@ Now, move inside this newly created directory and create the following directori
 
 ```
 cd variant_calling
-mkdir alignments variant_files
+mkdir alignments vcf_files
 ```
 
 Excellent! Our project space has now been organized and is ready for the analysis to begin!
