@@ -31,9 +31,15 @@ cp bwa_alignment_normal.sbatch bwa_alignment_automated.sbatch
 vim bwa_alignment_automated.sbatch
 ```
 
-In order for us to specify "tumor" or "normal" samples in the standard error and standard output files we will need to pass the sbatch these arguments directly when submit the jobs in the wrapper. Now we need to remove the following lines of the `sbatch` directives:
+In order for us to specify "tumor" or "normal" samples in the standard error and standard output files we will need to pass `sbatch` these arguments directly when submit the jobs in the wrapper. However, SLURM sometimes has issues when some arguments come from the command line and others come from the script. As a result, we are going remove all `sbatch` directives from scripts and rather provide them all in the command-line as part of the wrapper. Therefore, we need to remove the following lines of `sbatch` directives:
 
 ```
+# REMOVE THESE LINES
+# Assign sbatch directives
+#SBATCH -p priority
+#SBATCH -t 0-04:00:00
+#SBATCH -c 8
+#SBATCH --mem 16G
 #SBATCH -o bwa_alignment_normal_%j.out
 #SBATCH -e bwa_alignment_normal_%j.err
 ```
@@ -62,9 +68,7 @@ Now our `bwa` submission script should look like:
 
 ```
 #!/bin/bash
-# This script is the automated versin for aligning sequencing reads against a reference genome using bwa
-
-# Assign sbatch directives
+# This script is the automated version for aligning sequencing reads against a reference genome using bwa
 
 # Load modules
 module load gcc/6.2.0
@@ -99,6 +103,12 @@ vim picard_alignment_processing_automated.sbatch
 Once again, we will remove the `sbatch` directives for standard error and standard output:
 
 ```
+# REMOVE THESE LINES
+# Assign sbatch directives
+#SBATCH -p priority
+#SBATCH -t 0-02:00:00
+#SBATCH -c 1
+#SBATCH --mem 8G
 #SBATCH -o picard_alignment_processing_normal_%j.out
 #SBATCH -e picard_alignment_processing_normal_%j.err
 ```
@@ -189,6 +199,20 @@ gatk Mutect2 \
 -O $VCF_OUTPUT_FILE
 ```
 
+Once again, we need to remove the `sbatch` directives:
+
+```
+# REMOVE THESE LINES
+# Assign sbatch directives
+#SBATCH -p priority
+#SBATCH -t 1-00:00:00
+#SBATCH -c 1
+#SBATCH --mem 16G
+#SBATCH -o mutect2_variant_calling_%j.out
+#SBATCH -e mutect2_variant_calling_%j.err
+```
+
+
 ```
 #!/bin/bash
 # This sbatch script is for variant calling with GATK's MuTect2
@@ -250,6 +274,20 @@ cp variant_filtering.sbatch variant_filtering_automated.sbatch
 vim variant_filtering_automated.sbatch 
 ```
 
+Once again we need to remove the `sbatch` directives:
+
+```
+# REMOVE THESE LINES
+# Assign sbatch directives
+#SBATCH -p priority
+#SBATCH -t 0-02:00:00
+#SBATCH -c 1
+#SBATCH --mem 8G
+#SBATCH -o variant_filtering_%j.out
+#SBATCH -e variant_filtering_%j.err
+```
+
+
 ```
 #!/bin/bash
 # This sbatch script is for variant filtering 
@@ -305,6 +343,19 @@ $FILTERED_VCF_FILE > $ANNOTATED_VCF_FILE
 ```
 cp variant_annotation.sbatch variant_annotation_automated.sbatch
 vim variant_annotation_automated.sbatch
+```
+
+For the last time we will need to remove the `sbatch` directives:
+
+```
+# REMOVE THESE LINES
+# Assign sbatch directives
+#SBATCH -p priority
+#SBATCH -t 0-02:00:00
+#SBATCH -c 1
+#SBATCH --mem 8G
+#SBATCH -o variant_annotation_%j.out
+#SBATCH -e variant_annotation_%j.err
 ```
 
 ```
