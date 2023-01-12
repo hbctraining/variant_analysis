@@ -48,17 +48,31 @@ This course is going to focus on analyzing somatic SNPs, so we are going to use 
 When using `MuTect2` will first re-evaluate the alignments of the normal and tumor samples and create "active regions" that appear to need a local re-assembly. During this process of local re-assembly the tumor sample's reads are interrogated to a higher degree for their quality than the normal samples and a *de Bruijn* graph of the region is created with an assembler. From here, most likely haplotypes are assembled and variants are called from these haplotypes. In order to call variants using Mutect2:
 
 ```
+#!/bin/bash
+# This sbatch script is for variant calling with GATK's MuTect2
+
+# Assign sbatch directives
+#SBATCH -p priority
+#SBATCH -t 2-00:00:00
+#SBATCH -c 1
+#SBATCH --mem 8G
+#SBATCH -o mutect2_variant_calling_%j.out
+#SBATCH -e mutect2_variant_calling_%j.err
+
 module load gatk/4.1.9.0
 
+REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
+REFERENCE_DICTIONARY=`echo ${REFERENCE_SEQUENCE%fa}dict`
+
 gatk Mutect2 \
---sequence-dictionary /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.dict \
--R /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa \
--I alignments/tumor_sorted_GRCh38.p7.bam \
---tumor-sample syn3-tumor \
--I alignments/normal_sorted_GRCh38.p7.bam \
+--sequence-dictionary $REFERENCE_DICTIONARY \
+-R $REFERENCE_SEQUENCE \
+-I /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_tumor_GRCh38.p7.coordinate_sorted.bam \
 --normal-sample syn3-normal \
+-I /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam \
+--tumor-sample syn3-tumor \
 --annotation ClippingRankSumTest --annotation DepthPerSampleHC --annotation MappingQualityRankSumTest --annotation MappingQualityZero --annotation QualByDepth --annotation ReadPosRankSumTest --annotation RMSMappingQuality --annotation FisherStrand --annotation MappingQuality --annotation DepthPerAlleleBySample --annotation Coverage \
--O vcf_files/syn3_GRCh38.p7-raw.vcf.gz
+-O /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/syn3_GRCh38.p7-raw.vcf.gz
 ```
 
 ## Tumor-only Mode
