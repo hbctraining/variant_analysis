@@ -267,13 +267,120 @@ gatk Mutect2 \
 module load gatk/4.1.9.0
 module load snpEff/4.3g
 
-gatk FilterMutectCalls \
---reference /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa \
---variant vcf_files/syn3_GRCh38.p7-raw.vcf.gz \
---output vcf_files/syn3_GRCh38.p7-raw-filt.vcf.gz
+REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
+RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/syn3_GRCh38.p7-raw.vcf.gz
+MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}filt.vcf.gz
+LCR_FILE=/n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed
+LCR_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}LCR-filt.vcf
 
-java -jar $SNPEFF/SnpSift.jar intervals -x -i vcf_files/syn3_GRCh38.p7-raw-filt.vcf.gz LCR-hs38.bed > vcf_files/syn3_GRCh38.p7-LCR-filt.vcf
+gatk FilterMutectCalls \
+--reference  $REFERENCE_SEQUENCE \
+--variant $RAW_VCF_FILE \
+--output $MUTECT_FILTERED_VCF
+
+java -jar $SNPEFF/SnpSift.jar intervals -x -i $MUTECT_FILTERED_VCF $LCR_FILE > $LCR_FILTERED_VCF
 ```
+
+```
+cp variant_filtering.sbatch variant_filtering_automated.sbatch 
+vim variant_filtering_automated.sbatch 
+```
+
+```
+#!/bin/bash
+# This sbatch script is for variant filtering 
+
+# Assign sbatch directives
+#SBATCH -p priority
+#SBATCH -t 0-02:00:00
+#SBATCH -c 1
+#SBATCH --mem 8G
+#SBATCH -o variant_filtering${1}_%j.out
+#SBATCH -e variant_filtering${1}_%j.err
+
+module load gatk/4.1.9.0
+module load snpEff/4.3g
+
+REFERENCE_SEQUENCE=$2
+RAW_VCF_FILE=$3
+MUTECT_FILTERED_VCF=${3%raw.vcf.gz}filt.vcf.gz
+LCR_FILE=$4
+LCR_FILTERED_VCF=${3%raw.vcf.gz}LCR-filt.vcf
+
+gatk FilterMutectCalls \
+--reference $REFERENCE_SEQUENCE \
+--variant $RAW_VCF_FILE \
+--output $MUTECT_FILTERED_VCF
+
+java -jar $SNPEFF/SnpSift.jar intervals -x -i $MUTECT_FILTERED_VCF $LCR_FILE > $LCR_FILTERED_VCF
+```
+
+#### Variant Annotation
+
+```
+#!/bin/bash
+# This sbatch script is for variant annotation 
+
+# Assign sbatch directives
+#SBATCH -p priority
+#SBATCH -t 0-02:00:00
+#SBATCH -c 1
+#SBATCH --mem 8G
+#SBATCH -o variant_annotation_%j.out
+#SBATCH -e variant_annotation_%j.err
+
+module load snpEff/4.3g
+
+CSV_STATS=/home/$USER/variant_calling/reports/syn3_GRCh38.p7-effects-stats.csv
+HTML_REPORT=/home/$USER/variant_calling/reports/syn3_GRCh38.p7-effects-stats.html
+REFERENCE_DATABASE=GRCh38.p7.RefSeq
+FILTERED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/syn3_GRCh38.p7-LCR-filt.vcf
+ANNOTATED_VCF_FILE=${FILTERED_VCF_FILE%vcf}snpeff.vcf
+
+java -jar $SNPEFF/snpEff.jar  eff \
+-dataDir /n/groups/shared_databases/snpEff.data/ \
+-cancer \
+-noLog \
+-csvStats $CSV_STATS\
+-s  $HTML_REPORT \
+$REFERENCE_DATABASE \
+$FILTERED_VCF_FILE > $ANNOTATED_VCF_FILE
+```
+```
+cp variant_annotation.sbatch variant_annotation_automated.sbatch
+vim variant_annotation_automated.sbatch
+```
+
+```
+#!/bin/bash
+# This sbatch script is for variant annotation 
+
+# Assign sbatch directives
+#SBATCH -p priority
+#SBATCH -t 0-02:00:00
+#SBATCH -c 1
+#SBATCH --mem 8G
+#SBATCH -o variant_annotation${1}_%j.out
+#SBATCH -e variant_annotation${1}_%j.err
+
+module load snpEff/4.3g
+
+CSV_STATS=$2
+HTML_REPORT=$3
+REFERENCE_DATABASE=$4
+FILTERED_VCF_FILE=$5
+ANNOTATED_VCF_FILE=$6
+
+java -jar $SNPEFF/snpEff.jar  eff \
+-dataDir /n/groups/shared_databases/snpEff.data/ \
+-cancer \
+-noLog \
+-csvStats $CSV_STATS\
+-s  $HTML_REPORT \
+$REFERENCE_DATABASE \
+$FILTERED_VCF_FILE > $ANNOTATED_VCF_FILE
+```
+
 
 ### Developing a Wrapper Script
 
@@ -343,6 +450,8 @@ FASTQ_DIRECTORY=/home/$USER/variant_calling/raw_fastq/
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
 NORMAL_SAMPLE=syn3_normal
 TUMOR_SAMPLE=syn3_tumor
+LCR_FILE=/n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed
+REPORTS_DIRECTORY=/home/$USER/variant_calling/reports/
 
 SAMPLE_NAME_ARRAY=()
 PICARD_JOB_ID_ARRAY=()
@@ -369,168 +478,24 @@ DEPENDENT_PICARD_JOB_IDS=`for i in ${PICARD_JOB_ID_ARRAY[@]}; do  echo -ne ":$i"
 NORMAL_ARRAY_POSITION=`for SAMPLE_POSITION in {0..1}; do if [[ "${SAMPLE_NAME_ARRAY[$SAMPLE_POSITION]}" == "$NORMAL_SAMPLE" ]];then echo $SAMPLE_POSITION; fi; done`
 TUMOR_ARRAY_POSITION=`for SAMPLE_POSITION in {0..1}; do if [[ "${SAMPLE_NAME_ARRAY[$SAMPLE_POSITION]}" == "$TUMOR_SAMPLE" ]];then echo $SAMPLE_POSITION; fi; done`
 
-MUTECT2_SUBMISSION=$(echo -e "sbatch --dependency=afterok${DEPENDENT_PICARD_JOB_IDS} mutect2_automated.sbatch $SAMPLE_NAME_STRING $REFERENCE_SEQUENCE ${COORDINATE_SORTED_BAM_ARRAY[$NORMAL_ARRAY_POSITION]} ${SAMPLE_NAME_ARRAY[$NORMAL_ARRAY_POSITION]} ${COORDINATE_SORTED_BAM_ARRAY[$TUMOR_ARRAY_POSITION]} ${SAMPLE_NAME_ARRAY[$TUMOR_ARRAY_POSITION]} mutect2${SAMPLE_NAME_STRING}_${REFERENCE_SEQUENCE_NAME}-raw.vcf.gz")
+NORMAL_BAM_MUTECT_INPUT=${COORDINATE_SORTED_BAM_ARRAY[$NORMAL_ARRAY_POSITION]}
+TUMOR_BAM_MUTECT_INPUT=${COORDINATE_SORTED_BAM_ARRAY[$TUMOR_ARRAY_POSITION]}
+MUTECT2_VCF_OUTPUT=`echo -e "/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2${SAMPLE_NAME_STRING}_${REFERENCE_SEQUENCE_NAME}-raw.vcf.gz"`
 
+MUTECT2_SUBMISSION=$(echo -e "sbatch --dependency=afterok${DEPENDENT_PICARD_JOB_IDS} mutect2_automated.sbatch $SAMPLE_NAME_STRING $REFERENCE_SEQUENCE $NORMAL_BAM_MUTECT_INPUT $NORMAL_SAMPLE $TUMOR_BAM_MUTECT_INPUT $TUMOR_SAMPLE $MUTECT2_VCF_OUTPUT")
 
+MUTECT2_JOB_ID=`echo $MUTECT2_JOB_SUBMISSION | cut -d ' ' -f 4`
+MUTECT2_VCF_OUTPUT_FILTERED=`echo -e "${MUTECT2_VCF_OUTPUT%raw.vcf.gz}filt.vcf.gz"`
 
+VARIANT_FILTERING_JOB_SUBMISSION=$(echo -e "sbatch --dependency=afterok:$MUTECT2_JOB_ID variant_filtering_automated.sbatch $SAMPLE_NAME_STRING $REFERENCE_SEQUENCE $MUTECT2_VCF_OUTPUT $MUTECT2_VCF_OUTPUT_FILTERED")
+
+VARIANT_FILTERING_JOB_ID=`echo $VARIANT_FILTERING_JOB_SUBMISSION | cut -d ' ' -f 4`
+CSV_STATS=`echo -e "${REPORTS_DIRECTORY}annotation${SAMPLE_NAME_STRING}_${REFERENCE_SEQUENCE_NAME}-effects-stats.csv"`
+HTML_REPORT=`echo -e "${REPORTS_DIRECTORY}annotation${SAMPLE_NAME_STRING}_${REFERENCE_SEQUENCE_NAME}-effects-stats.html"`
+REFERENCE_DATABASE=`echo -e "${REFERENCE_SEQUENCE_NAME}.RefSeq"`
+ANNOTATED_VCF_FILE=`echo -e "${MUTECT2_VCF_OUTPUT_FILTERED%vcf.gz}snpeff.vcf"`
+
+VARIANT_ANNOTATION_JOB_SUBMISSION=$(echo -e "sbatch --dependency=afterok:$VARIANT_FILTERING_JOB_ID variant_annotation_automated.sbatch $SAMPLE_NAME_STRING $CSV_STATS $HTML_REPORT $REFERENCE_DATABASE $MUTECT2_VCF_OUTPUT_FILTERED $ANNOTATED_VCF_FILE")
 ```
 
 
-
----
-
-## Creating many `sbatch` scripts
-
-***YOU DO NOT NEED TO RUN THIS FOR THE WORKSHOP!***
-
-The example we have given above works fine for our limited example. However, you may encounter issues if you have:
-
-- Multiple read groups per sample
-- Many samples
-
-In the former case, you will need to manually go through each sample and assign it a unique read group ID, which will be error-prone and cumbersome. In the latter case, it could be time-consuming, tedious and also error-prone. As a result, we have created a script below (alignment_and_processing_script_generator.sh) that will create an `sbatch` script for each read group that you provide it with in a tab-delimited text file. The aim of this is to provide you with a reproducible set of `sbatch` scripts that will carry out your alignment and BAM file processing in parallel. ***ONCE AGAIN, YOU DO NOT NEED TO RUN THIS FOR THE WORKSHOP!***
-
-```
-#!/bin/bash                                                                                                                                    
-# This is a script that will write your bwa alignment and samtools processing steps                                                            
-
-#######                                                                                                                                        
-
-# EDIT THESE THREE VARIABLES                                                                                                                   
-REFERENCE_SEQUENCE=/PATH/TO/YOUR/reference_sequence.fa
-METADATA_FILE=/PATH/TO/YOUR/metadata_file.txt
-ALIGNMENT_DIRECTORY=/PATH/TO/YOUR/alignments/
-
-#######                                                                                                                                        
-
-# Retrieve column number for various metadata from the metadata file                                                                           
-SAMPLE_COLUMN=`awk 'NR==1{for (i=1; i<=NF; i++) { if ($i == "sample") { print i } }}' $METADATA_FILE`
-FASTQ_FILE_COLUMN=`awk  'NR==1{for (i=1; i<=NF; i++) { if ($i == "fastq_1_file") { print i } }}' $METADATA_FILE`
-RGID_COLUMN=`awk  'NR==1{for (i=1; i<=NF; i++) { if ($i == "RGID") { print i } }}' $METADATA_FILE`
-RGPL_COLUMN=`awk  'NR==1{for (i=1; i<=NF; i++) { if ($i == "RGPL") { print i } }}' $METADATA_FILE`
-RGPU_COLUMN=`awk  'NR==1{for (i=1; i<=NF; i++) { if ($i == "RGPU") { print i } }}' $METADATA_FILE`
-RGSM_COLUMN=`awk  'NR==1{for (i=1; i<=NF; i++) { if ($i == "RGSM") { print i } }}' $METADATA_FILE`
-
-# Set header boolean                                                                                                                           
-HEADER=TRUE
-
-# Read in each line of the metadata file                                                                                                       
-while read -r line; do
-    # If the line is the header, then we are going set out header boolean to FALSE and skip this line                                          
-    if [[ $HEADER = "TRUE" ]]; then
-        HEADER=FALSE
-        continue
-    fi
-    # Retrieve data from each column in the metadata file and set it equal to variables                                                        
-    sample_name=`echo $line | awk -v sample_column=$SAMPLE_COLUMN '{ print $sample_column }'`
-    sample_file_1=`echo $line | awk -v fastq_file_column=$FASTQ_FILE_COLUMN '{ print $fastq_file_column }'`
-    RGID=`echo $line | awk -v rgid_column=$RGID_COLUMN '{ print $rgid_column }'`
-    RGPL=`echo $line | awk -v rgpl_column=$RGPL_COLUMN '{ print $rgpl_column }'`
-    RGPU=`echo $line | awk -v rgpu_column=$RGPU_COLUMN '{ print $rgpu_column }'`
-    RGSM=`echo $line | awk -v rgsm_column=$RGSM_COLUMN '{ print $rgsm_column }'`
-    # Create a variable to hold the sbatch file                                                                                                
-    SBATCH_FILE=${sample_name}.alignment_processing.sbatch
-
-    # Write the shebang line and sbatch directives                                                                                             
-    echo -e "#!/bin/bash\n" > $SBATCH_FILE
-    echo -e "#SBATCH -p short" >> $SBATCH_FILE
-    echo -e "#SBATCH -t 0-04:00:00" >> $SBATCH_FILE
-    echo -e "#SBATCH -c 8" >> $SBATCH_FILE
-    echo -e "#SBATCH --mem 16G" >> $SBATCH_FILE
-    echo -e "#SBATCH -o alignment_and_processing_${sample_name}_%j.out" >> $SBATCH_FILE
-    echo -e "#SBATCH -e alignment_and_processing_${sample_name}_%j.err\n" >> $SBATCH_FILE
-
-    # Write the modules that need to be loaded                                                                                                 
-    echo -e "module load gcc/6.2.0" >> $SBATCH_FILE
-    echo -e "module load bwa/0.7.17" >> $SBATCH_FILE
-    echo -e "module load samtools/1.15.1\n" >> $SBATCH_FILE
-    
-    # Assign more variables that we will use that are derived from variables that we've already assigned                                       
-    LEFT_READS=$sample_file_1
-    RIGHT_READS=`echo ${sample_file_1%1.fq.gz}2.fq.gz`
-    SAM_FILE=${ALIGNMENT_DIRECTORY}${sample_name}.sam
-    BAM_FILE=`echo ${ALIGNMENT_DIRECTORY}${sample_name}.bam`
-    REMOVED_DUPLICATES_BAM_FILE=`echo ${ALIGNMENT_DIRECTORY}${sample_name}.removed_duplicates.bam`
-
-    # Write the bwa alignment command                                                                                                          
-    echo -e "bwa mem \\" >> $SBATCH_FILE
-    echo -e "\t-M \\" >> $SBATCH_FILE
-    echo -e "\t-t 8 \\" >> $SBATCH_FILE
-    echo -e "\t-R '@RG\tID:$RGID\tPL:$RGPL\tPU:$RGPU\tSM:$RGSM' \\" >> $SBATCH_FILE
-    echo -e "\t$REFERENCE_SEQUENCE \\" >> $SBATCH_FILE
-    echo -e "\t$LEFT_READS \\" >> $SBATCH_FILE
-    echo -e "\t$RIGHT_READS \\" >> $SBATCH_FILE
-    echo -e "\t-o $SAM_FILE\\n" >> $SBATCH_FILE
-    
-    # Write the samtools sort command                                                                                                          
-    echo -e "samtools sort \\" >> $SBATCH_FILE
-    echo -e "\t-@ 8 \\" >> $SBATCH_FILE
-    echo -e "\t-O bam \\" >> $SBATCH_FILE
-    echo -e "\t-o $BAM_FILE \\" >> $SBATCH_FILE
-    echo -e "\t$SAM_FILE\\n" >> $SBATCH_FILE
-
-    # Write the samtools markdup command                                                                                                       
-    echo -e "samtools markdup \\" >> $SBATCH_FILE
-    echo -e "\t-r \\" >> $SBATCH_FILE
-    echo -e "\t--write-index \\" >> $SBATCH_FILE
-    echo -e "\t-@ 8 \\" >> $SBATCH_FILE
-    echo -e "\t$BAM_FILE \\" >> $SBATCH_FILE
-    echo -e "\t$REMOVED_DUPLICATES_BAM_FILE\n" >> $SBATCH_FILE
-done < $METADATA_FILE
-```
-
-The `metadata_file.txt` for our in-class example would look like:
-
-```
-sample	fastq_1_file	RGID	RGPL	RGPU	RGSM
-syn3-normal /home/$USER/variant_calling/raw_data/syn3_normal_1.fq.gz    syn3-normal illumina    syn3-normal syn3-normal
-syn3-tumor  /home/$USER/variant_calling/raw_data/syn3_tumor_1.fq.gz syn3-tumor illumina   syn3-tumor  syn3-tumor
-```
-> NOTE: The order of the columns does not matter.
-
-To run this script you need enter the following command in the directory with the `alignment_and_processing_script_generator.sh` script:
-
-```
-sh alignment_and_processing_script_generator.sh
-```
-
-We won't exhaustively go through each line of this script as most of it should be readable to you. However, we will briefly discuss a  few lines:
-
-1. There are several lines like this one: 
-
-```
-SAMPLE_COLUMN=`awk 'NR==1{for (i=1; i<=NF; i++) { if ($i == "sample") { print i } }}' $METADATA_FILE`
-```
-
-This is an `awk` command that is looping through every element in the header line and finding the one that matches a particular pattern (in this case, "sample"). When it finds that match it saves the column number to a variable (in this case, "SAMPLE_COLUMN"). The reason we do this way is that it allows there be more flexible in the order of the columns. 
-
-2. The `while` loop 
- 
-```
-while read -r line; do
-...
-done < $METADATA_FILE
-```
-
-This is called a `while` loop and it is a great way to read in lines from a file. Essentially, we are reading in data line-by-line from the file attached to the variable `METADATA_FILE` *while* there are still lines to read in. Each line is assigned to the variable `line`. Once there are no more lines to read in, the loop stops.
-
-3. The header boolean and the `if` statement
-
-```
-HEADER=TRUE
-...
-if [[ $HEADER = "TRUE" ]]; then
-    HEADER=FALSE
-    continue
-fi
-```
-
-We are setting a variable `HEADER` equal to `TRUE` outside of the loop, so that the first time it goes through the loop this conditional statement will return true and it will change the `HEADER` variable to `FALSE` and ignore the rest of the loop for this line of input.
-
-4. Extracting information from a column
-
-```
-sample_name=`echo $line | awk -v sample_column=$SAMPLE_COLUMN '{ print $sample_column }'`
-```
-
-Since, we know which column holds which information (see Explanation 1 above), we are going to provide that column number to awk and ask it to save the content of that column to a variable (in this case, `sample_name`).
