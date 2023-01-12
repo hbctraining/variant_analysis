@@ -31,18 +31,11 @@ cp bwa_alignment_normal.sbatch bwa_alignment_automated.sbatch
 vim bwa_alignment_automated.sbatch
 ```
 
-Now we need to replace the following lines of the `sbatch` directives:
+In order for us to specify "tumor" or "normal" samples in the standard error and standard output files we will need to pass the sbatch these arguments directly when submit the jobs in the wrapper. Now we need to remove the following lines of the `sbatch` directives:
 
 ```
 #SBATCH -o bwa_alignment_normal_%j.out
 #SBATCH -e bwa_alignment_normal_%j.err
-```
-
-With these lines:
-
-```
-#SBATCH -o bwa_alignment_${1}_%j.out
-#SBATCH -e bwa_alignment_${1}_%j.err
 ```
 
 And we will also need to change the variables:
@@ -59,10 +52,10 @@ SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMP
 And we will set these to take positional parameters:
 
 ```
-REFERENCE_SEQUENCE=$2
-LEFT_READS=$3
+REFERENCE_SEQUENCE=$1
+LEFT_READS=$2
 RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
-SAM_FILE=$4
+SAM_FILE=$3
 ```
 
 Now our `bwa` submission script should look like:
@@ -84,10 +77,10 @@ module load gcc/6.2.0
 module load bwa/0.7.17
 
 # Assign files to bash variables
-REFERENCE_SEQUENCE=$2
-LEFT_READS=$3
+REFERENCE_SEQUENCE=$1
+LEFT_READS=$2
 RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
-SAM_FILE=$4
+SAM_FILE=$3
 
 # Align reads with bwa
 bwa mem \
@@ -109,18 +102,11 @@ cp picard_alignment_processing_normal.sbatch picard_alignment_processing_automat
 vim picard_alignment_processing_automated.sbatch
 ```
 
-Once again, we will change the `sbatch` directives for standard error and standard output from:
+Once again, we will remove the `sbatch` directives for standard error and standard output:
 
 ```
 #SBATCH -o picard_alignment_processing_normal_%j.out
 #SBATCH -e picard_alignment_processing_normal_%j.err
-```
-
-To:
-
-```
-#SBATCH -o picard_alignment_processing_${1}_%j.out
-#SBATCH -e picard_alignment_processing_${1}_%j.err
 ```
 
 Because all of the variables except `$SAM_FILE` are dependent on the value of `$SAM_FILE`, we only need to change this to be a positional parameter.
@@ -134,7 +120,7 @@ SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_n
 To:
 
 ```
-SAM_FILE=$2
+SAM_FILE=$1
 ```
 
 Now your `Picard` alignment processing script should look like:
@@ -148,8 +134,6 @@ Now your `Picard` alignment processing script should look like:
 #SBATCH -t 0-02:00:00
 #SBATCH -c 1
 #SBATCH --mem 8G
-#SBATCH -o picard_alignment_processing_${1}_%j.out
-#SBATCH -e picard_alignment_processing_${1}_%j.err
 
 # Assign file paths to variables 
 SAM_FILE=$1
@@ -193,8 +177,8 @@ cp mutect2_normal_tumor.sbatch mutect2_automated.sbatch
 #SBATCH -t 1-00:00:00
 #SBATCH -c 1
 #SBATCH --mem 16G
-#SBATCH -o mutect2_variant_calling_%j.out
-#SBATCH -e mutect2_variant_calling_%j.err
+#SBATCH -o mutect2_variant_calling_normal_tumor_%j.out
+#SBATCH -e mutect2_variant_calling_normal_tumor_%j.err
 
 module load gatk/4.1.9.0
 
@@ -226,18 +210,16 @@ gatk Mutect2 \
 #SBATCH -t 1-00:00:00
 #SBATCH -c 1
 #SBATCH --mem 16G
-#SBATCH -o mutect2_variant_calling${1}_%j.out
-#SBATCH -e mutect2_variant_calling${1}_%j.err
 
 module load gatk/4.1.9.0
 
-REFERENCE_SEQUENCE=$2
+REFERENCE_SEQUENCE=$1
 REFERENCE_DICTIONARY=`echo ${REFERENCE_SEQUENCE%fa}dict`
-NORMAL_BAM_FILE=$3
-NORMAL_SAMPLE_NAME=$4
-TUMOR_BAM_FILE=$5
-TUMOR_SAMPLE_NAME=$6
-VCF_OUTPUT_FILE=$7
+NORMAL_BAM_FILE=$2
+NORMAL_SAMPLE_NAME=$3
+TUMOR_BAM_FILE=$4
+TUMOR_SAMPLE_NAME=$5
+VCF_OUTPUT_FILE=$6
 
 gatk Mutect2 \
 --sequence-dictionary $REFERENCE_DICTIONARY \
@@ -295,17 +277,15 @@ vim variant_filtering_automated.sbatch
 #SBATCH -t 0-02:00:00
 #SBATCH -c 1
 #SBATCH --mem 8G
-#SBATCH -o variant_filtering${1}_%j.out
-#SBATCH -e variant_filtering${1}_%j.err
 
 module load gatk/4.1.9.0
 module load snpEff/4.3g
 
-REFERENCE_SEQUENCE=$2
-RAW_VCF_FILE=$3
-MUTECT_FILTERED_VCF=${3%raw.vcf.gz}filt.vcf.gz
-LCR_FILE=$4
-LCR_FILTERED_VCF=${3%raw.vcf.gz}LCR-filt.vcf
+REFERENCE_SEQUENCE=$1
+RAW_VCF_FILE=$2
+MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}filt.vcf.gz
+LCR_FILE=$3
+LCR_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}LCR-filt.vcf
 
 gatk FilterMutectCalls \
 --reference $REFERENCE_SEQUENCE \
@@ -360,16 +340,14 @@ vim variant_annotation_automated.sbatch
 #SBATCH -t 0-02:00:00
 #SBATCH -c 1
 #SBATCH --mem 8G
-#SBATCH -o variant_annotation${1}_%j.out
-#SBATCH -e variant_annotation${1}_%j.err
 
 module load snpEff/4.3g
 
-CSV_STATS=$2
-HTML_REPORT=$3
-REFERENCE_DATABASE=$4
-FILTERED_VCF_FILE=$5
-ANNOTATED_VCF_FILE=$6
+CSV_STATS=$1
+HTML_REPORT=$2
+REFERENCE_DATABASE=$3
+FILTERED_VCF_FILE=$4
+ANNOTATED_VCF_FILE=$5
 
 java -jar $SNPEFF/snpEff.jar  eff \
 -dataDir /n/groups/shared_databases/snpEff.data/ \
@@ -470,13 +448,13 @@ for SAMPLE in $FASTQ_DIRECTORY*_1.fq.gz; do
   # Assign a path and name for the alignments
   SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.sam
   # Submit the bwa sbatch script and save the output to a variable named $BWA_JOB_SUBMISSION
-  BWA_JOB_SUBMISSION=$(sbatch bwa_alignment_automated.sbatch $SAMPLE_NAME $REFERENCE_SEQUENCE $SAMPLE $SAM_FILE)
+  BWA_JOB_SUBMISSION=$(sbatch -o bwa_alignment_${SAMPLE_NAME}_%j.out -e bwa_alignment_${SAMPLE_NAME}_%j.err bwa_alignment_automated.sbatch $REFERENCE_SEQUENCE $SAMPLE $SAM_FILE)
   # Parse out the job ID from outout from the bwa submission
   BWA_JOB_ID=`echo $BWA_JOB_SUBMISSION | cut -d ' ' -f 4`
   # Print to standard output the job that has been submitted
   echo -e "bwa job for sample $SAMPLE_NAME submitted as job ID $BWA_JOB_ID"
   # Submit the picard sbatch script and save the output to a variable named $PICARD_JOB_SUBMISSION
-  PICARD_JOB_SUBMISSION=$(sbatch --dependency=afterok:$BWA_JOB_ID picard_alignment_processing_automated.sbatch $SAMPLE_NAME $SAM_FILE)
+  PICARD_JOB_SUBMISSION=$(sbatch -o picard_alignment_processing_${SAMPLE_NAME}_%j.out -e picard_alignment_processing_${SAMPLE_NAME}_%j.err --dependency=afterok:$BWA_JOB_ID picard_alignment_processing_automated.sbatch $SAM_FILE)
   # Parse out the job ID from output from the Picard submission
   PICARD_JOB_ID=`echo $PICARD_JOB_SUBMISSION | cut -d ' ' -f 4`
   # Print to standard output the job that has been submitted
@@ -505,7 +483,7 @@ TUMOR_BAM_MUTECT_INPUT=${COORDINATE_SORTED_BAM_ARRAY[$TUMOR_ARRAY_POSITION]}
 MUTECT2_VCF_OUTPUT=`echo -e "/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2${SAMPLE_NAME_STRING}_${REFERENCE_SEQUENCE_NAME}-raw.vcf.gz"`
 
 # Submit the Mutect2 sbatch script and save the output to a variable named $MUTECT2_JOB_SUBMISSION 
-MUTECT2_JOB_SUBMISSION=$(sbatch --dependency=afterok${DEPENDENT_PICARD_JOB_IDS} mutect2_automated.sbatch $SAMPLE_NAME_STRING $REFERENCE_SEQUENCE $NORMAL_BAM_MUTECT_INPUT $NORMAL_SAMPLE $TUMOR_BAM_MUTECT_INPUT $TUMOR_SAMPLE $MUTECT2_VCF_OUTPUT)
+MUTECT2_JOB_SUBMISSION=$(sbatch -o mutect2_variant_calling${SAMPLE_NAME_STRING}_%j.out -e mutect2_variant_calling${SAMPLE_NAME_STRING}_%j.err --dependency=afterok${DEPENDENT_PICARD_JOB_IDS} mutect2_automated.sbatch  $REFERENCE_SEQUENCE $NORMAL_BAM_MUTECT_INPUT $NORMAL_SAMPLE $TUMOR_BAM_MUTECT_INPUT $TUMOR_SAMPLE $MUTECT2_VCF_OUTPUT)
 
 # Parse out the job ID from output from the Mutect2 submission
 MUTECT2_JOB_ID=`echo $MUTECT2_JOB_SUBMISSION | cut -d ' ' -f 4`
@@ -516,7 +494,7 @@ echo -e "Mutect2 job submitted as job ID $MUTECT2_JOB_ID"
 MUTECT2_VCF_OUTPUT_FILTERED=`echo -e "${MUTECT2_VCF_OUTPUT%raw.vcf.gz}filt.vcf.gz"`
 
 # Submit the variant filtering sbatch script and save the output to a variable named $VARIANT_FILTERING_JOB_SUBMISSION
-VARIANT_FILTERING_JOB_SUBMISSION=$(sbatch --dependency=afterok:$MUTECT2_JOB_ID variant_filtering_automated.sbatch $SAMPLE_NAME_STRING $REFERENCE_SEQUENCE $MUTECT2_VCF_OUTPUT $MUTECT2_VCF_OUTPUT_FILTERED)
+VARIANT_FILTERING_JOB_SUBMISSION=$(sbatch -o variant_filtering${SAMPLE_NAME_STRING}_%j.out -e variant_filtering${SAMPLE_NAME_STRING}_%j.err --dependency=afterok:$MUTECT2_JOB_ID variant_filtering_automated.sbatch $SAMPLE_NAME_STRING $REFERENCE_SEQUENCE $MUTECT2_VCF_OUTPUT $MUTECT2_VCF_OUTPUT_FILTERED)
 
 # Parse out the job ID from output from the variant filtering submission
 VARIANT_FILTERING_JOB_ID=`echo $VARIANT_FILTERING_JOB_SUBMISSION | cut -d ' ' -f 4`
@@ -529,7 +507,7 @@ HTML_REPORT=`echo -e "${REPORTS_DIRECTORY}annotation${SAMPLE_NAME_STRING}_${REFE
 ANNOTATED_VCF_FILE=`echo -e "${MUTECT2_VCF_OUTPUT_FILTERED%vcf.gz}snpeff.vcf"`
 
 # Submit the variant annotation sbatch script
-VARIANT_ANNOTATION_JOB_SUBMISSION=$(sbatch --dependency=afterok:$VARIANT_FILTERING_JOB_ID variant_annotation_automated.sbatch $SAMPLE_NAME_STRING $CSV_STATS $HTML_REPORT $SNPEFF_DATABASE $MUTECT2_VCF_OUTPUT_FILTERED $ANNOTATED_VCF_FILE)
+VARIANT_ANNOTATION_JOB_SUBMISSION=$(sbatch -o variant_annotation${SAMPLE_NAME_STRING}_%j.out -e variant_annotation${SAMPLE_NAME_STRING}_%j.err --dependency=afterok:$VARIANT_FILTERING_JOB_ID variant_annotation_automated.sbatch $CSV_STATS $HTML_REPORT $SNPEFF_DATABASE $MUTECT2_VCF_OUTPUT_FILTERED $ANNOTATED_VCF_FILE)
 
 # Parse out the job ID from output from the variant annotation submission
 VARIANT_ANNOTATION_JOB_ID=`echo $VARIANT_ANNOTATION_JOB_SUBMISSION | cut -d ' ' -f 4`
