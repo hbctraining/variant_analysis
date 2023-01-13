@@ -485,7 +485,7 @@ for SAMPLE in $FASTQ_DIRECTORY*_1.fq.gz; do
   # Print to standard output the job that has been submitted
   echo -e "bwa job for sample $SAMPLE_NAME submitted as job ID $BWA_JOB_ID"
   # Submit the picard sbatch script and save the output to a variable named $PICARD_JOB_SUBMISSION
-  PICARD_JOB_SUBMISSION=$(sbatch -p priority -t 0-02:00:00 -c 1 --mem 8G -o picard_alignment_processing_${SAMPLE_NAME}_%j.out -e picard_alignment_processing_${SAMPLE_NAME}_%j.err --dependency=afterok:$BWA_JOB_ID picard_alignment_processing_automated.sbatch $SAM_FILE)
+  PICARD_JOB_SUBMISSION=$(sbatch -p priority -t 0-02:00:00 -c 1 --mem 32G -o picard_alignment_processing_${SAMPLE_NAME}_%j.out -e picard_alignment_processing_${SAMPLE_NAME}_%j.err --dependency=afterok:$BWA_JOB_ID picard_alignment_processing_automated.sbatch $SAM_FILE)
   # Parse out the job ID from output from the Picard submission
   PICARD_JOB_ID=`echo $PICARD_JOB_SUBMISSION | cut -d ' ' -f 4`
   # Print to standard output the job that has been submitted
