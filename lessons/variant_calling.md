@@ -126,21 +126,21 @@ Let's breakdown this command:
   <li><code>REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa</code> This is the reference sequence to create the sequence dictionary from.</li></ul>
 </details>
 
-`-R $REFERENCE_SEQUENCE` This is the genome reference sequence
+- `-R $REFERENCE_SEQUENCE` This is the genome reference sequence
 
-`-I $NORMAL_BAM_FILE` This is the first `bam` file that we are providing GATK and it happens to be the normal sample
+- `-I $NORMAL_BAM_FILE` This is the first `bam` file that we are providing GATK and it happens to be the normal sample
 
-`--normal-sample $NORMAL_SAMPLE_NAME` This is the name of that normal sample and will be used as a column header in the VCF file
+- `--normal-sample $NORMAL_SAMPLE_NAME` This is the name of that normal sample and will be used as a column header in the VCF file
 
-`-I $TUMOR_BAM_FILE` This is the second `bam` file that we are providing GATK and it happens to be the tumor sample
+- `-I $TUMOR_BAM_FILE` This is the second `bam` file that we are providing GATK and it happens to be the tumor sample
 
-`--tumor-sample $TUMOR_SAMPLE_NAME` This is the name of that tumor sample and will be used as a column header in the VCF file
+- `--tumor-sample $TUMOR_SAMPLE_NAME` This is the name of that tumor sample and will be used as a column header in the VCF file
 
 > NOTE: It is **VERY IMPORTANT** that the sample names (`--normal-sample $NORMAL_SAMPLE_NAME` and `--tumor-sample $TUMOR_SAMPLE_NAME`) are provided in the same order as the `-I` input BAM files!
 
-`--annotation ClippingRankSumTest --annotation DepthPerSampleHC --annotation MappingQualityRankSumTest --annotation MappingQualityZero --annotation QualByDepth --annotation ReadPosRankSumTest --annotation RMSMappingQuality --annotation FisherStrand --annotation MappingQuality --annotation DepthPerAlleleBySample --annotation Coverage` These are a variety of additional annotations that we are going to add to out output VCF file. These are not required for `MuTect2` to run, but provide additional details about our variants.
+- `--annotation ClippingRankSumTest --annotation DepthPerSampleHC --annotation MappingQualityRankSumTest --annotation MappingQualityZero --annotation QualByDepth --annotation ReadPosRankSumTest --annotation RMSMappingQuality --annotation FisherStrand --annotation MappingQuality --annotation DepthPerAlleleBySample --annotation Coverage` These are a variety of additional annotations that we are going to add to out output VCF file. These are not required for `MuTect2` to run, but provide additional details about our variants.
 
-`-O $VCF_OUTPUT_FILE` This is our output VCF file
+- `-O $VCF_OUTPUT_FILE` This is our output VCF file
 
 The final `sbatch` submission script for `MuTect2` should look like:
 
