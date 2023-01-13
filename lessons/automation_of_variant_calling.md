@@ -321,41 +321,14 @@ java -jar $SNPEFF/SnpSift.jar intervals -x -i $MUTECT_FILTERED_VCF $LCR_FILE > $
 
 #### Variant Annotation
 
-```
-#!/bin/bash
-# This sbatch script is for variant annotation 
+Make a copy of our variant annotation `sbatch` submission script and open it up in `vim`:
 
-# Assign sbatch directives
-#SBATCH -p priority
-#SBATCH -t 0-02:00:00
-#SBATCH -c 1
-#SBATCH --mem 8G
-#SBATCH -o variant_annotation_%j.out
-#SBATCH -e variant_annotation_%j.err
-
-module load snpEff/4.3g
-
-CSV_STATS=/home/$USER/variant_calling/reports/syn3_GRCh38.p7-effects-stats.csv
-HTML_REPORT=/home/$USER/variant_calling/reports/syn3_GRCh38.p7-effects-stats.html
-REFERENCE_DATABASE=GRCh38.p7.RefSeq
-FILTERED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/syn3_GRCh38.p7-LCR-filt.vcf
-ANNOTATED_VCF_FILE=${FILTERED_VCF_FILE%vcf}snpeff.vcf
-
-java -jar $SNPEFF/snpEff.jar  eff \
--dataDir /n/groups/shared_databases/snpEff.data/ \
--cancer \
--noLog \
--csvStats $CSV_STATS\
--s  $HTML_REPORT \
-$REFERENCE_DATABASE \
-$FILTERED_VCF_FILE > $ANNOTATED_VCF_FILE
-```
 ```
 cp variant_annotation.sbatch variant_annotation_automated.sbatch
 vim variant_annotation_automated.sbatch
 ```
 
-For the last time we will need to remove the `sbatch` directives:
+We will need to remove the `sbatch` directives:
 
 ```
 # REMOVE THESE LINES
@@ -368,18 +341,44 @@ For the last time we will need to remove the `sbatch` directives:
 #SBATCH -e variant_annotation_%j.err
 ```
 
+Next, change the variables from:
+
+```
+CSV_STATS=/home/$USER/variant_calling/reports/syn3_GRCh38.p7-effects-stats.csv
+HTML_REPORT=/home/$USER/variant_calling/reports/syn3_GRCh38.p7-effects-stats.html
+REFERENCE_DATABASE=GRCh38.p7.RefSeq
+FILTERED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/syn3_GRCh38.p7-LCR-filt.vcf
+ANNOTATED_VCF_FILE=${FILTERED_VCF_FILE%vcf}snpeff.vcf
+```
+
+To:
+
+```
+# Assign variables
+CSV_STATS=$1
+HTML_REPORT=$2
+REFERENCE_DATABASE=$3
+FILTERED_VCF_FILE=$4
+ANNOTATED_VCF_FILE=$5
+```
+
+Our automated `sbatch` submission for variant annotation should look like:
+
 ```
 #!/bin/bash
 # This sbatch script is for variant annotation 
 
+# Load module
 module load snpEff/4.3g
 
+# Assign variables
 CSV_STATS=$1
 HTML_REPORT=$2
 REFERENCE_DATABASE=$3
 FILTERED_VCF_FILE=$4
 ANNOTATED_VCF_FILE=$5
 
+# Run SnpEff
 java -jar $SNPEFF/snpEff.jar  eff \
 -dataDir /n/groups/shared_databases/snpEff.data/ \
 -cancer \
@@ -389,7 +388,6 @@ java -jar $SNPEFF/snpEff.jar  eff \
 $REFERENCE_DATABASE \
 $FILTERED_VCF_FILE > $ANNOTATED_VCF_FILE
 ```
-
 
 ### Developing a Wrapper Script
 
