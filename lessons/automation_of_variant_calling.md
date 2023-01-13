@@ -44,14 +44,20 @@ In order for us to specify "tumor" or "normal" samples in the standard error and
 #SBATCH -e bwa_alignment_normal_%j.err
 ```
 
+Our wrapper script that will hold some variables for us. Delete the following variable lines:
+
+```
+REFERENCE_SEQUENCE_NAME=`basename $REFERENCE_SEQUENCE _genomic.fa`
+SAMPLE_NAME=`basename $LEFT_READS _1.fq.gz`
+```
+
+
 And we will also need to change the variables:
 
 ```
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
 LEFT_READS=/home/$USER/variant_calling/raw_data/syn3_normal_1.fq.gz
 RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
-REFERENCE_SEQUENCE_NAME=`basename $REFERENCE_SEQUENCE _genomic.fa`
-SAMPLE_NAME=`basename $LEFT_READS _1.fq.gz`
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.sam
 ```
 
@@ -238,6 +244,7 @@ NORMAL_BAM_FILE=$4
 TUMOR_BAM_FILE=$5
 VCF_OUTPUT_FILE=$6
 
+# Run MuTect2
 gatk Mutect2 \
 --sequence-dictionary $REFERENCE_DICTIONARY \
 -R $REFERENCE_SEQUENCE \
