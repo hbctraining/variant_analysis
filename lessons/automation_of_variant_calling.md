@@ -44,15 +44,16 @@ In order for us to specify "tumor" or "normal" samples in the standard error and
 #SBATCH -e bwa_alignment_normal_%j.err
 ```
 
-Our wrapper script that will hold some variables for us. Delete the following variable lines:
+We will be creating a wrapper script at the end that launches all of our automated scripts. Our wrapper script will hold some variables for us so we don't need them all within this script anymore. Delete the following variable lines:
 
 ```
+# REMOVE THESE LINES
 REFERENCE_SEQUENCE_NAME=`basename $REFERENCE_SEQUENCE _genomic.fa`
 SAMPLE_NAME=`basename $LEFT_READS _1.fq.gz`
 ```
 
 
-And we will also need to change the variables:
+Next we will also need to change the variables from:
 
 ```
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
@@ -61,7 +62,7 @@ RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.sam
 ```
 
-And we will set these to take positional parameters:
+To:
 
 ```
 REFERENCE_SEQUENCE=$1
@@ -70,7 +71,7 @@ RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
 SAM_FILE=$3
 ```
 
-Now our `bwa` submission script should look like:
+Now, these variables will accept positional parameters that we can feed it from the wrapper script. Our `bwa` submission script should look like:
 
 ```
 #!/bin/bash
