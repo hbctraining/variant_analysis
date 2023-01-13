@@ -114,17 +114,33 @@ Let's breakdown this command:
   <summary></b>Click here for the commands to create a sequence directory</b></summary>
   We can create the required sequence dictionary in `Picard`. But first, let's double check we have the <code>Picard</code> module loaded:
   <pre>
-  module load picard/2.8.0
-  </pre>
+  module load picard/2.8.0</pre>
+  
   The command to do create the sequence dictionary is:<br>
   <pre>
   java -jar $PICARD/picard-2.8.0.jar CreateSequenceDictionary \
-  REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
-  </pre>
+  REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa</pre>
+  
   The components ot this command are:
   <ul><li><code>java -jar $PICARD/picard-2.8.0.jar CreateSequenceDictionary</code> This calls the <code>CreateSequenceDictionary</code> command within <code>Picard</code></li>
   <li><code>REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa</code> This is the reference sequence to create the sequence dictionary from.</li></ul>
 </details>
+
+`-R $REFERENCE_SEQUENCE` This is the genome reference sequence
+
+`-I $NORMAL_BAM_FILE` This is the first `bam` file that we are providing GATK and it happens to be the normal sample
+
+`--normal-sample $NORMAL_SAMPLE_NAME` This is the name of that normal sample and will be used as a column header in the VCF file
+
+`-I $TUMOR_BAM_FILE` This is the second `bam` file that we are providing GATK and it happens to be the tumor sample
+
+`--tumor-sample $TUMOR_SAMPLE_NAME` This is the name of that tumor sample and will be used as a column header in the VCF file
+
+> NOTE: It is **VERY IMPORTANT** that the sample names (`--normal-sample $NORMAL_SAMPLE_NAME` and `--tumor-sample $TUMOR_SAMPLE_NAME`) are provided in the same order as the `-I` input BAM files!
+
+`--annotation ClippingRankSumTest --annotation DepthPerSampleHC --annotation MappingQualityRankSumTest --annotation MappingQualityZero --annotation QualByDepth --annotation ReadPosRankSumTest --annotation RMSMappingQuality --annotation FisherStrand --annotation MappingQuality --annotation DepthPerAlleleBySample --annotation Coverage` These are a variety of additional annotations that we are going to add to out output VCF file. These are not required for `MuTect2` to run, but provide additional details about our variants.
+
+`-O $VCF_OUTPUT_FILE` This is our output VCF file
 
 The final `sbatch` submission script for `MuTect2` should look like:
 
