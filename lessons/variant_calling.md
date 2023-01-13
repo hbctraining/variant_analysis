@@ -112,7 +112,7 @@ Let's breakdown this command:
 
 <details>
   <summary></b>Click here for the commands to create a sequence directory</b></summary>
-  We can create the required sequence dictionary in `Picard`. But first, let's double check we have the <code>Picard</code> module loaded:
+  We can create the required sequence dictionary in <code>Picard</code>. But first, let's double check we have the <code>Picard</code> module loaded:
   <pre>
   module load picard/2.8.0</pre>
   
@@ -121,7 +121,7 @@ Let's breakdown this command:
   java -jar $PICARD/picard-2.8.0.jar CreateSequenceDictionary \
   REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa</pre>
   
-  The components ot this command are:
+  The components of this command are:
   <ul><li><code>java -jar $PICARD/picard-2.8.0.jar CreateSequenceDictionary</code> This calls the <code>CreateSequenceDictionary</code> command within <code>Picard</code></li>
   <li><code>REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa</code> This is the reference sequence to create the sequence dictionary from.</li></ul>
   
