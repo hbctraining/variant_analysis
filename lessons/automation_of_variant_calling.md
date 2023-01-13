@@ -246,7 +246,7 @@ gatk Mutect2 \
 
 # Assign sbatch directives
 #SBATCH -p priority
-#SBATCH -t 0-02:00:00
+#SBATCH -t 0-00:15:00
 #SBATCH -c 1
 #SBATCH --mem 8G
 #SBATCH -o variant_filtering_%j.out
@@ -256,9 +256,10 @@ module load gatk/4.1.9.0
 module load snpEff/4.3g
 
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
-RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/syn3_GRCh38.p7-raw.vcf.gz
-MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}filt.vcf.gz
+RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf.gz
 LCR_FILE=/n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed
+
+MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}filt.vcf.gz
 LCR_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}LCR-filt.vcf
 
 gatk FilterMutectCalls \
@@ -280,7 +281,7 @@ Once again we need to remove the `sbatch` directives:
 # REMOVE THESE LINES
 # Assign sbatch directives
 #SBATCH -p priority
-#SBATCH -t 0-02:00:00
+#SBATCH -t 0-00:15:00
 #SBATCH -c 1
 #SBATCH --mem 8G
 #SBATCH -o variant_filtering_%j.out
@@ -297,8 +298,9 @@ module load snpEff/4.3g
 
 REFERENCE_SEQUENCE=$1
 RAW_VCF_FILE=$2
-MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}filt.vcf.gz
 LCR_FILE=$3
+
+MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}filt.vcf.gz
 LCR_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}LCR-filt.vcf
 
 gatk FilterMutectCalls \
