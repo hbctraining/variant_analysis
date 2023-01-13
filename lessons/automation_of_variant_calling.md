@@ -162,41 +162,11 @@ CREATE_INDEX=true
 
 #### Variant calling with GATK
 
+Let's make a copy of the `MuTect2` script that we wrote so that we can adapt it for our automation.
+
 ```
 cp mutect2_normal_tumor.sbatch mutect2_automated.sbatch
-```
-
-```
-#!/bin/bash
-# This sbatch script is for variant calling with GATK's MuTect2
-
-# Assign sbatch directives
-#SBATCH -p priority
-#SBATCH -t 1-00:00:00
-#SBATCH -c 1
-#SBATCH --mem 16G
-#SBATCH -o mutect2_variant_calling_normal_tumor_%j.out
-#SBATCH -e mutect2_variant_calling_normal_tumor_%j.err
-
-module load gatk/4.1.9.0
-
-REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
-REFERENCE_DICTIONARY=`echo ${REFERENCE_SEQUENCE%fa}dict`
-NORMAL_BAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_tumor_GRCh38.p7.coordinate_sorted.bam
-NORMAL_SAMPLE_NAME=syn3-normal
-TUMOR_BAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam
-TUMOR_SAMPLE_NAME=syn3-tumor
-VCF_OUTPUT_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf.gz
-
-gatk Mutect2 \
---sequence-dictionary $REFERENCE_DICTIONARY \
--R $REFERENCE_SEQUENCE \
--I $NORMAL_BAM_FILE \
---normal-sample $NORMAL_SAMPLE_NAME \
--I $TUMOR_BAM_FILE \
---tumor-sample $TUMOR_SAMPLE_NAME \
---annotation ClippingRankSumTest --annotation DepthPerSampleHC --annotation MappingQualityRankSumTest --annotation MappingQualityZero --annotation QualByDepth --annotation ReadPosRankSumTest --annotation RMSMappingQuality --annotation FisherStrand --annotation MappingQuality --annotation DepthPerAlleleBySample --annotation Coverage \
--O $VCF_OUTPUT_FILE
+vim mutect2_automated.sbatch
 ```
 
 Once again, we need to remove the `sbatch` directives:
@@ -212,19 +182,60 @@ Once again, we need to remove the `sbatch` directives:
 #SBATCH -e mutect2_variant_calling_%j.err
 ```
 
+Because we will have some saved variables within the wrapper script we can trim down our variables a bit. Remove the following lines from our automated script:
+
+```
+# REMOVE THESE LINES
+ALIGNMENT_DIRECTORY=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/
+VCF_DIRECTORY=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/
+REFERENCE_SEQUENCE_NAME=`basename $REFERENCE_SEQUENCE _genomic.fa`
+```
+
+Next, change the rest of the variable lines from:
+
+```
+# Assign variables
+REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
+NORMAL_SAMPLE_NAME=syn3-normal
+TUMOR_SAMPLE_NAME=syn3-tumor
+
+REFERENCE_DICTIONARY=`echo ${REFERENCE_SEQUENCE%fa}dict`
+NORMAL_BAM_FILE=${ALIGNMENT_DIRECTORY}${NORMAL_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.coordinate_sorted.bam
+TUMOR_BAM_FILE=${ALIGNMENT_DIRECTORY}${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.coordinate_sorted.bam
+VCF_OUTPUT_FILE=${VCF_DIRECTORY}mutect2_${NORMAL_SAMPLE_NAME}_${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-raw.vcf.gz
+```
+
+To:
+
+```
+# Assign variables
+REFERENCE_SEQUENCE=$1
+NORMAL_SAMPLE_NAME=$2
+TUMOR_SAMPLE_NAME=$3
+
+REFERENCE_DICTIONARY=`echo ${REFERENCE_SEQUENCE%fa}dict`
+NORMAL_BAM_FILE=$4
+TUMOR_BAM_FILE=$5
+VCF_OUTPUT_FILE=$6
+```
+
+The final automated `sbatch` script for `MuTect2` should look like:
 
 ```
 #!/bin/bash
 # This sbatch script is for variant calling with GATK's MuTect2
 
+# Load the GATK module
 module load gatk/4.1.9.0
 
+# Assign variables
 REFERENCE_SEQUENCE=$1
+NORMAL_SAMPLE_NAME=$2
+TUMOR_SAMPLE_NAME=$3
+
 REFERENCE_DICTIONARY=`echo ${REFERENCE_SEQUENCE%fa}dict`
-NORMAL_BAM_FILE=$2
-NORMAL_SAMPLE_NAME=$3
-TUMOR_BAM_FILE=$4
-TUMOR_SAMPLE_NAME=$5
+NORMAL_BAM_FILE=$4
+TUMOR_BAM_FILE=$5
 VCF_OUTPUT_FILE=$6
 
 gatk Mutect2 \
@@ -506,7 +517,7 @@ TUMOR_BAM_MUTECT_INPUT=${COORDINATE_SORTED_BAM_ARRAY[$TUMOR_ARRAY_POSITION]}
 MUTECT2_VCF_OUTPUT=`echo -e "/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2${SAMPLE_NAME_STRING}_${REFERENCE_SEQUENCE_NAME}-raw.vcf.gz"`
 
 # Submit the Mutect2 sbatch script and save the output to a variable named $MUTECT2_JOB_SUBMISSION 
-MUTECT2_JOB_SUBMISSION=$(sbatch -p priority -t 1-00:00:00 -c 1 --mem 16G -o mutect2_variant_calling${SAMPLE_NAME_STRING}_%j.out -e mutect2_variant_calling${SAMPLE_NAME_STRING}_%j.err --dependency=afterok${DEPENDENT_PICARD_JOB_IDS} mutect2_automated.sbatch  $REFERENCE_SEQUENCE $NORMAL_BAM_MUTECT_INPUT $NORMAL_SAMPLE $TUMOR_BAM_MUTECT_INPUT $TUMOR_SAMPLE $MUTECT2_VCF_OUTPUT)
+MUTECT2_JOB_SUBMISSION=$(sbatch -p priority -t 1-00:00:00 -c 1 --mem 16G -o mutect2_variant_calling${SAMPLE_NAME_STRING}_%j.out -e mutect2_variant_calling${SAMPLE_NAME_STRING}_%j.err --dependency=afterok${DEPENDENT_PICARD_JOB_IDS} mutect2_automated.sbatch  $REFERENCE_SEQUENCE $NORMAL_SAMPLE $TUMOR_SAMPLE $NORMAL_BAM_MUTECT_INPUT $TUMOR_BAM_MUTECT_INPUT $MUTECT2_VCF_OUTPUT)
 
 # Parse out the job ID from output from the Mutect2 submission
 MUTECT2_JOB_ID=`echo $MUTECT2_JOB_SUBMISSION | cut -d ' ' -f 4`
