@@ -458,7 +458,7 @@ REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_gen
 REFERENCE_SEQUENCE_NAME=`basename $REFERENCE_SEQUENCE _genomic.fa`
 NORMAL_SAMPLE=syn3_normal
 TUMOR_SAMPLE=syn3_tumor
-LCR_FILE=/n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed
+LCR_FILE=~/variant_calling/reference/LCR-hs38.bed
 REPORTS_DIRECTORY=/home/$USER/variant_calling/reports/
 SNPEFF_DATABASE=GRCh38.p7.RefSeq
 
