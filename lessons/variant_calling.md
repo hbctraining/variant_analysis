@@ -124,6 +124,8 @@ Let's breakdown this command:
   The components ot this command are:
   <ul><li><code>java -jar $PICARD/picard-2.8.0.jar CreateSequenceDictionary</code> This calls the <code>CreateSequenceDictionary</code> command within <code>Picard</code></li>
   <li><code>REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa</code> This is the reference sequence to create the sequence dictionary from.</li></ul>
+  
+  Like indexing, once you have created the sequence dictionary for a reference genome once, you won't need to do it again.
 </details>
 
 - `-R $REFERENCE_SEQUENCE` This is the genome reference sequence
