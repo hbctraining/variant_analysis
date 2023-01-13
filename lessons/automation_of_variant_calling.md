@@ -100,7 +100,7 @@ cp picard_alignment_processing_normal.sbatch picard_alignment_processing_automat
 vim picard_alignment_processing_automated.sbatch
 ```
 
-Once again, we will remove the `sbatch` directives for standard error and standard output:
+Once again, we will remove the `sbatch` directives:
 
 ```
 # REMOVE THESE LINES
@@ -113,7 +113,7 @@ Once again, we will remove the `sbatch` directives for standard error and standa
 #SBATCH -e picard_alignment_processing_normal_%j.err
 ```
 
-Because all of the variables except `$SAM_FILE` are dependent on the value of `$SAM_FILE`, we only need to change this to be a positional parameter.
+Because all of the variables we set except `$SAM_FILE` are dependent on the value of `$SAM_FILE`, we only need to change this to be a positional parameter.
 
 Change the following line:
 
