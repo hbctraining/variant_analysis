@@ -259,42 +259,14 @@ gatk Mutect2 \
 
 #### Variant Filtering
 
-```
-#!/bin/bash
-# This sbatch script is for variant filtering 
-
-# Assign sbatch directives
-#SBATCH -p priority
-#SBATCH -t 0-00:15:00
-#SBATCH -c 1
-#SBATCH --mem 8G
-#SBATCH -o variant_filtering_%j.out
-#SBATCH -e variant_filtering_%j.err
-
-module load gatk/4.1.9.0
-module load snpEff/4.3g
-
-REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
-RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf.gz
-LCR_FILE=/n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed
-
-MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}filt.vcf.gz
-LCR_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}LCR-filt.vcf
-
-gatk FilterMutectCalls \
---reference  $REFERENCE_SEQUENCE \
---variant $RAW_VCF_FILE \
---output $MUTECT_FILTERED_VCF
-
-java -jar $SNPEFF/SnpSift.jar intervals -x -i $MUTECT_FILTERED_VCF $LCR_FILE > $LCR_FILTERED_VCF
-```
+Next, we can automate our variant filtering script. First, make a copy of our variant filtering `sbatch` script and open it in `vim`:
 
 ```
 cp variant_filtering.sbatch variant_filtering_automated.sbatch 
 vim variant_filtering_automated.sbatch 
 ```
 
-Once again we need to remove the `sbatch` directives:
+Once again we will remove the `sbatch` directives:
 
 ```
 # REMOVE THESE LINES
@@ -307,6 +279,23 @@ Once again we need to remove the `sbatch` directives:
 #SBATCH -e variant_filtering_%j.err
 ```
 
+Next we need to alter some of our variables from:
+
+```
+REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
+RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf.gz
+LCR_FILE=/n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed
+```
+
+To:
+
+```
+REFERENCE_SEQUENCE=$1
+RAW_VCF_FILE=$2
+LCR_FILE=$3
+```
+
+The final automated `sbatch` should look like:
 
 ```
 #!/bin/bash
