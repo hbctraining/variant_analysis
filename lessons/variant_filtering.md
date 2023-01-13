@@ -182,7 +182,7 @@ We can breakdown this command:
   
 <li><code>-v</code>Traditionally, <code>bedtools intersect</code> will report the intersection of the file following <code>-a</code> and the file following <code>-b</code>. However, the <code>-v</code> option alters this behavior to find positions in the <code>-a</code> file not in <code>-b</code> file.</li>
   
-<li><code>-a $MUTECT_FILTERED_VCF<code> VCF file that we want filtered</li>
+<li><code>-a $MUTECT_FILTERED_VCF</code> VCF file that we want filtered</li>
   
 <li><code>-b $LCR_FILE</code>BED file containing genomic coordinates for sites in the VCF file to exclude</li>
   
