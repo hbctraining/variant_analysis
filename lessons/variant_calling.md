@@ -138,7 +138,7 @@ Let's breakdown this command:
 
 > NOTE: It is **VERY IMPORTANT** that the sample names (`--normal-sample $NORMAL_SAMPLE_NAME` and `--tumor-sample $TUMOR_SAMPLE_NAME`) are provided in the same order as the `-I` input BAM files!
 
-- `--annotation ClippingRankSumTest --annotation DepthPerSampleHC --annotation MappingQualityRankSumTest --annotation MappingQualityZero --annotation QualByDepth --annotation ReadPosRankSumTest --annotation RMSMappingQuality --annotation FisherStrand --annotation MappingQuality --annotation DepthPerAlleleBySample --annotation Coverage` These are a variety of additional annotations that we are going to add to out output VCF file. These are not required for `MuTect2` to run, but provide additional details about our variants.
+- ```--annotation ClippingRankSumTest --annotation DepthPerSampleHC --annotation MappingQualityRankSumTest --annotation MappingQualityZero --annotation QualByDepth --annotation ReadPosRankSumTest --annotation RMSMappingQuality --annotation FisherStrand --annotation MappingQuality --annotation DepthPerAlleleBySample --annotation Coverage``` These are a variety of additional annotations that we are going to add to the output VCF file. These are not required for `MuTect2` to run, but they provide additional details about our variants.
 
 - `-O $VCF_OUTPUT_FILE` This is our output VCF file
 
