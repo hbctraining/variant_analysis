@@ -45,7 +45,14 @@ This course is going to focus on analyzing somatic SNPs, so we are going to use 
 
 ### Basic workflow
 
-When using `MuTect2` will first re-evaluate the alignments of the normal and tumor samples and create "active regions" that appear to need a local re-assembly. During this process of local re-assembly the tumor sample's reads are interrogated to a higher degree for their quality than the normal samples and a *de Bruijn* graph of the region is created with an assembler. From here, most likely haplotypes are assembled and variants are called from these haplotypes. In order to call variants using Mutect2:
+When using `MuTect2` will first re-evaluate the alignments of the normal and tumor samples and create "active regions" that appear to need a local re-assembly. During this process of local re-assembly the tumor sample's reads are interrogated to a higher degree for their quality than the normal samples and a *de Bruijn* graph of the region is created with an assembler. From here, most likely haplotypes are assembled and variants are called from these haplotypes. Let's start writing out a new `sbatch` submission script for MuTect2`:
+
+```
+cd ~/variant_calling/scripts/
+vim mutect2_normal_tumor.sbatch
+```
+
+First, let's add our shebang line, script description, `sbatch` directives and GATK module.
 
 ```
 #!/bin/bash
@@ -53,26 +60,112 @@ When using `MuTect2` will first re-evaluate the alignments of the normal and tum
 
 # Assign sbatch directives
 #SBATCH -p priority
-#SBATCH -t 2-00:00:00
+#SBATCH -t 1-00:00:00
 #SBATCH -c 1
-#SBATCH --mem 8G
-#SBATCH -o mutect2_variant_calling_%j.out
-#SBATCH -e mutect2_variant_calling_%j.err
+#SBATCH --mem 16G
+#SBATCH -o mutect2_variant_calling_normal_tumor_%j.out
+#SBATCH -e mutect2_variant_calling_normal_tumor_%j.err
 
+# Load the GATK module
 module load gatk/4.1.9.0
+```
 
+Next, we need to add our variables:
+
+```
+# Assign variables
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
-REFERENCE_DICTIONARY=`echo ${REFERENCE_SEQUENCE%fa}dict`
+ALIGNMENT_DIRECTORY=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/
+VCF_DIRECTORY=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/
+NORMAL_SAMPLE_NAME=syn3-normal
+TUMOR_SAMPLE_NAME=syn3-tumor
 
+REFERENCE_DICTIONARY=`echo ${REFERENCE_SEQUENCE%fa}dict`
+REFERENCE_SEQUENCE_NAME=`basename $REFERENCE_SEQUENCE _genomic.fa`
+NORMAL_BAM_FILE=${ALIGNMENT_DIRECTORY}${NORMAL_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.coordinate_sorted.bam
+TUMOR_BAM_FILE=${ALIGNMENT_DIRECTORY}${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.coordinate_sorted.bam
+VCF_OUTPUT_FILE=${VCF_DIRECTORY}mutect2_${NORMAL_SAMPLE_NAME}_${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-raw.vcf.gz
+```
+
+> NOTE: Sometimes when there are many input variables that re-use many of the same textual elements (i.e. paths, sample names and reference genome names), like we have above, it is sometimes cleaner, less typo-prone and more reproducible to assign those repeated items to variables and then use text manipulation tools and variable subsitution in `bash` to create the rest of the variables. In the above example, the first five lines of variable assignment (`REFERENCE_SEQUENCE` to `TUMOR_SAMPLE_NAME`) are likely lines you might edit from run-to-run, but the final five lines (`REFERENCE_DICTIONARY` to `VCF_OUTPUT_FILE`) will likely stay the same. Standardizing your paths and nomenclature will help you keep track of your files much easier.
+
+Lastly, we need to add the `MuTect2` command:
+
+```
+# Run MuTect2
 gatk Mutect2 \
 --sequence-dictionary $REFERENCE_DICTIONARY \
 -R $REFERENCE_SEQUENCE \
--I /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_tumor_GRCh38.p7.coordinate_sorted.bam \
---normal-sample syn3-normal \
--I /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam \
---tumor-sample syn3-tumor \
+-I $NORMAL_BAM_FILE \
+--normal-sample $NORMAL_SAMPLE_NAME \
+-I $TUMOR_BAM_FILE \
+--tumor-sample $TUMOR_SAMPLE_NAME \
 --annotation ClippingRankSumTest --annotation DepthPerSampleHC --annotation MappingQualityRankSumTest --annotation MappingQualityZero --annotation QualByDepth --annotation ReadPosRankSumTest --annotation RMSMappingQuality --annotation FisherStrand --annotation MappingQuality --annotation DepthPerAlleleBySample --annotation Coverage \
--O /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/syn3_GRCh38.p7-raw.vcf.gz
+-O $VCF_OUTPUT_FILE
+```
+
+Let's breakdown this command:
+
+- `gatk Mutect2` Calls the `Mutect2` package from `GATK`
+
+- `--sequence-dictionary $REFERENCE_DICTIONARY` `GATK` requires a sequence directory (`.dict`) file of the reference sequence. We have gone ahead and already created this for you
+
+<details>
+  <summary></b>Click here for the commands to create a sequence directory</b></summary>
+  We can create the required sequence dictionary in `Picard`. But first, let's double check we have the <code>Picard</code> module loaded:
+  <pre>
+  module load picard/2.8.0
+  </pre>
+  The command to do create the sequence dictionary is:<br>
+  <pre>
+  java -jar $PICARD/picard-2.8.0.jar CreateSequenceDictionary \
+  REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
+  </pre>
+  The components ot this command are:
+  <ul><li><code>java -jar $PICARD/picard-2.8.0.jar CreateSequenceDictionary</code> This calls the <code>CreateSequenceDictionary</code> command within <code>Picard</code></li>
+  <li><code>REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa</code> This is the reference sequence to create the sequence dictionary from.</li></ul>
+</details>
+
+The final `sbatch` submission script for `MuTect2` should look like:
+
+```
+#!/bin/bash
+# This sbatch script is for variant calling with GATK's MuTect2
+
+# Assign sbatch directives
+#SBATCH -p priority
+#SBATCH -t 1-00:00:00
+#SBATCH -c 1
+#SBATCH --mem 16G
+#SBATCH -o mutect2_variant_calling_normal_tumor_%j.out
+#SBATCH -e mutect2_variant_calling_normal_tumor_%j.err
+
+# Load the GATK module
+module load gatk/4.1.9.0
+
+# Assign variables
+REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
+ALIGNMENT_DIRECTORY=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/
+VCF_DIRECTORY=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/
+NORMAL_SAMPLE_NAME=syn3-normal
+TUMOR_SAMPLE_NAME=syn3-tumor
+
+REFERENCE_DICTIONARY=`echo ${REFERENCE_SEQUENCE%fa}dict`
+REFERENCE_SEQUENCE_NAME=`basename $REFERENCE_SEQUENCE _genomic.fa`
+NORMAL_BAM_FILE=${ALIGNMENT_DIRECTORY}${NORMAL_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.coordinate_sorted.bam
+TUMOR_BAM_FILE=${ALIGNMENT_DIRECTORY}${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.coordinate_sorted.bam
+VCF_OUTPUT_FILE=${VCF_DIRECTORY}mutect2_${NORMAL_SAMPLE_NAME}_${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-raw.vcf.gz
+
+# Run MuTect2
+gatk Mutect2 \
+--sequence-dictionary $REFERENCE_DICTIONARY \
+-R $REFERENCE_SEQUENCE \
+-I $NORMAL_BAM_FILE \
+--normal-sample $NORMAL_SAMPLE_NAME \
+-I $TUMOR_BAM_FILE \
+--tumor-sample $TUMOR_SAMPLE_NAME \
+--annotation ClippingRankSumTest --annotation DepthPerSampleHC --annotation MappingQualityRankSumTest --annotation MappingQualityZero --annotation QualByDepth --annotation ReadPosRankSumTest --annotation RMSMappingQuality --annotation FisherStrand --annotation MappingQuality --annotation DepthPerAlleleBySample --annotation Coverage \
+-O $VCF_OUTPUT_FILE
 ```
 
 ## Tumor-only Mode
