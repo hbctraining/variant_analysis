@@ -2,7 +2,7 @@
 
 | Audience | Computational skills required| Duration |
 :----------|:----------|:----------|
-| Biologists |  |  |
+| Biologists | Intorduction to the Command-line | 3 - 2.5 hour sessions |
 
 ### Description
 
@@ -11,14 +11,14 @@
 ### Learning Objectives
 
 ### Lessons
-
-[Workshop schedule (trainer-led learning)](schedule/)
+* [Workshop schedule (trainer-led learning)](schedule/)
 
 ### Installation Requirements
+***Mac users:***
+No installation requirements.  
+***Windows users:***
+[GitBash](https://git-scm.com/download/win)  
 
-#### Applications
-
-#### Packages for R
 
 ****
 
