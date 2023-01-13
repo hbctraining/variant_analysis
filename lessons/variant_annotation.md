@@ -20,13 +20,13 @@ Thie first step in annotating your VCF file is finding the appropriate SnpEff da
 module load snpEff/4.3g
 ```
 
-Not that you had loaded the `SnpEff` module, you can use the following command to display all of the current genomes availible and pipe them into a `less` buffer page:
+Now that you had loaded the `SnpEff` module, you can use the following command to display all of the current genomes availible and pipe them into a `less` buffer page:
 
 ```
 java -jar $SNPEFF/snpEff.jar databases | less
 ```
 
-The first column is the database name and the second column in the `Genus_species` for the organism. There is also a link to where the database can be downloaded at but it can mostly be ignored as SnpEff will download it if it needs it automatically. As you can see there are truly tens of thousands of these. So let's go ahead and see which GRCh databases are availible:
+The first column is the database name and the second column in the `Genus_species` for the organism. There is also a link to where the database can be downloaded at but it can mostly be ignored as SnpEff will download it if it needs it automatically. As you can see there are tens of thousands of these. So let's exit the `less` buffer page and see which GRCh databases are availible:
 
 ```
 java -jar $SNPEFF/snpEff.jar databases | grep "GRCh" 
