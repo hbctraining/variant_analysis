@@ -59,6 +59,7 @@ Next we will also need to change the variables from:
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
 LEFT_READS=/home/$USER/variant_calling/raw_data/syn3_normal_1.fq.gz
 RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
+SAMPLE_NAME=syn3_normal
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.sam
 ```
 
@@ -68,7 +69,8 @@ To:
 REFERENCE_SEQUENCE=$1
 LEFT_READS=$2
 RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
-SAM_FILE=$3
+SAMPLE_NAME=$3
+SAM_FILE=$4
 ```
 
 Now, these variables will accept positional parameters that we can feed it from the wrapper script. Our `bwa` submission script should look like:
@@ -91,7 +93,7 @@ SAM_FILE=$3
 bwa mem \
 -M \
 -t 8 \
--R '@RG\tID:syn3-normal\tPL:illumina\tPU:syn3-normal\tSM:syn3-normal' \
+-R "@RG\tID:$SAMPLE_NAME\tPL:illumina\tPU:$SAMPLE_NAME\tSM:$SAMPLE_NAME" \
 $REFERENCE_SEQUENCE \
 $LEFT_READS \
 $RIGHT_READS \
@@ -477,7 +479,7 @@ for SAMPLE in $FASTQ_DIRECTORY*_1.fq.gz; do
   # Assign a path and name for the alignments
   SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.sam
   # Submit the bwa sbatch script and save the output to a variable named $BWA_JOB_SUBMISSION
-  BWA_JOB_SUBMISSION=$(sbatch -p priority -t 0-04:00:00 -c 8 --mem 16G -o bwa_alignment_${SAMPLE_NAME}_%j.out -e bwa_alignment_${SAMPLE_NAME}_%j.err bwa_alignment_automated.sbatch $REFERENCE_SEQUENCE $SAMPLE $SAM_FILE)
+  BWA_JOB_SUBMISSION=$(sbatch -p priority -t 0-04:00:00 -c 8 --mem 16G -o bwa_alignment_${SAMPLE_NAME}_%j.out -e bwa_alignment_${SAMPLE_NAME}_%j.err bwa_alignment_automated.sbatch $REFERENCE_SEQUENCE $SAMPLE $SAMPLE_NAME $SAM_FILE)
   # Parse out the job ID from outout from the bwa submission
   BWA_JOB_ID=`echo $BWA_JOB_SUBMISSION | cut -d ' ' -f 4`
   # Print to standard output the job that has been submitted
