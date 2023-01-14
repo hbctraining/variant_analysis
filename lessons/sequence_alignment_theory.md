@@ -183,7 +183,7 @@ Now that we have added the bash variables to our `sbatch` submission script, we 
 bwa mem \
 -M \
 -t 8 \
--R '@RG\tID:syn3-normal\tPL:illumina\tPU:syn3-normal\tSM:syn3-normal' \
+-R "@RG\tID:$SAMPLE_NAME\tPL:illumina\tPU:$SAMPLE_NAME\tSM:$SAMPLE_NAME" \
 $REFERENCE_SEQUENCE \
 $LEFT_READS \
 $RIGHT_READS \
@@ -198,7 +198,7 @@ Let's breakdown this `bwa` command.
 
 - `-t 8` We are going to take advantage of multithreading. In order to do this, we need to specifiy the number of ***t***hreads. We are going to use 8.
 
-- `-R '@RG\tID:syn3-normal\tPL:illumina\tPU:syn3-normal\tSM:syn3-normal'` This adds what is called Read Group information. Some software packages, such as `GATK`, require Read Groups, while others are agnostic towards them. However, they can provide important metadata about your reads and thus it is considered best practice to include Read Group Information at the alignment step. This Read Group information consists of several fields separated by tab-characters (\t), including:
+- `-R "@RG\tID:$SAMPLE_NAME\tPL:illumina\tPU:$SAMPLE_NAME\tSM:$SAMPLE_NAME" \` This adds what is called Read Group information. Some software packages, such as `GATK`, require Read Groups, while others are agnostic towards them. However, they can provide important metadata about your reads and thus it is considered best practice to include Read Group Information at the alignment step. This Read Group information consists of several fields separated by tab-characters (\t), including:
 
     - **ID**: This is the identification for a given batch of reads. This ***MUST*** be unique to your experiment. 
 
@@ -250,7 +250,7 @@ SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMP
 bwa mem \
 -M \
 -t 8 \
--R '@RG\tID:syn3-normal\tPL:illumina\tPU:syn3-normal\tSM:syn3-normal' \
+-R "@RG\tID:$SAMPLE_NAME\tPL:illumina\tPU:$SAMPLE_NAME\tSM:$SAMPLE_NAME" \ \
 $REFERENCE_SEQUENCE \
 $LEFT_READS \
 $RIGHT_READS \
