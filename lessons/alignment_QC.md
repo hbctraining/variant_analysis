@@ -281,6 +281,17 @@ You will see two panels in the interface. On the left hand side you will see you
 
 Once you have found the HTML output for `MultiQC` **copy it over** by double clicking it or drag it over to right hand side panel. Once you have the HTML file copied over to your computer, you can leave the `Filezilla` interface. You can then locate the HTML file on your computer and open it up in a browser. 
 
+## Inspect `MultiQC` HTML Report 
+
+Now, we will evalute all of our FASTQC and alignments metrics at once. 
+
+
+
+Lastly, we can evaluate our alignments in the first table:
+
+INSERT PICTURE OF TABLE
+
+We can see that both of our alignment rates are 99% which is great (but also a bit expected since this is a synthetic dataset). 
 
 ***
 
