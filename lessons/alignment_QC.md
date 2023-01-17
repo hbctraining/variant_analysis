@@ -2,6 +2,172 @@
 
 ## Learning Objectives
 
+- Verify alginment rates using `Picard`
+
+## Factors Impacting Alignment
+
+One of the most important metrics for your alignment file is the alignment rate. Alignment rates can vary based upon many factors, including:
+
+- **Quality of reference assembly** - A high-quality assembly like GRCh38.p7 will provide a more than adequate reference geneome for alignment. However, if you were studying a organism with a poorly assembled genome, parts of the reference genome could be missing from the assembly. Therefore, high-quality reads might not align because they there is missing reference sequence to align to that corresponds to their sequence.
+- **Quality of libraries** - If the library generation was poor and there wasn't enough input DNA, then your sequencing could be filled with low-quality reads
+- **Quality of the reads** - If the reads are poor quality, then it can make alignment more uncertain. If your `FASTQC` report shows any anomalous signs, contact your sequencing center for support.
+- **Contamination** - If your samples are contaminated, then it can also skew your alignment. For example, if your samples were heavily contaminated with some bacteria, then much of what you will sequence will be bacteria DNA and not your sample DNA. As a result, most of the sequence reads will not align to your target sequence. If you suspect contamination might be the source of a poor alignment, you could consider running [Kraken](https://ccb.jhu.edu/software/kraken/) to evaluate the levels of contamination in your samples.
+- **Evolutionary distance between the sampled organism and reference genome** If a reference genome doesn't exist for your species of interest, you are able to align reads to a closely-related organism. However, it does come at the cost of lowering the alignment rate. 
+- **Aligner and alignment parameters** Different aligners work differently and are specialized for different types of data. Additionally, many aligners have a variety of parameters that are able to be adjusted. As a result, different aligners or different parameters for the same aligner will give different alignment rates, but they usually should be within the same approximate alignment rate. Generally speaking, the default parameters for most alignment tools are usually fine and they shouldn't need to be manually adjusted/optimized unless there is a specific reason to do so.
+
+When aligning high-quality reads to a high quality reference genome, one should expect to see alignment rates at 90% or better. If alignment rates dipped below 80-85%, then there could be reason for furtheer inspection. 
+
+## Collecting Alignment Statistics
+
+We are going to use `Picard` once again in order to collect our alignment statistics. `Picard` has many packages for collecting different types of data, but the one we will be using is `CollectAlignmentSummaryMetrics`. Let's start creating an `sbatch` script that can utilize this package:
+
+```
+cd ~/variant_calling/scripts/
+vim picard_CollectAlignmentMetrics_normal.sbatch
+```
+
+First, we need to add our shebang line, description and `sbatch` directives to the script:
+
+```
+#!/bin/bash
+# This sbatch script is for collecting alignment metrics using Picard 
+
+# Assign sbatch directives
+#SBATCH -p priority
+#SBATCH -t 0-00:30:00
+#SBATCH -c 1
+#SBATCH --mem 4G
+#SBATCH -o picard_CollectAlignmentMetrics_normal_%j.out
+#SBATCH -e picard_CollectAlignmentMetrics_normal_%j.err
+```
+
+Next we need to load `Picard`:
+
+```
+# Load picard
+module load picard/2.8.0
+```
+
+Next, let's assign our files to variables:
+
+```
+# Assign variables
+COORDINATE_SORTED_BAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/normal_GRCh38.p7.coordinate_sorted.bam
+REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
+METRICS_OUTPUT_FILE=/home/${USER}/variant_calling/reports/normal__GRCh38.p7.CollectAlignmentSummaryMetrics.txt
+```
+
+Next, we can add the `Picard` command to gather the alignment metrics:
+
+```
+# Run Picard CollectAlignmentSummaryMetrics
+picard CollectAlignmentSummaryMetrics \
+INPUT=$COORDINATE_SORTED_BAM_FILE
+OUTPUT=$METRICS_OUTPUT_FILE
+REFERENCE_SEQUENCE=$REFERENCE
+```
+
+We can breakdown this command into each of it's components:
+
+- `picard CollectAlignmentSummaryMetrics` Calls the `CollectAlignmentSummaryMetrics` from within `Picard`
+
+- `INPUT=$COORDINATE_SORTED_BAM_FILE` This is the output from our previous `Picard` alignment processing steps.
+
+- `OUTPUT=$METRICS_OUTPUT_FILE` This is the file to write the output metrics to.
+
+- `REFERENCE_SEQUENCE=$REFERENCE` This isn't a required parameter, but `picard` can do a subset of mismatch-related metrics if this is provided.
+
+The `sbatch` submission script for collecting the alignment metrics should look like:
+
+```
+#!/bin/bash
+# This sbatch script is for collecting alignment metrics using Picard 
+
+# Assign sbatch directives
+#SBATCH -p priority
+#SBATCH -t 0-00:30:00
+#SBATCH -c 1
+#SBATCH --mem 4G
+#SBATCH -o picard_CollectAlignmentMetrics_normal_%j.out
+#SBATCH -e picard_CollectAlignmentMetrics_normal_%j.err
+
+# Load picard
+module load picard/2.8.0
+
+# Assign variables
+COORDINATE_SORTED_BAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/normal_GRCh38.p7.coordinate_sorted.bam
+REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
+METRICS_OUTPUT_FILE=/home/${USER}/variant_calling/reports/normal__GRCh38.p7.CollectAlignmentSummaryMetrics.txt
+
+# Run Picard CollectAlignmentSummaryMetrics
+picard CollectAlignmentSummaryMetrics \
+INPUT=$COORDINATE_SORTED_BAM_FILE
+OUTPUT=$METRICS_OUTPUT_FILE
+REFERENCE_SEQUENCE=$REFERENCE
+```
+
+Create the tumor version of this submission script using `sed`:
+
+```
+sed 's/normal/tumor/g' picard_CollectAlignmentMetrics_normal.sbatch > picard_CollectAlignmentMetrics_tumor.sbatch
+```
+
+Now that we have created these files to submit, let's check the status of our previous `Picard` alignment processing steps:
+
+```
+squeue -u $USER
+```
+
+**If your `Picard` alignment processing steps are not completed yet**, wait until they have finished before submitting these jobs to collect alignment metrics.
+
+**If your `Picard` alignment processing steps are completed**, then submit these jobs to collect alignment metrics:
+
+```
+sbatch picard_CollectAlignmentMetrics_normal.sbatch
+sbatch picard_CollectAlignmentMetrics_tumor.sbatch
+```
+
+## Options for Inspecting `Picard` Alignment Metrics
+
+Once the job has finished we would inspect the output files. This could be done in one of a few ways:
+
+1) View each metrics file in a `less` buffer
+  **Pros:**
+    - Simple to do
+  **Cons:**
+    - Hard to compare across samples
+    - Tedious to parse the columns
+    
+2) Download each metrics from the O2 cluster and import them into Excel/Excel-like program that puts tab-delmited files into a grid
+  **Pros:**
+    - Easier to interpret the data than the `less` buffer approach
+  **Cons:**
+    - Hard to compare across samples
+    - Have to download the metrics files from the O2 cluster
+    
+3) Collate metrics files using `MultiQC` and download the `MultiQC` HTML report from the O2 cluster
+  **Pros:**
+    - Alignment metrics are easy to compare across samples
+    - Easy to interpret results
+  **Cons:**
+    - Have to download a file from the O2 cluster
+    - Have to run samples through an extra `MultiQC` step
+
+None of the above methods are wrong, but some are more elegant than others. One might use **Method 1)** if they only had a handful of samples (~<5) to analyze and only wanted a single statistic, like alignment rate, from each. Then, it might be fastest just to open them up in a `less` buffer. However, if one has lots of samples (>5) then the advantages of `MultiQC` collating the results starts to become really helpful and one might choose **Method 3)**. Unfortunately, `MultiQC` doesn't display *ALL* of the data contained in the metrics file, so one may be inclined to do **Method 2** and downloard the directory full of metrics files in order to view the metrics not included in the `MultiQC` report in a program like Microsoft Excel.
+
+However, for this workshop, we are going to collate our results in `MultiQC` and download the HTML report to our local computers.
+
+## Inspecting `Picard` Alignment Metrics
+
+Collating our `MultiQC` results should be relatively quick
+
+
+
+
+
+
+
+
 ***
 
 *This lesson has been developed by members of the teaching team at the [Harvard Chan Bioinformatics Core (HBC)](http://bioinformatics.sph.harvard.edu/). These are open access materials distributed under the terms of the [Creative Commons Attribution license](https://creativecommons.org/licenses/by/4.0/) (CC BY 4.0), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.*
