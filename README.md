@@ -2,7 +2,7 @@
 
 | Audience | Computational skills required| Duration |
 :----------|:----------|:----------|
-| Biologists | Intorduction to the Command-line | 3 - 2.5 hour sessions |
+| Biologists | Introduction to the Command-line | 3 - 2.5 hour sessions |
 
 ### Description
 
