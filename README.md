@@ -16,8 +16,10 @@
 ### Installation Requirements
 ***All:***
 [FileZilla Client](https://filezilla-project.org/download.php?type=client) (make sure you get ‘FileZilla Client')
+
 ***Mac users:***
 No additional installation requirements.  
+
 ***Windows users:***
 [GitBash](https://git-scm.com/download/win)  
 
