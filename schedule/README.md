@@ -20,8 +20,8 @@ I. Please **study the contents** and **work through all the code** within the fo
              - <br>
              - <br><br>
         </details>
-
-  2. [Sequence Read Alignment](../lessons/sequence_alignment_theory.md)
+        
+  2. [Evaluating Read Quality with `FastQC`](../lessons/fastqc.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>This lesson will cover:<br>
@@ -29,7 +29,7 @@ I. Please **study the contents** and **work through all the code** within the fo
              - <br><br>
         </details>
 
-  3. [Alignment File Processing ](../lessons/alignment_file_processing.md)
+  3. [Sequence Read Alignment](../lessons/sequence_alignment_theory.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>This lesson will cover:<br>
@@ -37,7 +37,15 @@ I. Please **study the contents** and **work through all the code** within the fo
              - <br><br>
         </details>
 
-  4. [Alignment File Quality Control](../lessons/alignment_QC.md)
+  4. [Alignment File Processing ](../lessons/alignment_file_processing.md)
+      <details>
+       <summary><i>Click here for a preview of this lesson</i></summary>
+         <br>This lesson will cover:<br>
+             - <br>
+             - <br><br>
+        </details>
+
+  5. [Alignment File Quality Control](../lessons/alignment_QC.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>This lesson will cover:<br>
