@@ -63,7 +63,7 @@ java -jar $SNPEFF/snpEff.jar  eff \
 -csvStats ~/variant_calling/reports/syn3_hg19-effects-stats.csv \
 -s ~/variant_calling/reports/syn3_hg19-effects-stats.html \
 GRCh38.p7.RefSeq \
-~/variant_calling/vcf_files/syn3_GRCh38.p7-raw-filt.vcf.gz > ~/variant_calling/vcf_files/syn3_GRCh38.p7-raw-filt.snpeff.vcf
+~/variant_calling/vcf_files/syn3_GRCh38.p7-raw-filt.vcf > ~/variant_calling/vcf_files/syn3_GRCh38.p7-raw-filt.snpeff.vcf
 ```
 
 Submit this script using:
@@ -88,7 +88,7 @@ Let's breakdown this command and discuss each argument:
 
 `GRCh38.p7.RefSeq` This is the `SnpEff` database we are going to use for the annotation.
 
-`~/variant_calling/vcf_files/syn3_GRCh38.p7-raw-filt.vcf.gz` This is the input VCF file to be annotated
+`~/variant_calling/vcf_files/syn3_GRCh38.p7-raw-filt.vcf` This is the input VCF file to be annotated
 
 `> ~/variant_calling/vcf_files/syn3_GRCh38.p7-raw-filt.snpeff.vcf` The output of `SnpEff` will be redirected into this file.
 
