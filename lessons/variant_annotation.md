@@ -57,7 +57,6 @@ Create a new script named `run_SnpEff.sbatch` using `vim`. Once inside insert mo
 module load snpEff/4.3g
 
 java -jar $SNPEFF/snpEff.jar  eff \
--dataDir /n/groups/shared_databases/snpEff.data/ \
 -cancer \
 -noLog \
 -csvStats ~/variant_calling/reports/syn3_hg19-effects-stats.csv \
@@ -75,8 +74,6 @@ sbatch run_SnpEff.sbatch
 Let's breakdown this command and discuss each argument:
 
 `java -jar $SNPEFF/snpEff.jar  eff` `Snpeff` is a `java` packaged program, so it needs to be called with `java -jar` followed by the path where the JAR file is located on the cluster. `$SNPEFF` is just a bash variable that contains the path to JAR file. `eff` is the command within `SnpEff` to annotate variants.
-
-`-dataDir /n/groups/shared_databases/snpEff.data/` Not sure if we need this
 
 `-cancer` Not sure if we need this
 
