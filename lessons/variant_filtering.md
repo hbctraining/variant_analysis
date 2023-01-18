@@ -50,9 +50,9 @@ Next, we will add our variables:
 
 ```
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
-RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf.gz
+RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf
 
-MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}filt.vcf.gz
+MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}filt.vcf
 ```
 
 Next, we can add the `FilterMutectCells` command:
@@ -129,10 +129,10 @@ Next, we need to add some additional `bash` variables:
 
 ```
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
-RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf.gz
+RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf
 LCR_FILE=/n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed
 
-MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}filt.vcf.gz
+MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}filt.vcf
 LCR_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}LCR-filt.vcf
 ```
 
@@ -199,10 +199,10 @@ module load gatk/4.1.9.0
 module load snpEff/4.3g
 
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
-RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf.gz
+RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf
 LCR_FILE=/n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed
 
-MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}filt.vcf.gz
+MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}filt.vcf
 LCR_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}LCR-filt.vcf
 
 gatk FilterMutectCalls \
@@ -242,7 +242,7 @@ Let's inspect these lines a little:
 ##source=Mutect2
 ##tumor_sample=syn3-tumor
 ##SnpSiftVersion="SnpSift 4.3g (build 2016-11-28 08:32), by Pablo Cingolani"
-##SnpSiftCmd="SnpSift int -x -i syn3_GRCh38.p7-raw-filt.vcf.gz ../LCR-hs38.bed"
+##SnpSiftCmd="SnpSift int -x -i syn3_GRCh38.p7-raw-filt.vcf ../LCR-hs38.bed"
 ```
 
 The first five lines have been added to our VCF file by GATK. They give information on the programs that have been run on the data, which is listed on the `##source=` lines. These lines also define the column header in the VCF file that corresponds to the normal (`##normal_sample=`) and tumor sample (`##tumor_sample=`). 
