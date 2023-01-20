@@ -146,6 +146,14 @@ Let's breakdown this command:
 
 - `-O $VCF_OUTPUT_FILE` This is our output VCF file
 
+> NOTE: In order to run `MuTect2` we also need to have a FASTA index file of our reference sequence in addition to our sequence dictionary. Similarly to the sequence dictionary and `bwa` indicies, we have already created this index for you. However, the dropdown below will walk you through how to do it, should you ever need to do it on your own:
+>
+><details>
+  <summary><b>Click here for details for creating a FASTA index file in <code>samtools</code></summary>
+    FASTA index files
+</details>
+
+
 The final `sbatch` submission script for `MuTect2` should look like:
 
 ```
