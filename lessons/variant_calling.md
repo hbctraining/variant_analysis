@@ -149,9 +149,25 @@ Let's breakdown this command:
 > NOTE: In order to run `MuTect2` we also need to have a FASTA index file of our reference sequence in addition to our sequence dictionary. Similarly to the sequence dictionary and `bwa` indicies, we have already created this index for you. However, the dropdown below will walk you through how to do it, should you ever need to do it on your own:
 >
 ><details>
-  <summary><b>Click here for details for creating a FASTA index file in <code>samtools</code></summary>
-    FASTA index files
-</details>
+>  <summary><b>Click here for details for creating a FASTA index file in <code>samtools</code></b></summary>
+>    <br>FASTA index files for reference sequences are fairly common requirements for a variety of NGS software packages. <code>Picard</code> currently does not feature an ability to create a FASTA index file. However, <code>samtools</code> is a very popular tool that is used for a variety of processes for processing BAM/SAM files, but it also includes functionality for the creation of FASTA index files. First, we will need to load the `gcc` and `samtools` modules:
+>  
+>  <pre>
+>  module load gcc/6.2.0
+>  module load samtools/1.15.1</pre>
+>  
+>  The command for indexing a FASTA file is straightforward and should run pretty quickly:
+>  <pre>
+>    # YOU DON'T NEED TO RUN THIS
+>    samtools faidx \
+>    reference_sequence.fa</pre>
+>  
+>    We can breakdown this code:
+>    <ul><li><code>samtools faidx</code> This calls the <code>faidx</code> software from <code>samtools</code></li>
+>    <li><code>reference_sequence.fa</code> This is the reference sequence FASTA file that you would like to index</li></ul>
+>  
+>  Once the indexing is complete, then you shoudl have a index file (<code>reference_sequence.fa.fai</code>) in same directory as your reference sequence <code>reference_sequence.fa</code>.
+></details>
 
 
 The final `sbatch` submission script for `MuTect2` should look like:
