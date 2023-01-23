@@ -112,7 +112,7 @@ Next, we are going to move into this newly created directory and create some add
 
 ```
 cd variant_calling
-mkdir scripts results figures raw_data
+mkdir scripts results figures raw_data reports
 ```
 
 Let's move into our `raw_data` directory and copy the FASTQ data that we are going to use for our analysis:
