@@ -131,13 +131,23 @@ Next, we will load the `FastQC` module:
 module load fastqc/0.11.9
 ```
 
-Next, we will define our variables:
+Next, we will define the variables that we will be using. This step isn't necessary and you can alternatively just manually input full paths to files and parameters within the actual command. However, the use of variables instead has some distinct advantages:
+
+1) Anything used more than once could have more easily been a variable and less prone to typos. Perhaps this is a common filepath or sample name that you need to write many times. If it is a variable, you only need to type it once instead of each occurance.
+2) The use of variable allows us to use `bash` string manipulation to assign variables rather than typing each out
+3) Can help keep your commands cleaner and more organized
+4) Can help make repurposing your script for a different project easier, since it might just be the variables changing and you don't need to even touch the actual command
+
+Hopefully, the case made for assigning varibles outside of your command has been successful. The variables we will be setting for this script are:
 
 ```
 LEFT_READS=/home/$USER/variant_calling/raw_data/syn3_normal_1.fq.gz
 RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
 OUTPUT_DIRECTORY=~/variant_calling/fastqc/normal/
+THREADS=4
 ```
+
+Notice here how we are using string manipulation in `bash` to assign `$RIGHT_READS`. The left and right reads from paired-end sequencing will oftentimes be in the same directory. So this is a case where string manipulation in `bash` will be really helpful in saving time and reducing typos. 
 
 Now that we have assigned parameters to variables, we are going to get ready to run `FastQC` and before we run `FastQC` we need to make sure that the output directory exists to accept the output:
 
@@ -157,7 +167,7 @@ fastqc \
 $LEFT_READS \
 $RIGHT_READS \
 -o $OUTPUT_DIRECTORY \
--t 4
+-t $THREADS
 ```
 
 This command is pretty strightforward, but we will explain each part:
@@ -166,7 +176,7 @@ This command is pretty strightforward, but we will explain each part:
 - `$LEFT_READS` This is the left read (R1 or Read 1) input FASTQ file
 - `$Right_READS` This is the right read (R2 or Read 2) input FASTQ file
 - `-o $OUTPUT_DIRECTORY` This is the directory for the output files to be written to
-- `-t 4` This specifies the number of threads that `FastQC` can use to speed up the processing
+- `-t $THREADS` This specifies the number of threads that `FastQC` can use to speed up the processing
 
 All together, the final `sbatch` script should look like:
 
