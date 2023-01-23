@@ -265,24 +265,10 @@ sbatch bwa_alignment_normal.sbatch
 
 ## Creating Tumor `sbatch` script
 
-Now that we have created the `sbatch` script for our normal samples, we need to repeat the process for our tumor samples. All of the parameters will stay the same, we just need to edit the SBATCH error file, SBATCH output file, LEFT_READS variable, RIGHT_READS variable, SAM_FILE variable and the read group information within the `bwa` command. You could very well do this by hand and it would be just fine. However, to cut down on typos we are going to use `sed`. `sed` is a powerful tool within `bash` and [has a wide variety of applications](https://hbctraining.github.io/Training-modules/Intermediate_shell/lessons/sed.html). However, one of the most common uses for `sed` is as a "find-and-replace" tool. The syntax for this type of task is:
+Now we are going to replace all of the instances of "normal" with "tumor" using a `sed` command just like we did in the previous `FastQC` exercise. Therefore, we can call `sed` and redirect the output to a file called `bwa_alignment_tumor.sbatch` using:
 
 ```
-sed 's/pattern/replacement/g' file.txt 
-```
-
-The `s` before `/pattern/replacement/` is telling `sed` that we are going to use its **substittion** function and the `g` after `/pattern/replacement/` is telling `sed` that we want to apply that change **globally**, or every instance in the file. `pattern` represents the pattern that we are looking for and `replacement` is what we wish to replace the `pattern` with. Lastly, we need to provide `sed` some text source to apply this "find-and-replace" function, so we have provided it with `file.txt`, but you can also pipe in a string or file to apply this function to. 
-
-In our case, we are hoping to replace each instance of "normal" with "tumor". Therefore, we could call `sed` to do this using:
-
-```
-sed 's/normal/tumor/g' bwa_alignment_tumor.sbatch
-```
-
-We can see that all instances of "normal" have been replaced with "tumor". Now we would like to redirect this output to a file called `bwa_alignment_tumor.sbatch` rather than standard output, se we need to add redirection to the end of out command:
-
-```
-sed 's/normal/tumor/g' bwa_alignment_normal.sbatch >  bwa_alignment_tumor.sbatch
+sed 's/normal/tumor/g' bwa_alignment_tumor.sbatch >  bwa_alignment_tumor.sbatch
 ```
 
 If we look at the output with:
