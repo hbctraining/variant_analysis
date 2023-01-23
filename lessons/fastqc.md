@@ -145,6 +145,7 @@ We can see that all instances of "normal" have been replaced with "tumor". Now w
 
 ```
 sed 's/normal/tumor/g' fastqc_normal.sbatch >  fastqc_tumor.sbatch
+```
 
 Now, we have the tumor sample to analyze with FastQC:
 
