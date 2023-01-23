@@ -110,69 +110,9 @@ SAMPLE_NAME=`basename $LEFT_READS _1.fq.gz`
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.sam
 ```
 
-Some of these variable assignment are straightforward and are simply assigning paths to known files to `bash` variables. However, `RIGHT_READS` uses a little `bash` trick in it in order to swap the last parts of their name. Instead, we could have simply written:
+Some of these variable assignment are straightforward and are simply assigning paths to known files to `bash` variables. However, `$RIGHT_READS` uses the string manipulation we discussed in the `FastQC` lesson in order to swap the last parts of their filename. 
 
-```
-RIGHT_READS=/home/$USER/variant_calling/syn3_normal_2.fq.gz
-```
-
-However, we chose to do it this way for two reasons:
-1. Each time we use this script moving forward, we will never need to edit the `RIGHT_READS` variable
-2. Reduces the chance for typos
-3. Can help keep filenames nonmenclature consistent across files
-
-
-#### Brief `bash` Text Manipulation 
-
-Let's briefly explore how this works and discuss why we choose this way of doing it. In order to discuss this, let's create a toy example of a path:
-
-```
-TOY_EXAMPLE_PATH=~/variant_calling/sam_alignments/filename.sam
-```
-
-`bash` has some clever text manipulation tools that are going to help us. Let's introduce the `%` tool for text manipulation. `%` is placed within the `{}` of a variable and tells `bash` to remove the shortest match from the end that contains the text that follows the `%`.
-
-```
-echo ${TOY_EXAMPLE_PATH%sam}
-```
-
-We can see that we have maintained the path and stripped the `sam` extension and now all we need to do is add the new `.bam` extension. To do this, just add it to the end of the variable outside of the `{}`
-
-```
-echo ${TOY_EXAMPLE_PATH%sam}bam
-```
-
-A brief overview of some `bash` text manipulation shortcuts are in the table below:
-
-| Shortcut | Effect |
-|------|------|
-| % | Remove shortest match from the end of the string |
-| %% | Remove longest match from the end of the string|
-| # | Remove the shortest match from the beginning of the string|
-| ## | Remove the longest match from the beginning of the string|
-
-> NOTE: In the above example `%` and `%%` would give the same result, however, their differences become more clear if we used an `*` character. In the dropdown below, we provide a few more examples for those who are curious for examples of each of these text manipulation tools.
-
-> NOTE: The `#` and `##` within `{}` for text manipulation is one of the rare times in `bash` that uses `#` for a purpose other than commenting code!
-
-<details>
-  <summary><b>Click here for more text manipulation examples in <code>bash</code></b></summary>
-  <br><code><b>%</b></code> Removes the shortest match of "sam" from the end of the string
-  <pre>echo ${TOY_EXAMPLE_PATH%sam*}</pre>
-  Returning:<br>
-  <pre>/home/wig051/variant_calling/sam_alignments/filename.</pre>
-  <code><b>%%</b></code> Removes the longest match of "sam" from the end of the string<br>
-  <pre>echo ${TOY_EXAMPLE_PATH%%sam*}</pre>
-  Returning:<br>
-  <pre>/home/wig051/variant_calling/</pre>
-  <code><b>#</b></code> Removes the shortest match of "sam" from the start of the string<br>
-  <pre>echo ${TOY_EXAMPLE_PATH#*sam}</pre>
-  Returning:<br>
-  <pre>_alignments/filename.sam</pre>
-  <code><b>##</b></code> Removes the longest match of "sam" from the start of the string<br>
-  <pre>echo ${TOY_EXAMPLE_PATH##*sam}</pre>
-  Which deletes the entire string!
-</details>
+We also uses `basename` is parse out the path from a file and when coupled with an argument after the filename, it will trim the end of the file as well as we can see with `$REFERENCE_SEQUENCE_NAME` and `$SAMPLE_NAME`
   
 # Short Read Alignment
 
