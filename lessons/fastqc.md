@@ -14,6 +14,84 @@ Before engaging in any next-generation sequencing project is it best practice to
 <img src="../img/Read_QC_Pipeline.png" width="800">
 </p>
 
+Before we discuss implementing `FastQC` we are going to introduce string manipulation in `bash` which we will be using throughout our work.
+
+## `bash` String Manipulation
+
+String manipulation in `bash` can be a very helpful tool in minimizing typos whenever evaluating a script that uses `bash`. Before we discuss manipulating strings, we should first define a string. A string is a data type that is used to represent text rather than integers. Examples of strings include:
+
+- "Hello World"
+- "/path/to/file.txt"
+- "TPS_Report_2019"
+
+With this understanding of what strings are, we might start to see some value in them, particularly with respect to filepaths. Imagine you have two filepaths:
+
+```
+/This/is/my/extremely/super/duper/long/and/annoying/filepath/file_1.txt
+/This/is/my/extremely/super/duper/long/and/annoying/filepath/file_2.txt
+``` 
+
+Alternatively, we could use `bash` variables and string manipulation:
+
+```
+FILE_1=/This/is/my/extremely/super/duper/long/and/annoying/filepath/file_1.txt
+FILE_2=${FILE_1%1.txt}2.txt
+```
+
+We will explain the syntax in a bit, but we might chose to do it this way for three reasons:
+1. As long as File 1 is always in the same directory as File 2 and they both end with `1.txt` and `2.txt`, respectively, then each time we use this script moving forward, we will never need to edit the `FILE_2` variable. 
+2. Reduces the chance for typos
+3. Can also help keep filename nonmenclature consistent across files
+
+Let's briefly explore how this works and discuss why we choose this way of doing it. In order to discuss this, let's create a toy example of a path:
+
+```
+TOY_EXAMPLE_PATH=~/variant_calling/sam_alignments/filename.sam
+```
+
+`bash` has some clever text manipulation tools that are going to help us. Let's introduce the `%` tool for text manipulation. `%` is placed within the `{}` of a variable and tells `bash` to remove the shortest match from the end that contains the text that follows the `%`.
+
+```
+echo ${TOY_EXAMPLE_PATH%sam}
+```
+
+We can see that we have maintained the path and stripped the `sam` extension and now all we need to do is add the new `.bam` extension. To do this, just add it to the end of the variable outside of the `{}`
+
+```
+echo ${TOY_EXAMPLE_PATH%sam}bam
+```
+
+A brief overview of some `bash` text manipulation shortcuts are in the table below:
+
+| Shortcut | Effect |
+|------|------|
+| % | Remove shortest match from the end of the string |
+| %% | Remove longest match from the end of the string|
+| # | Remove the shortest match from the beginning of the string|
+| ## | Remove the longest match from the beginning of the string|
+
+> NOTE: In the above example `%` and `%%` would give the same result, however, their differences become more clear if we used an `*` character. In the dropdown below, we provide a few more examples for those who are curious for examples of each of these text manipulation tools.
+
+> NOTE: The `#` and `##` within `{}` for text manipulation is one of the rare times in `bash` that uses `#` for a purpose other than commenting code!
+
+<details>
+  <summary><b>Click here for more text manipulation examples in <code>bash</code></b></summary>
+  <br><code><b>%</b></code> Removes the shortest match of "sam" from the end of the string
+  <pre>echo ${TOY_EXAMPLE_PATH%sam*}</pre>
+  Returning:<br>
+  <pre>/home/wig051/variant_calling/sam_alignments/filename.</pre>
+  <code><b>%%</b></code> Removes the longest match of "sam" from the end of the string<br>
+  <pre>echo ${TOY_EXAMPLE_PATH%%sam*}</pre>
+  Returning:<br>
+  <pre>/home/wig051/variant_calling/</pre>
+  <code><b>#</b></code> Removes the shortest match of "sam" from the start of the string<br>
+  <pre>echo ${TOY_EXAMPLE_PATH#*sam}</pre>
+  Returning:<br>
+  <pre>_alignments/filename.sam</pre>
+  <code><b>##</b></code> Removes the longest match of "sam" from the start of the string<br>
+  <pre>echo ${TOY_EXAMPLE_PATH##*sam}</pre>
+  Which deletes the entire string!
+</details>
 
 ## `FastQC`
 
