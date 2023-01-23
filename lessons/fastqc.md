@@ -197,6 +197,7 @@ module load fastqc/0.11.9
 LEFT_READS=/home/$USER/variant_calling/raw_data/syn3_normal_1.fq.gz
 RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
 OUTPUT_DIRECTORY=~/variant_calling/fastqc/normal/
+THREADS=4
 
 mkdir -p $OUTPUT_DIRECTORY
 
@@ -204,7 +205,7 @@ fastqc \
 $LEFT_READS \
 $RIGHT_READS \
 -o $OUTPUT_DIRECTORY \
--t 4
+-t $THREADS
 ```
 
 Now we can submit this script to the cluster:
