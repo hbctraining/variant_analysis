@@ -132,24 +132,30 @@ sbatch picard_CollectAlignmentMetrics_tumor.sbatch
 Once the job has finished we would inspect the output files. This could be done in one of a few ways:
 
 1) View each metrics file in a `less` buffer
+  
   **Pros:**
     - Simple to do
+  
   **Cons:**
     - Hard to compare across samples
     - Tedious to parse the columns
     
 2) Download each metrics from the O2 cluster and import them into Excel/Excel-like program that puts tab-delmited files into a grid
+  
   **Pros:**
     - Easier to interpret the data than the `less` buffer approach
+  
   **Cons:**
     - Hard to compare across samples
     - Have to download the metrics files from the O2 cluster
     
 3) Collate metrics files using `MultiQC` and download the `MultiQC` HTML report from the O2 cluster
+  
   **Pros:**
     - Alignment metrics are easy to compare across samples
     - Easy to interpret results
     - We can combine the `picard CollectAlignmentSummaryMetrics` output with our `FASTQC` reports
+  
   **Cons:**
     - Have to download a file from the O2 cluster
     - Have to run samples through an extra `MultiQC` step
