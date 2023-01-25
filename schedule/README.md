@@ -68,8 +68,17 @@ I. Please **study the contents** and **work through all the code** within the fo
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>Once we have our alignment files processed, we want to evaluate them to ensure that the data is of high-quality before proceeding into variant calling. We also need to merge our read quality QC from <code>FastQC</code> into a report with these alignment QC metrics using <code>MultiQC</code>.
          <br><br>This lesson will cover:<br>
-             <ul><li>Verify alignment rates using <code>Picard</code></li>
+             <ul><li>Estimate alignment rates using <code>Picard</code></li>
              <li>Merge <code>Picard</code> QC metrics with <code>FastQC</code> metrics using <code>MultiQC</code></li></ul>
+        </details>
+        
+  6. [Evaluating Quality Control Metrics](../lessons/evaluate_QC.md)
+      <details>
+       <summary><i>Click here for a preview of this lesson</i></summary>
+         <br>Many high-performance computing clusters are not designed to render the HTML reports produced by <code>MultiQC</code>. Thus, we will use <code>FileZilla</code> to dowload our <code>MultiQC</code> HTML report and interpret the results within it.
+         <br><br>This lesson will cover:<br>
+             <ul><li>Evaluating alignment rates</li>
+             <li>Intepretting read QC metrics within <code>MultiQC</code> HTML report</li></ul>
         </details>
         
 
