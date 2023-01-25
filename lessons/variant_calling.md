@@ -2,8 +2,7 @@
 
 ## Learning Objectives
 
--
--
+- Differentiate between germlin and somatic variant calling
 - Call somatics variants from `bam` files using Mutect2
 
 ## Germline versus Somatic Variant Calling
@@ -214,13 +213,13 @@ gatk Mutect2 \
 
 ## Tumor-only Mode
 
-MuTect2 is capable of running without a matched normal sample, otherwise called "Tumor-only mode". However, it's ability to reliably call somatic variants is greatly diminished as it has diificulty distinguishing between high frequency variants and germline variants. 
+MuTect2 is capable of running without a matched normal sample, otherwise called "Tumor-only mode". However, it's ability to reliably call somatic variants is greatly diminished as it has difficulty distinguishing between high frequency variants and germline variants. 
 
 ## Discuss PoNs?
 
 Panel of Normals are is a VCF of normal samples run through "tumor-only mode". If the variant is seen in multiple samples then this variant is included in the Panel of Normals. If these variants are then found in the tumor-sample then the variant is ignored. If panels of normal are used, then they should be gathered using a similiar sequeuncing design as the tumor samples.
 
-## Discuss Common General Population Allele Frequencies
+## Discuss Common General Population Allele Frequencies?
 
 gnomAD
 
