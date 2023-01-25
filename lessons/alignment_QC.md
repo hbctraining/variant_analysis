@@ -128,6 +128,16 @@ sbatch picard_CollectAlignmentMetrics_normal.sbatch
 sbatch picard_CollectAlignmentMetrics_tumor.sbatch
 ```
 
+## Collecting Coverage Metrics
+
+Coverage is the average level of alignment for any random locus in the genome.  `Picard` also has a package called `CollectWgsMetrics` which is also very nice for collecting data about coverage for our alignments. However, since our data set is whole exome sequencing rather than whole genome sequencing and thus only compromises about 1-2% of the human genome, average coverage across the whole genome is not a very useful metric. However, if one did have whole genome data, then running `CollectWgsMetrics` would be useful. In the dropdown box below be provide the code that yocould use to collect this information.
+
+<details>
+  <summary>Click here to find out more on collecting coverage metrics for WGS datasets in <code>Picard</code></summary>
+    <br><br>The tool in <code>Picard</code> used for collecting coverage metrics for WGS datasets is called <code>CollectWgsMetrics</code>.
+        
+</details>
+
 ## Options for Inspecting `Picard` Alignment Metrics
 
 Once the job has finished we would inspect the output files. This could be done in one of a few ways:
