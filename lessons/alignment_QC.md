@@ -2,7 +2,8 @@
 
 ## Learning Objectives
 
-- Verify alginment rates using `Picard`
+- Verify alignment rates using `Picard`
+- Merge `Picard` QC metrics with `FastQC` metrics using `MultiQC`
 
 ## Factors Impacting Alignment
 
