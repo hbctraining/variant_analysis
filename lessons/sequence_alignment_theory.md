@@ -4,7 +4,6 @@
 
 - Enumerate difficulties with alignment
 - Create an `sbatch` script to align reads
-- Implement `sed` to search-and-replace text in a text file
 
 <p align="center">
 <img src="../img/Variant_calling_workflow.png" width="300">
