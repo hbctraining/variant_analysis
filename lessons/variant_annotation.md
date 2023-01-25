@@ -2,7 +2,8 @@
 
 ## Learning Objectives
 
-- Annotate a VCF file with for functional impacts with SnpEff
+- Annotate a VCF file with for functional impacts with `SnpEff`
+- Differentiate between an unannotated and annotated VCF file
 
 ## Introduction
 
