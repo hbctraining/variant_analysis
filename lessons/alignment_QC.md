@@ -130,12 +130,27 @@ sbatch picard_CollectAlignmentMetrics_tumor.sbatch
 
 ## Collecting Coverage Metrics
 
-Coverage is the average level of alignment for any random locus in the genome.  `Picard` also has a package called `CollectWgsMetrics` which is also very nice for collecting data about coverage for our alignments. However, since our data set is whole exome sequencing rather than whole genome sequencing and thus only compromises about 1-2% of the human genome, average coverage across the whole genome is not a very useful metric. However, if one did have whole genome data, then running `CollectWgsMetrics` would be useful. In the dropdown box below be provide the code that yocould use to collect this information.
+Coverage is the average level of alignment for any random locus in the genome.  `Picard` also has a package called `CollectWgsMetrics` which is also very nice for collecting data about coverage for our alignments. However, since our data set is whole exome sequencing rather than whole genome sequencing and thus only compromises about 1-2% of the human genome, average coverage across the whole genome is not a very useful metric. However, if one did have whole genome data, then running `CollectWgsMetrics` would be useful and even could be incorporated easily into the downstream <code>MultiQC</code> HTML report. In the dropdown box below be provide the code that you could use to collect this information.
 
 <details>
-  <summary>Click here to find out more on collecting coverage metrics for WGS datasets in <code>Picard</code></summary>
-    <br><br>The tool in <code>Picard</code> used for collecting coverage metrics for WGS datasets is called <code>CollectWgsMetrics</code>.
+<summary>Click here to find out more on collecting coverage metrics for WGS datasets in <code>Picard</code></summary>
+<br>The tool in <code>Picard</code> used for collecting coverage metrics for WGS datasets is called <code>CollectWgsMetrics</code>.<br><br>
+  <pre>
+  # Assign paths to bash variables
+  $COORDINATE_SORTED_BAM_FILE=/path/to/sample.coordinate_sorted.bam
+  $OUTPUT=/home/$USER/variant_calling/reports/picard/sample.CollectWgsMetrics.txt
+  $REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa<br>
+  # Run Picard CollectWgsMetrics \
+  picard CollectWgsMetrics \
+  INPUT=$COORDINATE_SORTED_BAM_FILE \
+  OUTPUT=$METRICS_OUTPUT_FILE \
+  REFERENCE_SEQUENCE=$REFERENCE
+  </pre>
         
+  <ul><li><code>picard CollectWgsMetrics</code> This calls the <code>CollectWgsMetrics</code> package within <code>Picard</code></li>
+  <li><code>INPUT=$COORDINATE_SORTED_BAM_FILE</code> Assign the input as the coordinate sorted BAM file</li>
+  <li><code>OUTPUT=$METRICS_OUTPUT_FILE</code> Assign the report output file </li>
+  <li><code>REFERENCE_SEQUENCE=$REFERENCE</code> This is the path to the reference genome that was used for the alignment.</li></ul>
 </details>
 
 ## Options for Inspecting `Picard` Alignment Metrics
