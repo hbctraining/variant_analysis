@@ -546,4 +546,6 @@ VARIANT_ANNOTATION_JOB_ID=`echo $VARIANT_ANNOTATION_JOB_SUBMISSION | cut -d ' ' 
 echo -e "Variant annotation job submitted as job ID $VARIANT_ANNOTATION_JOB_ID"
 ```
 
+[Next Lesson >>>](variant_prioritization.md)
 
+[Back to Schedule](../schedule/README.md)
