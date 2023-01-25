@@ -1,7 +1,7 @@
 # Learning objectives
 
 - Differentiate between query-sorted and coordinate-sorted alignment files
-- Describe and remove duplicatge reads
+- Describe and remove duplicate reads
 - Process a raw SAM file for input into a BAM for GATK
 
 # Alignment file processing with `samtools` and `Picard`
