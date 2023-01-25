@@ -50,7 +50,7 @@ cd ~/path/to/reference/sequence/directory/
 
 <pre>
 bwa index reference_sequence.fasta
-</pre></li>
+</pre></li></ol>
 
 This process may take up to 30+ minutes to run depending on the reference sequence size. The output of this command will produce five files:
 
