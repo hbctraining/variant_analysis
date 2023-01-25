@@ -39,7 +39,7 @@ I. Please **study the contents** and **work through all the code** within the fo
   3. [Sequence Read Alignment](../lessons/sequence_alignment_theory.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
-         Once we have completed our QC on sequence reads we will be aligning the reads to a reference sequence. This alignment step places each read in genomic space and creates the bedrock for calling variants.
+         <br>Once we have completed our QC on sequence reads we will be aligning the reads to a reference sequence. This alignment step places each read in genomic space and creates the bedrock for calling variants.
          <br><br>This lesson will cover:<br>
              <ul><li>Enumerate difficulties with alignment</li>
              <li>Create an <code>sbatch</code> script to align reads</li></ul>
@@ -48,7 +48,7 @@ I. Please **study the contents** and **work through all the code** within the fo
   4. [Alignment File Processing ](../lessons/alignment_file_processing.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
-         Before we can call variants from our alignment files, we need to do some processing to clean them up. The two major concerns here are organizing (sorting) our alignment files for our analyses and removing duplicates.
+         <br>Before we can call variants from our alignment files, we need to do some processing to clean them up. The two major concerns here are organizing (sorting) our alignment files for our analyses and removing duplicates.
          <br><br>This lesson will cover:<br>
              <ul><li>Differentiate between query-sorted and coordinate-sorted alignment files</li>
              <li>Describe and remove duplicate reads</li>
@@ -58,7 +58,7 @@ I. Please **study the contents** and **work through all the code** within the fo
   5. [Alignment File Quality Control](../lessons/alignment_QC.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
-         Once we have our alignment files processed, we want to evaluate them to ensure that the data is of high-quality before proceeding into variant calling. We also need to merge our read quality QC from <code>FastQC</code> into a report with these alignment QC metrics using <code>MultiQC</code>.
+         <br>Once we have our alignment files processed, we want to evaluate them to ensure that the data is of high-quality before proceeding into variant calling. We also need to merge our read quality QC from <code>FastQC</code> into a report with these alignment QC metrics using <code>MultiQC</code>.
          <br><br>This lesson will cover:<br>
              <ul><li>Verify alignment rates using <code>Picard</code></li>
              <li>Merge <code>Picard</code> QC metrics with <code>FastQC</code> metrics using <code>MultiQC</code></li></ul>
