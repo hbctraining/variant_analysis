@@ -1,5 +1,13 @@
 # Workshop Schedule
 
+## Pre-reading
+
+**Before the workshop:**
+
+Please read the following page to learn about the dataset we will be using:
+
+[ICGC-TCGA DREAM Mutation Calling Challenge Synthetic Dataset](syn3_dataset.md)
+
 ## Day 1
 
 | Time |  Topic  | Instructor |
