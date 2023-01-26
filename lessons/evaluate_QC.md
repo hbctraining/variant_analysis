@@ -139,6 +139,26 @@ We can see the weak primer bias from the sequencing at the begining, but it base
   </p>
 </details>
 
+### GC Content Distribution
+
+<p align="center">
+<img src="../img/GC_content.png" width="800">
+</p>
+
+### Duplication Levels
+
+<p align="center">
+<img src="../img/Duplication_levels.png" width="800">
+</p>
+
+### Duplication Levels
+
+<p align="center">
+<img src="../img/Overrepresented_sequences.png" width="800">
+</p>
+
+
+
 [Next Lesson >>>](variant_calling.md)
 
 [Back to Schedule](../schedule/README.md)
