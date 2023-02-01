@@ -141,22 +141,45 @@ We can see the weak primer bias from the sequencing at the begining, but it base
 
 ### GC Content Distribution
 
+Similar to the previous plots on sequence content, we are mostly looking to make sure that there is a reasonably normally-shaped distribution around what the expected GC content is for a reference genome/exome. Strong skews, multi-modal shapes or aburpt spikes could indicate errors in sequencing or contamination. 
+
 <p align="center">
 <img src="../img/GC_content.png" width="800">
 </p>
 
+In the above figure, we see shape that we would expect to see. It is smooth, normally-centered around a GC-percentage reasonable for the human exome. We don't see any abrupt peaks and the curve looks mostly unimodal.
+
 ### Duplication Levels
+
+This next plot is going to help us visualize the amount of duplicate sequence we see in the reads. This figure would ideally be strongly left-ward shifted with a tail that quickly tapers down. This would indicate that much of the sequence in the reads in not duplicated and is present in single copy.   
 
 <p align="center">
 <img src="../img/Duplication_levels.png" width="800">
 </p>
 
-### Duplication Levels
+This figure appears to be about what one would hope to see as most of the reads don't show high levels of duplication.
+
+### Overrepresented Sequences
+
+This table will display any overrepresented sequences and potential sources. It is not uncommon to get adaptor sequences in this table. In general, as long as their are only a handful or fewer overrepresented sequences with all of them being less than ~1%, then your sample should be fine. 
 
 <p align="center">
 <img src="../img/Overrepresented_sequences.png" width="800">
 </p>
 
+These samples don't show any overrepresented sequences, which is great.
+
+### Overall QC Impressions
+
+The QC for this dataset looks pretty good. We have a high alignment to our reference genome. Our read qualities are good and the GC-content is within the range we would expect for our sample. There doesn't appear to be many duplicated or overpresented sequences. All of these signs point to having a high-quality dataset, which perhaps was expected from a *in silico* generated dataset.
+
+## Important Considerations on QC Metrics
+
+**1) Rarely will one single metric will tell you that there is something wrong about the data. Small deviations away from the "ideal" are normal and should mostly only be a concern if there are multiple deviations with moderate impact. Many of these metrics are somewhat redundant, so any problematic deviation should likely show up in multiple diagnostics.** For example, if you example a GC content of 41%, but your data comes back as 43%, that single metric on it's own is likely not too problematic. However, if the GC content comes back as 60%, there's only 40% alignment to the reference genome and there appears to be a multi-modal distribution in the GC content distribution, then you should definitely pause and evaluate sources of variation that could be creating this pattern.
+
+**2) A poor QC report *DOES NOT* mean that you need to through out all of the data immediately.** Oftentimes, there are still salvagable data in a dataset that fails QC on some metrics. Perhaps it means you will need to remove adaptor contamination or other contaminants. While it is unfortunate to have to discard reads and weaken your depth for finding variants, having clean data will substanially help the analyses more accuarately call variants. Of course, some datasets are beyond salvagable, but these are generally rare. 
+
+**3) As with any NGS QC analysis, be aware of the biological and technical aspects of your sample.** Perhaps your organism of interest or sample has some peculiar biological/technical aspect as this may or likely will come through in the QC analysis. This biological or technical aspect could skew some QC metrics or create patterns that we haven't shown here. For instance, our GC metrics were a bit elevated compared to the human genome, but we recalled that we are working from exome data and the human exome is more GC-rich than the rest of the genome, so our elevate GC percentages were reasonable. 
 
 
 [Next Lesson >>>](variant_calling.md)
