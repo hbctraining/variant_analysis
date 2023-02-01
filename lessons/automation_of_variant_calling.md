@@ -22,6 +22,9 @@ Currently, within our `sbatch` submission scripts, we have `bash` variables set 
 cd ~/variant_calling/scripts/
 ```
 
+#### `FastQC`
+
+
 #### `bwa` Alignment
 
 Because many of some variables already weren't explictly defined (`$RIGHT_READS` and `$SAM_FILE`), but were rather dependent on our explicitly defined variables (`$REFERENCE_SEQUENCE` and `LEFT_READS`) we won't need to edit our script as much. We are able to do this because `sbatch` accepts positional parameters. So let's create a new script and make this edit.
@@ -168,6 +171,8 @@ OUTPUT=$COORDINATE_SORTED_BAM_FILE \
 SORT_ORDER=coordinate \
 CREATE_INDEX=true
 ```
+
+#### `MultiQC`
 
 #### Variant calling with GATK
 
