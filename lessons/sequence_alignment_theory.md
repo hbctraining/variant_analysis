@@ -207,7 +207,7 @@ sbatch bwa_alignment_normal.sbatch
 Now we are going to replace all of the instances of "normal" with "tumor" using a `sed` command just like we did in the previous `FastQC` exercise. Therefore, we can call `sed` and redirect the output to a file called `bwa_alignment_tumor.sbatch` using:
 
 ```
-sed 's/normal/tumor/g' bwa_alignment_tumor.sbatch >  bwa_alignment_tumor.sbatch
+sed 's/normal/tumor/g' bwa_alignment_normal.sbatch >  bwa_alignment_tumor.sbatch
 ```
 
 If we look at the output with:
