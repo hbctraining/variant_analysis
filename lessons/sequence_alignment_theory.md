@@ -246,7 +246,7 @@ SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMP
 bwa mem \
 -M \
 -t 8 \
--R '@RG\tID:syn3-tumor\tPL:illumina\tPU:syn3-tumor\tSM:syn3-tumor' \
+-R "@RG\tID:$SAMPLE_NAME\tPL:illumina\tPU:$SAMPLE_NAME\tSM:$SAMPLE_NAME" \
 $REFERENCE_SEQUENCE \
 $LEFT_READS \
 $RIGHT_READS \
