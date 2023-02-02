@@ -468,7 +468,7 @@ As a result your tumor `Picard` processing script should look like:
 #SBATCH -e picard_alignment_processing_tumor_%j.err
 
 module load picard/2.8.0
-  
+
 # Assign file paths to variables                                                                                                               
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_tumor_GRCh38.p7.sam
 REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/picard/
@@ -479,7 +479,7 @@ METRICS_FILE=${REPORTS_DIRECTORY}/${SAMPLE_NAME}/${SAMPLE_NAME}.remove_duplicate
 COORDINATE_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}coordinate_sorted.bam`
 
 mkdir -p /home/${USER}/variant_calling/reports/picard/
-  
+
 java -jar $PICARD/picard-2.8.0.jar SortSam \
 INPUT=$SAM_FILE \
 OUTPUT=$QUERY_SORTED_BAM_FILE \
@@ -495,7 +495,7 @@ java -jar $PICARD/picard-2.8.0.jar SortSam \
 INPUT=$REMOVE_DUPLICATES_BAM_FILE \
 OUTPUT=$COORDINATE_SORTED_BAM_FILE \
 SORT_ORDER=coordinate \
-CREATE_INDEX=true  
+CREATE_INDEX=true
 ```  
 
 # Submitting `Picard` processing
