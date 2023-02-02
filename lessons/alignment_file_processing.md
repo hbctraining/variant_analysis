@@ -477,6 +477,7 @@ As a result your tumor `Picard` processing script should look like:
 #SBATCH -o picard_alignment_processing_tumor_%j.out
 #SBATCH -e picard_alignment_processing_tumor_%j.err
 
+# Load module
 module load picard/2.8.0
 
 # Assign file paths to variables
