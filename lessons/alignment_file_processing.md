@@ -60,21 +60,28 @@ Start the `sbatch` script with our shebang line, description of the script and o
 #SBATCH -e picard_alignment_processing_normal_%j.err
 ```
 
-Next, let's define some variables that we will be using:
-
-```
-# Assign file paths to variables 
-SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/normal_GRCh38.p7.sam
-QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
-REMOVE_DUPLICATES_BAM_FILE=`echo ${SAM_FILE%sam}remove_duplicates.bam`
-METRICS_FILE=`echo ${SAM_FILE%sam}remove_duplicates_metrics.txt`
-COORDINATE_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}coordinate_sorted.bam`
-```
-
 Load the `Picard` module: 
 
 ```
 module load picard/2.8.0
+```
+
+Next, let's define some variables that we will be using:
+
+```
+# Assign file paths to variables                                                                                                               
+SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.sam
+QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
+REMOVE_DUPLICATES_BAM_FILE=`echo ${SAM_FILE%sam}remove_duplicates.bam`
+SAMPLE_NAME=`basename $SAM_FILE .sam`
+METRICS_FILE=/home/${USER}/variant_calling/reports/picard/${SAMPLE_NAME}.remove_duplicates_metrics.txt
+COORDINATE_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}coordinate_sorted.bam`
+```
+
+Make a directory to hold the `Picard` reports:
+
+```
+mkdir -p /home/${USER}/variant_calling/reports/picard/
 ```
 
 **Note: `Picard` is one of the pieces of software that does NOT require gcc/6.2.0 to also be loaded** 
@@ -152,7 +159,7 @@ For most downstream processes, coordinate-sorted alignment files are required. A
 ```
 java -jar $PICARD/picard-2.8.0.jar SortSam \
 INPUT=$REMOVE_DUPLICATES_BAM_FILE \
-OUTPUT=COORDINATE_SORTED_BAM_FILE \
+OUTPUT=$COORDINATE_SORTED_BAM_FILE \
 SORT_ORDER=coordinate \
 CREATE_INDEX=true
 ```
@@ -183,14 +190,17 @@ Your final `sbatch` script for `Picard` should look like:
 #SBATCH -o picard_alignment_processing_normal_%j.out
 #SBATCH -e picard_alignment_processing_normal_%j.err
 
-# Assign file paths to variables 
-SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/normal_GRCh38.p7.sam
+module load picard/2.8.0
+
+# Assign file paths to variables                                                                                                               
+SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.sam
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
 REMOVE_DUPLICATES_BAM_FILE=`echo ${SAM_FILE%sam}remove_duplicates.bam`
-METRICS_FILE=`echo ${SAM_FILE%sam}remove_duplicates_metrics.txt`
+SAMPLE_NAME=`basename $SAM_FILE .sam`
+METRICS_FILE=/home/${USER}/variant_calling/reports/picard/${SAMPLE_NAME}.remove_duplicates_metrics.txt
 COORDINATE_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}coordinate_sorted.bam`
 
-module load picard/2.8.0
+mkdir -p /home/${USER}/variant_calling/reports/picard/
 
 java -jar $PICARD/picard-2.8.0.jar SortSam \
 INPUT=$SAM_FILE \
@@ -205,7 +215,7 @@ REMOVE_DUPLICATES=true
 
 java -jar $PICARD/picard-2.8.0.jar SortSam \
 INPUT=$REMOVE_DUPLICATES_BAM_FILE \
-OUTPUT=COORDINATE_SORTED_BAM_FILE \
+OUTPUT=$COORDINATE_SORTED_BAM_FILE \
 SORT_ORDER=coordinate \
 CREATE_INDEX=true
 ```
@@ -455,15 +465,18 @@ As a result your tumor `Picard` processing script should look like:
 #SBATCH -o picard_alignment_processing_tumor_%j.out
 #SBATCH -e picard_alignment_processing_tumor_%j.err
 
-# Assign file paths to variables 
-SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/tumor_GRCh38.p7.sam
+module load picard/2.8.0
+  
+# Assign file paths to variables                                                                                                               
+SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_tumor_GRCh38.p7.sam
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
 REMOVE_DUPLICATES_BAM_FILE=`echo ${SAM_FILE%sam}remove_duplicates.bam`
-METRICS_FILE=`echo ${SAM_FILE%sam}remove_duplicates_metrics.txt`
-COORDINATE_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}coordinate_sorted.bam``
+SAMPLE_NAME=`basename $SAM_FILE .sam`
+METRICS_FILE=/home/${USER}/variant_calling/reports/picard/${SAMPLE_NAME}.remove_duplicates_metrics.txt
+COORDINATE_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}coordinate_sorted.bam`
 
-module load picard/2.8.0
-
+mkdir -p /home/${USER}/variant_calling/reports/picard/
+  
 java -jar $PICARD/picard-2.8.0.jar SortSam \
 INPUT=$SAM_FILE \
 OUTPUT=$QUERY_SORTED_BAM_FILE \
@@ -477,7 +490,7 @@ REMOVE_DUPLICATES=true
 
 java -jar $PICARD/picard-2.8.0.jar SortSam \
 INPUT=$REMOVE_DUPLICATES_BAM_FILE \
-OUTPUT=COORDINATE_SORTED_BAM_FILE \
+OUTPUT=$COORDINATE_SORTED_BAM_FILE \
 SORT_ORDER=coordinate \
 CREATE_INDEX=true  
 ```  
