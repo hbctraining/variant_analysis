@@ -142,23 +142,23 @@ sbatch run_SnpEff.sbatch
 
 Let's breakdown this command and discuss each argument:
 
-`java -jar $SNPEFF/snpEff.jar  eff` `Snpeff` is a `java` packaged program, so it needs to be called with `java -jar` followed by the path where the JAR file is located on the cluster. `$SNPEFF` is just a bash variable that contains the path to JAR file. `eff` is the command within `SnpEff` to annotate variants.
+- `java -jar $SNPEFF/snpEff.jar  eff` `Snpeff` is a `java` packaged program, so it needs to be called with `java -jar` followed by the path where the JAR file is located on the cluster. `$SNPEFF` is just a bash variable that contains the path to JAR file. `eff` is the command within `SnpEff` to annotate variants.
 
-`-dataDir $DATADIR` This is the path to the data directory that holds the `SnpEff` annotations
+- `-dataDir $DATADIR` This is the path to the data directory that holds the `SnpEff` annotations
 
-`-cancer` Performs "cancer" comparisons
+- `-cancer` Performs "cancer" comparisons
 
-`-noLog` Does not report usage statistics
+- `-noLog` Does not report usage statistics
 
-`-csvStats $CSV_STATS` This produces a flat-text file with summary statistics regarding the variants annotated. (Optional)
+- `-csvStats $CSV_STATS` This produces a flat-text file with summary statistics regarding the variants annotated. (Optional)
 
-`-s $HTML_REPORT` This creates an HTML file with summary statistics regarding the variants annotated. This HTML file is mostly just an HTML stylized version of the CSV file above. (Optional)
+- `-s $HTML_REPORT` This creates an HTML file with summary statistics regarding the variants annotated. This HTML file is mostly just an HTML stylized version of the CSV file above. (Optional)
 
-`$REFERENCE_DATABASE` This is the `SnpEff` database we are going to use for the annotation.
+- `$REFERENCE_DATABASE` This is the `SnpEff` database we are going to use for the annotation.
 
-`$FILTERED_VCF_FILE` This is the input VCF file to be annotated
+- `$FILTERED_VCF_FILE` This is the input VCF file to be annotated
 
-`> $ANNOTATED_VCF_FILE` The output of `SnpEff` will be redirected into this file.
+- `> $ANNOTATED_VCF_FILE` The output of `SnpEff` will be redirected into this file.
 
 ### Output
 
