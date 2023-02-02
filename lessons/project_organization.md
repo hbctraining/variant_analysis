@@ -115,17 +115,10 @@ cd variant_calling
 mkdir scripts results figures raw_data reports
 ```
 
-Also, we are going to make a few directories to hold our output reports:
-
-```
-cd reports
-mkdir fastqc picard multiqc snpeff
-```
-
 Let's move into our `raw_data` directory and copy the FASTQ data that we are going to use for our analysis:
 
 ```
-cd ~/variant_calling/raw_data
+cd raw_data
 cp /n/groups/hbctraining/variant_calling/raw_data/*.fq.gz .
 ```
 
