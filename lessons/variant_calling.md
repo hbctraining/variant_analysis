@@ -226,6 +226,8 @@ gnomAD
 
 [BroadE: GATK - Somatic SNVs and Indels](https://www.youtube.com/watch?v=T5IqadGoxow)
 
+***
+
 [Next Lesson >>>](variant_annotation.md)
 
 [Back to Schedule](../schedule/README.md)
