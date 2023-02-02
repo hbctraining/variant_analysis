@@ -187,7 +187,7 @@ Hopefully, the case made for assigning varibles outside of your command has been
 ```
 LEFT_READS=/home/$USER/variant_calling/raw_data/syn3_normal_1.fq.gz
 RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
-OUTPUT_DIRECTORY=~/variant_calling/reports/fastqc/normal/
+OUTPUT_DIRECTORY=~/variant_calling/reports/fastqc/syn3_normal/
 THREADS=4
 ```
 
@@ -240,7 +240,7 @@ module load fastqc/0.11.9
 
 LEFT_READS=/home/$USER/variant_calling/raw_data/syn3_normal_1.fq.gz
 RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
-OUTPUT_DIRECTORY=~/variant_calling/reports/fastqc/normal/
+OUTPUT_DIRECTORY=~/variant_calling/reports/fastqc/syn3_normal/
 THREADS=4
 
 mkdir -p $OUTPUT_DIRECTORY
