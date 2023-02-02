@@ -67,18 +67,61 @@ module load snpEff/4.3g
 Also, we will add our variables:
 
 ```
-REPORTS_DIRECTORY=/home/$USER/variant_calling/reports/
+REPORTS_DIRECTORY=/home/$USER/variant_calling/reports/snpeff/
 SAMPLE_NAME=mutect2_syn3_normal_syn3_tumor
 REFERENCE_SEQUENCE_NAME=GRCh38.p7
-CSV_STATS=`echo -e "${REPORTS_DIRECTORY}snpeff/annotation${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-effects-stats.csv"`
-HTML_REPORT=`echo -e "${REPORTS_DIRECTORY}snpeff/annotation${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-effects-stats.html"`
+CSV_STATS=`echo -e "${REPORTS_DIRECTORY}annotation_${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-effects-stats.csv"`
+HTML_REPORT=`echo -e "${REPORTS_DIRECTORY}annotation_${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-effects-stats.html"`
 REFERENCE_DATABASE=GRCh38.p7.RefSeq
 DATADIR=/n/groups/hbctraining/variant_calling/reference/snpeff/data/
 FILTERED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-LCR-filt.vcf
 ANNOTATED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-LCR-filt.snpeff.vcf
 ```
 
+We need to create a directory to hold out reports:
+
 ```
+mkdir -p ${REPORTS_DIRECTORY}
+```
+
+Lastly, we need to add out `SnpEff` command:
+
+```
+java -jar -Xmx4g $SNPEFF/snpEff.jar  eff \
+-dataDir $DATADIR \
+-cancer \
+-noLog \
+-csvStats $CSV_STATS \
+-s $HTML_REPORT \
+$REFERENCE_DATABASE \
+$FILTERED_VCF_FILE > $ANNOTATED_VCF_FILE
+```
+
+This script should look like:
+
+```
+#!/bin/bash
+# Using SnpEff to annotate our variants
+
+#SBATCH -p short
+#SBATCH -t 0-1:00
+#SBATCH -c 1
+#SBATCH --mem 24G
+#SBATCH -o run_SnpEff_GRCh38.p7_%j.out
+#SBATCH -e run_SnpEff_GRCh38.p7_%j.err
+
+module load snpEff/4.3g
+
+REPORTS_DIRECTORY=/home/$USER/variant_calling/reports/snpeff/
+SAMPLE_NAME=mutect2_syn3_normal_syn3_tumor
+REFERENCE_SEQUENCE_NAME=GRCh38.p7
+CSV_STATS=`echo -e "${REPORTS_DIRECTORY}annotation_${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-effects-stats.csv"`
+HTML_REPORT=`echo -e "${REPORTS_DIRECTORY}annotation_${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-effects-stats.html"`
+REFERENCE_DATABASE=GRCh38.p7.RefSeq
+DATADIR=/n/groups/hbctraining/variant_calling/reference/snpeff/data/
+FILTERED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-LCR-filt.vcf
+ANNOTATED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-LCR-filt.snpeff.vcf
+
 java -jar -Xmx4g $SNPEFF/snpEff.jar  eff \
 -dataDir $DATADIR \
 -cancer \
