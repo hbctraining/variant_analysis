@@ -74,16 +74,14 @@ Next, we need to add our variables:
 ```
 # Assign variables
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
-ALIGNMENT_DIRECTORY=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/
-VCF_DIRECTORY=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/
-NORMAL_SAMPLE_NAME=syn3-normal
-TUMOR_SAMPLE_NAME=syn3-tumor
-
 REFERENCE_DICTIONARY=`echo ${REFERENCE_SEQUENCE%fa}dict`
 REFERENCE_SEQUENCE_NAME=`basename $REFERENCE_SEQUENCE _genomic.fa`
+ALIGNMENT_DIRECTORY=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/
+NORMAL_SAMPLE_NAME=syn3-normal
 NORMAL_BAM_FILE=${ALIGNMENT_DIRECTORY}${NORMAL_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.coordinate_sorted.bam
+TUMOR_SAMPLE_NAME=syn3-tumor
 TUMOR_BAM_FILE=${ALIGNMENT_DIRECTORY}${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.coordinate_sorted.bam
-VCF_OUTPUT_FILE=${VCF_DIRECTORY}mutect2_${NORMAL_SAMPLE_NAME}_${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-raw.vcf
+VCF_OUTPUT_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_${NORMAL_SAMPLE_NAME}_${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-raw.vcf
 ```
 
 > NOTE: Sometimes when there are many input variables that re-use many of the same textual elements (i.e. paths, sample names and reference genome names), like we have above, it is sometimes cleaner, less typo-prone and more reproducible to assign those repeated items to variables and then use text manipulation tools and variable subsitution in `bash` to create the rest of the variables. In the above example, the first five lines of variable assignment (`REFERENCE_SEQUENCE` to `TUMOR_SAMPLE_NAME`) are likely lines you might edit from run-to-run, but the final five lines (`REFERENCE_DICTIONARY` to `VCF_OUTPUT_FILE`) will likely stay the same. Standardizing your paths and nomenclature will help you keep track of your files much easier.
@@ -188,16 +186,14 @@ module load gatk/4.1.9.0
 
 # Assign variables
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
-ALIGNMENT_DIRECTORY=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/
-VCF_DIRECTORY=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/
-NORMAL_SAMPLE_NAME=syn3-normal
-TUMOR_SAMPLE_NAME=syn3-tumor
-
 REFERENCE_DICTIONARY=`echo ${REFERENCE_SEQUENCE%fa}dict`
 REFERENCE_SEQUENCE_NAME=`basename $REFERENCE_SEQUENCE _genomic.fa`
+ALIGNMENT_DIRECTORY=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/
+NORMAL_SAMPLE_NAME=syn3-normal
 NORMAL_BAM_FILE=${ALIGNMENT_DIRECTORY}${NORMAL_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.coordinate_sorted.bam
+TUMOR_SAMPLE_NAME=syn3-tumor
 TUMOR_BAM_FILE=${ALIGNMENT_DIRECTORY}${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.coordinate_sorted.bam
-VCF_OUTPUT_FILE=${VCF_DIRECTORY}mutect2_${NORMAL_SAMPLE_NAME}_${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-raw.vcf
+VCF_OUTPUT_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_${NORMAL_SAMPLE_NAME}_${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-raw.vcf
 
 # Run MuTect2
 gatk Mutect2 \
