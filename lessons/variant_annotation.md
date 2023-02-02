@@ -51,9 +51,9 @@ Once inside insert mode, can can enter the shebang line, description and `SBATCH
 # Using SnpEff to annotate our variants
 
 #SBATCH -p short
-#SBATCH -t 0-1:00
+#SBATCH -t 0-02:00:00
 #SBATCH -c 1
-#SBATCH --mem 24G
+#SBATCH --mem 8G
 #SBATCH -o run_SnpEff_GRCh38.p7_%j.out
 #SBATCH -e run_SnpEff_GRCh38.p7_%j.err
 ```
@@ -108,9 +108,9 @@ This script should look like:
 # Using SnpEff to annotate our variants
 
 #SBATCH -p short
-#SBATCH -t 0-1:00
+#SBATCH -t 0-02:00:00
 #SBATCH -c 1
-#SBATCH --mem 24G
+#SBATCH --mem 8G
 #SBATCH -o run_SnpEff_GRCh38.p7_%j.out
 #SBATCH -e run_SnpEff_GRCh38.p7_%j.err
 
