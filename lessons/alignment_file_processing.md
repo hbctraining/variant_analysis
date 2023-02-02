@@ -63,6 +63,7 @@ Start the `sbatch` script with our shebang line, description of the script and o
 Load the `Picard` module: 
 
 ```
+# Load module
 module load picard/2.8.0
 ```
 
@@ -84,6 +85,7 @@ COORDINATE_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}coordinate_sorted.bam`
 Make a directory to hold the `Picard` reports:
 
 ```
+# Make reports directory
 mkdir -p /home/${USER}/variant_calling/reports/picard/
 ```
 
@@ -107,6 +109,7 @@ With our reads aligned to the reference, we would see if we opened up the SAM fi
 Additionally, while SAM files are nice due to their human readability, they are typically quite large files and it is not an efficient use of space on the cluster. Fortunately, there is a binary compression version of SAM called BAM. While we sort the reads, we are going to use to convert our SAM file to a BAM file. We don't need to specify this SAM-to-BAM conversion explicitly, because `Picard` will make this change by interpretting the file extensions that we provide in the `INPUT` and `OUTPUT` file options.
 
 ```
+# Query-sort alginment file and convert to BAM
 java -jar $PICARD/picard-2.8.0.jar SortSam \
 INPUT=$SAM_FILE \
 OUTPUT=$QUERY_SORTED_BAM_FILE \
@@ -134,6 +137,7 @@ An important step in processing a BAM file is to mark and remove PCR duplicates.
 Now we will add the command to our script that allows us to mark and remove duplicates in `Picard`:
 
 ```
+# Mark and remove duplicates
 java -jar $PICARD/picard-2.8.0.jar MarkDuplicates \
 INPUT=$QUERY_SORTED_BAM_FILE \
 OUTPUT=$REMOVE_DUPLICATES_BAM_FILE \
@@ -158,6 +162,7 @@ The componetns of this command are:
 For most downstream processes, coordinate-sorted alignment files are required. As a result, we will need to change our alignemnt file from being **query**-sorted to being **coordinate**-sorted and we will once again use the `SortSam` command within `Picard` to accomplish this. Since this BAM file will be the final BAM file that we make and will use for downstream analyses, we will need to create an index for it. The command we will be using for **coordinate**-sorting and indexing out BAM file is:
 
 ```
+# Coordinate-sort BAM file and create BAM index file
 java -jar $PICARD/picard-2.8.0.jar SortSam \
 INPUT=$REMOVE_DUPLICATES_BAM_FILE \
 OUTPUT=$COORDINATE_SORTED_BAM_FILE \
@@ -191,30 +196,35 @@ Your final `sbatch` script for `Picard` should look like:
 #SBATCH -o picard_alignment_processing_normal_%j.out
 #SBATCH -e picard_alignment_processing_normal_%j.err
 
+# Load module
 module load picard/2.8.0
 
 # Assign file paths to variables                                                                                                               
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.sam
-REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/picard/
+REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/picard/syn3_tumor/
 SAMPLE_NAME=`basename $SAM_FILE _GRCh38.p7.sam`
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
 REMOVE_DUPLICATES_BAM_FILE=`echo ${SAM_FILE%sam}remove_duplicates.bam`
 METRICS_FILE=${REPORTS_DIRECTORY}/${SAMPLE_NAME}/${SAMPLE_NAME}.remove_duplicates_metrics.txt
 COORDINATE_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}coordinate_sorted.bam`
 
+# Make reports directory
 mkdir -p /home/${USER}/variant_calling/reports/picard/
 
+# Query-sort alginment file and convert to BAM
 java -jar $PICARD/picard-2.8.0.jar SortSam \
 INPUT=$SAM_FILE \
 OUTPUT=$QUERY_SORTED_BAM_FILE \
 SORT_ORDER=queryname
 
+# Mark and remove duplicates
 java -jar $PICARD/picard-2.8.0.jar MarkDuplicates \
 INPUT=$QUERY_SORTED_BAM_FILE \
 OUTPUT=$REMOVE_DUPLICATES_BAM_FILE \
 METRICS_FILE=$METRICS_FILE \
 REMOVE_DUPLICATES=true
 
+# Coordinate-sort BAM file and create BAM index file
 java -jar $PICARD/picard-2.8.0.jar SortSam \
 INPUT=$REMOVE_DUPLICATES_BAM_FILE \
 OUTPUT=$COORDINATE_SORTED_BAM_FILE \
@@ -471,26 +481,30 @@ module load picard/2.8.0
 
 # Assign file paths to variables                                                                                                               
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_tumor_GRCh38.p7.sam
-REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/picard/
+REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/picard/syn3_tumor/
 SAMPLE_NAME=`basename $SAM_FILE _GRCh38.p7.sam`
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
 REMOVE_DUPLICATES_BAM_FILE=`echo ${SAM_FILE%sam}remove_duplicates.bam`
 METRICS_FILE=${REPORTS_DIRECTORY}/${SAMPLE_NAME}/${SAMPLE_NAME}.remove_duplicates_metrics.txt
 COORDINATE_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}coordinate_sorted.bam`
 
+# Make reports directory
 mkdir -p /home/${USER}/variant_calling/reports/picard/
 
+# Query-sort alginment file and convert to BAM
 java -jar $PICARD/picard-2.8.0.jar SortSam \
 INPUT=$SAM_FILE \
 OUTPUT=$QUERY_SORTED_BAM_FILE \
 SORT_ORDER=queryname
 
+# Mark and remove duplicates
 java -jar $PICARD/picard-2.8.0.jar MarkDuplicates \
 INPUT=$QUERY_SORTED_BAM_FILE \
 OUTPUT=$REMOVE_DUPLICATES_BAM_FILE \
 METRICS_FILE=$METRICS_FILE \
 REMOVE_DUPLICATES=true
 
+# Coordinate-sort BAM file and create BAM index file
 java -jar $PICARD/picard-2.8.0.jar SortSam \
 INPUT=$REMOVE_DUPLICATES_BAM_FILE \
 OUTPUT=$COORDINATE_SORTED_BAM_FILE \
