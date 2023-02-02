@@ -71,10 +71,11 @@ Next, let's define some variables that we will be using:
 ```
 # Assign file paths to variables                                                                                                               
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.sam
+REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/picard/
+SAMPLE_NAME=`basename $SAM_FILE _GRCh38.p7.sam`
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
 REMOVE_DUPLICATES_BAM_FILE=`echo ${SAM_FILE%sam}remove_duplicates.bam`
-SAMPLE_NAME=`basename $SAM_FILE .sam`
-METRICS_FILE=/home/${USER}/variant_calling/reports/picard/${SAMPLE_NAME}.remove_duplicates_metrics.txt
+METRICS_FILE=${REPORTS_DIRECTORY}/${SAMPLE_NAME}/${SAMPLE_NAME}.remove_duplicates_metrics.txt
 COORDINATE_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}coordinate_sorted.bam`
 ```
 
@@ -194,10 +195,11 @@ module load picard/2.8.0
 
 # Assign file paths to variables                                                                                                               
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.sam
+REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/picard/
+SAMPLE_NAME=`basename $SAM_FILE _GRCh38.p7.sam`
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
 REMOVE_DUPLICATES_BAM_FILE=`echo ${SAM_FILE%sam}remove_duplicates.bam`
-SAMPLE_NAME=`basename $SAM_FILE .sam`
-METRICS_FILE=/home/${USER}/variant_calling/reports/picard/${SAMPLE_NAME}.remove_duplicates_metrics.txt
+METRICS_FILE=${REPORTS_DIRECTORY}/${SAMPLE_NAME}/${SAMPLE_NAME}.remove_duplicates_metrics.txt
 COORDINATE_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}coordinate_sorted.bam`
 
 mkdir -p /home/${USER}/variant_calling/reports/picard/
@@ -469,10 +471,11 @@ module load picard/2.8.0
   
 # Assign file paths to variables                                                                                                               
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_tumor_GRCh38.p7.sam
+REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/picard/
+SAMPLE_NAME=`basename $SAM_FILE _GRCh38.p7.sam`
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
 REMOVE_DUPLICATES_BAM_FILE=`echo ${SAM_FILE%sam}remove_duplicates.bam`
-SAMPLE_NAME=`basename $SAM_FILE .sam`
-METRICS_FILE=/home/${USER}/variant_calling/reports/picard/${SAMPLE_NAME}.remove_duplicates_metrics.txt
+METRICS_FILE=${REPORTS_DIRECTORY}/${SAMPLE_NAME}/${SAMPLE_NAME}.remove_duplicates_metrics.txt
 COORDINATE_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}coordinate_sorted.bam`
 
 mkdir -p /home/${USER}/variant_calling/reports/picard/
