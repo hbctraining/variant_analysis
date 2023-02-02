@@ -55,7 +55,7 @@ Start the `sbatch` script with our shebang line, description of the script and o
 #SBATCH -p priority
 #SBATCH -t 0-04:00:00
 #SBATCH -c 1
-#SBATCH --mem 8G
+#SBATCH --mem 32G
 #SBATCH -o picard_alignment_processing_normal_%j.out
 #SBATCH -e picard_alignment_processing_normal_%j.err
 ```
@@ -186,7 +186,7 @@ Your final `sbatch` script for `Picard` should look like:
 #SBATCH -p priority
 #SBATCH -t 0-04:00:00
 #SBATCH -c 1
-#SBATCH --mem 8G
+#SBATCH --mem 32G
 #SBATCH -o picard_alignment_processing_normal_%j.out
 #SBATCH -e picard_alignment_processing_normal_%j.err
 
@@ -461,7 +461,7 @@ As a result your tumor `Picard` processing script should look like:
 #SBATCH -p priority
 #SBATCH -t 0-04:00:00
 #SBATCH -c 1
-#SBATCH --mem 8G
+#SBATCH --mem 32G
 #SBATCH -o picard_alignment_processing_tumor_%j.out
 #SBATCH -e picard_alignment_processing_tumor_%j.err
 
