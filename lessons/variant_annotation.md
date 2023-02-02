@@ -37,16 +37,18 @@ We can see that this build of SnpEff has five possible GRCh databases that we ca
 
 ### Running SnpEff
 
-Move to your `scripts` directory:
+Move to your `scripts` directory and create a new script named `run_SnpEff.sbatch` using `vim`.:
 
 ```
 cd ~/variant_calling/scripts/
+vim run_SnpEff.sbatch
 ```
 
-Create a new script named `run_SnpEff.sbatch` using `vim`. Once inside insert mode, paste the following `SnpEff` command:
+Once inside insert mode, can can enter the shebang line, description and `SBATCH` directives:
 
 ```
 #!/bin/bash
+# Using SnpEff to annotate our variants
 
 #SBATCH -p short
 #SBATCH -t 0-1:00
@@ -54,16 +56,37 @@ Create a new script named `run_SnpEff.sbatch` using `vim`. Once inside insert mo
 #SBATCH --mem 24G
 #SBATCH -o run_SnpEff_GRCh38.p7_%j.out
 #SBATCH -e run_SnpEff_GRCh38.p7_%j.err
+```
 
+Next, we will added the line to load the `snpEff` module: 
+
+```
 module load snpEff/4.3g
+```
 
-java -jar $SNPEFF/snpEff.jar  eff \
+Also, we will add our variables:
+
+```
+REPORTS_DIRECTORY=/home/$USER/variant_calling/reports/
+SAMPLE_NAME=mutect2_syn3_normal_syn3_tumor
+REFERENCE_SEQUENCE_NAME=GRCh38.p7
+CSV_STATS=`echo -e "${REPORTS_DIRECTORY}snpeff/annotation${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-effects-stats.csv"`
+HTML_REPORT=`echo -e "${REPORTS_DIRECTORY}snpeff/annotation${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-effects-stats.html"`
+REFERENCE_DATABASE=GRCh38.p7.RefSeq
+DATADIR=/n/groups/hbctraining/variant_calling/reference/snpeff/data/
+FILTERED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-LCR-filt.vcf
+ANNOTATED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-LCR-filt.snpeff.vcf
+```
+
+```
+java -jar -Xmx4g $SNPEFF/snpEff.jar  eff \
+-dataDir $DATADIR \
 -cancer \
 -noLog \
--csvStats ~/variant_calling/reports/syn3_hg19-effects-stats.csv \
--s ~/variant_calling/reports/syn3_hg19-effects-stats.html \
-GRCh38.p7.RefSeq \
-~/variant_calling/vcf_files/syn3_GRCh38.p7-raw-filt.vcf > ~/variant_calling/vcf_files/syn3_GRCh38.p7-raw-filt.snpeff.vcf
+-csvStats $CSV_STATS \
+-s $HTML_REPORT \
+$REFERENCE_DATABASE \
+$FILTERED_VCF_FILE > $ANNOTATED_VCF_FILE
 ```
 
 Submit this script using:
@@ -76,26 +99,28 @@ Let's breakdown this command and discuss each argument:
 
 `java -jar $SNPEFF/snpEff.jar  eff` `Snpeff` is a `java` packaged program, so it needs to be called with `java -jar` followed by the path where the JAR file is located on the cluster. `$SNPEFF` is just a bash variable that contains the path to JAR file. `eff` is the command within `SnpEff` to annotate variants.
 
-`-cancer` Not sure if we need this
+`-dataDir $DATADIR` This is the path to the data directory that holds the `SnpEff` annotations
 
-`-noLog` Not sure if we need this
+`-cancer` Performs "cancer" comparisons
 
-`-csvStats ~/variant_calling/reports/syn3_hg19-effects-stats.csv` This produces a flat-text file with summary statistics regarding the variants annotated. (Optional)
+`-noLog` Does not report usage statistics
 
-`-s ~/variant_calling/reports/syn3_hg19-effects-stats.html` This creates an HTML file with summary statistics regarding the variants annotated. This HTML file is mostly just an HTML stylized version of the CSV file above. (Optional)
+`-csvStats $CSV_STATS` This produces a flat-text file with summary statistics regarding the variants annotated. (Optional)
 
-`GRCh38.p7.RefSeq` This is the `SnpEff` database we are going to use for the annotation.
+`-s $HTML_REPORT` This creates an HTML file with summary statistics regarding the variants annotated. This HTML file is mostly just an HTML stylized version of the CSV file above. (Optional)
 
-`~/variant_calling/vcf_files/syn3_GRCh38.p7-raw-filt.vcf` This is the input VCF file to be annotated
+`$REFERENCE_DATABASE` This is the `SnpEff` database we are going to use for the annotation.
 
-`> ~/variant_calling/vcf_files/syn3_GRCh38.p7-raw-filt.snpeff.vcf` The output of `SnpEff` will be redirected into this file.
+`$FILTERED_VCF_FILE` This is the input VCF file to be annotated
+
+`> $ANNOTATED_VCF_FILE` The output of `SnpEff` will be redirected into this file.
 
 ### Output
 
 Let's take a look at our output from `SnpEff` now to see how our VCF file has been modified to include variant annotations. Let's open up our SnpEff annotated VCF file in `less`:
 
 ```
-less ~/variant_calling/vcf_files/syn3_GRCh38.p7-raw-filt.snpeff.vcf
+less /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7--LCR-filt.snpeff.vcf
 ```
 
 Scroll down to right before your variants are and you will notice that `SnpEff` has inserted two lines into your VCF file. First, it has inserted:
