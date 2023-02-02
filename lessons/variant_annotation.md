@@ -81,7 +81,7 @@ ANNOTATED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_fil
 We need to create a directory to hold out reports:
 
 ```
-mkdir -p ${REPORTS_DIRECTORY}
+mkdir -p $REPORTS_DIRECTORY
 ```
 
 Lastly, we need to add out `SnpEff` command:
@@ -121,6 +121,8 @@ REFERENCE_DATABASE=GRCh38.p7.RefSeq
 DATADIR=/n/groups/hbctraining/variant_calling/reference/snpeff/data/
 FILTERED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-LCR-filt.vcf
 ANNOTATED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-LCR-filt.snpeff.vcf
+
+mkdir -p $REPORTS_DIRECTORY
 
 java -jar -Xmx4g $SNPEFF/snpEff.jar  eff \
 -dataDir $DATADIR \
