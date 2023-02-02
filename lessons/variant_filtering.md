@@ -219,7 +219,10 @@ gatk FilterMutectCalls \
 --variant $RAW_VCF_FILE \
 --output $MUTECT_FILTERED_VCF
 
-java -jar $SNPEFF/SnpSift.jar intervals -x -i $MUTECT_FILTERED_VCF $LCR_FILE > $LCR_FILTERED_VCF
+java -jar $SNPEFF/SnpSift.jar intervals \
+-x \
+-i $MUTECT_FILTERED_VCF \
+$LCR_FILE > $LCR_FILTERED_VCF
 ```
 
 We can now save and exit `vim`, then submit our `sbatch` script.
