@@ -66,6 +66,8 @@ Load the `Picard` module:
 module load picard/2.8.0
 ```
 
+**Note: `Picard` is one of the pieces of software that does NOT require gcc/6.2.0 to also be loaded** 
+
 Next, let's define some variables that we will be using:
 
 ```
@@ -84,8 +86,6 @@ Make a directory to hold the `Picard` reports:
 ```
 mkdir -p /home/${USER}/variant_calling/reports/picard/
 ```
-
-**Note: `Picard` is one of the pieces of software that does NOT require gcc/6.2.0 to also be loaded** 
 
 ## Sorting and Removing Duplicates
 
