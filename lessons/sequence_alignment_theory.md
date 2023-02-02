@@ -67,7 +67,6 @@ Now that we have indexed the reference sequence, we can align sequence reads to 
 
 ```
 cd ~/variant_calling/scripts/
-
 vim bwa_alignment_normal.sbatch
 ```
 
