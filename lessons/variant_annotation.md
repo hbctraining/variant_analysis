@@ -41,7 +41,7 @@ Move to your `scripts` directory and create a new script named `run_SnpEff.sbatc
 
 ```
 cd ~/variant_calling/scripts/
-vim run_SnpEff.sbatch
+vim variant_annotation_syn3_normal_syn3_tumor.sbatch
 ```
 
 Once inside insert mode, can can enter the shebang line, description and `SBATCH` directives:
@@ -142,12 +142,6 @@ $REFERENCE_DATABASE \
 $FILTERED_VCF_FILE > $ANNOTATED_VCF_FILE
 ```
 
-Submit this script using:
-
-```
-sbatch run_SnpEff.sbatch
-```
-
 Let's breakdown this command and discuss each argument:
 
 - `java -jar $SNPEFF/snpEff.jar  eff` `Snpeff` is a `java` packaged program, so it needs to be called with `java -jar` followed by the path where the JAR file is located on the cluster. `$SNPEFF` is just a bash variable that contains the path to JAR file. `eff` is the command within `SnpEff` to annotate variants.
@@ -167,6 +161,12 @@ Let's breakdown this command and discuss each argument:
 - `$FILTERED_VCF_FILE` This is the input VCF file to be annotated
 
 - `> $ANNOTATED_VCF_FILE` The output of `SnpEff` will be redirected into this file.
+
+Submit this script using:
+
+```
+sbatch variant_annotation_syn3_normal_syn3_tumor.sbatch
+```
 
 ### Output
 
