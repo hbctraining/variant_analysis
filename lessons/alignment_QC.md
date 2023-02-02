@@ -37,7 +37,7 @@ First, we need to add our shebang line, description and `sbatch` directives to t
 #SBATCH -p priority
 #SBATCH -t 0-00:30:00
 #SBATCH -c 1
-#SBATCH --mem 4G
+#SBATCH --mem 16G
 #SBATCH -o picard_CollectAlignmentMetrics_normal_%j.out
 #SBATCH -e picard_CollectAlignmentMetrics_normal_%j.err
 ```
@@ -53,9 +53,9 @@ Next, let's assign our files to variables:
 
 ```
 # Assign variables
-COORDINATE_SORTED_BAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/normal_GRCh38.p7.coordinate_sorted.bam
-REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
-METRICS_OUTPUT_FILE=/home/${USER}/variant_calling/reports/normal__GRCh38.p7.CollectAlignmentSummaryMetrics.txt
+COORDINATE_SORTED_BAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam
+REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
+METRICS_OUTPUT_FILE=/home/${USER}/variant_calling/reports/picard/syn3_normal_GRCh38.p7.CollectAlignmentSummaryMetrics.txt
 ```
 
 Next, we can add the `Picard` command to gather the alignment metrics:
@@ -88,7 +88,7 @@ The `sbatch` submission script for collecting the alignment metrics should look 
 #SBATCH -p priority
 #SBATCH -t 0-00:30:00
 #SBATCH -c 1
-#SBATCH --mem 4G
+#SBATCH --mem 16G
 #SBATCH -o picard_CollectAlignmentMetrics_normal_%j.out
 #SBATCH -e picard_CollectAlignmentMetrics_normal_%j.err
 
@@ -96,9 +96,9 @@ The `sbatch` submission script for collecting the alignment metrics should look 
 module load picard/2.8.0
 
 # Assign variables
-COORDINATE_SORTED_BAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/normal_GRCh38.p7.coordinate_sorted.bam
-REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
-METRICS_OUTPUT_FILE=/home/${USER}/variant_calling/reports/normal_GRCh38.p7.CollectAlignmentSummaryMetrics.txt
+COORDINATE_SORTED_BAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam
+REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
+METRICS_OUTPUT_FILE=/home/${USER}/variant_calling/reports/picard/syn3_normal_GRCh38.p7.CollectAlignmentSummaryMetrics.txt
 
 # Run Picard CollectAlignmentSummaryMetrics
 picard CollectAlignmentSummaryMetrics \
