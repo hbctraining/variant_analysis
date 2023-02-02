@@ -53,6 +53,7 @@ module load gatk/4.1.9.0
 Next, we will add our variables:
 
 ```
+# Assign variables
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
 RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf
 MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}filt.vcf
@@ -61,6 +62,7 @@ MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}filt.vcf
 Next, we can add the `FilterMutectCells` command:
 
 ```
+# Filter Mutect Calls
 gatk FilterMutectCalls \
 --reference $REFERENCE_SEQUENCE \
 --variant $RAW_VCF_FILE \
@@ -131,6 +133,7 @@ module load snpEff/4.3g
 Next, we need to add some additional `bash` variables:
 
 ```
+# Assign variables
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
 RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf
 LCR_FILE=/n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed
@@ -141,6 +144,7 @@ LCR_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}LCR-filt.vcf
 Add the `filter` command from `SnpSift` in order remove all sites that overlap with the BED file:
 
 ```
+# Filter LCR
 java -jar $SNPEFF/SnpSift.jar intervals \
 -x \
 -i $MUTECT_FILTERED_VCF \
@@ -205,20 +209,24 @@ Our final `sbatch` script should look like:
 #SBATCH -o variant_filtering_normal_tumor_%j.out
 #SBATCH -e variant_filtering_normal_tumor_%j.err
 
+# Load modules
 module load gatk/4.1.9.0
 module load snpEff/4.3g
 
+# Assign variables
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
 RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf
 LCR_FILE=/n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed
 MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}filt.vcf
 LCR_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}LCR-filt.vcf
 
+# Filter Mutect Calls
 gatk FilterMutectCalls \
 --reference $REFERENCE_SEQUENCE \
 --variant $RAW_VCF_FILE \
 --output $MUTECT_FILTERED_VCF
 
+# Filter LCR
 java -jar $SNPEFF/SnpSift.jar intervals \
 -x \
 -i $MUTECT_FILTERED_VCF \
