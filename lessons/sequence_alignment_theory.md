@@ -120,7 +120,7 @@ Now that we have added the bash variables to our `sbatch` submission script, we 
 bwa mem \
 -M \
 -t 8 \
--R "@RG\tID:$SAMPLE_NAME\tPL:illumina\tPU:$SAMPLE_NAME\tSM:$SAMPLE_NAME" \
+-R "@RG\tID:$SAMPLE\tPL:illumina\tPU:$SAMPLE\tSM:$SAMPLE" \
 $REFERENCE_SEQUENCE \
 $LEFT_READS \
 $RIGHT_READS \
@@ -186,7 +186,7 @@ SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMP
 bwa mem \
 -M \
 -t 8 \
--R "@RG\tID:$SAMPLE_NAME\tPL:illumina\tPU:$SAMPLE_NAME\tSM:$SAMPLE_NAME" \
+-R "@RG\tID:$SAMPLE\tPL:illumina\tPU:$SAMPLE\tSM:$SAMPLE" \
 $REFERENCE_SEQUENCE \
 $LEFT_READS \
 $RIGHT_READS \
@@ -242,7 +242,7 @@ SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMP
 bwa mem \
 -M \
 -t 8 \
--R "@RG\tID:$SAMPLE_NAME\tPL:illumina\tPU:$SAMPLE_NAME\tSM:$SAMPLE_NAME" \
+-R "@RG\tID:$SAMPLE\tPL:illumina\tPU:$SAMPLE\tSM:$SAMPLE" \
 $REFERENCE_SEQUENCE \
 $LEFT_READS \
 $RIGHT_READS \
