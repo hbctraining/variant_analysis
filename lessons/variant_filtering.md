@@ -28,7 +28,7 @@ cd ~/variant_calling/scripts/
 vim variant_filtering_normal_tumor.sbatch
 ```
 
-The first step is to add our shebang line, description, `sbatch` directives and load the modules that we will be using.
+The first step is to add our shebang line, description and `sbatch` directives: 
 
 ```
 #!/bin/bash
@@ -41,7 +41,11 @@ The first step is to add our shebang line, description, `sbatch` directives and 
 #SBATCH --mem 8G
 #SBATCH -o variant_filtering_normal_tumor_%j.out
 #SBATCH -e variant_filtering_normal_tumor_%j.err
+```
 
+Next, we need to add the modules that we will be loading:
+
+```
 # Load modules
 module load gatk/4.1.9.0
 ```
