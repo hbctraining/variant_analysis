@@ -50,7 +50,7 @@ Once inside insert mode, can can enter the shebang line, description and `SBATCH
 #!/bin/bash
 # Using SnpEff to annotate our variants
 
-#SBATCH -p short
+#SBATCH -p priority
 #SBATCH -t 0-02:00:00
 #SBATCH -c 1
 #SBATCH --mem 8G
@@ -107,7 +107,7 @@ This script should look like:
 #!/bin/bash
 # Using SnpEff to annotate our variants
 
-#SBATCH -p short
+#SBATCH -p priority
 #SBATCH -t 0-02:00:00
 #SBATCH -c 1
 #SBATCH --mem 8G
