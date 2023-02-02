@@ -53,9 +53,9 @@ Next, let's assign our files to variables:
 
 ```
 # Assign variables
-COORDINATE_SORTED_BAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam
+INPUT_BAM=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam
 REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
-METRICS_OUTPUT_FILE=/home/${USER}/variant_calling/reports/picard/syn3_normal_GRCh38.p7.CollectAlignmentSummaryMetrics.txt
+OUTPUT_METRICS_FILE=/home/${USER}/variant_calling/reports/picard/syn3_normal_GRCh38.p7.CollectAlignmentSummaryMetrics.txt
 ```
 
 Next, we can add the `Picard` command to gather the alignment metrics:
@@ -63,8 +63,8 @@ Next, we can add the `Picard` command to gather the alignment metrics:
 ```
 # Run Picard CollectAlignmentSummaryMetrics
 picard CollectAlignmentSummaryMetrics \
-INPUT=$COORDINATE_SORTED_BAM_FILE \
-OUTPUT=$METRICS_OUTPUT_FILE \
+INPUT=$INPUT_BAM \
+OUTPUT=$OUTPUT_METRICS_FILE \
 REFERENCE_SEQUENCE=$REFERENCE
 ```
 
@@ -96,14 +96,14 @@ The `sbatch` submission script for collecting the alignment metrics should look 
 module load picard/2.8.0
 
 # Assign variables
-COORDINATE_SORTED_BAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam
+INPUT_BAM=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam
 REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
-METRICS_OUTPUT_FILE=/home/${USER}/variant_calling/reports/picard/syn3_normal_GRCh38.p7.CollectAlignmentSummaryMetrics.txt
+OUTPUT_METRICS_FILE=/home/${USER}/variant_calling/reports/picard/syn3_normal_GRCh38.p7.CollectAlignmentSummaryMetrics.txt
 
 # Run Picard CollectAlignmentSummaryMetrics
 picard CollectAlignmentSummaryMetrics \
-INPUT=$COORDINATE_SORTED_BAM_FILE \
-OUTPUT=$METRICS_OUTPUT_FILE \
+INPUT=$INPUT_BAM \
+OUTPUT=$OUTPUT_METRICS_FILE \
 REFERENCE_SEQUENCE=$REFERENCE
 ```
 
@@ -226,12 +226,35 @@ Next, we will assign our variables:
 
 ```
 REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/
+NORMAL_SAMPLE_NAME=syn3_normal
+TUMOR_SAMPLE_NAME=syn3_tumor
+
+NORMAL_PICARD_METRICS=${REPORTS_DIRECTORY}picard/${NORMAL_SAMPLE_NAME}/${NORMAL_SAMPLE_NAME}.CollectAlignmentSummaryMetrics.txt
+TUMOR_PICARD_METRICS=${REPORTS_DIRECTORY}picard/${TUMOR_SAMPLE_NAME}/${TUMOR_SAMPLE_NAME}.CollectAlignmentSummaryMetrics.txt
+NORMAL_FASTQC_1=${REPORTS_DIRECTORY}fastqc/${NORMAL_SAMPLE_NAME}/${NORMAL_SAMPLE_NAME}_1_fastqc.zip
+NORMAL_FASTQC_2=${REPORTS_DIRECTORY}fastqc/${NORMAL_SAMPLE_NAME}/${NORMAL_SAMPLE_NAME}_2_fastqc.zip
+TUMOR_FASTQC_1=${REPORTS_DIRECTORY}fastqc/${TUMOR_SAMPLE_NAME}/${TUMOR_SAMPLE_NAME}_1_fastqc.zip
+TUMOR_FASTQC_2=${REPORTS_DIRECTORY}fastqc/${TUMOR_SAMPLE_NAME}/${TUMOR_SAMPLE_NAME}_2_fastqc.zip
+OUTPUT_DIRECTORY=${REPORTS_DIRECTORY}/multiqc/
 ```
 
-Then, we will add the command to run `MulktiQC`:
+Next, we need to add the output directory:
 
 ```
-mulitqc $REPORTS_DIRECTORY
+mkdir -p $OUTPUT_DIRECTORY
+```
+
+Then, we will add the command to run `MultiQC`:
+
+```
+mulitqc \
+$NORMAL_PICARD_METRICS \
+$TUMOR_PICARD_METRICS \
+$NORMAL_FASTQC_1 \
+$NORMAL_FASTQC_2 \
+$TUMOR_FASTQC_1 \
+$TUMOR_FASTQC_2 \
+-o $OUTPUT_DIRECTORY
 ```
 
 So our final `sbatch` script should look like:
@@ -253,8 +276,25 @@ module load gcc/9.2.0
 module load multiqc/1.12
 
 REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/
+NORMAL_SAMPLE_NAME=syn3_normal
+TUMOR_SAMPLE_NAME=syn3_tumor
 
-mulitqc $REPORTS_DIRECTORY
+NORMAL_PICARD_METRICS=${REPORTS_DIRECTORY}picard/${NORMAL_SAMPLE_NAME}/${NORMAL_SAMPLE_NAME}.CollectAlignmentSummaryMetrics.txt
+TUMOR_PICARD_METRICS=${REPORTS_DIRECTORY}picard/${TUMOR_SAMPLE_NAME}/${TUMOR_SAMPLE_NAME}.CollectAlignmentSummaryMetrics.txt
+NORMAL_FASTQC_1=${REPORTS_DIRECTORY}fastqc/${NORMAL_SAMPLE_NAME}/${NORMAL_SAMPLE_NAME}_1_fastqc.zip
+NORMAL_FASTQC_2=${REPORTS_DIRECTORY}fastqc/${NORMAL_SAMPLE_NAME}/${NORMAL_SAMPLE_NAME}_2_fastqc.zip
+TUMOR_FASTQC_1=${REPORTS_DIRECTORY}fastqc/${TUMOR_SAMPLE_NAME}/${TUMOR_SAMPLE_NAME}_1_fastqc.zip
+TUMOR_FASTQC_2=${REPORTS_DIRECTORY}fastqc/${TUMOR_SAMPLE_NAME}/${TUMOR_SAMPLE_NAME}_2_fastqc.zip
+OUTPUT_DIRECTORY=${REPORTS_DIRECTORY}/multiqc/
+
+mulitqc \
+$NORMAL_PICARD_METRICS \
+$TUMOR_PICARD_METRICS \
+$NORMAL_FASTQC_1 \
+$NORMAL_FASTQC_2 \
+$TUMOR_FASTQC_1 \
+$TUMOR_FASTQC_2 \
+-o $OUTPUT_DIRECTORY
 ```
 
 Like the previous step, we will need to check to ensure that the previous `Picard` step for collecting metrics for each sample is down before we can submit this script. To do this, we will check out `squeue`:
