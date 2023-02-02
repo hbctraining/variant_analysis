@@ -480,7 +480,7 @@ As a result your tumor `Picard` processing script should look like:
 module load picard/2.8.0
 
 # Assign file paths to variables
-  SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_tumor_GRCh38.p7.sam
+SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_tumor_GRCh38.p7.sam
 REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/picard/syn3_tumor/
 SAMPLE_NAME=`basename $SAM_FILE _GRCh38.p7.sam`
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
