@@ -41,6 +41,7 @@ Below is a flow chart of the `Picard` pipeline that we will be using:
 Let's go ahead and start making a new `sbatch` within `vim`:
 
 ```
+cd ~/variant_calling/scripts/
 vim picard_alignment_processing_normal.sbatch
 ```
 
