@@ -61,12 +61,14 @@ Once inside insert mode, can can enter the shebang line, description and `SBATCH
 Next, we will added the line to load the `snpEff` module: 
 
 ```
+# Load modules
 module load snpEff/4.3g
 ```
 
 Also, we will add our variables:
 
 ```
+# Assign variables
 REPORTS_DIRECTORY=/home/$USER/variant_calling/reports/snpeff/
 SAMPLE_NAME=mutect2_syn3_normal_syn3_tumor
 REFERENCE_SEQUENCE_NAME=GRCh38.p7
@@ -81,12 +83,14 @@ ANNOTATED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_fil
 We need to create a directory to hold out reports:
 
 ```
+# Create reports directory
 mkdir -p $REPORTS_DIRECTORY
 ```
 
 Lastly, we need to add out `SnpEff` command:
 
 ```
+# Run SnpEff
 java -jar -Xmx4g $SNPEFF/snpEff.jar  eff \
 -dataDir $DATADIR \
 -cancer \
@@ -110,8 +114,10 @@ This script should look like:
 #SBATCH -o run_SnpEff_GRCh38.p7_%j.out
 #SBATCH -e run_SnpEff_GRCh38.p7_%j.err
 
+# Load modules
 module load snpEff/4.3g
 
+# Assign variables
 REPORTS_DIRECTORY=/home/$USER/variant_calling/reports/snpeff/
 SAMPLE_NAME=mutect2_syn3_normal_syn3_tumor
 REFERENCE_SEQUENCE_NAME=GRCh38.p7
@@ -122,8 +128,10 @@ DATADIR=/n/groups/hbctraining/variant_calling/reference/snpeff/data/
 FILTERED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-LCR-filt.vcf
 ANNOTATED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-LCR-filt.snpeff.vcf
 
+# Create reports directory
 mkdir -p $REPORTS_DIRECTORY
 
+# Run SnpEff
 java -jar -Xmx4g $SNPEFF/snpEff.jar  eff \
 -dataDir $DATADIR \
 -cancer \
