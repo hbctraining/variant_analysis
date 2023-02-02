@@ -228,7 +228,7 @@ gnomAD
 
 ***
 
-[Next Lesson >>>](variant_annotation.md)
+[Next Lesson >>>](variant_filtering.md)
 
 [Back to Schedule](../schedule/README.md)
 
