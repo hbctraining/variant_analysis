@@ -128,6 +128,21 @@ sbatch picard_CollectAlignmentMetrics_normal.sbatch
 sbatch picard_CollectAlignmentMetrics_tumor.sbatch
 ```
 
+> **NOTE:** The syntax that `Picard` uses is quite particular and you may note in your error file the warning:
+> ```
+>********* NOTE: Picard's command line syntax is changing.
+>*********
+>********* For more information, please see:
+>********* https://github.com/broadinstitute/picard/wiki/Command-Line-Syntax-Transition-For-Users-(Pre-Transition)
+>*********
+>********* The command line looks like this in the new syntax:
+>*********
+>*********    CollectAlignmentSummaryMetrics -INPUT /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam -OUTPUT /home/${USER}/variant_calling/reports/picard/syn3_normal/syn3_normal.CollectAlignmentSummaryMetrics.txt -REFERENCE_SEQUENCE /n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
+>*********
+> ```
+> The version of `Picard` on the cluster is a bit old, but most of the functionality is still the same. At the time of version 2.8.0, not all packages were converted over to using this syntax. For example, in O2's version of `SortSam`, it doesn't accept this syntax. In order for all of our `Picard` syntax to be consistent in this workshop, we are showing the older syntax. Importantly, the more recent versions `Picard` *likely* all accept the new syntax, but [it should still accept the older syntax](https://github.com/broadinstitute/picard/wiki/Barclay-Transition-Notes). However, the `Picard` manuals themselves are not always the most consistent when differentiating between these two syntaxes and sometimes show both, so we tend to recommend using the old syntax as we find it works more consistently.
+
+
 ## Collecting Coverage Metrics
 
 Coverage is the average level of alignment for any random locus in the genome.  `Picard` also has a package called `CollectWgsMetrics` which is also very nice for collecting data about coverage for our alignments. However, since our data set is whole exome sequencing rather than whole genome sequencing and thus only compromises about 1-2% of the human genome, average coverage across the whole genome is not a very useful metric. However, if one did have whole genome data, then running `CollectWgsMetrics` would be useful and even could be incorporated easily into the downstream <code>MultiQC</code> HTML report. In the dropdown box below be provide the code that you could use to collect this information.
