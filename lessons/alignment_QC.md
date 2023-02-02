@@ -63,8 +63,8 @@ Next, we can add the `Picard` command to gather the alignment metrics:
 ```
 # Run Picard CollectAlignmentSummaryMetrics
 picard CollectAlignmentSummaryMetrics \
-INPUT=$COORDINATE_SORTED_BAM_FILE
-OUTPUT=$METRICS_OUTPUT_FILE
+INPUT=$COORDINATE_SORTED_BAM_FILE \
+OUTPUT=$METRICS_OUTPUT_FILE \
 REFERENCE_SEQUENCE=$REFERENCE
 ```
 
@@ -102,8 +102,8 @@ METRICS_OUTPUT_FILE=/home/${USER}/variant_calling/reports/picard/syn3_normal_GRC
 
 # Run Picard CollectAlignmentSummaryMetrics
 picard CollectAlignmentSummaryMetrics \
-INPUT=$COORDINATE_SORTED_BAM_FILE
-OUTPUT=$METRICS_OUTPUT_FILE
+INPUT=$COORDINATE_SORTED_BAM_FILE \
+OUTPUT=$METRICS_OUTPUT_FILE \
 REFERENCE_SEQUENCE=$REFERENCE
 ```
 
