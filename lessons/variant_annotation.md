@@ -41,7 +41,7 @@ Move to your `scripts` directory and create a new script named `run_SnpEff.sbatc
 
 ```
 cd ~/variant_calling/scripts/
-vim variant_annotation_syn3_normal_syn3_tumor.sbatch
+vim variant_annotation_normal_tumor.sbatch
 ```
 
 Once inside insert mode, can can enter the shebang line, description and `SBATCH` directives:
@@ -165,7 +165,7 @@ Let's breakdown this command and discuss each argument:
 Submit this script using:
 
 ```
-sbatch variant_annotation_syn3_normal_syn3_tumor.sbatch
+sbatch variant_annotation_normal_tumor.sbatch
 ```
 
 ### Output
@@ -173,7 +173,7 @@ sbatch variant_annotation_syn3_normal_syn3_tumor.sbatch
 Let's take a look at our output from `SnpEff` now to see how our VCF file has been modified to include variant annotations. Let's open up our SnpEff annotated VCF file in `less`:
 
 ```
-less /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7--LCR-filt.snpeff.vcf
+less /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-LCR-filt.snpeff.vcf
 ```
 
 Scroll down to right before your variants are and you will notice that `SnpEff` has inserted two lines into your VCF file. First, it has inserted:
