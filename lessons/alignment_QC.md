@@ -64,19 +64,19 @@ Next, we can add the `Picard` command to gather the alignment metrics:
 # Run Picard CollectAlignmentSummaryMetrics
 picard CollectAlignmentSummaryMetrics \
 INPUT=$INPUT_BAM \
-OUTPUT=$OUTPUT_METRICS_FILE \
-REFERENCE_SEQUENCE=$REFERENCE
+REFERENCE_SEQUENCE=$REFERENCE \
+OUTPUT=$OUTPUT_METRICS_FILE 
 ```
 
 We can breakdown this command into each of it's components:
 
 - `picard CollectAlignmentSummaryMetrics` Calls the `CollectAlignmentSummaryMetrics` from within `Picard`
 
-- `INPUT=$COORDINATE_SORTED_BAM_FILE` This is the output from our previous `Picard` alignment processing steps.
-
-- `OUTPUT=$METRICS_OUTPUT_FILE` This is the file to write the output metrics to.
+- `INPUT=$INPUT_BAM` This is the output from our previous `Picard` alignment processing steps.
 
 - `REFERENCE_SEQUENCE=$REFERENCE` This isn't a required parameter, but `picard` can do a subset of mismatch-related metrics if this is provided.
+
+- `OUTPUT=$OUTPUT_METRICS_FILE` This is the file to write the output metrics to.
 
 The `sbatch` submission script for collecting the alignment metrics should look like:
 
@@ -103,8 +103,8 @@ OUTPUT_METRICS_FILE=/home/${USER}/variant_calling/reports/picard/syn3_normal_GRC
 # Run Picard CollectAlignmentSummaryMetrics
 picard CollectAlignmentSummaryMetrics \
 INPUT=$INPUT_BAM \
-OUTPUT=$OUTPUT_METRICS_FILE \
-REFERENCE_SEQUENCE=$REFERENCE
+REFERENCE_SEQUENCE=$REFERENCE \
+OUTPUT=$OUTPUT_METRICS_FILE 
 ```
 
 Create the tumor version of this submission script using `sed`:
