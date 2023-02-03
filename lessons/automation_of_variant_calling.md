@@ -587,18 +587,19 @@ In this case, `Job_C.sbatch` won't queue until `Job_A.sbatch` and `Job_B.sbatch`
 # It is designed for a single individual, so if you wanted to run this across multiple individuals you would need to loop this script across all of them.
 
 # Assign variables
-FASTQ_DIRECTORY=/home/$USER/variant_calling/raw_fastq/
-REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
-REFERENCE_SEQUENCE_NAME=`basename $REFERENCE_SEQUENCE _genomic.fa`
+FASTQ_DIRECTORY=/home/$USER/variant_calling/raw_data/
+REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
+REFERENCE_SEQUENCE_NAME=`basename $REFERENCE_SEQUENCE .fa`
 NORMAL_SAMPLE=syn3_normal
 TUMOR_SAMPLE=syn3_tumor
-LCR_FILE=~/variant_calling/reference/LCR-hs38.bed
+LCR_FILE=/n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed
 REPORTS_DIRECTORY=/home/$USER/variant_calling/reports/
+SNPEFF_DIRECTORY=/n/groups/hbctraining/variant_calling/reference/snpeff/data/
 SNPEFF_DATABASE=GRCh38.p7.RefSeq
 
 # Intiate bash arrays to hold sample names, Picard Job IDs and coordinate-sorted BAM files
 SAMPLE_NAME_ARRAY=()
-PICARD_JOB_ID_ARRAY=()
+PICARD_METRICS_JOB_ID_ARRAY=()
 COORDINATE_SORTED_BAM_ARRAY=()
 
 # Submit samples for Alignment and Picard Processing
@@ -608,32 +609,48 @@ for SAMPLE in $FASTQ_DIRECTORY*_1.fq.gz; do
   SAMPLE_NAME=`basename $SAMPLE _1.fq.gz`
   # Add the sample name to our array holding sample names
   SAMPLE_NAME_ARRAY+=($SAMPLE_NAME)
+  # Assign FastQC report directory
+  FASTQC_REPORT_DIRECTORY=`echo -e "${REPORTS_DIRECTORY}fastqc/${SAMPLE_NAME}/"`
+  # Submit the FastQC script
+  FASTQC_JOB_SUBMISSION=$(sbatch -p priority -t 0-00:30:00 -c 4 --mem 8G -o fastqc_${SAMPLE_NAME}_%j.out -e fastqc_${SAMPLE_NAME}_%j.err fastqc_automated.sbatch $SAMPLE $FASTQC_REPORT_DIRECTORY 4)
+  # Parse out the job ID from outout from the FastQC submission
+  FASTQC_JOB_ID=`echo $FASTQC_JOB_SUBMISSION | cut -d ' ' -f 4`
+  # Print to standard output the job that has been submitted
+  echo -e "FastQC job for sample $SAMPLE_NAME submitted as job ID $FASTQC_JOB_ID"
   # Assign a path and name for the alignments
   SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.sam
   # Submit the bwa sbatch script and save the output to a variable named $BWA_JOB_SUBMISSION
-  BWA_JOB_SUBMISSION=$(sbatch -p priority -t 0-04:00:00 -c 8 --mem 16G -o bwa_alignment_${SAMPLE_NAME}_%j.out -e bwa_alignment_${SAMPLE_NAME}_%j.err bwa_alignment_automated.sbatch $REFERENCE_SEQUENCE $SAMPLE $SAMPLE_NAME $SAM_FILE)
+  BWA_JOB_SUBMISSION=$(sbatch -p priority -t 0-04:00:00 -c 8 --mem 16G -o bwa_alignment_${SAMPLE_NAME}_%j.out -e bwa_alignment_${SAMPLE_NAME}_%j.err --dependency=afterok:$FASTQC_JOB_ID bwa_alignment_automated.sbatch $REFERENCE_SEQUENCE $SAMPLE $SAMPLE_NAME $SAM_FILE)
   # Parse out the job ID from outout from the bwa submission
   BWA_JOB_ID=`echo $BWA_JOB_SUBMISSION | cut -d ' ' -f 4`
   # Print to standard output the job that has been submitted
   echo -e "bwa job for sample $SAMPLE_NAME submitted as job ID $BWA_JOB_ID"
   # Submit the picard sbatch script and save the output to a variable named $PICARD_JOB_SUBMISSION
-  PICARD_JOB_SUBMISSION=$(sbatch -p priority -t 0-02:00:00 -c 1 --mem 32G -o picard_alignment_processing_${SAMPLE_NAME}_%j.out -e picard_alignment_processing_${SAMPLE_NAME}_%j.err --dependency=afterok:$BWA_JOB_ID picard_alignment_processing_automated.sbatch $SAM_FILE)
-  # Parse out the job ID from output from the Picard submission
-  PICARD_JOB_ID=`echo $PICARD_JOB_SUBMISSION | cut -d ' ' -f 4`
+  PICARD_PROCESSING_JOB_SUBMISSION=$(sbatch -p priority -t 0-04:00:00 -c 1 --mem 32G -o picard_alignment_processing_${SAMPLE_NAME}_%j.out -e picard_alignment_processing_${SAMPLE_NAME}_%j.err --dependency=afterok:$BWA_JOB_ID picard_alignment_processing_automated.sbatch $SAM_FILE $REPORTS_DIRECTORY $SAMPLE_NAME)
+  # Parse out the job ID from output from the Picard processing submission
+  PICARD_PROCESSING_JOB_ID=`echo $PICARD_PROCESSING_JOB_SUBMISSION | cut -d ' ' -f 4`
   # Print to standard output the job that has been submitted
-  echo -e "Picard processing job for sample $SAMPLE_NAME submitted as job ID $PICARD_JOB_ID"
-  # Add the Picard job ID to an array holding all of the Picard job IDs
-  PICARD_JOB_ID_ARRAY+=($PICARD_JOB_ID)
+  echo -e "Picard processing job for sample $SAMPLE_NAME submitted as job ID $PICARD_PROCESSING_JOB_ID"
   # Create a variable to hold the the path and output BAM file from the Picard processing sbatch script
   COORDINATE_SORTED_BAM_FILE=`echo -e "${SAM_FILE%sam}coordinate_sorted.bam"`
-  # Add this BAM file path to an array 
+  # Add this BAM file path to an array
   COORDINATE_SORTED_BAM_ARRAY+=($COORDINATE_SORTED_BAM_FILE)
+  # Assign Picard report file path
+  PICARD_METRICS_REPORT_FILE=`echo -e "${REPORTS_DIRECTORY}picard/${SAMPLE_NAME}/${SAMPLE_NAME}.CollectAlignmentSummaryMetrics.txt"`
+  #Submit the picard metrics sbatch script and save the output to a variable named $PICARD_METRICS_JOB_SUBMISSION
+  PICARD_METRICS_JOB_SUBMISSION=$(sbatch -p priority -t 0-00:30:00 -c 1 --mem 16G -o picard_metrics_${SAMPLE_NAME}_%j.out -e picard_metrics_${SAMPLE_NAME}_%j.err --dependency=afterok:$PICARD_PROCESSING_JOB_ID picard_metrics_automated.sbatch $COORDINATE_SORTED_BAM_FILE $REFERENCE_SEQUENCE $PICARD_METRICS_REPORT_FILE)
+  # Parse out the job ID from the Picard metrics submission
+  PICARD_METRICS_JOB_ID=`echo $PICARD_METRICS_JOB_SUBMISSION | cut -d ' ' -f 4`
+  # Add the Picard metrics job ID to an array holding all of the Picard metrics job IDs
+  PICARD_METRICS_JOB_ID_ARRAY+=($PICARD_METRICS_JOB_ID)
+  # Print to standard output the job that has been submitted
+  echo -e "Picard metrics job for sample $SAMPLE_NAME submitted as job ID $PICARD_METRICS_JOB_ID"
 done
 
 # Create a string that contains all of the samples preceded by and separated by an "_"
 SAMPLE_NAME_STRING=`for i in ${SAMPLE_NAME_ARRAY[@]}; do  echo -ne "_$i"; done`
 # Create a string that contains all of the Picard procession job IDs preceded by and separated by a ":"
-DEPENDENT_PICARD_JOB_IDS=`for i in ${PICARD_JOB_ID_ARRAY[@]}; do  echo -ne ":$i"; done`
+DEPENDENT_PICARD_METRICS_JOB_IDS=`for i in ${PICARD_METRICS_JOB_ID_ARRAY[@]}; do  echo -ne ":$i"; done`
 
 # for loop to discover which position in the $SAMPLE_NAME_ARRAY contains the normal sample
 NORMAL_ARRAY_POSITION=`for SAMPLE_POSITION in {0..1}; do if [[ "${SAMPLE_NAME_ARRAY[$SAMPLE_POSITION]}" == "$NORMAL_SAMPLE" ]];then echo $SAMPLE_POSITION; fi; done`
@@ -643,34 +660,40 @@ TUMOR_ARRAY_POSITION=`for SAMPLE_POSITION in {0..1}; do if [[ "${SAMPLE_NAME_ARR
 # Assign variables that will be used by Mutect2 
 NORMAL_BAM_MUTECT_INPUT=${COORDINATE_SORTED_BAM_ARRAY[$NORMAL_ARRAY_POSITION]}
 TUMOR_BAM_MUTECT_INPUT=${COORDINATE_SORTED_BAM_ARRAY[$TUMOR_ARRAY_POSITION]}
-MUTECT2_VCF_OUTPUT=`echo -e "/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2${SAMPLE_NAME_STRING}_${REFERENCE_SEQUENCE_NAME}-raw.vcf.gz"`
+MUTECT2_VCF_OUTPUT=`echo -e "/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2${SAMPLE_NAME_STRING}_${REFERENCE_SEQUENCE_NAME}-raw.vcf"`
 
 # Submit the Mutect2 sbatch script and save the output to a variable named $MUTECT2_JOB_SUBMISSION 
-MUTECT2_JOB_SUBMISSION=$(sbatch -p priority -t 1-00:00:00 -c 1 --mem 16G -o mutect2_variant_calling${SAMPLE_NAME_STRING}_%j.out -e mutect2_variant_calling${SAMPLE_NAME_STRING}_%j.err --dependency=afterok${DEPENDENT_PICARD_JOB_IDS} mutect2_automated.sbatch  $REFERENCE_SEQUENCE $NORMAL_SAMPLE $TUMOR_SAMPLE $NORMAL_BAM_MUTECT_INPUT $TUMOR_BAM_MUTECT_INPUT $MUTECT2_VCF_OUTPUT)
+MUTECT2_JOB_SUBMISSION=$(sbatch -p priority -t 1-00:00:00 -c 1 --mem 16G -o mutect2_variant_calling${SAMPLE_NAME_STRING}_%j.out -e mutect2_variant_calling${SAMPLE_NAME_STRING}_%j.err --dependency=afterok${DEPENDENT_PICARD_METRICS_JOB_IDS} mutect2_automated.sbatch  $REFERENCE_SEQUENCE $NORMAL_BAM_MUTECT_INPUT $NORMAL_SAMPLE $TUMOR_BAM_MUTECT_INPUT $TUMOR_SAMPLE $MUTECT2_VCF_OUTPUT)
 
 # Parse out the job ID from output from the Mutect2 submission
 MUTECT2_JOB_ID=`echo $MUTECT2_JOB_SUBMISSION | cut -d ' ' -f 4`
 # Print to standard output the job that has been submitted
 echo -e "Mutect2 job submitted as job ID $MUTECT2_JOB_ID"
 
+# Submit MultiQC sbatch script and save the output to a variable named $MULTIQC_JOB_SUBMISSION
+MULTIQC_JOB_SUBMISSION=$(sbatch -p priority -t 0-00:10:00 -c 1 --mem 1G -o mulitqc${SAMPLE_NAME_STRING}_%j.out -e mulitqc${SAMPLE_NAME_STRING}_%j.err --dependency=afterok${DEPENDENT_PICARD_METRICS_JOB_IDS} multiqc_alignment_metrics_automated.sbatch $REPORTS_DIRECTORY $NORMAL_SAMPLE $TUMOR_SAMPLE)
+
+# Parse out the job ID from output from the Mutect2 submission
+MULTIQC_JOB_ID=`echo $MULTIQC_JOB_SUBMISSION | cut -d ' ' -f 4`
+# Print to standard output the job that has been submitted
+echo -e "MultiQC job submitted as job ID $MULTIQC_JOB_ID"
+
 # Assign a variable that will be used in the Mutect2 filtering step
-MUTECT2_VCF_OUTPUT_FILTERED=`echo -e "${MUTECT2_VCF_OUTPUT%raw.vcf.gz}filt.vcf.gz"`
+MUTECT2_VCF_OUTPUT_FILTERED=`echo -e "${MUTECT2_VCF_OUTPUT%raw.vcf}filt.vcf"`
 
 # Submit the variant filtering sbatch script and save the output to a variable named $VARIANT_FILTERING_JOB_SUBMISSION
-VARIANT_FILTERING_JOB_SUBMISSION=$(sbatch -p priority -t 0-02:00:00 -c 1 --mem 8G -o variant_filtering${SAMPLE_NAME_STRING}_%j.out -e variant_filtering${SAMPLE_NAME_STRING}_%j.err --dependency=afterok:$MUTECT2_JOB_ID variant_filtering_automated.sbatch $REFERENCE_SEQUENCE $MUTECT2_VCF_OUTPUT $MUTECT2_VCF_OUTPUT_FILTERED)
+VARIANT_FILTERING_JOB_SUBMISSION=$(sbatch -p priority -t 0-00:10:00 -c 1 --mem 8G -o variant_filtering${SAMPLE_NAME_STRING}_%j.out -e variant_filtering${SAMPLE_NAME_STRING}_%j.err --dependency=afterok:$MUTECT2_JOB_ID variant_filtering_automated.sbatch $REFERENCE_SEQUENCE $MUTECT2_VCF_OUTPUT $MUTECT2_VCF_OUTPUT_FILTERED)
 
 # Parse out the job ID from output from the variant filtering submission
 VARIANT_FILTERING_JOB_ID=`echo $VARIANT_FILTERING_JOB_SUBMISSION | cut -d ' ' -f 4`
 # Print to standard output the job that has been submitted
 echo -e "Variant filtering job submitted as job ID $VARIANT_FILTERING_JOB_ID"
 
-# Assign variables that will be used in the Snpeff annotation step
-CSV_STATS=`echo -e "${REPORTS_DIRECTORY}annotation${SAMPLE_NAME_STRING}_${REFERENCE_SEQUENCE_NAME}-effects-stats.csv"`
-HTML_REPORT=`echo -e "${REPORTS_DIRECTORY}annotation${SAMPLE_NAME_STRING}_${REFERENCE_SEQUENCE_NAME}-effects-stats.html"`
-ANNOTATED_VCF_FILE=`echo -e "${MUTECT2_VCF_OUTPUT_FILTERED%vcf.gz}snpeff.vcf"`
+# Assign variable that will be used in the Snpeff annotation step
+ANNOTATED_VCF_FILE=`echo -e "${MUTECT2_VCF_OUTPUT_FILTERED%filt.vcf}LCR-filt.snpeff.vcf"`
 
 # Submit the variant annotation sbatch script
-VARIANT_ANNOTATION_JOB_SUBMISSION=$(sbatch -p priority -t 0-02:00:00 -c 1 --mem 8G -o variant_annotation${SAMPLE_NAME_STRING}_%j.out -e variant_annotation${SAMPLE_NAME_STRING}_%j.err --dependency=afterok:$VARIANT_FILTERING_JOB_ID variant_annotation_automated.sbatch $CSV_STATS $HTML_REPORT $SNPEFF_DATABASE $MUTECT2_VCF_OUTPUT_FILTERED $ANNOTATED_VCF_FILE)
+VARIANT_ANNOTATION_JOB_SUBMISSION=$(sbatch -p priority -t 0-02:00:00 -c 1 --mem 8G -o variant_annotation${SAMPLE_NAME_STRING}_%j.out -e variant_annotation${SAMPLE_NAME_STRING}_%j.err --dependency=afterok:$VARIANT_FILTERING_JOB_ID variant_annotation_automated.sbatch $REPORTS_DIRECTORY $SAMPLE_NAME_STRING $REFERENCE_SEQUENCE_NAME $SNPEFF_DATABASE $SNPEFF_DIRECTORY $MUTECT2_VCF_OUTPUT_FILTERED $ANNOTATED_VCF_FILE)
 
 # Parse out the job ID from output from the variant annotation submission
 VARIANT_ANNOTATION_JOB_ID=`echo $VARIANT_ANNOTATION_JOB_SUBMISSION | cut -d ' ' -f 4`
