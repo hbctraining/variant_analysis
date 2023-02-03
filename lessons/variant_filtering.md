@@ -93,25 +93,59 @@ As a result of the high error rates in these low-complexity regions, it is recom
 
 ### Using `SnpSift` to remove LCRs
 
-#### Downloading and Unpacking BED with LCRs
+The first step that one would need to do to remove LCRs would be to download them. We have already done this for you, but you can see the steps in the dropdown menu below:
+
+<details>
+  <summary><b>Click here to see how to download and format the LCR BED file</b></summary>
+<h3>Downloading and Unpacking BED with LCRs</h3>
 The BED file (explained below) containing the LCRs for GRCh38 can be directly downloaded from this link:
 
-```
-cd ~/variant_calling/reference/
-curl -o LCR-hs38.bed.gz -L https://github.com/lh3/varcmp/blob/master/scripts/LCR-hs38.bed.gz?raw=true
-```
+<pre>
+# YOU DON"T NEED TO DO THIS
+cd ~/variant_calling/
+mkdir reference
+cd reference
+curl -o LCR-hs38_with_chr.bed.gz -L https://github.com/lh3/varcmp/blob/master/scripts/LCR-hs38.bed.gz?raw=true
+</pre>
 
-We can then unpack the gzipped files using the following command:
-
-```
-gunzip -c LCR-hs38.bed.gz > LCR-hs38.bed
-```
-
+<code>curl</code> is a tool in <code>bash</code> that can download linked files from the Internet via the command line. <code>curl</code> is very similiar to <code>wget</code> and the differences between them are relatively minor and beyond the scope of this course. If you have experience or prefer <code>wget</code> feel free to use it instead, but for this example we will be using <code>curl</code>. Let's breifly discuss the <code>curl</code> command.
+  
+ <ul><li><code>curl</code> This calls the curl command.</li>
+   
+ <li><code>-o LCR-hs38_with_chr.bed.gz</code> By using the <code>-o</code> (lowercase O), you are telling curl to download it and give it the following filename. You could also use a path here if you didn't want to download it to your current directly like <code>-o /home/${USER}/variant_calling/reference/LCR-hs38_with_chr.bed.gz</code>. <b>Importantly</b>, The <code>-O</code> (uppercase O) option without a string after it tells <code>curl</code> to use the filename of the file as it is online, which happens to be <code>LCR-hs38.bed.gz</code>. However, this file has a query parameter <code>?raw=true</code> at the URL and if you were to download this with <code>-O</code> without <code>?raw=true</code> on the end of the link you would get an HTML document, but if you did include it, then your file would be named <code>LCR-hs38.bed.gz?raw=true</code> and you would need to rename it. Thus, for this case you probably should use <code>-o</code> over <code>-O</code> to make the download be more straightforward.</li>
+   
+ <li><code>-L https://github.com/lh3/varcmp/blob/master/scripts/LCR-hs38.bed.gz?raw=true</code> This is the link you would like to download from</li></ul>
+  
+ We can then unpack the gzipped files using the following command:
+  
+ <pre>
+ # YOU DON'T NEED TO DO THIS
+ gunzip -c LCR-hs38_with_chr.bed.gz > LCR-hs38_with_chr.bed
+ </pre>
+ 
 When we can inspect our BED file we can see that it simply has the required 3 columns denoting the positioning of low-complexitiy regions in GRCh38.
+ 
+<pre>
+# YOU DON'T NEED TO DO THIS
+less LCR-hs38_with_chr.bed
+</pre>
+Unfortunately, this file is formatted with the chromosome names starting with <code>chr</code> and we would like to strip that off so that it is consistent with our chromosome numbering scheme. That can be easily done in <code>sed</code>:
 
-```
-less LCR-hs38.bed
-```
+<pre>
+# YOU DON'T NEED TO DO THIS
+sed 's/^chr//g' LCR-hs38_with_chr.bed > LCR-hs38.bed
+</pre>
+
+We can break with command down:
+
+<ul><li><code>sed</code> Calls the <code>sed</code> command</li>
+
+<li><code>'s/^chr//g' LCR-hs38_with_chr.bed</code> This tells <code>sed</code> to replace all instances of a "chr" beginning a line (that's what the <code>^</code> tells <code>sed</code>) in the file <code>LCR-hs38_with_chr.bed</code> with nothing</li>
+
+<li><code>&gt; LCR-hs38.bed</code> Write the output to this file</li></ul>
+</details>
+
+***
 
 #### Editing variant filtering script to include LCR filtering
 
