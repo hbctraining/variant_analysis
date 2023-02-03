@@ -250,7 +250,7 @@ less /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn
 Scroll down the VCF file past all of the contigs and you should see a line starting with:
 
 ```
-##filtering_status=
+##filtering_status=These calls have been filtered by FilterMutectCalls to label false positives with a list of failed filters and true positives with PASS.
 ```
 
 Let's inspect these lines a little:
@@ -262,7 +262,7 @@ Let's inspect these lines a little:
 ##source=Mutect2
 ##tumor_sample=syn3-tumor
 ##SnpSiftVersion="SnpSift 4.3g (build 2016-11-28 08:32), by Pablo Cingolani"
-##SnpSiftCmd="SnpSift int -x -i syn3_GRCh38.p7-raw-filt.vcf ../LCR-hs38.bed"
+##SnpSiftCmd="SnpSift int -x -i /n/scratch3/users/w/wig051/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-filt.vcf /n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed"
 ```
 
 The first five lines have been added to our VCF file by GATK. They give information on the programs that have been run on the data, which is listed on the `##source=` lines. These lines also define the column header in the VCF file that corresponds to the normal (`##normal_sample=`) and tumor sample (`##tumor_sample=`). 
