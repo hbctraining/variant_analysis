@@ -168,6 +168,97 @@ Coverage is the average level of alignment for any random locus in the genome.  
   <li><code>REFERENCE_SEQUENCE=$REFERENCE</code> This is the path to the reference genome that was used for the alignment.</li></ul>
 </details>
 
+## Inspecting procressed `BAM` files
+
+We discussed BAM/SAM file formatting in the [file format lesson](file_formats.md), but didn't discuss the header section and we could now inspect our processed BAM files to see what that looks like. In order to do this, we are going to use `Picard`, but once again this can be done in `samtools` as well (and more oftentimes is done in `samtools`) and that will be shown in a dropdown at the end of this section.
+
+First, we will need to make sure that the `Picard` module is loaded:
+
+```
+module load picard/2.8.0
+```
+
+Next, we will run the `ViewSam` package in `Picard`:
+
+```
+picard ViewSam INPUT=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam | less
+```
+
+This will open up the fully processed normal sample's BAM file in a human-readable format.
+
+We can see the top line is the header and it tells you information about the alignment file:
+
+```
+@HD     VN:1.5  SO:coordinate
+```
+
+`VN` is telling you the version number for the BAM/SAM formatting and `SO` is telling you the sort order. If we were to open up, our query-sorted BAM file, we would see that this says "queryname" instead of "coordinate".
+
+Then, you have all of your sequence lines (@SQ) outlining all of the reference sequence chromosomes and contigs.
+
+```
+@SQ     SN:1    LN:248956422
+@SQ     SN:HSCHR1_CTG1_UNLOCALIZED      LN:175055
+.
+.
+.
+@SQ     SN:MT   LN:16569
+```
+
+After that you can get to the Read Group (@RG) and it has the read group information that we provided `bwa`:
+
+```
+@RG     ID:syn3_normal  PL:illumina     PU:syn3_normal  SM:syn3_normal
+```
+
+Next, we get some very useful lines describing how this alignment file has been processed and the software used to do it in the program lines (@PG):
+
+```
+@PG     ID:bwa  PN:bwa  VN:0.7.17-r1188 CL:bwa mem -M -t 8 -R @RG\tID:syn3_normal\tPL:illumina\tPU:syn3_normal\tSM:syn3_normal /n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa /home/${USER}/variant_calling/raw_data/syn3_normal_1.fq.gz /home/${USER}/variant_calling/raw_data/syn3_normal_2.fq.gz -o /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.sam
+@PG     ID:MarkDuplicates       VN:2.8.0-SNAPSHOT       CL:picard.sam.markduplicates.MarkDuplicates INPUT=[/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.query_sorted.bam] OUTPUT=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.remove_duplicates.bam METRICS_FILE=/home/${USER}/variant_calling/reports/picard/syn3_normal/syn3_normal.remove_duplicates_metrics.txt REMOVE_DUPLICATES=true    MAX_SEQUENCES_FOR_DISK_READ_ENDS_MAP=50000 MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=8000 SORTING_COLLECTION_SIZE_RATIO=0.25 REMOVE_SEQUENCING_DUPLICATES=false TAGGING_POLICY=DontTag ASSUME_SORTED=false DUPLICATE_SCORING_STRATEGY=SUM_OF_BASE_QUALITIES PROGRAM_RECORD_ID=MarkDuplicates PROGRAM_GROUP_NAME=MarkDuplicates READ_NAME_REGEX=<optimized capture of last three ':' separated fields as numeric values> OPTICAL_DUPLICATE_PIXEL_DISTANCE=100 VERBOSITY=INFO QUIET=false VALIDATION_STRINGENCY=STRICT COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false GA4GH_CLIENT_SECRETS=client_secrets.json        PN:MarkDuplicates
+```
+
+These program lines are added in the order that they are implemented, but does not include sorting commands. We can see that `bwa` was run first because it is in the `ID` and `PN` (Program Name) fields. We are provided the version number (`VN` field) and the exact command-line command that was used (`CL` field). This can all be really useful if you have to try to reproduce someone's work from an alignment file, but the scripts that were originally used to produce it aren't availible.
+
+Lastly, we can see the aligned reads after all of this metadata concerning the file.
+
+<details>
+<summary><b>Click here to see how to do this in <code>samtools</code></b></summary>
+If we wanted to use <code>samtools</code> to view the BAM/SAM file, we would first need to make sure the <code>samtools</code> module is loaded (Note: that <code>samtools</code> does require <code>gcc</code> to be loaded as well:
+
+<pre>
+module load gcc/6.2.0
+module load samtools/1.15.1
+</pre>
+
+Then we can view our normal sample alignment file with:
+  
+<pre>
+samtools view /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam  | less
+</pre>
+  
+We can break down this command:
+  
+<ul><li><code>samtools view</code> Calls the <code>view</code> package from within <code>samtools</code></li>
+
+<li><code>/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam</code> This is the alignment file we want to view</li>
+
+<li><code>| less</code> Finally, we are going to pipe this output into a <code>less</code> command so that it doesn't fill up our screen</li></ul>
+
+However, <code>samtools</code> is a bit strange in that it skips over the header lines when you do this, so in order to see the header lines we need to use the <code>-H</code> option.
+
+<pre>
+samtools view -H /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam  | less
+</pre>
+
+The <code>-H</code> option modifies the output to only print the header lines. You won't get the read lines as well.
+
+The information here is the same as with <code>Picard</code>, so we won't rehash it. The only difference is that <code>samtools</code>, does add the <code>view</code> command into the @PG lines.
+
+<b>Check the samtools pipeline if it adds the sorts as well</b>
+  
+</details>
+
 ## Options for Inspecting `Picard` Alignment Metrics
 
 Once the job has finished we would inspect the output files. This could be done in one of a few ways:
