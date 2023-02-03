@@ -262,7 +262,7 @@ mkdir -p $OUTPUT_DIRECTORY
 Then, we will add the command to run `MultiQC`:
 
 ```
-mulitqc \
+multiqc \
 $NORMAL_PICARD_METRICS \
 $TUMOR_PICARD_METRICS \
 $NORMAL_FASTQC_1 \
@@ -304,7 +304,7 @@ OUTPUT_DIRECTORY=${REPORTS_DIRECTORY}/multiqc/
 
 mkdir -p $OUTPUT_DIRECTORY
 
-mulitqc \
+multiqc \
 $NORMAL_PICARD_METRICS \
 $TUMOR_PICARD_METRICS \
 $NORMAL_FASTQC_1 \
