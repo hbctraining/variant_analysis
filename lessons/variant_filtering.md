@@ -36,7 +36,7 @@ The first step is to add our shebang line, description and `sbatch` directives:
 
 # Assign sbatch directives
 #SBATCH -p priority
-#SBATCH -t 0-02:00:00
+#SBATCH -t 0-00:10:00
 #SBATCH -c 1
 #SBATCH --mem 8G
 #SBATCH -o variant_filtering_normal_tumor_%j.out
@@ -203,7 +203,7 @@ Our final `sbatch` script should look like:
 
 # Assign sbatch directives
 #SBATCH -p priority
-#SBATCH -t 0-02:00:00
+#SBATCH -t 0-00:10:00
 #SBATCH -c 1
 #SBATCH --mem 8G
 #SBATCH -o variant_filtering_normal_tumor_%j.out
