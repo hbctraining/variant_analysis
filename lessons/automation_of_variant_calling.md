@@ -24,17 +24,75 @@ cd ~/variant_calling/scripts/
 
 #### `FastQC`
 
+Because many of some variables already weren't explictly defined (`$RIGHT_READS` and `$SAM_FILE`), but were rather dependent on our explicitly defined variables (`$REFERENCE_SEQUENCE` and `LEFT_READS`) we won't need to edit our script as much. **We are able to do this because `sbatch` accepts positional parameters.** So let's create a new script and make this edit.
+
+```
+cp fastqc_normal.sbatch fastqc_automated.sbatch
+vim fastqc_automated.sbatch
+```
+In order for us to specify "tumor" or "normal" samples in the standard error and standard output files we will need to pass `sbatch` these arguments directly when submit the jobs in the wrapper. However, SLURM sometimes has issues when some arguments come from the command line and others come from the script. As a result, we are going remove all `sbatch` directives from scripts and rather provide them all in the command-line as part of the wrapper. Therefore, we need to remove the following lines of `sbatch` directives:
+
+```
+#REMOVE THESE LINES
+# Assign sbatch directives
+#SBATCH -p priority
+#SBATCH -t 0-00:30:00
+#SBATCH -c 4
+#SBATCH --mem 8G
+#SBATCH -o fastqc_normal_%j.out
+#SBATCH -e fastqc_normal_%j.err
+```
+
+Next, we need to change our variables to accept positional parameters. So we need to change:
+
+```
+LEFT_READS=/home/$USER/variant_calling/raw_data/syn3_normal_1.fq.gz
+RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
+OUTPUT_DIRECTORY=~/variant_calling/reports/fastqc/syn3_normal/
+THREADS=4
+```
+
+To:
+
+```
+LEFT_READS=$1
+RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
+OUTPUT_DIRECTORY=$2
+THREADS=$3
+```
+
+Our `FastQC` submission script should now look like:
+
+```
+#!/bin/bash
+# This sbatch script is for running FastQC to evaluate read qualities
+
+module load fastqc/0.11.9
+
+LEFT_READS=$1
+RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
+OUTPUT_DIRECTORY=$2
+THREADS=$3
+
+mkdir -p $OUTPUT_DIRECTORY
+
+fastqc \
+$LEFT_READS \
+$RIGHT_READS \
+-o $OUTPUT_DIRECTORY \
+-t $THREADS
+```
 
 #### `bwa` Alignment
 
-Because many of some variables already weren't explictly defined (`$RIGHT_READS` and `$SAM_FILE`), but were rather dependent on our explicitly defined variables (`$REFERENCE_SEQUENCE` and `LEFT_READS`) we won't need to edit our script as much. We are able to do this because `sbatch` accepts positional parameters. So let's create a new script and make this edit.
+Now, we will need to make similar edits to our `bwa` script.
 
 ```
 cp bwa_alignment_normal.sbatch bwa_alignment_automated.sbatch
 vim bwa_alignment_automated.sbatch
 ```
 
-In order for us to specify "tumor" or "normal" samples in the standard error and standard output files we will need to pass `sbatch` these arguments directly when submit the jobs in the wrapper. However, SLURM sometimes has issues when some arguments come from the command line and others come from the script. As a result, we are going remove all `sbatch` directives from scripts and rather provide them all in the command-line as part of the wrapper. Therefore, we need to remove the following lines of `sbatch` directives:
+Next we will need to remove all of the `SBATCH` directives:
 
 ```
 # REMOVE THESE LINES
@@ -47,7 +105,7 @@ In order for us to specify "tumor" or "normal" samples in the standard error and
 #SBATCH -e bwa_alignment_normal_%j.err
 ```
 
-We will be creating a wrapper script at the end that launches all of our automated scripts. Our wrapper script will hold some variables for us so we don't need them all within this script anymore. Delete the following variable lines:
+We will be creating a wrapper script at the end that launches all of our automated scripts. Our wrapper script will hold some variables for us so we don't need them all within this script anymore. Next, we can delete the following variable lines:
 
 ```
 # REMOVE THESE LINES
@@ -173,6 +231,75 @@ CREATE_INDEX=true
 ```
 
 #### `MultiQC`
+
+Let's copy our 
+
+```
+cp multiqc_alignment_metrics.sbatch multiqc_alignment_metrics_automated.sbatch 
+vim multiqc_alignment_metrics_automated.sbatch
+```
+
+Remove our `SBATCH` directives:
+
+```
+# REMOVE THESE LINES
+# Assign sbatch directives
+#SBATCH -p priority
+#SBATCH -t 0-00:10:00
+#SBATCH -c 1
+#SBATCH --mem 1G
+#SBATCH -o multiqc_alignment_metrics_%j.out
+#SBATCH -e multiqc_alignment_metrics_%j.err
+```
+
+Change the following variables to accept positional parameters from:
+
+```
+REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/
+NORMAL_SAMPLE_NAME=syn3_normal
+TUMOR_SAMPLE_NAME=syn3_tumor
+```
+
+To:
+
+```
+REPORTS_DIRECTORY=$1
+NORMAL_SAMPLE_NAME=$2
+TUMOR_SAMPLE_NAME=$3
+```
+
+The final `MultiQC` automation submission script should look like:
+
+```
+#!/bin/bash
+# This script creates a MultiQC HTML report
+
+module load gcc/9.2.0
+module load multiqc/1.12
+
+REPORTS_DIRECTORY=$1
+NORMAL_SAMPLE_NAME=$2
+TUMOR_SAMPLE_NAME=$3
+
+NORMAL_PICARD_METRICS=${REPORTS_DIRECTORY}picard/${NORMAL_SAMPLE_NAME}/${NORMAL_SAMPLE_NAME}.CollectAlignmentSummaryMetrics.txt
+TUMOR_PICARD_METRICS=${REPORTS_DIRECTORY}picard/${TUMOR_SAMPLE_NAME}/${TUMOR_SAMPLE_NAME}.CollectAlignmentSummaryMetrics.txt
+NORMAL_FASTQC_1=${REPORTS_DIRECTORY}fastqc/${NORMAL_SAMPLE_NAME}/${NORMAL_SAMPLE_NAME}_1_fastqc.zip
+NORMAL_FASTQC_2=${REPORTS_DIRECTORY}fastqc/${NORMAL_SAMPLE_NAME}/${NORMAL_SAMPLE_NAME}_2_fastqc.zip
+TUMOR_FASTQC_1=${REPORTS_DIRECTORY}fastqc/${TUMOR_SAMPLE_NAME}/${TUMOR_SAMPLE_NAME}_1_fastqc.zip
+TUMOR_FASTQC_2=${REPORTS_DIRECTORY}fastqc/${TUMOR_SAMPLE_NAME}/${TUMOR_SAMPLE_NAME}_2_fastqc.zip
+OUTPUT_DIRECTORY=${REPORTS_DIRECTORY}/multiqc/
+
+mkdir -p $OUTPUT_DIRECTORY
+
+multiqc \
+$NORMAL_PICARD_METRICS \
+$TUMOR_PICARD_METRICS \
+$NORMAL_FASTQC_1 \
+$NORMAL_FASTQC_2 \
+$TUMOR_FASTQC_1 \
+$TUMOR_FASTQC_2 \
+-o $OUTPUT_DIRECTORY
+```
 
 #### Variant calling with GATK
 
