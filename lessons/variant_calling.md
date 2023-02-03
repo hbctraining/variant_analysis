@@ -77,9 +77,9 @@ REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_gen
 REFERENCE_DICTIONARY=`echo ${REFERENCE_SEQUENCE%fa}dict`
 REFERENCE_SEQUENCE_NAME=`basename $REFERENCE_SEQUENCE _genomic.fa`
 ALIGNMENT_DIRECTORY=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/
-NORMAL_SAMPLE_NAME=syn3-normal
+NORMAL_SAMPLE_NAME=syn3_normal
 NORMAL_BAM_FILE=${ALIGNMENT_DIRECTORY}${NORMAL_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.coordinate_sorted.bam
-TUMOR_SAMPLE_NAME=syn3-tumor
+TUMOR_SAMPLE_NAME=syn3_tumor
 TUMOR_BAM_FILE=${ALIGNMENT_DIRECTORY}${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.coordinate_sorted.bam
 VCF_OUTPUT_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_${NORMAL_SAMPLE_NAME}_${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-raw.vcf
 ```
@@ -189,9 +189,9 @@ REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_gen
 REFERENCE_DICTIONARY=`echo ${REFERENCE_SEQUENCE%fa}dict`
 REFERENCE_SEQUENCE_NAME=`basename $REFERENCE_SEQUENCE _genomic.fa`
 ALIGNMENT_DIRECTORY=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/
-NORMAL_SAMPLE_NAME=syn3-normal
+NORMAL_SAMPLE_NAME=syn3_normal
 NORMAL_BAM_FILE=${ALIGNMENT_DIRECTORY}${NORMAL_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.coordinate_sorted.bam
-TUMOR_SAMPLE_NAME=syn3-tumor
+TUMOR_SAMPLE_NAME=syn3_tumor
 TUMOR_BAM_FILE=${ALIGNMENT_DIRECTORY}${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.coordinate_sorted.bam
 VCF_OUTPUT_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_${NORMAL_SAMPLE_NAME}_${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-raw.vcf
 
