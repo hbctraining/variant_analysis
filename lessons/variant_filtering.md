@@ -207,7 +207,6 @@ module load bedtools/2.30.0</pre>
   
 The command for running <code>bedtools</code> to filter out low-complexity regions is:
 
-<b><i>TEST THIS STILL</i></b>
 <pre>
 bedtools intersect \
 -header \
@@ -218,7 +217,7 @@ bedtools intersect \
   
 We can breakdown this command:
   
-<ul><li><code>-header</code>This will maintain the headers from the VCF-file</li>
+<ul><li><code>-header</code>This will maintain the header information from the <code>-a</code> file. However, it will not add the <code>bedtools</code> command to the header line like <code>SnpSift</code> does.</li>
   
 <li><code>-v</code>Traditionally, <code>bedtools intersect</code> will report the intersection of the file following <code>-a</code> and the file following <code>-b</code>. However, the <code>-v</code> option alters this behavior to find positions in the <code>-a</code> file not in <code>-b</code> file.</li>
   
@@ -226,7 +225,9 @@ We can breakdown this command:
   
 <li><code>-b $LCR_FILE</code>BED file containing genomic coordinates for sites in the VCF file to exclude</li>
   
-<li><code>> $LCR_FILTERED_VCF</code></li> Redirecting the output of this filtering command to a new file.</li></ul>
+<li><code>&gt; $LCR_FILTERED_VCF</code></li> Redirecting the output of this filtering command to a new file.</li></ul>
+
+Both <code>bedtools</code> and <code>SnpSift</code> should result in the same variants passing filtering and the only difference is in the amount of metadata provided in the header lines where <code>SnpSift</code> provides the command that was used to produce that file, while <code>bedtools</code> does not. Because of this, one could argue that <code>SnpSift</code> is <i>slightly</i> better for this purpose than <code>bedtools</code>. However, much like the <code>samtools</code> versus <code>Picard</code> discussion we had in the BAM alignment procressing lesson, it is mostly up to personal preference.
 </details>
 
 Our final `sbatch` script should look like:
