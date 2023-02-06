@@ -241,7 +241,12 @@ CREATE_INDEX=true
 <br><ol><li><details>
     <summary>Click here for setting up a <code>sbatch</code> script BAM/SAM Processing for the <code>Samtools</code> pipeline</summary>
 <h2>Setting up <code>sbatch</code> Script</h2>
-First we are going to need to set-up our <code>sbatch</code> submission script with our shebang line, <code>sbatch</code> directives, modules to load and file variables.
+First, we are going to navigate to our scirpts folder and open a new <code>sbatch</code> submission script in <code>vim</code>:
+<pre>
+cd ~/variant_calling/scripts/
+vim samtools_processing_normal.sbatch
+</pre>
+Next, we are going to need to set-up our <code>sbatch</code> submission script with our shebang line, <code>sbatch</code> directives, modules to load and file variables.
 <pre>
 #!/bin/bash
 # This sbatch script is for processing the alignment output from bwa and preparing it for use in GATK using Samtools<br>
@@ -255,11 +260,11 @@ First we are going to need to set-up our <code>sbatch</code> submission script w
 # Load modules
 module load gcc/6.2.0
 module load samtools/1.15.1<br>
-SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/normal_GRCh38.p7.sam
+SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.sam
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
 FIXMATE_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}fixmates.bam`
 COORDINATE_SORTED_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}coordinate_sorted.bam`
-FINAL_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}final.bam`<br>
+FINAL_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}removed_duplicates.bam`<br>
 </pre>
 </details></li>
 
@@ -298,6 +303,7 @@ Next, we are going to add more mate-pair information to the alignments including
 <pre>
 # Score mates
 samtools fixmate \
+-@ 8 \
 -m \
 $QUERY_SORTED_BAM_FILE \
 $FIXMATE_BAM_FILE   
@@ -306,6 +312,8 @@ $FIXMATE_BAM_FILE
 The parts of this command are:
 
 <ul><li><code>samtools fixmate</code> This calls the <code>fixmate</code> command in <code>samtools</code></li>
+  
+<li><code>-@ 8</code> This tells <code>samtools</code> to use 8 threads when it multithreads this task.</li>
 
 <li><code>-m</code> This will add the mate score tag that will be critically important later for <code>samtools markdup</code></li>
 
@@ -361,7 +369,7 @@ The components of this command are:
 </details></li>
 
 <li><details>
-<summary>Click here for the final <code>sbatch</code> script to do the BAM/SAM processing for the <code>Samtools</code> pipeline</summary>
+<summary>Click here for the final normal sample <code>sbatch</code> script to do the BAM/SAM processing for the <code>Samtools</code> pipeline</summary>
 
 The final script should look like:
     
@@ -378,11 +386,11 @@ The final script should look like:
 # Load modules
 module load gcc/6.2.0
 module load samtools/1.15.1<br>
-SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/normal_GRCh38.p7.sam
+SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.sam
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
 FIXMATE_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}fixmates.bam`
 COORDINATE_SORTED_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}coordinate_sorted.bam`
-FINAL_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}final.bam`<br>
+FINAL_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}removed_duplicates.bam`<br>
 # Sort SAM file and convert it to a query name sorted BAM file
 samtools sort \
 -@ 8 \
@@ -391,6 +399,58 @@ samtools sort \
 $SAM_FILE<br>
 # Score mates
 samtools fixmate \
+-@ 8 \
+-m \
+$QUERY_SORTED_BAM_FILE \
+$FIXMATE_BAM_FILE<br>
+# Sort BAM file by coordinate   
+samtools sort \
+-@ 8 \
+-o $COORDINATE_SORTED_BAM_FILE \
+$FIXMATE_BAM_FILE<br>
+# Mark and remove duplicates and then index the output file
+samtools markdup \
+-r \
+--write-index \
+-@ 8 \
+$COORDINATE_SORTED_BAM_FILE \
+${REMOVED_DUPLICATES_BAM_FILE}##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai<br>
+</pre>
+</details></li>
+<li><details>
+<summary>Click here for the final tumor sample <code>sbatch</code> script to do the BAM/SAM processing for the <code>samtools</code> pipeline</summary>
+In order to create the tumor <code>sbatch</code> submission script to process the BAM/SAM file using <code>samtools</code>, we will once again use <code>sed</code>:<br>
+<pre>
+sed 's/normal/tumor/g' samtools_processing_normal.sbatch > samtools_processing_tumor.sbatch  
+</pre>
+The final <code>sbatch</code> submission script for the tumor sample should look like:
+<pre>
+#!/bin/bash
+# This sbatch script is for processing the alignment output from bwa and preparing it for use in GATK using Samtools<br>
+# Assign sbatch directives
+#SBATCH -p priority
+#SBATCH -t 0-04:00:00
+#SBATCH -c 8
+#SBATCH --mem 16G
+#SBATCH -o samtools_processing_tumor_%j.out
+#SBATCH -e samtools_processing_tumor_%j.err<br>
+# Load modules
+module load gcc/6.2.0
+module load samtools/1.15.1<br>
+SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_tumor_GRCh38.p7.sam
+QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
+FIXMATE_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}fixmates.bam`
+COORDINATE_SORTED_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}coordinate_sorted.bam`
+FINAL_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}removed_duplicates.bam`<br>
+# Sort SAM file and convert it to a query name sorted BAM file
+samtools sort \
+-@ 8 \
+-n \
+-o $QUERY_SORTED_BAM_FILE \
+$SAM_FILE<br>
+# Score mates
+samtools fixmate \
+-@ 8 \
 -m \
 $QUERY_SORTED_BAM_FILE \
 $FIXMATE_BAM_FILE<br>
