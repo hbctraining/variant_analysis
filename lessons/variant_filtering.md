@@ -98,10 +98,10 @@ The first step that one would need to do to remove LCRs would be to download the
 <details>
   <summary><b>Click here to see how to download and format the LCR BED file</b></summary>
 <h3>Downloading and Unpacking BED with LCRs</h3>
-The BED file (explained below) containing the LCRs for GRCh38 can be directly downloaded from this link:
+The BED file (explained below) containing the LCRs for GRCh38 can be directly downloaded. However, we have already done this and formatted the BED file appropriately. If you are interested in this process, the steps are outlined below:
 
 <pre>
-# YOU DON"T NEED TO DO THIS
+# YOU DON'T NEED TO DO THIS
 cd ~/variant_calling/
 mkdir reference
 cd reference
