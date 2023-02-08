@@ -59,6 +59,7 @@ This process may take up to 30+ minutes to run depending on the reference sequen
 <li><code>reference_sequence.fasta.pac</code> A special binary compression of the reference sequence</li>
 <li><code>reference_sequence.fasta.ann</code> Notations regarding the reference sequence</li>
 <li><code>reference_sequence.fasta.amb</code> Notations regarding base ambiguities (mostly Ns, but also other base ambiguities) in the reference sequence</li></ul>
+<hr />
 </details>
 
 ### Setting up our `sbatch` Submission Script for alignment
