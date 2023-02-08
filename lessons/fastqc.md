@@ -135,6 +135,7 @@ A brief overview of some `bash` text manipulation shortcuts are in the table bel
   <code><b>##</b></code> Removes the longest match of "sam" from the start of the string<br>
   <pre>echo ${TOY_EXAMPLE_PATH##*sam}</pre>
   Which deletes the entire string!
+  <hr />
 </details>
 
 ## `FastQC`
