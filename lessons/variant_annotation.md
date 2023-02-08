@@ -168,6 +168,18 @@ Submit this script using:
 sbatch variant_annotation_normal_tumor.sbatch
 ```
 
+### Annotate SNPs with dbSNP
+
+dbSNP file from: https://ftp.ncbi.nih.gov/snp/organisms/human_9606_b151_GRCh38p7/VCF/00-All.vcf.gz
+
+index dbSNP and samples with tabix found in htslib
+
+tabix /n/scratch3/users/w/wig051/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-LCR-filt.vcf.gz
+
+load bcftools
+
+bcftools annotate -a GRCh38.p7.dbSNP.vcf.gz -c ID -O v -o test.vcf /n/scratch3/users/w/wig051/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-LCR-filt.vcf.gz
+
 ### Output
 
 Let's take a look at our output from `SnpEff` now to see how our VCF file has been modified to include variant annotations. Let's open up our SnpEff annotated VCF file in `less`:
@@ -205,6 +217,7 @@ chr1    16206   .       T       A       .       map_qual;normal_artifact;strand_
 You can see that the only difference between these files is that `SnpEff` has appended on an `ANN` field within the `INFO` field. This `ANN` field contains lots of information such as the type of modification it is, the gene symbol of the gene modified and the accession number of the transcript modified. Because gene models overlap, you may have a single variant that alters multiple transcript models. In this case, each alteration will be separated by a `,`.
 
 Now that we have successfully annotateed our variants, let's talk about filtering our variants in the next lesson!
+
 
 [Next lesson >>](variant_filtering.md)
 
