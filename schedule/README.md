@@ -31,6 +31,7 @@ I. Please **study the contents** and **work through all the code** within the fo
              <li>Create a CIGAR string for an alignment</li>
              <li>Parse out variant information from a VCF file</li>
              <li>Create a BED file</li></ul>
+             <hr />
         </details>
         
   2. [Evaluating Read Quality with `FastQC`](../lessons/fastqc.md)
@@ -42,6 +43,7 @@ I. Please **study the contents** and **work through all the code** within the fo
           <li>Manipulate strings of bash variable</li>
           <li>Evaluate FastQC output</li>
           <li>Utilize sed to find-and-replace text</li></ul>
+          <hr />
         </details>
 
   3. [Sequence Read Alignment](../lessons/sequence_alignment_theory.md)
@@ -51,6 +53,7 @@ I. Please **study the contents** and **work through all the code** within the fo
          <br><br>This lesson will cover:<br>
              <ul><li>Enumerate difficulties with alignment</li>
              <li>Create an <code>sbatch</code> script to align reads</li></ul>
+             <hr />
         </details>
 
   4. [Alignment File Processing ](../lessons/alignment_file_processing.md)
@@ -61,6 +64,7 @@ I. Please **study the contents** and **work through all the code** within the fo
              <ul><li>Differentiate between query-sorted and coordinate-sorted alignment files</li>
              <li>Describe and remove duplicate reads</li>
              <li>Process a raw SAM file for input into a BAM for GATK</li></ul>
+             <hr />
         </details>
 
   5. [Alignment File Quality Control](../lessons/alignment_QC.md)
@@ -70,6 +74,7 @@ I. Please **study the contents** and **work through all the code** within the fo
          <br><br>This lesson will cover:<br>
              <ul><li>Estimate alignment rates using <code>Picard</code></li>
              <li>Merge <code>Picard</code> QC metrics with <code>FastQC</code> metrics using <code>MultiQC</code></li></ul>
+             <hr />
         </details>
         
   6. [Evaluating Quality Control Metrics](../lessons/evaluate_QC.md)
@@ -79,6 +84,7 @@ I. Please **study the contents** and **work through all the code** within the fo
          <br><br>This lesson will cover:<br>
              <ul><li>Evaluating alignment rates</li>
              <li>Intepretting read QC metrics within <code>MultiQC</code> HTML report</li></ul>
+             <hr />
         </details>
         
 
@@ -123,6 +129,7 @@ I. Please **study the contents** and **work through all the code** within the fo
          <br><br>This lesson will cover:<br>
           <ul><li>Construct a flexible pipeline for automating variant calling</li>
           <li>Integrate the <code>--dependency</code> option for <code>sbatch</code> into workflows</li></ul>
+          <hr />
         </details>
 
 > **NOTE:** To run through the code above, you will need to be **logged into O2** and **working on a compute node** (i.e. your command prompt should have the word `compute` in it). For login instructions, please see above.
