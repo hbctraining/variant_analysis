@@ -307,7 +307,7 @@ samtools fixmate \
 -@ 8 \
 -m \
 $QUERY_SORTED_BAM_FILE \
-$FIXMATE_BAM_FILE   
+$FIXMATE_BAM_FILE
 </pre>
 
 The parts of this command are:
