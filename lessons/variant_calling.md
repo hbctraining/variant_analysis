@@ -2,7 +2,7 @@
 
 ## Learning Objectives
 
-- Differentiate between germlin and somatic variant calling
+- Differentiate between germline and somatic variant calling
 - Call somatics variants from `bam` files using Mutect2
 
 ## Germline versus Somatic Variant Calling
@@ -83,6 +83,27 @@ TUMOR_SAMPLE_NAME=syn3_tumor
 TUMOR_BAM_FILE=${ALIGNMENT_DIRECTORY}${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.coordinate_sorted.bam
 VCF_OUTPUT_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_${NORMAL_SAMPLE_NAME}_${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-raw.vcf
 ```
+
+<details>
+  <summary><b>Click here if you used <code>samtools</code></b> instead of <code>Picard</code> to process the alignment files</b></summary>
+  Very little needs to be edited to these variables to adapt them for the <code>samtools</code> output. However, the end of the file that was created in <code>samtools</code> was <code>.removed_duplicates.bam</code> rather than <code>.coordinate_sorted.bam</code>. As a result we need to edit the variables a bit. Change:
+  <pre>
+  NORMAL_BAM_FILE=${ALIGNMENT_DIRECTORY}${NORMAL_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.coordinate_sorted.bam
+  </pre>
+  To:
+  <pre>
+  NORMAL_BAM_FILE=${ALIGNMENT_DIRECTORY}${NORMAL_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.removed_duplicates.bam
+  </pre>
+  And also change:
+  <pre>
+  TUMOR_BAM_FILE=${ALIGNMENT_DIRECTORY}${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.coordinate_sorted.bam
+  </pre>
+  To:
+  <pre>
+  TUMOR_BAM_FILE=${ALIGNMENT_DIRECTORY}${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.removed_duplicates.bam
+  </pre>
+  After those changeed have been made, the rest of the script should be the same.
+</details>
 
 > NOTE: Sometimes when there are many input variables that re-use many of the same textual elements (i.e. paths, sample names and reference genome names), like we have above, it is sometimes cleaner, less typo-prone and more reproducible to assign those repeated items to variables and then use text manipulation tools and variable subsitution in `bash` to create the rest of the variables. In the above example, some of the lines of variable assignment (`REFERENCE_SEQUENCE`,`ALIGNMENT_DIRECTORY, `NORMAL_SAMPLE_NAME` and `TUMOR_SAMPLE_NAME`) are likely lines you might edit from run-to-run, but the other lines (`REFERENCE_DICTIONARY`, `REFERENCE_SEQUENCE_NAME`, `NORMAL_BAM_FILE`, `TUMOR_BAM_FILE` and `VCF_OUTPUT_FILE`) will likely stay the same. Standardizing your paths and nomenclature will help you keep track of your files much easier.
 
