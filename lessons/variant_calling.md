@@ -99,6 +99,7 @@ VCF_OUTPUT_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/
   <pre>
   TUMOR_BAM_FILE=${ALIGNMENT_DIRECTORY}${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.removed_duplicates.bam</pre>
   After those changeed have been made, the rest of the script should be the same.
+<hr />
 </details>
 
 > NOTE: Sometimes when there are many input variables that re-use many of the same textual elements (i.e. paths, sample names and reference genome names), like we have above, it is sometimes cleaner, less typo-prone and more reproducible to assign those repeated items to variables and then use text manipulation tools and variable subsitution in `bash` to create the rest of the variables. In the above example, some of the lines of variable assignment (`REFERENCE_SEQUENCE`,`ALIGNMENT_DIRECTORY, `NORMAL_SAMPLE_NAME` and `TUMOR_SAMPLE_NAME`) are likely lines you might edit from run-to-run, but the other lines (`REFERENCE_DICTIONARY`, `REFERENCE_SEQUENCE_NAME`, `NORMAL_BAM_FILE`, `TUMOR_BAM_FILE` and `VCF_OUTPUT_FILE`) will likely stay the same. Standardizing your paths and nomenclature will help you keep track of your files much easier.
@@ -125,7 +126,7 @@ Let's breakdown this command:
 - `--sequence-dictionary $REFERENCE_DICTIONARY` `GATK` requires a sequence directory (`.dict`) file of the reference sequence. We have gone ahead and already created this for you
 
 <details>
-  <summary></b>Click here for the commands to create a sequence directory</b></summary>
+  <summary><b>Click here for the commands to create a sequence directory</b></summary>
   We can create the required sequence dictionary in <code>Picard</code>. But first, let's double check we have the <code>Picard</code> module loaded:
   <pre>
   module load picard/2.8.0</pre>
@@ -142,6 +143,7 @@ Let's breakdown this command:
   <li><code>OUTPUT=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.dict</code> This is the output sequence dictionary from.</li></ul>
   
   Like indexing, once you have created the sequence dictionary for a reference genome once, you won't need to do it again.
+<hr />
 </details>
 
 - `-R $REFERENCE_SEQUENCE` This is the genome reference sequence
@@ -181,6 +183,7 @@ Let's breakdown this command:
 >    <li><code>reference_sequence.fa</code> This is the reference sequence FASTA file that you would like to index</li></ul>
 >  
 >  Once the indexing is complete, then you shoudl have a index file (<code>reference_sequence.fa.fai</code>) in same directory as your reference sequence <code>reference_sequence.fa</code>.
+> <hr />
 ></details>
 
 
