@@ -260,6 +260,7 @@ Next, we are going to need to set-up our <code>sbatch</code> submission script w
 # Load modules
 module load gcc/6.2.0
 module load samtools/1.15.1<br>
+# Assign file paths to variables
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.sam
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
 FIXMATE_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}fixmates.bam`
@@ -386,6 +387,7 @@ The final script should look like:
 # Load modules
 module load gcc/6.2.0
 module load samtools/1.15.1<br>
+# Assign file paths to variables
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.sam
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
 FIXMATE_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}fixmates.bam`
