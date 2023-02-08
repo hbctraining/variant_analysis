@@ -123,6 +123,7 @@ We can see the weak primer bias from the sequencing at the begining, but it base
   <p align="center">
   <img src="../img/Sequence_content_2.png" width="800">
   </p>
+<hr />
 </details>
   
 <details>
@@ -130,6 +131,7 @@ We can see the weak primer bias from the sequencing at the begining, but it base
   <p align="center">
   <img src="../img/Sequence_content_3.png" width="800">
   </p>
+<hr />
 </details>
 
 <details>
@@ -137,6 +139,7 @@ We can see the weak primer bias from the sequencing at the begining, but it base
   <p align="center">
   <img src="../img/Sequence_content_4.png" width="800">
   </p>
+<hr />
 </details>
 
 ### GC Content Distribution
