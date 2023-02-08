@@ -267,6 +267,7 @@ FIXMATE_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}fixmates.bam`
 COORDINATE_SORTED_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}coordinate_sorted.bam`
 REMOVED_DUPLICATES_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}removed_duplicates.bam`<br>
 </pre>
+<hr />
 </details></li>
 
 <li><details>
@@ -295,6 +296,7 @@ The components of this line of code are:
 <li><code>-o $QUERY_SORTED_BAM_FILE</code> This is a <code>bash</code> variable that holds the path to the output file of the <code>samtools sort</code> command.</li>
 
 <li><code>$SAM_FILE</code> This is a <code>bash</code> variable holding the path to the input SAM file.</li></ul>
+<hr />
 </details></li>
 
 <li><details>    
@@ -321,6 +323,7 @@ The parts of this command are:
 <li><code>$QUERY_SORTED_BAM_FILE</code> Bash variable that holds the path to the input file</li>
 
 <li><code>$FIXMATE_BAM_FILE</code> Bash variable that holds the path to the input file</li></ul>
+<hr />
 </details></li>
 
 <li><details>
@@ -337,6 +340,7 @@ $FIXMATE_BAM_FILE
 </pre>
 
 We have gone through all of the these paramters already in the previous <code>samtools sort</code> command. The only difference in this command is that we are not using the <code>-n</code> option, which tell <code>samtools</code> to sort by read name. Now, we are sorting by coordinates, the default setting.
+<hr />
 </details></li>
     
 <li><details>
@@ -367,6 +371,7 @@ The components of this command are:
 <li><code>${REMOVED_DUPLICATES_BAM_FILE}##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai</code>This has two parts:
 <ol><li>The first part (<code>${REMOVED_DUPLICATES_BAM_FILE}</code>) is our BAM output file with the duplicates removed from it</li>
 <li>The second part (<code>##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai</code>) is a shortcut to creating a <code>.bai</code> index of the BAM file. If we use the <code>--write-index</code> option without this second part, it will create a <code>.csi</code> index file. <code>.bai</code> index files are a specific type of <code>.csi</code> files, so we need to specify it with the second part of this command to ensure that a <code>.bai</code> index file is created rather than a <code>.csi</code> index file.</li></ol></li></ul>
+<hr />
 </details></li>
 
 <li><details>
@@ -418,6 +423,7 @@ samtools markdup \
 $COORDINATE_SORTED_BAM_FILE \
 ${REMOVED_DUPLICATES_BAM_FILE}##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai<br>
 </pre>
+<hr />
 </details></li>
 <li><details>
 <summary>Click here for the final tumor sample <code>sbatch</code> script to do the BAM/SAM processing for the <code>samtools</code> pipeline</summary>
@@ -471,14 +477,18 @@ $COORDINATE_SORTED_BAM_FILE \
 ${REMOVED_DUPLICATES_BAM_FILE}##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai<br>
 </pre>
 </details></li>
+<hr />
 </details>
 
 
 <details>
 <summary>Click here for information on indexing a <code>BAM</code> file</summary>
+  
+<br>Many software packages want an index of your BAM file in order to facilitate fast look-ups of a BAM file. While not all software packages that use a BAM file will require this, many will and thus it is a good practice to index your BAM file while processing it. In our previous line of <code>Picard</code> command, we provided it with the <code>CREATE_INDEX=true</code> option, so it automatically created an index for us after <b>coordinate</b>-sorting our BAM file. If for some reason we needed to create an BAM-index for a <b>coordinate</b>-sorted BAM file, we can do this in <code>Picard</code> or <code>samtools</code>.
 
-<br>Many software packages want an index of your BAM file in order to facilitate fast look-ups of a BAM file. While not all software packages that use a BAM file will require this, many will and thus it is a good practice to index your BAM file while processing it. In our previous line of <code>Picard</code> command, we provided it with the <code>CREATE_INDEX=true</code> option, so it automatically created an index for us after <b>coordinate</b>-sorting our BAM file. If for some reason we needed to create an BAM-index for a <b>coordinate</b>-sorted BAM file, we would run a command that looks like this:
-
+<details>
+  <summary><b>BAM-Indexing within <code>Picard</code></b></summary>  
+The code for indexing a BAM file in <code>Picard</code> would look like:
 <pre>
 # SKIP THIS STEP
 # Index the BAM file
@@ -491,13 +501,12 @@ The components of this command are:
 <ul><li><code>java -jar $PICARD/picard-2.8.0.jar BuildBamIndex</code> This calls the <code>BuildBamIndex</code> tools within <code>Picard</code></li>
     
 <li><code>INPUT=$BAM_FILE</code> This is the BAM file that you wish to index.</li></ul>
-
-<b>NOTE: BAM indexes can only be made from coordinate-sorted BAM files.</b>    
-
+<hr />
+</details>
 <details>
-<summary>Click here for BAM-Indexing within <code>Samtools</code></summary>
+<summary><b>BAM-Indexing within <code>samtools</code></b></summary> 
     
-In the previous step, we have already indexed our BAM file. But if for some reason we needed to index a BAM file, the command to index a BAM file with <code>samtools</code> would be:
+The command to index a BAM file with <code>samtools</code> would be:
 
 <pre>
 #### SKIP THIS STEP
@@ -514,9 +523,9 @@ The components of this command are:
 
 We don't need to provide an output file for <code>samtools index</code>, by default it will generate a new file using the same path and filename as the BAM file, but add `.bai` as the extension to denote that it is a BAM-index file.
 </details>
+<b>NOTE: BAM indexes can only be made from coordinate-sorted BAM files.</b>
+<hr />
 </details>
-
-The tool we will be using for variant calling is called `GATK` and it was developed and maintained by the Broad Institute. The Broad Institute also maintains a tool that does many of the functions that `samtools` does and it is called `Picard`. In the dropdown below, we show the command you can use for sorting a SAM file in `Picard`. 
 
 ## Creating the Tumor SAM/BAM procressing
     
