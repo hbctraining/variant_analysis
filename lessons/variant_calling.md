@@ -166,7 +166,7 @@ Let's breakdown this command:
 >
 ><details>
 >  <summary><b>Click here for details for creating a FASTA index file in <code>samtools</code></b></summary>
->    <br>FASTA index files for reference sequences are fairly common requirements for a variety of NGS software packages. <code>Picard</code> currently does not feature an ability to create a FASTA index file. However, <code>samtools</code> is a very popular tool that is used for a variety of processes for processing BAM/SAM files, but it also includes functionality for the creation of FASTA index files. First, we will need to load the `gcc` and `samtools` modules:
+>    <br>FASTA index files for reference sequences are fairly common requirements for a variety of NGS software packages. <code>Picard</code> currently does not feature an ability to create a FASTA index file. However, <code>samtools</code> is a very popular tool that is used for a variety of processes for processing BAM/SAM files, but it also includes functionality for the creation of FASTA index files. First, we will need to load the <code>gcc</code> and <code>samtools</code> modules:
 >  
 >  <pre>
 >  module load gcc/6.2.0
@@ -182,7 +182,7 @@ Let's breakdown this command:
 >    <ul><li><code>samtools faidx</code> This calls the <code>faidx</code> software from <code>samtools</code></li>
 >    <li><code>reference_sequence.fa</code> This is the reference sequence FASTA file that you would like to index</li></ul>
 >  
->  Once the indexing is complete, then you shoudl have a index file (<code>reference_sequence.fa.fai</code>) in same directory as your reference sequence <code>reference_sequence.fa</code>.
+>  Once the indexing is complete, then you should have a index file (<code>reference_sequence.fa.fai</code>) in same directory as your reference sequence <code>reference_sequence.fa</code>.
 > <hr />
 ></details>
 
