@@ -54,8 +54,8 @@ Once inside insert mode, can can enter the shebang line, description and `SBATCH
 #SBATCH -t 0-02:00:00
 #SBATCH -c 1
 #SBATCH --mem 8G
-#SBATCH -o run_SnpEff_GRCh38.p7_%j.out
-#SBATCH -e run_SnpEff_GRCh38.p7_%j.err
+#SBATCH -o variant_annotation_syn3_normal_syn3_tumor_%j.out
+#SBATCH -e variant_annotation_syn3_normal_syn3_tumor_%j.err
 ```
 
 Next, we will added the line to load the `snpEff` module: 
@@ -111,8 +111,8 @@ This script should look like:
 #SBATCH -t 0-02:00:00
 #SBATCH -c 1
 #SBATCH --mem 8G
-#SBATCH -o run_SnpEff_GRCh38.p7_%j.out
-#SBATCH -e run_SnpEff_GRCh38.p7_%j.err
+#SBATCH -o variant_annotation_syn3_normal_syn3_tumor_%j.out
+#SBATCH -e variant_annotation_syn3_normal_syn3_tumor_%j.err
 
 # Load modules
 module load snpEff/4.3g
