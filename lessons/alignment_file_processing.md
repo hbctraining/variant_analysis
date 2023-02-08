@@ -264,7 +264,7 @@ SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_n
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
 FIXMATE_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}fixmates.bam`
 COORDINATE_SORTED_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}coordinate_sorted.bam`
-FINAL_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}removed_duplicates.bam`<br>
+REMOVED_DUPLICATES_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}removed_duplicates.bam`<br>
 </pre>
 </details></li>
 
@@ -390,7 +390,7 @@ SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_n
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
 FIXMATE_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}fixmates.bam`
 COORDINATE_SORTED_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}coordinate_sorted.bam`
-FINAL_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}removed_duplicates.bam`<br>
+REMOVED_DUPLICATES_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}removed_duplicates.bam`<br>
 # Sort SAM file and convert it to a query name sorted BAM file
 samtools sort \
 -@ 8 \
