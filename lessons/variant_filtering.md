@@ -197,7 +197,7 @@ $LCR_FILE > $LCR_FILTERED_VCF
 [`bedtools`](https://bedtools.readthedocs.io/en/latest/index.html) is an useful suite of tools to use when handling BED files. It also has functionality for handling VCF files. A similar approach for filtering out low-complexity regions can also be done within the tool `bedtools` and is shown in a dropdown box below.
 
 <details>
-  <summary>Click here to see how to use <code>bedtools</code> to exclude sites</summary>
+  <summary><b>Click here to see how to use <code>bedtools</code> to exclude sites</b></summary>
 
 First, we will need to load the <code>bedtools</code> module. The <code>bedtools</code> module 
 
@@ -228,6 +228,7 @@ We can breakdown this command:
 <li><code>&gt; $LCR_FILTERED_VCF</code></li> Redirecting the output of this filtering command to a new file.</li></ul>
 
 Both <code>bedtools</code> and <code>SnpSift</code> should result in the same variants passing filtering and the only difference is in the amount of metadata provided in the header lines where <code>SnpSift</code> provides the command that was used to produce that file, while <code>bedtools</code> does not. Because of this, one could argue that <code>SnpSift</code> is <i>slightly</i> better for this purpose than <code>bedtools</code>. However, much like the <code>samtools</code> versus <code>Picard</code> discussion we had in the BAM alignment procressing lesson, it is mostly up to personal preference.
+<hr />
 </details>
 
 Our final `sbatch` script should look like:
