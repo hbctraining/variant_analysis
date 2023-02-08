@@ -166,6 +166,7 @@ Coverage is the average level of alignment for any random locus in the genome.  
   <li><code>INPUT=$COORDINATE_SORTED_BAM_FILE</code> Assign the input as the coordinate sorted BAM file</li>
   <li><code>OUTPUT=$METRICS_OUTPUT_FILE</code> Assign the report output file </li>
   <li><code>REFERENCE_SEQUENCE=$REFERENCE</code> This is the path to the reference genome that was used for the alignment.</li></ul>
+<hr />
 </details>
 
 ## Inspecting procressed `BAM` files
@@ -218,12 +219,12 @@ Next, we get some very useful lines describing how this alignment file has been 
 @PG     ID:MarkDuplicates       VN:2.8.0-SNAPSHOT       CL:picard.sam.markduplicates.MarkDuplicates INPUT=[/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.query_sorted.bam] OUTPUT=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.remove_duplicates.bam METRICS_FILE=/home/${USER}/variant_calling/reports/picard/syn3_normal/syn3_normal.remove_duplicates_metrics.txt REMOVE_DUPLICATES=true    MAX_SEQUENCES_FOR_DISK_READ_ENDS_MAP=50000 MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=8000 SORTING_COLLECTION_SIZE_RATIO=0.25 REMOVE_SEQUENCING_DUPLICATES=false TAGGING_POLICY=DontTag ASSUME_SORTED=false DUPLICATE_SCORING_STRATEGY=SUM_OF_BASE_QUALITIES PROGRAM_RECORD_ID=MarkDuplicates PROGRAM_GROUP_NAME=MarkDuplicates READ_NAME_REGEX=<optimized capture of last three ':' separated fields as numeric values> OPTICAL_DUPLICATE_PIXEL_DISTANCE=100 VERBOSITY=INFO QUIET=false VALIDATION_STRINGENCY=STRICT COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false GA4GH_CLIENT_SECRETS=client_secrets.json        PN:MarkDuplicates
 ```
 
-These program lines are added in the order that they are implemented, but does not include sorting commands. We can see that `bwa` was run first because it is in the `ID` and `PN` (Program Name) fields. We are provided the version number (`VN` field) and the exact command-line command that was used (`CL` field). This can all be really useful if you have to try to reproduce someone's work from an alignment file, but the scripts that were originally used to produce it aren't availible.
+These program lines are added in the order that they are implemented. The @PG lines do not include sorting commands when using <code>Picard</code>, but does include the sorting commands when using <code>samtools</code>. It's not critical and all of the downstream analyses will work either way, but it is a difference to note. We can see that `bwa` was run first because it is in the `ID` and `PN` (Program Name) fields. We are provided the version number (`VN` field) and the exact command-line command that was used (`CL` field). This can all be really useful if you have to try to reproduce someone's work from an alignment file, but the scripts that were originally used to produce it aren't availible.
 
 Lastly, we can see the aligned reads after all of this metadata concerning the file.
 
 <details>
-<summary><b>Click here to see how to do this in <code>samtools</code></b></summary>
+<summary><b>Click here to see how to inspect BAM files in <code>samtools</code></b></summary>
 If we wanted to use <code>samtools</code> to view the BAM/SAM file, we would first need to make sure the <code>samtools</code> module is loaded (Note: that <code>samtools</code> does require <code>gcc</code> to be loaded as well:
 
 <pre>
@@ -253,10 +254,8 @@ samtools view -H /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignment
 
 The <code>-H</code> option modifies the output to only print the header lines. You won't get the read lines as well.
 
-The information here is the same as with <code>Picard</code>, so we won't rehash it. The only difference is that <code>samtools</code>, does add the <code>view</code> command into the @PG lines.
-
-<b>Check the samtools pipeline if it adds the sorts as well</b>
-  
+The information here is the same as with <code>Picard</code>, so we won't rehash it. There are only differences that <code>samtools</code> adds the <code>view</code> command into the @PG lines.
+<hr />
 </details>
 
 ## Options for Inspecting `Picard` Alignment Metrics
@@ -265,32 +264,32 @@ Once the job has finished we would inspect the output files. This could be done 
 
 1) View each metrics file in a `less` buffer
   
-  **Pros:**
-    - Simple to do
+    **Pros:**
+      - Simple to do
   
-  **Cons:**
-    - Hard to compare across samples
-    - Tedious to parse the columns
+    **Cons:**
+      - Hard to compare across samples
+      - Tedious to parse the columns
     
 2) Download each metrics from the O2 cluster and import them into Excel/Excel-like program that puts tab-delmited files into a grid
   
-  **Pros:**
-    - Easier to interpret the data than the `less` buffer approach
+    **Pros:**
+      - Easier to interpret the data than the `less` buffer approach
   
-  **Cons:**
-    - Hard to compare across samples
-    - Have to download the metrics files from the O2 cluster
+    **Cons:**
+      - Hard to compare across samples
+      - Have to download the metrics files from the O2 cluster
     
 3) Collate metrics files using `MultiQC` and download the `MultiQC` HTML report from the O2 cluster
   
-  **Pros:**
-    - Alignment metrics are easy to compare across samples
-    - Easy to interpret results
-    - We can combine the `picard CollectAlignmentSummaryMetrics` output with our `FASTQC` reports
+    **Pros:**
+      - Alignment metrics are easy to compare across samples
+      - Easy to interpret results
+      - We can combine the `picard CollectAlignmentSummaryMetrics` output with our `FASTQC` reports
   
-  **Cons:**
-    - Have to download a file from the O2 cluster
-    - Have to run samples through an extra `MultiQC` step
+    **Cons:**
+      - Have to download a file from the O2 cluster
+      - Have to run samples through an extra `MultiQC` step
 
 None of the above methods are wrong, but some are more elegant than others. One might use **Method 1)** if they only had a handful of samples (~<5) to analyze and only wanted a single statistic, like alignment rate, from each. Then, it might be fastest just to open them up in a `less` buffer. However, if one has lots of samples (>5) then the advantages of `MultiQC` collating the results starts to become really helpful and one might choose **Method 3)**. Unfortunately, `MultiQC` doesn't display *ALL* of the data contained in the metrics file, so one may be inclined to do **Method 2** and downloard the directory full of metrics files in order to view the metrics not included in the `MultiQC` report in a program like Microsoft Excel.
 
