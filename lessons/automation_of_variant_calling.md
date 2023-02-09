@@ -517,7 +517,7 @@ Our automated `sbatch` submission for variant annotation should look like:
 
 ```
 #!/bin/bash
-# This sbatch script is for variant annotation 
+# Using SnpEff to annotate our variants
 
 # Load modules
 module load gcc/9.2.0
@@ -554,9 +554,10 @@ java -jar -Xmx4g $SNPEFF/snpEff.jar  eff \
 -cancer \
 -noLog \
 -csvStats $CSV_STATS \
--s  $HTML_REPORT \
+-s $HTML_REPORT \
 $REFERENCE_DATABASE \
-$FILTERED_VCF_FILE > $ANNOTATED_VCF_FILE
+$FILTERED_VCF_FILE \
+> $ANNOTATED_VCF_FILE
 
 # Use dbSNP VCF to annotate our VCF
 java -jar $SNPEFF/SnpSift.jar annotate \
