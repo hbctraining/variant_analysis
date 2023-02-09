@@ -127,7 +127,7 @@ Select the checkboxes next to <kbd>CpG Islands</kbd>, <kbd>GC %</kbd> and <kbd>P
 Now our IGV window should have additional tracks and look like:
 
 <p align="center">
-<img src="../img/Loaded_tracks_IGV.png" width="1000">
+<img src="../img/Loaded_tracks_IGV.png" width="800">
 </p>
 
 ***
