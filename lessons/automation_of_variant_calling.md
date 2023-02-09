@@ -483,6 +483,8 @@ HTML_REPORT=/home/$USER/variant_calling/reports/syn3_GRCh38.p7-effects-stats.htm
 REFERENCE_DATABASE=GRCh38.p7.RefSeq
 FILTERED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/syn3_GRCh38.p7-LCR-filt.vcf
 ANNOTATED_VCF_FILE=${FILTERED_VCF_FILE%vcf}snpeff.vcf
+DBSNP_DATABASE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.dbSNP.vcf.gz
+DBSNP_ANNOTATED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-LCR-filt.snpeff.dbSNP.vcf
 ```
 
 To:
@@ -494,6 +496,8 @@ HTML_REPORT=$2
 REFERENCE_DATABASE=$3
 FILTERED_VCF_FILE=$4
 ANNOTATED_VCF_FILE=$5
+DBSNP_DATABASE=$6
+DBSNP_ANNOTATED_VCF_FILE=${ANNOTATED_VCF_FILE%vcf}.dbSNP.vcf
 ```
 
 Our automated `sbatch` submission for variant annotation should look like:
@@ -511,6 +515,8 @@ HTML_REPORT=$2
 REFERENCE_DATABASE=$3
 FILTERED_VCF_FILE=$4
 ANNOTATED_VCF_FILE=$5
+DBSNP_DATABASE=$6
+DBSNP_ANNOTATED_VCF_FILE=${ANNOTATED_VCF_FILE%vcf}.dbSNP.vcf
 
 # Run SnpEff
 java -jar $SNPEFF/snpEff.jar  eff \
@@ -521,6 +527,14 @@ java -jar $SNPEFF/snpEff.jar  eff \
 -s  $HTML_REPORT \
 $REFERENCE_DATABASE \
 $FILTERED_VCF_FILE > $ANNOTATED_VCF_FILE
+
+# Use dbSNP VCF to annotate our VCF
+java -jar $SNPEFF/SnpSift.jar annotate \
+$DBSNP_DATABASE \
+-tabix \
+-noLog \
+$SNPEFF_ANNOTATED_VCF_FILE \
+> $DBSNP_ANNOTATED_VCF_FILE
 ```
 
 ### Developing a Wrapper Script
@@ -596,6 +610,7 @@ LCR_FILE=/n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed
 REPORTS_DIRECTORY=/home/$USER/variant_calling/reports/
 SNPEFF_DIRECTORY=/n/groups/hbctraining/variant_calling/reference/snpeff/data/
 SNPEFF_DATABASE=GRCh38.p7.RefSeq
+DBSNP_DATABASE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.dbSNP.vcf.gz
 
 # Intiate bash arrays to hold sample names, Picard Job IDs and coordinate-sorted BAM files
 SAMPLE_NAME_ARRAY=()
@@ -693,7 +708,7 @@ echo -e "Variant filtering job submitted as job ID $VARIANT_FILTERING_JOB_ID"
 ANNOTATED_VCF_FILE=`echo -e "${MUTECT2_VCF_OUTPUT_FILTERED%filt.vcf}LCR-filt.snpeff.vcf"`
 
 # Submit the variant annotation sbatch script
-VARIANT_ANNOTATION_JOB_SUBMISSION=$(sbatch -p priority -t 0-02:00:00 -c 1 --mem 8G -o variant_annotation${SAMPLE_NAME_STRING}_%j.out -e variant_annotation${SAMPLE_NAME_STRING}_%j.err --dependency=afterok:$VARIANT_FILTERING_JOB_ID variant_annotation_automated.sbatch $REPORTS_DIRECTORY $SAMPLE_NAME_STRING $REFERENCE_SEQUENCE_NAME $SNPEFF_DATABASE $SNPEFF_DIRECTORY $MUTECT2_VCF_OUTPUT_FILTERED $ANNOTATED_VCF_FILE)
+VARIANT_ANNOTATION_JOB_SUBMISSION=$(sbatch -p priority -t 0-02:00:00 -c 1 --mem 8G -o variant_annotation${SAMPLE_NAME_STRING}_%j.out -e variant_annotation${SAMPLE_NAME_STRING}_%j.err --dependency=afterok:$VARIANT_FILTERING_JOB_ID variant_annotation_automated.sbatch $REPORTS_DIRECTORY $SAMPLE_NAME_STRING $REFERENCE_SEQUENCE_NAME $SNPEFF_DATABASE $SNPEFF_DIRECTORY $MUTECT2_VCF_OUTPUT_FILTERED $ANNOTATED_VCF_FILE $DBSNP_DATABASE)
 
 # Parse out the job ID from output from the variant annotation submission
 VARIANT_ANNOTATION_JOB_ID=`echo $VARIANT_ANNOTATION_JOB_SUBMISSION | cut -d ' ' -f 4`
