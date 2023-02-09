@@ -150,7 +150,7 @@ Let's breakdown this command and discuss each argument:
 
 - `-cancer` Performs "cancer" comparisons
 
-- `-noLog` Does not report usage statistics
+- `-noLog` Does not report usage statistics to `SnpEff`'s servers. According to their [documentation](https://pcingola.github.io/SnpEff/se_commandline/#logging), it is so that they can monitor which features people are and aren't using. 
 
 - `-csvStats $CSV_STATS` This produces a flat-text file with summary statistics regarding the variants annotated. (Optional)
 
