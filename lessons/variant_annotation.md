@@ -37,10 +37,35 @@ We can see that this build of SnpEff has five possible GRCh databases that we ca
 
 ### Running SnpEff
 
-Move to your `scripts` directory and create a new script named `run_SnpEff.sbatch` using `vim`.:
+Before we get into `SnpEff` we need to discuss cancer-mode in `SnpEff`. In order to run `SnpEff` is cancer-mode, we need to do two things:
+
+1) Understand what cancer-mode is
+2) Format our VCF file accordingly to acommodate for cancer-mode
+
+##### Understanding Cancer-mode
+
+Let's assume a given position in the reference genome has a Thymine. However, since their is variation amongst humans, the individual sampled actually has a variant, Adenine, in this position. Complicating matters even a tumor sample from this individual could have a Guanine in this position. In this case, the VCF record for this position would have the REF field as T, and the ALT field as A,G. It is important to note that the REF field ***ALWAYS*** stays as the base found in the reference genome. The REF field should not be changed to A! However, when `SnpEff` comes along to annotate it, it is going to think there has been a T -> A transversion and also a T -> G transversion, when in reality it has been a A -> G transition. Thus, we would like `SnpEff` to appropiately annotate this and to do so, we need to use cancer-mode
+
+##### Setting up Cancer-mode
+
+In order to run cancer-mode, we will need to append our VCF file with an additional header line that contains information that `SnpEff` can use when determining, which sample is the normal sample and which is the tumor sample. We are going to be doing this appending within a tool called `bcftools`, which was create by the same person who create `samtools`. First, move to your `scripts` directory and create a new file named `syn3_normal_syn3_tumor_pedigree_header.txt` using `vim`:
 
 ```
 cd ~/variant_calling/scripts/
+vim yn3_normal_syn3_tumor_pedigree_header.txt
+```
+
+Once inside this file, we just need to add this text to the file:
+
+```
+##PEDIGREE=<Derived=syn3_tumor,Original=syn3_normal>
+```
+
+Then save and exit the file.
+
+Next, we can start writing our `sbatch` submission script named `variant_annotation_normal_tumor.sbatch` using `vim`.:
+
+```
 vim variant_annotation_normal_tumor.sbatch
 ```
 
@@ -62,6 +87,8 @@ Next, we will added the line to load the `snpEff` module:
 
 ```
 # Load modules
+module load gcc/9.2.0
+module load bcftools/1.14
 module load snpEff/4.3g
 ```
 
@@ -77,9 +104,11 @@ HTML_REPORT=`echo -e "${REPORTS_DIRECTORY}annotation_${SAMPLE_NAME}_${REFERENCE_
 REFERENCE_DATABASE=GRCh38.p7.RefSeq
 DATADIR=/n/groups/hbctraining/variant_calling/reference/snpeff/data/
 FILTERED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-LCR-filt.vcf
-SNPEFF_ANNOTATED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-LCR-filt.snpeff.vcf
+PEDIGREE_HEADER_FILE=/home/$USER/variant_calling/scripts/syn3_normal_syn3_tumor_pedigree_header.txt
+FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER=${FILTERED_VCF_FILE%.vcf}.pedigree_header.vcf
+SNPEFF_ANNOTATED_VCF_FILE=${FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER%.vcf}.snpeff.vcf
 DBSNP_DATABASE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.dbSNP.vcf.gz
-DBSNP_ANNOTATED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-LCR-filt.snpeff.dbSNP.vcf
+DBSNP_ANNOTATED_VCF_FILE=${SNPEFF_ANNOTATED_VCF_FILE%.vcf}.dbSNP.vcf
 ```
 
 We need to create a directory to hold out reports:
@@ -89,7 +118,23 @@ We need to create a directory to hold out reports:
 mkdir -p $REPORTS_DIRECTORY
 ```
 
-Lastly, we need to add out `SnpEff` command:
+Next, we can add our `bcftools` command to append the header line required for cancer-mode in `SnpEff` to our VCF file:
+
+```
+# Append Header
+bcftools annotate \
+-h $PEDIGREE_HEADER_FILE \
+$FILTERED_VCF_FILE > $FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER
+```
+
+Here is what each part of that command does:
+
+  - `bcftools annotate` This calls the annotate function within `bcftools`
+  - `-h $PEDIGREE_HEADER_FILE` This is the header information that we want to append to the end of the VCF file's header lines
+  - `$FILTERED_VCF_FILE` This is our input VCF file without the appended header
+  - `> $FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER` Then this is the output file with the appended header
+
+Next, we need to add out `SnpEff` command:
 
 ```
 # Run SnpEff
@@ -100,7 +145,7 @@ java -jar -Xmx4g $SNPEFF/snpEff.jar  eff \
 -csvStats $CSV_STATS \
 -s $HTML_REPORT \
 $REFERENCE_DATABASE \
-$FILTERED_VCF_FILE > $SNPEFF_ANNOTATED_VCF_FILE
+$FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER > $SNPEFF_ANNOTATED_VCF_FILE
 ```
 
 Let's breakdown this command and discuss each argument:
@@ -109,7 +154,7 @@ Let's breakdown this command and discuss each argument:
 
 - `-dataDir $DATADIR` This is the path to the data directory that holds the `SnpEff` annotations
 
-- `-cancer` Performs "cancer" comparisons
+- `-cancer` Performs cancer-mode 
 
 - `-noLog` Does not report usage statistics to `SnpEff`'s servers. According to their [documentation](https://pcingola.github.io/SnpEff/se_commandline/#logging), it is so that they can monitor which features people are and aren't using. 
 
@@ -119,7 +164,7 @@ Let's breakdown this command and discuss each argument:
 
 - `$REFERENCE_DATABASE` This is the `SnpEff` database we are going to use for the annotation.
 
-- `$FILTERED_VCF_FILE` This is the input VCF file to be annotated
+- `$FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER` This is the input VCF file to be annotated
 
 - `> $SNPEFF_ANNOTATED_VCF_FILE` The output of `SnpEff` will be redirected into this file.
 
@@ -281,12 +326,19 @@ HTML_REPORT=`echo -e "${REPORTS_DIRECTORY}annotation_${SAMPLE_NAME}_${REFERENCE_
 REFERENCE_DATABASE=GRCh38.p7.RefSeq
 DATADIR=/n/groups/hbctraining/variant_calling/reference/snpeff/data/
 FILTERED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-LCR-filt.vcf
-SNPEFF_ANNOTATED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-LCR-filt.snpeff.vcf
+PEDIGREE_HEADER_FILE=/home/$USER/variant_calling/scripts/syn3_normal_syn3_tumor_pedigree_header.txt
+FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER=${FILTERED_VCF_FILE%.vcf}.pedigree_header.vcf
+SNPEFF_ANNOTATED_VCF_FILE=${FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER%.vcf}.snpeff.vcf
 DBSNP_DATABASE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.dbSNP.vcf.gz
-DBSNP_ANNOTATED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-LCR-filt.snpeff.dbSNP.vcf
+DBSNP_ANNOTATED_VCF_FILE=${SNPEFF_ANNOTATED_VCF_FILE%.vcf}.dbSNP.vcf
 
 # Create reports directory
 mkdir -p $REPORTS_DIRECTORY
+
+# Append Header
+bcftools annotate \
+-h $PEDIGREE_HEADER_FILE \
+$FILTERED_VCF_FILE > $FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER
 
 # Run SnpEff
 java -jar -Xmx4g $SNPEFF/snpEff.jar  eff \
@@ -296,7 +348,7 @@ java -jar -Xmx4g $SNPEFF/snpEff.jar  eff \
 -csvStats $CSV_STATS \
 -s $HTML_REPORT \
 $REFERENCE_DATABASE \
-$FILTERED_VCF_FILE > $SNPEFF_ANNOTATED_VCF_FILE
+$FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER > $SNPEFF_ANNOTATED_VCF_FILE
 
 # Use dbSNP VCF to annotate our VCF
 java -jar $SNPEFF/SnpSift.jar annotate \
@@ -311,8 +363,6 @@ Submit this script using:
 ```
 sbatch variant_annotation_normal_tumor.sbatch
 ```
-
-
 
 ### Output
 
