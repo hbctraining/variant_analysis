@@ -124,7 +124,8 @@ Next, we can add our `bcftools` command to append the header line required for c
 # Append Header
 bcftools annotate \
 -h $PEDIGREE_HEADER_FILE \
-$FILTERED_VCF_FILE > $FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER
+$FILTERED_VCF_FILE \
+> $FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER
 ```
 
 Here is what each part of that command does:
@@ -145,7 +146,8 @@ java -jar -Xmx4g $SNPEFF/snpEff.jar  eff \
 -csvStats $CSV_STATS \
 -s $HTML_REPORT \
 $REFERENCE_DATABASE \
-$FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER > $SNPEFF_ANNOTATED_VCF_FILE
+$FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER \
+> $SNPEFF_ANNOTATED_VCF_FILE
 ```
 
 Let's breakdown this command and discuss each argument:
@@ -338,7 +340,8 @@ mkdir -p $REPORTS_DIRECTORY
 # Append Header
 bcftools annotate \
 -h $PEDIGREE_HEADER_FILE \
-$FILTERED_VCF_FILE > $FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER
+$FILTERED_VCF_FILE \
+> $FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER
 
 # Run SnpEff
 java -jar -Xmx4g $SNPEFF/snpEff.jar  eff \
@@ -348,7 +351,8 @@ java -jar -Xmx4g $SNPEFF/snpEff.jar  eff \
 -csvStats $CSV_STATS \
 -s $HTML_REPORT \
 $REFERENCE_DATABASE \
-$FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER > $SNPEFF_ANNOTATED_VCF_FILE
+$FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER \
+> $SNPEFF_ANNOTATED_VCF_FILE
 
 # Use dbSNP VCF to annotate our VCF
 java -jar $SNPEFF/SnpSift.jar annotate \
