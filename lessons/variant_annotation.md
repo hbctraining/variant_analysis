@@ -44,15 +44,15 @@ Before we get into `SnpEff` we need to discuss cancer-mode in `SnpEff`. In order
 
 ##### Understanding Cancer-mode
 
-Let's assume a given position in the reference genome has a Thymine. However, since their is variation amongst humans, the individual sampled actually has a variant, Adenine, in this position. Complicating matters even a tumor sample from this individual could have a Guanine in this position. In this case, the VCF record for this position would have the REF field as T, and the ALT field as A,G. It is important to note that the REF field ***ALWAYS*** stays as the base found in the reference genome. The REF field should not be changed to A! However, when `SnpEff` comes along to annotate it, it is going to think there has been a T -> A transversion and also a T -> G transversion, when in reality it has been a A -> G transition. Thus, we would like `SnpEff` to appropiately annotate this and to do so, we need to use cancer-mode
+Let's assume a given position in the reference genome has a Thymine. However, since their is variation amongst humans, the individual sampled actually has a variant, Adenine, in this position. Complicating matters even more, a tumor sample from this individual could have a Guanine in this position. In this case, the VCF record for this position would have the REF field as T, and the ALT field as A,G. It is important to note that the REF field ***ALWAYS*** stays as the base found in the reference genome. The REF field should not be changed to A! However, when `SnpEff` comes along to annotate it, it is going to think there has been a T -> A transversion and also a T -> G transversion, when in reality it has been a A -> G transition. Thus, we would like `SnpEff` to appropiately annotate this and to do so, we need to use cancer-mode.
 
 ##### Setting up Cancer-mode
 
-In order to run cancer-mode, we will need to append our VCF file with an additional header line that contains information that `SnpEff` can use when determining, which sample is the normal sample and which is the tumor sample. We are going to be doing this appending within a tool called `bcftools`, which was create by the same person who create `samtools`. First, move to your `scripts` directory and create a new file named `syn3_normal_syn3_tumor_pedigree_header.txt` using `vim`:
+In order to run cancer-mode, we will need to append our VCF file with an additional header line that contains information that `SnpEff` can use when determining, which sample is the normal sample and which sample is the tumor sample. We are going to be doing this appending within a tool called `bcftools`, which was created by the same person who created `samtools`. First, move to your `scripts` directory and create a new file named `syn3_normal_syn3_tumor_pedigree_header.txt` using `vim`:
 
 ```
 cd ~/variant_calling/scripts/
-vim yn3_normal_syn3_tumor_pedigree_header.txt
+vim syn3_normal_syn3_tumor_pedigree_header.txt
 ```
 
 Once inside this file, we just need to add this text to the file:
@@ -172,7 +172,7 @@ Let's breakdown this command and discuss each argument:
 
 In addition to adding the annotations that `SnpEff` provides regarding types of mutations, we can also add annotations from dbSNP regarding our variants. These annotations will add lots of information to the `INFO` field, but it will also populate the `ID` field in the VCF file with the dbSNP ID for each variant. In order to do these annotations, we need to have access to a dbSNP VCF file with the annotations along with an index of the VCF file (a `.tbi` file). There are two ways to provide these annotations:
 1) Using `SnpSift`, which is part of the `SnpEff` package 
-2) Using `bcftools`, which was developed by the same person who create `samtools`
+2) Using `bcftools`
 We are going to use the `SnpSift` approach because it is faster, but either method is acceptable. The `bcftools` method will be availible in a dropdown menu at the end of this section.
 
 Similarly to indexing a BAM file to provide faster look-up speeds, VCF files also have indices that typically take the form of `.tbi` files. VCF index files are typically made in a software package called [`tabix`](http://www.htslib.org/doc/tabix.html). We have already downloaded the dbSNP VCF file and indexed it for you. However, if you would like to see that process it can be found in the dropdown menu below.
