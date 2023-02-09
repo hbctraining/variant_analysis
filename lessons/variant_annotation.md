@@ -209,6 +209,7 @@ module load htslib/1.14
 In order to index our dbSNP file using <code>tabix</code>, we just need to run the following command:
     
 <pre>
+# YOU DO NOT NEED TO DO THIS
 tabix GRCh38.p7.dbSNP.vcf.gz
 </pre>
 
@@ -317,6 +318,8 @@ This final script should look like:
 #SBATCH -e variant_annotation_syn3_normal_syn3_tumor_%j.err
 
 # Load modules
+module load gcc/9.2.0
+module load bcftools/1.14
 module load snpEff/4.3g
 
 # Assign variables
@@ -358,6 +361,7 @@ $FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER \
 java -jar $SNPEFF/SnpSift.jar annotate \
 $DBSNP_DATABASE \
 -tabix \
+-noLog \
 $SNPEFF_ANNOTATED_VCF_FILE \
 > $DBSNP_ANNOTATED_VCF_FILE
 ```
