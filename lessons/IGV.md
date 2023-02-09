@@ -102,6 +102,34 @@ Now our IGV window should display the loaded file:
 <img src="../img/Loaded_file_IGV.png" width="600">
 </p>
 
+This loaded file is referred to as a *track* in IGV. We can have multipple tracks loaded as once and in the next section we will demonstrate how to load tracks provided by IGV.
+
+### Load IGV provided tracks
+
+For a select few genomes, like human, IGV comes with a few annotation tracks such as RefSeq genes. While Refseq genes is loaded by default in the lower panel of the IGV window, the other tracks are not automatically loaded. Let's see how to load these track by left-clicking on <kbd>File</kbd> -> <kbd>Load from Server...</kbd>:
+
+<p align="center">
+<img src="../img/Load_from_server_IGV.png" width="600">
+</p>
+
+Left-click the dropdown arrow on the left side of the window to expand all of the possible provided annotation tracks:
+
+<p align="center">
+<img src="../img/Annotation_dropdown_IGV.png" width="600">
+</p>
+
+Select the checkboxes next to <kbd>CpG Islands</kbd>, <kbd>GC %</kbd> and <kbd>Phastcons (20 way)</kbd> and left-click <kbd>Ok</kbd>:
+
+<p align="center">
+<img src="../img/Load_datasets_IGV.png" width="600">
+</p>
+
+Now our IGV window should have additional tracks and look like:
+
+<p align="center">
+<img src="../img/Loaded_tracks_IGV.png" width="1000">
+</p>
+
 ***
 
 *This lesson has been developed by members of the teaching team at the [Harvard Chan Bioinformatics Core (HBC)](http://bioinformatics.sph.harvard.edu/). These are open access materials distributed under the terms of the [Creative Commons Attribution license](https://creativecommons.org/licenses/by/4.0/) (CC BY 4.0), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.*
