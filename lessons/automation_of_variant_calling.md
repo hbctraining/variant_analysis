@@ -736,9 +736,6 @@ VARIANT_FILTERING_JOB_ID=`echo $VARIANT_FILTERING_JOB_SUBMISSION | cut -d ' ' -f
 # Print to standard output the job that has been submitted
 echo -e "Variant filtering job submitted as job ID $VARIANT_FILTERING_JOB_ID"
 
-# Assign variable that will be used in the Snpeff annotation step
-ANNOTATED_VCF_FILE=`echo -e "${MUTECT2_VCF_OUTPUT_FILTERED%filt.vcf}LCR-filt.snpeff.vcf"`
-
 # Submit the variant annotation sbatch script
 VARIANT_ANNOTATION_JOB_SUBMISSION=$(sbatch -p priority -t 0-02:00:00 -c 1 --mem 8G -o variant_annotation${SAMPLE_NAME_STRING}_%j.out -e variant_annotation${SAMPLE_NAME_STRING}_%j.err --dependency=afterok:$VARIANT_FILTERING_JOB_ID variant_annotation_automated.sbatch $REPORTS_DIRECTORY $SAMPLE_NAME_STRING $REFERENCE_SEQUENCE_NAME $SNPEFF_DATABASE $SNPEFF_DIRECTORY $MUTECT2_VCF_OUTPUT_FILTERED $PEDIGREE_HEADER_FILE $DBSNP_DATABASE)
 
