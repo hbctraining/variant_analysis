@@ -176,6 +176,7 @@ After this finishes, we can see that we now have a <code>GRCh38.p7.dbSNP.vcf.gz.
 Let's go ahead and add the `SnpSift` line that we are going to use to annotate our VCF file:
 
 ```
+# Use dbSNP VCF to annotate our VCF
 java -jar $SNPEFF/SnpSift.jar annotate \
 $DBSNP_DATABASE \
 -tabix \
