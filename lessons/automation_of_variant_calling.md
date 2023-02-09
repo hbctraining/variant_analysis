@@ -458,7 +458,7 @@ java -jar $SNPEFF/SnpSift.jar intervals -x -i $MUTECT_FILTERED_VCF $LCR_FILE > $
 Make a copy of our variant annotation `sbatch` submission script and open it up in `vim`:
 
 ```
-cp variant_annotation.sbatch variant_annotation_automated.sbatch
+cp variant_annotation_normal_tumor.sbatch variant_annotation_automated.sbatch
 vim variant_annotation_automated.sbatch
 ```
 
@@ -478,25 +478,38 @@ We will need to remove the `sbatch` directives:
 Next, change the variables from:
 
 ```
-CSV_STATS=/home/$USER/variant_calling/reports/syn3_GRCh38.p7-effects-stats.csv
-HTML_REPORT=/home/$USER/variant_calling/reports/syn3_GRCh38.p7-effects-stats.html
+# Assign variables
+REPORTS_DIRECTORY=/home/$USER/variant_calling/reports/snpeff/
+SAMPLE_NAME=mutect2_syn3_normal_syn3_tumor
+REFERENCE_SEQUENCE_NAME=GRCh38.p7
+CSV_STATS=`echo -e "${REPORTS_DIRECTORY}annotation_${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-effects-stats.csv"`
+HTML_REPORT=`echo -e "${REPORTS_DIRECTORY}annotation_${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-effects-stats.html"`
 REFERENCE_DATABASE=GRCh38.p7.RefSeq
-FILTERED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/syn3_GRCh38.p7-LCR-filt.vcf
-ANNOTATED_VCF_FILE=${FILTERED_VCF_FILE%vcf}snpeff.vcf
+DATADIR=/n/groups/hbctraining/variant_calling/reference/snpeff/data/
+FILTERED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-LCR-filt.vcf
+PEDIGREE_HEADER_FILE=/home/$USER/variant_calling/scripts/syn3_normal_syn3_tumor_pedigree_header.txt
+FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER=${FILTERED_VCF_FILE%.vcf}.pedigree_header.vcf
+SNPEFF_ANNOTATED_VCF_FILE=${FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER%.vcf}.snpeff.vcf
 DBSNP_DATABASE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.dbSNP.vcf.gz
-DBSNP_ANNOTATED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-LCR-filt.snpeff.dbSNP.vcf
+DBSNP_ANNOTATED_VCF_FILE=${SNPEFF_ANNOTATED_VCF_FILE%.vcf}.dbSNP.vcf
 ```
 
 To:
 
 ```
 # Assign variables
-CSV_STATS=$1
-HTML_REPORT=$2
-REFERENCE_DATABASE=$3
-FILTERED_VCF_FILE=$4
-ANNOTATED_VCF_FILE=$5
-DBSNP_DATABASE=$6
+REPORTS_DIRECTORY=${1}snpeff/
+SAMPLE_NAME=$2
+REFERENCE_SEQUENCE_NAME=$3
+CSV_STATS=`echo -e "${REPORTS_DIRECTORY}annotation_${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-effects-stats.csv"`
+HTML_REPORT=`echo -e "${REPORTS_DIRECTORY}annotation_${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-effects-stats.html"`
+REFERENCE_DATABASE=$4
+DATADIR=$5
+FILTERED_VCF_FILE=$6
+PEDIGREE_HEADER_FILE=$7
+FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER=${FILTERED_VCF_FILE%.vcf}.pedigree_header.vcf
+SNPEFF_ANNOTATED_VCF_FILE=${FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER%.vcf}.snpeff.vcf
+DBSNP_DATABASE=$8
 DBSNP_ANNOTATED_VCF_FILE=${ANNOTATED_VCF_FILE%vcf}.dbSNP.vcf
 ```
 
@@ -506,24 +519,41 @@ Our automated `sbatch` submission for variant annotation should look like:
 #!/bin/bash
 # This sbatch script is for variant annotation 
 
-# Load module
+# Load modules
+module load gcc/9.2.0
+module load bcftools/1.14
 module load snpEff/4.3g
 
 # Assign variables
-CSV_STATS=$1
-HTML_REPORT=$2
-REFERENCE_DATABASE=$3
-FILTERED_VCF_FILE=$4
-ANNOTATED_VCF_FILE=$5
-DBSNP_DATABASE=$6
+REPORTS_DIRECTORY=${1}snpeff/
+SAMPLE_NAME=$2
+REFERENCE_SEQUENCE_NAME=$3
+CSV_STATS=`echo -e "${REPORTS_DIRECTORY}annotation_${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-effects-stats.csv"`
+HTML_REPORT=`echo -e "${REPORTS_DIRECTORY}annotation_${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-effects-stats.html"`
+REFERENCE_DATABASE=$4
+DATADIR=$5
+FILTERED_VCF_FILE=$6
+PEDIGREE_HEADER_FILE=$7
+FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER=${FILTERED_VCF_FILE%.vcf}.pedigree_header.vcf
+SNPEFF_ANNOTATED_VCF_FILE=${FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER%.vcf}.snpeff.vcf
+DBSNP_DATABASE=$8
 DBSNP_ANNOTATED_VCF_FILE=${ANNOTATED_VCF_FILE%vcf}.dbSNP.vcf
 
+# Create reports directory
+mkdir -p $REPORTS_DIRECTORY
+
+# Append Header
+bcftools annotate \
+-h $PEDIGREE_HEADER_FILE \
+$FILTERED_VCF_FILE \
+> $FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER
+
 # Run SnpEff
-java -jar $SNPEFF/snpEff.jar  eff \
--dataDir /n/groups/shared_databases/snpEff.data/ \
+java -jar -Xmx4g $SNPEFF/snpEff.jar  eff \
+-dataDir $DATADIR \
 -cancer \
 -noLog \
--csvStats $CSV_STATS\
+-csvStats $CSV_STATS \
 -s  $HTML_REPORT \
 $REFERENCE_DATABASE \
 $FILTERED_VCF_FILE > $ANNOTATED_VCF_FILE
@@ -608,6 +638,7 @@ NORMAL_SAMPLE=syn3_normal
 TUMOR_SAMPLE=syn3_tumor
 LCR_FILE=/n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed
 REPORTS_DIRECTORY=/home/$USER/variant_calling/reports/
+PEDIGREE_HEADER_FILE=/home/$USER/variant_calling/scripts/syn3_normal_syn3_tumor_pedigree_header.txt
 SNPEFF_DIRECTORY=/n/groups/hbctraining/variant_calling/reference/snpeff/data/
 SNPEFF_DATABASE=GRCh38.p7.RefSeq
 DBSNP_DATABASE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.dbSNP.vcf.gz
@@ -708,7 +739,7 @@ echo -e "Variant filtering job submitted as job ID $VARIANT_FILTERING_JOB_ID"
 ANNOTATED_VCF_FILE=`echo -e "${MUTECT2_VCF_OUTPUT_FILTERED%filt.vcf}LCR-filt.snpeff.vcf"`
 
 # Submit the variant annotation sbatch script
-VARIANT_ANNOTATION_JOB_SUBMISSION=$(sbatch -p priority -t 0-02:00:00 -c 1 --mem 8G -o variant_annotation${SAMPLE_NAME_STRING}_%j.out -e variant_annotation${SAMPLE_NAME_STRING}_%j.err --dependency=afterok:$VARIANT_FILTERING_JOB_ID variant_annotation_automated.sbatch $REPORTS_DIRECTORY $SAMPLE_NAME_STRING $REFERENCE_SEQUENCE_NAME $SNPEFF_DATABASE $SNPEFF_DIRECTORY $MUTECT2_VCF_OUTPUT_FILTERED $ANNOTATED_VCF_FILE $DBSNP_DATABASE)
+VARIANT_ANNOTATION_JOB_SUBMISSION=$(sbatch -p priority -t 0-02:00:00 -c 1 --mem 8G -o variant_annotation${SAMPLE_NAME_STRING}_%j.out -e variant_annotation${SAMPLE_NAME_STRING}_%j.err --dependency=afterok:$VARIANT_FILTERING_JOB_ID variant_annotation_automated.sbatch $REPORTS_DIRECTORY $SAMPLE_NAME_STRING $REFERENCE_SEQUENCE_NAME $SNPEFF_DATABASE $SNPEFF_DIRECTORY $MUTECT2_VCF_OUTPUT_FILTERED $PEDIGREE_HEADER_FILE $DBSNP_DATABASE)
 
 # Parse out the job ID from output from the variant annotation submission
 VARIANT_ANNOTATION_JOB_ID=`echo $VARIANT_ANNOTATION_JOB_SUBMISSION | cut -d ' ' -f 4`
