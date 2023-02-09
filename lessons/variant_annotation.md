@@ -101,6 +101,80 @@ $REFERENCE_DATABASE \
 $FILTERED_VCF_FILE > $ANNOTATED_VCF_FILE
 ```
 
+Let's breakdown this command and discuss each argument:
+
+- `java -jar $SNPEFF/snpEff.jar  eff` `Snpeff` is a `java` packaged program, so it needs to be called with `java -jar` followed by the path where the JAR file is located on the cluster. `$SNPEFF` is just a bash variable that contains the path to JAR file. `eff` is the command within `SnpEff` to annotate variants.
+
+- `-dataDir $DATADIR` This is the path to the data directory that holds the `SnpEff` annotations
+
+- `-cancer` Performs "cancer" comparisons
+
+- `-noLog` Does not report usage statistics to `SnpEff`'s servers. According to their [documentation](https://pcingola.github.io/SnpEff/se_commandline/#logging), it is so that they can monitor which features people are and aren't using. 
+
+- `-csvStats $CSV_STATS` This produces a flat-text file with summary statistics regarding the variants annotated. (Optional)
+
+- `-s $HTML_REPORT` This creates an HTML file with summary statistics regarding the variants annotated. This HTML file is mostly just an HTML stylized version of the CSV file above. (Optional)
+
+- `$REFERENCE_DATABASE` This is the `SnpEff` database we are going to use for the annotation.
+
+- `$FILTERED_VCF_FILE` This is the input VCF file to be annotated
+
+- `> $ANNOTATED_VCF_FILE` The output of `SnpEff` will be redirected into this file.
+
+### Annotate SNPs with dbSNP
+
+In addition to adding the annotations that `SnpEff` provides regarding types of mutations, we can also add annotation from dbSNP regarding our variants. In order to do these annotations, we need to have access to a dbSNP VCF file with the annotations along with an index of the VCF file (a `.tbi` file). There are two ways to provide these annotations, using either `SnpSift`, which is part of the `SnpEff` package or by using `bcftools`, which was developed by the same person who create `samtools`. We are going to use the `SnpSift` approach because it is faster, but either method is acceptable. The `bcftools` method will be availible in a dropdown menu at the end of this section.
+
+Similarly, to indexing a BAM file to provide faster look-up speeds, VCF files also have indexes that typically take the form of `.tbi` files. VCF index files are typically made in a software package called [`tabix`](http://www.htslib.org/doc/tabix.html). We have already downloaded the dbSNP VCF file and indexed it for you. However, if you would lioke to see that process it can be found in the dropdown menu below.
+
+<details>
+  <summary><b>Click here to see how to obtain the dbSNP VCF file and how to index it with <code>tabix</code></summary>
+  The first step is that we need to download out dbSNP VCF file from the NCBI FTP site. We can do this with a <code>curl</code> command like: 
+
+<pre>
+# YOU DO NOT NEED TO DO THIS
+curl -o GRCh38.p7.dbSNP.vcf.gz -L https://ftp.ncbi.nih.gov/snp/organisms/human_9606_b151_GRCh38p7/VCF/00-All.vcf.gz</pre>
+
+We used the <code>curl</code> command earlier when demonstrating how you could download the LCR BED file. But as a refresher, we can breakdown this command:
+    
+<ul><li><code>curl</code> This calls the <code>curl</code> option</li><br>
+  <li><code>-o GRCh38.p7.dbSNP.vcf.gz</code> This tells <code>curl</code> what we want the file to be named</li>
+  <li><code>-L https://ftp.ncbi.nih.gov/snp/organisms/human_9606_b151_GRCh38p7/VCF/00-All.vcf.gz</code> This is the linked file we want to download</li></ul>
+    
+Next, we are going to index this file. While it is not necesscary for us to index this VCF file when using <code>SnpSift</code>, it does speed up the annotation. However, <code>bcftools</code> <b><i>DOES REQUIRE</i></b> this index file and it also will require files to be indexed to also be compressed in <code>.gz</code> format. As a result we are going to leave, our file <code>GRCh38.p7.dbSNP.vcf.gz</code> compressed because:
+    <ol><li>There is no need to uncompress it</li>
+      <li>It will take up more space on the cluster if we do uncompress it</li>
+      <li>Both <code>SnpSift</code> and <code>bcftools</code> can work from the compressed version</li></ol>
+
+We are going to be using <code>tabix</code>, which is part of the <code>HTSlib</code> module. First, we will need to load the <code>HTSlib</code> module, which also requires us to load the <code>gcc</code> module as well:
+    
+<pre>
+module load gcc/6.2.0
+module load htslib/1.14
+</pre>
+    
+In order to index our dbSNP file using <code>tabix</code>, we just need to run the following command:
+    
+<pre>
+tabix GRCh38.p7.dbSNP.vcf.gz
+</pre>
+
+In this case:
+    <ul><li><code>tabix</code> This is the command we want to call</li>
+     <li><code>GRCh38.p7.dbSNP.vcf.gz</code> This is the VCF file we want to index.</li></ul>
+    
+After this finishes, we can we that we now have a code>GRCh38.p7.dbSNP.vcf.gz.tbi</code> file in addition to our code>GRCh38.p7.dbSNP.vcf.gz</code> file.
+<hr />
+</details>
+
+
+
+tabix /n/scratch3/users/w/wig051/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-LCR-filt.vcf.gz
+
+load bcftools
+
+bcftools annotate -a GRCh38.p7.dbSNP.vcf.gz -c ID -O v -o test.vcf /n/scratch3/users/w/wig051/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-LCR-filt.vcf.gz
+
 This script should look like:
 
 ```
@@ -142,43 +216,13 @@ $REFERENCE_DATABASE \
 $FILTERED_VCF_FILE > $ANNOTATED_VCF_FILE
 ```
 
-Let's breakdown this command and discuss each argument:
-
-- `java -jar $SNPEFF/snpEff.jar  eff` `Snpeff` is a `java` packaged program, so it needs to be called with `java -jar` followed by the path where the JAR file is located on the cluster. `$SNPEFF` is just a bash variable that contains the path to JAR file. `eff` is the command within `SnpEff` to annotate variants.
-
-- `-dataDir $DATADIR` This is the path to the data directory that holds the `SnpEff` annotations
-
-- `-cancer` Performs "cancer" comparisons
-
-- `-noLog` Does not report usage statistics to `SnpEff`'s servers. According to their [documentation](https://pcingola.github.io/SnpEff/se_commandline/#logging), it is so that they can monitor which features people are and aren't using. 
-
-- `-csvStats $CSV_STATS` This produces a flat-text file with summary statistics regarding the variants annotated. (Optional)
-
-- `-s $HTML_REPORT` This creates an HTML file with summary statistics regarding the variants annotated. This HTML file is mostly just an HTML stylized version of the CSV file above. (Optional)
-
-- `$REFERENCE_DATABASE` This is the `SnpEff` database we are going to use for the annotation.
-
-- `$FILTERED_VCF_FILE` This is the input VCF file to be annotated
-
-- `> $ANNOTATED_VCF_FILE` The output of `SnpEff` will be redirected into this file.
-
 Submit this script using:
 
 ```
 sbatch variant_annotation_normal_tumor.sbatch
 ```
 
-### Annotate SNPs with dbSNP
 
-dbSNP file from: https://ftp.ncbi.nih.gov/snp/organisms/human_9606_b151_GRCh38p7/VCF/00-All.vcf.gz
-
-index dbSNP and samples with tabix found in htslib
-
-tabix /n/scratch3/users/w/wig051/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-LCR-filt.vcf.gz
-
-load bcftools
-
-bcftools annotate -a GRCh38.p7.dbSNP.vcf.gz -c ID -O v -o test.vcf /n/scratch3/users/w/wig051/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-LCR-filt.vcf.gz
 
 ### Output
 
