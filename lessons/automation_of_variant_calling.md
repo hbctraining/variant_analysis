@@ -726,7 +726,7 @@ MULTIQC_JOB_ID=`echo $MULTIQC_JOB_SUBMISSION | cut -d ' ' -f 4`
 echo -e "MultiQC job submitted as job ID $MULTIQC_JOB_ID"
 
 # Assign a variable that will be used in the Mutect2 filtering step
-MUTECT2_VCF_OUTPUT_FILTERED=`echo -e "${MUTECT2_VCF_OUTPUT%raw.vcf}filt.vcf"`
+MUTECT2_VCF_OUTPUT_FILTERED=`echo -e "${MUTECT2_VCF_OUTPUT%raw.vcf}LCR-filt.vcf"`
 
 # Submit the variant filtering sbatch script and save the output to a variable named $VARIANT_FILTERING_JOB_SUBMISSION
 VARIANT_FILTERING_JOB_SUBMISSION=$(sbatch -p priority -t 0-00:10:00 -c 1 --mem 8G -o variant_filtering${SAMPLE_NAME_STRING}_%j.out -e variant_filtering${SAMPLE_NAME_STRING}_%j.err --dependency=afterok:$MUTECT2_JOB_ID variant_filtering_automated.sbatch $REFERENCE_SEQUENCE $MUTECT2_VCF_OUTPUT $MUTECT2_VCF_OUTPUT_FILTERED)
