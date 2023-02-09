@@ -556,8 +556,8 @@ java -jar -Xmx4g $SNPEFF/snpEff.jar  eff \
 -csvStats $CSV_STATS \
 -s $HTML_REPORT \
 $REFERENCE_DATABASE \
-$FILTERED_VCF_FILE \
-> $ANNOTATED_VCF_FILE
+$FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER \
+> $SNPEFF_ANNOTATED_VCF_FILE
 
 # Use dbSNP VCF to annotate our VCF
 java -jar $SNPEFF/SnpSift.jar annotate \
