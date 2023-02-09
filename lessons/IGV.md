@@ -5,7 +5,7 @@
 - Open VCF files in IGV
 - Load additional tracks in IGV
 - Perform basic tasks in IGV, such as renaming tracks, resizing tracks and navigating to different regions
-- Saving an IGV session
+- Saving an IGV session and opening a saved IGV session
 
 
 ## Downloading our VCF file with `FileZilla`
