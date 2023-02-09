@@ -219,6 +219,7 @@ Now we are ready to annotate the VCF file with the dbSNP annotations. The comman
 <pre>
 bcftools annotate \
 -a $DBSNP_DATABASE \
+-c ID,INFO \
 -O v \
 -o $DBSNP_ANNOTATED_VCF_FILE \
 ${SNPEFF_ANNOTATED_VCF_FILE}.gz
@@ -226,6 +227,7 @@ ${SNPEFF_ANNOTATED_VCF_FILE}.gz
 Let's explain each part of this command:
   <ul><li><code>bcftools annotate</code> This calls the <code>annotate</code> function within <code>bcftools</code></li>
     <li><code>-a $DBSNP_DATABASE</code> This provides the dbSNP VCF to use for the annotations</li>
+    <li><code>-c ID,INFO</code> These are the fileds we would like to add information to from our dbSNP file</li>
     <li><code>-O v</code> This is the output format. The options for this are:
       <table>
         <tr>
