@@ -130,6 +130,101 @@ Now our IGV window should have additional tracks and look like:
 <img src="../img/Loaded_tracks_IGV.png" width="800">
 </p>
 
+### Navigating IGV
+
+Now that we have our tracks of interest loaded, we likely want to navigate them to view our variants.
+
+#### Zooming in on regions
+
+The first way that we can zoom in on a region in IGV is to left-click and hold while dragging over the region we are interested in. This can be iteratively done as one narrows down the region that they are interested in viewing.
+
+<p align="center">
+<img src="../img/Zooming_click_and_drag_IGV.png" width="800">
+</p>
+
+Once we zoom, our IGV window might look like:
+
+<p align="center">
+<img src="../img/Zoomed_window_IGV.png" width="800">
+</p>
+
+We can zoom out and in using the <kbd>-</kbd> and <kbd>+</kbd>, respectively, on the right of the top bar:
+
+<p align="center">
+<img src="../img/Zoom_buttons_IGV.png" width="400">
+</p>
+
+>**NOTE:** If you can't see the <kbd>-</kbd> and/or <kbd>+</kbd> sign on the right side of the screen, you may need to widen your window. You can see in our image above this one that we couldn't see the <kbd>+</kbd> sign, but we made the IGV window wider and then we could see it.
+
+#### Jumping to Regions
+
+We can jump to a given region in the genome using the following syntax in the middle of the top bar:
+
+```
+chr<Chromosome_Number>:<Start_position>:<End_position>
+```
+
+Then left-clicking <kbd>Go</kbd>.
+
+<p align="center">
+<img src="../img/Coordinate_jump_IGV.png" width="400">
+</p>
+
+Alternatively, if there is a gene we are particularly interested in going to, we can also enter the gene's name in this same box and left-click <kbd>Go</kbd>:
+
+<p align="center">
+<img src="../img/Gene_jump_IGV.png" width="400">
+</p>
+
+If we zoom in enough we can get down to seeing individual variants. Underneath the top part of the varaint track, we can see the tracks for the variant in the normal and tumor samples. The intensity of the variant marks on those tracks is proportional to the frequency of the variant in the sample:
+
+<p align="center">
+<img src="../img/Zoomed_variant_IGV.png" width="800">
+</p>
+
+
+### Modifying Tracks
+
+Now that we have an idea of how we can navigate in the IGV window, we want to learn how to modify our tracks. IGV provides lots of ways in which you can modify the tracks.
+
+#### Resizing tracks
+
+First, we might want to be interested in resizing the tracks. Currently, we have a lot of whitespace that we might want to eliminate. The easiest way eliminate lots of this whitespace is to hit the button on the top bar to "Resize tracks to fit in window":
+
+<p align="center">
+<img src="../img/Resize_button_IGV.png" width="400">
+</p>
+
+Now the tracks should fit into the window space a but better and look like:
+
+<p align="center">
+<img src="../img/Resized_to_window_IGV.png" width="800">
+</p>
+
+> **NOTE:** If you have too few tracks, like we have here, they likely won't encompass all of the white space or if you have too many tracks, IGV might not be able to cram them all into the window and you will have a scroll bar on the side.
+
+We can also manually adjust the track height by right-clicking on the track that we want to alter in size and the left-clicking "Change Track Height.."
+
+<p align="center">
+<img src="../img/Change_height_IGV.png" width="600">
+</p>
+
+A window should pop-up and allow you to modify the height. Once you have selected a height you can left-click <kbd>Ok</kbd> and the track will be resized.
+
+<p align="center">
+<img src="../img/Adjust_track_height_manual_IGV.png" width="400">
+</p>
+
+
+#### Modifying track data range
+
+#### Renaming tracks
+
+#### Changing track color
+
+#### Changing type of graph
+
+### Saving and Loading IGV Sessions
 ***
 
 *This lesson has been developed by members of the teaching team at the [Harvard Chan Bioinformatics Core (HBC)](http://bioinformatics.sph.harvard.edu/). These are open access materials distributed under the terms of the [Creative Commons Attribution license](https://creativecommons.org/licenses/by/4.0/) (CC BY 4.0), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.*
