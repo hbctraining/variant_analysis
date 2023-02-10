@@ -264,9 +264,29 @@ However, you may want finer control over your color selection and you can use so
 <img src="../img/RGB_color_IGV.png" width="400">
 </p>
 
+Now that we've changed a few features in our IGV window it should now look something like this:
+
+<p align="center">
+<img src="../img/Changed_color_IGV.png" width="800">
+</p>
+
 #### Changing type of graph
 
+Different types of data might be visualized better in different formats. For example, we might think that "GC %" is better visualized as a line rather than as a barplot. In order to change this barplot to a line plot, we need to right-click on the track and then left-click on "Line Plot":
+
+<p align="center">
+<img src="../img/Line_plot_IGV.png" width="400">
+</p>
+
+Depending on your datatype, different types of plots might be more appropriate than others.
+
 #### Remove track
+
+Lastly, you may want to remove a track from your IGV window. In order to remove a track, right-click on the track and then left-click on "Remove Track":
+
+<p align="center">
+<img src="../img/Remove_track_IGV.png" width="400">
+</p>
 
 ### Saving and Loading IGV Sessions
 ***
