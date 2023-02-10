@@ -289,6 +289,13 @@ Lastly, you may want to remove a track from your IGV window. In order to remove 
 </p>
 
 ### Saving and Loading IGV Sessions
+
+Now that you have edited your tracks to get them just the way you want you them, you might want to save the IGV session so that you can easily reload it for when you want to revisit it. To save your IGV session, go to the top bar and left-click <kbd>File</kbd> -> <kbd>Save Session...</kbd>:
+
+<p align="center">
+<img src="../img/Save_session_IGV.png" width="400">
+</p>
+
 ***
 
 *This lesson has been developed by members of the teaching team at the [Harvard Chan Bioinformatics Core (HBC)](http://bioinformatics.sph.harvard.edu/). These are open access materials distributed under the terms of the [Creative Commons Attribution license](https://creativecommons.org/licenses/by/4.0/) (CC BY 4.0), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.*
