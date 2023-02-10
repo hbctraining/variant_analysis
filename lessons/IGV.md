@@ -209,7 +209,7 @@ We can also manually adjust the track height by right-clicking on the track that
 <img src="../img/Change_height_IGV.png" width="600">
 </p>
 
-A window should pop-up and allow you to modify the height. Once you have selected a height you can left-click <kbd>Ok</kbd> and the track will be resized.
+A window should pop-up and allow you to modify the height. Once you have selected a height you can left-click <kbd>OK</kbd> and the track will be resized.
 
 <p align="center">
 <img src="../img/Adjust_track_height_manual_IGV.png" width="400">
@@ -217,6 +217,18 @@ A window should pop-up and allow you to modify the height. Once you have selecte
 
 
 #### Modifying track data range
+
+We can also adjust the data range that we want displayed in the track. Similarly to resizing the track height, we start by right-clicking the track we want to adjust, but this time we will left-click "Set Data Range..."
+
+<p align="center">
+<img src="../img/Set_data_range_IGV.png" width="400">
+</p>
+
+A window should pop-up and allow you to select the minimum, maximum and whether you would like the data to be log-scaled. Once you have selected the parameters you want, you can left-click <kbd>OK</kbd>:
+
+<p align="center">
+<img src="../img/Set_data_range_manual_IGV.png" width="400">
+</p>
 
 #### Renaming tracks
 
