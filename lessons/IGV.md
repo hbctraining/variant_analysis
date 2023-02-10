@@ -232,9 +232,41 @@ A window should pop-up and allow you to select the minimum, maximum and whether 
 
 #### Renaming tracks
 
+When tracks are loaded from files, they are named by the filename and sometimes these names can be long and unwieldy within IGV. Therefore, we are oftentimes interested in changing the track name to something that is more easy to understand. To change the track name, we need to right-click on the track and then left-click "Rename Track...":
+
+<p align="center">
+<img src="../img/Rename_track_IGV.png" width="600">
+</p>
+
+A window should pop-up and allow you to type the desired name of the track. Once you have typed the desired name, left-click <kbd>OK</kbd>:
+
+<p align="center">
+<img src="../img/Rename_track_manual_IGV.png" width="400">
+</p>
+
 #### Changing track color
 
+Many tracks load into IGV as blue by default, but you do have options for which color you'd like the tracks to be. In order to change the color of a track, right click on the track and left-click "Change Track Color...":
+
+<p align="center">
+<img src="../img/Change_track_color_IGV.png" width="400">
+</p>
+
+A window will pop-up on the default "Swatches" tab on the top. You can pick from a wide array for pre-selected colors here. If you find one you like, left-click the color then click <kbr>OK</kbd>:
+
+<p align="center">
+<img src="../img/Swatches_color_IGV.png" width="400">
+</p>
+
+However, you may want finer control over your color selection and you can use some of the other tabs to do this. The "RGB" tab allows you to define the level of Red, Green and Blue you want in the color. Or particular note, it also allows you to place the hexidemical code for the color you want in the "Color Code" text box. For instance, this could be of interest if you are trying to keep consistent colors from other figures where you defined a hexidecimal code for a given dataset. Once you have selected a color that you like, you can left-click <kbd>OK</kbd>:
+
+<p align="center">
+<img src="../img/RGB_color_IGV.png" width="400">
+</p>
+
 #### Changing type of graph
+
+#### Remove track
 
 ### Saving and Loading IGV Sessions
 ***
