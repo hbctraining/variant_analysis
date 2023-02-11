@@ -153,7 +153,7 @@ II. **Complete the exercises**:
 | 9:30 - 10:00 | Self-learning lessons review | All |
 | 10:00 - 10:45 | [Variant Prioritization with SnpSift](../lessons/variant_prioritization.md) | Will |
 | 10:45 - 11:25 | [Visualization in IGV](../lessons/IGV.md) | Will |
-| 11:25 - 11:45 | [Q & A | Will |
+| 11:25 - 11:45 | Q & A | Will |
 | 11:45 - 12:00 | [Wrap up]() | Will |
 
 ***
