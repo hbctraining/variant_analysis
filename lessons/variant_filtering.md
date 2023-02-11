@@ -81,6 +81,8 @@ Let's breakdown this command:
 
 More information on `FilterMutectCalls` can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360036856831-FilterMutectCalls) and a more technical guide to the filtering can be found [here](https://github.com/broadinstitute/gatk/blob/master/docs/mutect/mutect.pdf) in Section II.
 
+## Filter VCF files for only variants with PASS in the FILTER field using `SnpSift`
+
 Now, we are going to filter for only variants that had a FILTER result of `PASS`. To do this filtering we are going to use `SnpSift`, which is part of the [`SnpEff and SnpSift suite`](http://pcingola.github.io/SnpEff/) of tools. We will be later be using `SnpEff` to annotate our variants and `SnpSift` to priotize our variants later, but for now we are just going to use `SnpSift` to filter out our variants. If some of the syntax for this command is unclear, that is fine. We are going to spend time covering the syntax later during the variant prioritization section. First let's add our output file to the variables at the top of our script, so that it now looks like:
 
 ```
