@@ -82,7 +82,7 @@ To get started, we are going to open up IGV on our computers. Once open, we are 
 <img src="../img/Select_genome_IGV.png" width="1000">
 </p>
 
-### Load our VCF file
+### Loading Our VCF File
 
 In order to load a file, like our VCF file, into IGV, we need to go to the top of our screen and left-click <kbd>File</kbd> -> <kbd>Load from File...</kbd>:
 
@@ -104,7 +104,7 @@ Now our IGV window should display the loaded file:
 
 This loaded file is referred to as a *track* in IGV. We can have multipple tracks loaded as once and in the next section we will demonstrate how to load tracks provided by IGV.
 
-### Load IGV provided tracks
+### Load IGV Provided Tracks
 
 For a select few genomes, like human, IGV comes with a few annotation tracks such as RefSeq genes. While Refseq genes is loaded by default in the lower panel of the IGV window, the other tracks are not automatically loaded. Let's see how to load these track by left-clicking on <kbd>File</kbd> -> <kbd>Load from Server...</kbd>:
 
@@ -134,7 +134,7 @@ Now our IGV window should have additional tracks and look like:
 
 Now that we have our tracks of interest loaded, we likely want to navigate them to view our variants.
 
-#### Zooming in on regions
+#### Zooming in/out on Regions
 
 The first way that we can zoom in on a region in IGV is to left-click and hold while dragging over the region we are interested in. This can be iteratively done as one narrows down the region that they are interested in viewing.
 
@@ -187,7 +187,7 @@ If we zoom in enough we can get down to seeing individual variants. Underneath t
 
 Now that we have an idea of how we can navigate in the IGV window, we want to learn how to modify our tracks. IGV provides lots of ways in which you can modify the tracks.
 
-#### Resizing tracks
+#### Resizing Tracks
 
 First, we might want to be interested in resizing the tracks. Currently, we have a lot of whitespace that we might want to eliminate. The easiest way eliminate lots of this whitespace is to hit the button on the top bar to "Resize tracks to fit in window":
 
@@ -216,7 +216,7 @@ A window should pop-up and allow you to modify the height. Once you have selecte
 </p>
 
 
-#### Modifying track data range
+#### Modifying Track Data Range
 
 We can also adjust the data range that we want displayed in the track. Similarly to resizing the track height, we start by right-clicking the track we want to adjust, but this time we will left-click "Set Data Range..."
 
@@ -230,7 +230,7 @@ A window should pop-up and allow you to select the minimum, maximum and whether 
 <img src="../img/Set_data_range_manual_IGV.png" width="400">
 </p>
 
-#### Renaming tracks
+#### Renaming Tracks
 
 When tracks are loaded from files, they are named by the filename and sometimes these names can be long and unwieldy within IGV. Therefore, we are oftentimes interested in changing the track name to something that is more easy to understand. To change the track name, we need to right-click on the track and then left-click "Rename Track...":
 
@@ -244,7 +244,7 @@ A window should pop-up and allow you to type the desired name of the track. Once
 <img src="../img/Rename_track_manual_IGV.png" width="400">
 </p>
 
-#### Changing track color
+#### Changing Track Color
 
 Many tracks load into IGV as blue by default, but you do have options for which color you'd like the tracks to be. In order to change the color of a track, right click on the track and left-click "Change Track Color...":
 
@@ -270,7 +270,7 @@ Now that we've changed a few features in our IGV window it should now look somet
 <img src="../img/Changed_color_IGV.png" width="800">
 </p>
 
-#### Changing type of graph
+#### Changing Type of Graph
 
 Different types of data might be visualized better in different formats. For example, we might think that "GC %" is better visualized as a line rather than as a barplot. In order to change this barplot to a line plot, we need to right-click on the track and then left-click on "Line Plot":
 
@@ -280,7 +280,7 @@ Different types of data might be visualized better in different formats. For exa
 
 Depending on your datatype, different types of plots might be more appropriate than others.
 
-#### Remove track
+#### Remove Track
 
 Lastly, you may want to remove a track from your IGV window. In order to remove a track, right-click on the track and then left-click on "Remove Track":
 
@@ -290,11 +290,41 @@ Lastly, you may want to remove a track from your IGV window. In order to remove 
 
 ### Saving and Loading IGV Sessions
 
+Oftentimes, you'll want to save your IGV session or load up an IGV session that you've been previously working on. Below we will describe how to save and load IGV sessions.
+
+#### Saving an IGV Session
+
 Now that you have edited your tracks to get them just the way you want you them, you might want to save the IGV session so that you can easily reload it for when you want to revisit it. To save your IGV session, go to the top bar and left-click <kbd>File</kbd> -> <kbd>Save Session...</kbd>:
 
 <p align="center">
 <img src="../img/Save_session_IGV.png" width="400">
 </p>
+
+Select a name and location for the IGV session to be saved under and left-click <kbd>Save</kbd>. It will then be saved as an XML file.
+
+<p align="center">
+<img src="../img/Saving_session_IGV.png" width="400">
+</p>
+
+Let's go ahead and close our IGV session now.
+
+#### Loading an IGV Session
+
+If we now open IGV back up, we will notice that it provides a fresh session. If we want to load a previous IGV session we will need to load it. To load an IGV session, go to the top bar and left-click <kbd>File</kbd> -> <kbd>Open Session...</kbd>:
+
+<p align="center">
+<img src="../img/Load_session_IGV.png" width="400">
+</p>
+
+A window should pop-up and let you select the file you would like to load. Left-click the file you would like to load and then left-click <kbd>Open</kbd>:
+
+<p align="center">
+<img src="../img/Loading_session_IGV.png" width="400">
+</p>
+
+We can now see that we have loaded our previous IGV session! ***It is VERY IMPORTANT that if you move files that were loaded into IGV into a different location on your computer, IGV will not be able to find them and therefore not load your saved session!***
+
+[Back to Schedule](../schedule/README.md)
 
 ***
 
