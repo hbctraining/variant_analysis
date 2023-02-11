@@ -96,10 +96,8 @@ I. Please **study the contents** and **work through all the code** within the fo
 > 4. If you log out between lessons (using the `exit` command twice), please follow points 1. and 2. above to log back in and get on a compute node when you restart with the self learning.
 
 II. **Complete the exercises**:
-   * Each lesson above contain exercises; please go through each of them.
-   * **Copy over** your the answers for the exercises into a plain text file on your local computer, using Notepad++, TextWrangler or similar. 
-     * *Please do not copy all of the content from your Terminal, just the answers.*
-   * **Upload the text file** to [Dropbox]() the **day before the next class**.
+   * Each lesson above contains exercises; please go through each of them.
+   * **Copy over** your solutions into the [Google Form]() the **day before the next class**.
 
 ### Questions?
 * ***If you get stuck due to an error*** while runnning code in the lesson, [email us](mailto:hbctraining@hsph.harvard.edu) 
@@ -135,10 +133,8 @@ I. Please **study the contents** and **work through all the code** within the fo
 > **NOTE:** To run through the code above, you will need to be **logged into O2** and **working on a compute node** (i.e. your command prompt should have the word `compute` in it). For login instructions, please see above.
 
 II. **Complete the exercises**:
-   * Each lesson above contain exercises; please go through each of them.
-   * **Copy over** your the answers for the exercises into a plain text file on your local computer, using Notepad++, TextWrangler or similar. 
-     * *Please do not copy all of the content from your Terminal, just the answers.*
-   * **Upload the text file** to [Dropbox]() the **day before the next class**.
+   * Each lesson above contains exercises; please go through each of them.
+   * **Copy over** your solutions into the [Google Form]() the **day before the next class**.
    
 ### Questions?
 * ***If you get stuck due to an error*** while runnning code in the lesson, [email us](mailto:hbctraining@hsph.harvard.edu) 
