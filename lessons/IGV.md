@@ -324,6 +324,17 @@ A window should pop-up and let you select the file you would like to load. Left-
 
 We can now see that we have loaded our previous IGV session! ***It is VERY IMPORTANT that if you move files that were loaded into IGV into a different location on your computer, IGV will not be able to find them and therefore not load your saved session!***
 
+## Exercises
+
+1) Download and load the SnpSift file that we created with "High Impact" mutations
+2) Load the IGV provided "Variation and Repeats" track to your IGV session
+3) Change the height of the CpG Islands track to 60
+4) Navigate to your favorite gene. Do you see any high-impact variants there?
+5) Find a high impact variant on Chromosome 4
+6) Rename the "Refseq Genes" track to "Genes"
+7) Save the IGV session as "Improved_IGV_session.xml"
+8) ***Bonus Challenge*** Change the type of plot for "GC%" from a line plot to a heatmap.
+
 [Back to Schedule](../schedule/README.md)
 
 ***
