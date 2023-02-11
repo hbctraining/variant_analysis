@@ -13,7 +13,7 @@ The output from `Mutect2` is a raw variant calling output and the calls need to 
 - Non-somatic mutations
 - Sequencing Errors
 
-`FilterMutectCalls` evaluates the raw variant calls for each of these types of errors using a probabilitic model for errors. It then uses this model to determine the probability of an error and applies this filter across all of the variants. There are also "hard filters" that immediately flag a variant call for filtering. These include:
+`FilterMutectCalls` evaluates the raw variant calls for each of these types of errors using a probabilitic model for errors. It then uses this model to determine the probability of an error and applies this filter across all of the variants. There are also "hard filters" that immediately flag a variant call for filtering.  `FilterMutectCalls` will annotate the FILTER field in the VCF file with whether the variant is passing with `PASS` or the reasons why it failed filtering. These include:
 
 - Too many alternate alleles
 - Low median base quality scores 
@@ -80,6 +80,33 @@ Let's breakdown this command:
 - `--output $MUTECT_FILTERED_VCF` This is our filtered output file from `FilterMutectCalls`
 
 More information on `FilterMutectCalls` can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360036856831-FilterMutectCalls) and a more technical guide to the filtering can be found [here](https://github.com/broadinstitute/gatk/blob/master/docs/mutect/mutect.pdf) in Section II.
+
+Now, we are going to filter for only variants that had a FILTER result of `PASS`. To do this filtering we are going to use `SnpSift`, which is part of the [`SnpEff and SnpSift suite`](http://pcingola.github.io/SnpEff/) of tools. We will be later be using `SnpEff` to annotate our variants and `SnpSift` to priotize our variants later, but for now we are just going to use `SnpSift` to filter out our variants. If some of the syntax for this command is unclear, that is fine. We are going to spend time covering the syntax later during the variant prioritization section. First let's add our output file to the variables at the top of our script, so that it now looks like:
+
+```
+# Assign variables
+REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
+RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf
+MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}filt.vcf
+PASSING_FILTER_VCF=${RAW_VCF_FILE%raw.vcf}pass-filt.vcf
+```
+
+Now, we can add our `SnpSift` command to the after the `FilterMutectCalls` command:
+
+```
+# Filter for only SNPs with PASS in the FILTER field
+java -jar $SNPEFF/SnpSift.jar filter \
+"( FILTER = 'PASS' )" \
+$MUTECT_FILTERED_VCF > $PASSING_FILTER_VCF
+```
+
+  - `java -jar $SNPEFF/SnpSift.jar filter` This calls the `filter` function within the `SnpSift` package
+ 
+  - `"( FILTER = 'PASS' )"` This is the syntax that `SnpSift` uses to only retain variant calls with PASS in the FILTER filed of the VCF file
+ 
+  - `$MUTECT_FILTERED_VCF` This is the input file
+ 
+  - `> $PASSING_FILTER_VCF` This is the output file
 
 Save and exit `vim`.
 
@@ -149,7 +176,7 @@ We can break with command down:
 
 #### Editing variant filtering script to include LCR filtering
 
-In order to remove the LCRs from the VCF file, we will be using `SnpSift`, which is part of the [`SnpEff and SnpSift suite`](http://pcingola.github.io/SnpEff/) of tools. We will be later be using `SnpEff` to annotate our variants and `SnpSift` to priotize our variants, but for now were are going to focus on using the `intervals` command build into `SnpSift`. Let's go back to our scripts directory and edit our variant filtering script.
+In order to remove the LCRs from the VCF file, we will once again be using `SnpSift`. We will be discussing `SnpSift` at length in the variant prioritization steps later, but for now were are going to focus on using the `intervals` command build into `SnpSift`. Let's go back to our scripts directory and edit our variant filtering script.
 
 ```
 cd ~/variant_calling/scripts/
@@ -172,6 +199,7 @@ REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
 RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf
 LCR_FILE=/n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed
 MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}filt.vcf
+PASSING_FILTER_VCF=${RAW_VCF_FILE%raw.vcf}pass-filt.vcf
 LCR_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}LCR-filt.vcf
 ```
 
@@ -181,13 +209,13 @@ Add the `filter` command from `SnpSift` in order remove all sites that overlap w
 # Filter LCR
 java -jar $SNPEFF/SnpSift.jar intervals \
 -x \
--i $MUTECT_FILTERED_VCF \
+-i $PASSING_FILTER_VCF \
 $LCR_FILE > $LCR_FILTERED_VCF
 ```
 
 - `-x` This option tells `SnpSift` to *exclude* sites found in the BED file. The default behavior of `SnpSift filter` is to only *include* sites found in the BED file.
 
-- `-i $MUTECT_FILTERED_VCF` This is the VCF file that we would like to be filtered. I can either be `.gz` compressed or not. 
+- `-i $PASSING_FILTER_VCF` This is the VCF file that we would like to be filtered. It can either be `.gz` compressed or not. 
 
 - `$LCR_FILE` This represents the BED file you want to use to filter your VCF file with. While in this case we only have one BED file, you can use multiple BED files if you have several filters that you wanted to apply. 
 
@@ -211,7 +239,7 @@ The command for running <code>bedtools</code> to filter out low-complexity regio
 bedtools intersect \
 -header \
 -v \
--a $MUTECT_FILTERED_VCF \
+-a $PASSING_FILTER_VCF \
 -b $LCR_FILE > $LCR_FILTERED_VCF
 </pre>
   
@@ -221,7 +249,7 @@ We can breakdown this command:
   
 <li><code>-v</code>Traditionally, <code>bedtools intersect</code> will report the intersection of the file following <code>-a</code> and the file following <code>-b</code>. However, the <code>-v</code> option alters this behavior to find positions in the <code>-a</code> file not in <code>-b</code> file.</li>
   
-<li><code>-a $MUTECT_FILTERED_VCF</code> VCF file that we want filtered</li>
+<li><code>-a $PASSING_FILTER_VCF</code> VCF file that we want filtered</li>
   
 <li><code>-b $LCR_FILE</code>BED file containing genomic coordinates for sites in the VCF file to exclude</li>
   
@@ -254,6 +282,7 @@ REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
 RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf
 LCR_FILE=/n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed
 MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}filt.vcf
+PASSING_FILTER_VCF=${RAW_VCF_FILE%raw.vcf}pass-filt.vcf
 LCR_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}LCR-filt.vcf
 
 # Filter Mutect Calls
@@ -262,10 +291,15 @@ gatk FilterMutectCalls \
 --variant $RAW_VCF_FILE \
 --output $MUTECT_FILTERED_VCF
 
+# Filter for only SNPs with PASS in the FILTER field
+java -jar $SNPEFF/SnpSift.jar filter \
+"( FILTER = 'PASS' )" \
+$MUTECT_FILTERED_VCF > $PASSING_FILTER_VCF
+
 # Filter LCR
 java -jar $SNPEFF/SnpSift.jar intervals \
 -x \
--i $MUTECT_FILTERED_VCF \
+-i $PASSING_FILTER_VCF \
 $LCR_FILE > $LCR_FILTERED_VCF
 ```
 
