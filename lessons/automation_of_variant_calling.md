@@ -230,6 +230,60 @@ SORT_ORDER=coordinate \
 CREATE_INDEX=true
 ```
 
+#### `Picard` Metrics
+
+```
+cp picard_CollectAlignmentMetrics_normal.sbatch picard_metrics_automated.sbatch
+vim picard_metrics_automated.sbatch
+```
+
+Remove the `SBATCH` directives:
+
+```
+# REMOVE THESE LINES
+# Assign sbatch directives
+#SBATCH -p priority
+#SBATCH -t 0-00:30:00
+#SBATCH -c 1
+#SBATCH --mem 16G
+#SBATCH -o picard_CollectAlignmentMetrics_normal_%j.out
+#SBATCH -e picard_CollectAlignmentMetrics_normal_%j.err
+```
+
+Then replace the `bash` variables from:
+
+```
+# Assign variables
+INPUT_BAM=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam
+REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
+OUTPUT_METRICS_FILE=/home/${USER}/variant_calling/reports/picard/syn3_normal/syn3_normal_GRCh38.p7.CollectAlignmentSummaryMetrics.txt
+```
+
+To:
+
+```
+INPUT_BAM=$1
+REFERENCE=$2
+OUTPUT_METRICS_FILE=$3
+```
+
+The automated `Picard` metrics submission script should look like:
+
+```
+#!/bin/bash
+
+module load picard/2.8.0
+
+INPUT_BAM=$1
+REFERENCE=$2
+OUTPUT_METRICS_FILE=$3
+
+picard CollectAlignmentSummaryMetrics \
+INPUT=$INPUT_BAM \
+REFERENCE_SEQUENCE=$REFERENCE \
+OUTPUT=$OUTPUT_METRICS_FILE 
+```
+
 #### `MultiQC`
 
 Let's copy our 
