@@ -705,13 +705,13 @@ Inside of this file copy and paste the following wrapper:
 
 # Assign variables
 FASTQ_DIRECTORY=/home/$USER/variant_calling/raw_data/
-REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
-REFERENCE_SEQUENCE_NAME=`basename $REFERENCE_SEQUENCE .fa`
 NORMAL_SAMPLE=syn3_normal
 TUMOR_SAMPLE=syn3_tumor
+REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
+REFERENCE_SEQUENCE_NAME=`basename $REFERENCE_SEQUENCE .fa`
 LCR_FILE=/n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed
 REPORTS_DIRECTORY=/home/$USER/variant_calling/reports/
-PEDIGREE_HEADER_FILE=/home/$USER/variant_calling/scripts/syn3_normal_syn3_tumor_pedigree_header.txt
+PEDIGREE_HEADER_FILE=/home/$USER/variant_calling/scripts/${NORMAL_SAMPLE}_${TUMOR_SAMPLE}_pedigree_header.txt
 SNPEFF_DIRECTORY=/n/groups/hbctraining/variant_calling/reference/snpeff/data/
 SNPEFF_DATABASE=GRCh38.p7.RefSeq
 DBSNP_DATABASE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.dbSNP.vcf.gz
