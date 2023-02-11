@@ -83,7 +83,15 @@ More information on `FilterMutectCalls` can be found [here](https://gatk.broadin
 
 ## Filter VCF files for only variants with PASS in the FILTER field using `SnpSift`
 
-Now, we are going to filter for only variants that had a FILTER result of `PASS`. To do this filtering we are going to use `SnpSift`, which is part of the [`SnpEff and SnpSift suite`](http://pcingola.github.io/SnpEff/) of tools. We will be later be using `SnpEff` to annotate our variants and `SnpSift` to priotize our variants later, but for now we are just going to use `SnpSift` to filter out our variants. If some of the syntax for this command is unclear, that is fine. We are going to spend time covering the syntax later during the variant prioritization section. First let's add our output file to the variables at the top of our script, so that it now looks like:
+Now, we are going to filter for only variants that had a FILTER result of `PASS`. To do this filtering we are going to use `SnpSift`, which is part of the [`SnpEff and SnpSift suite`](http://pcingola.github.io/SnpEff/) of tools. We will be later be using `SnpEff` to annotate our variants and `SnpSift` to priotize our variants later, but for now we are just going to use `SnpSift` to filter out our variants. If some of the syntax for this command is unclear, that is fine. We are going to spend time covering the syntax later during the variant prioritization section. First, we need to add `SnpEff` to the modules we will be loading. So the modules loaded will now look like:
+
+```
+# Load modules
+module load gatk/4.1.9.0
+module load snpEff/4.3g
+```
+
+Next, add our output file to the variables at the top of our script, so that it now looks like:
 
 ```
 # Assign variables
@@ -185,15 +193,7 @@ cd ~/variant_calling/scripts/
 vim variant_filtering_normal_tumor.sbatch
 ```
 
-Let's go ahead and make some edits to our variant filtering scripts. First, we need to add `SnpEff` to the modules we will be loading. So the modules loaded will now look like:
-
-```
-# Load modules
-module load gatk/4.1.9.0
-module load snpEff/4.3g
-```
-
-Next, we need to add some additional `bash` variables:
+Let's go ahead and make some edits to our variant filtering scripts. First, we need to add some additional `bash` variables:
 
 ```
 # Assign variables
