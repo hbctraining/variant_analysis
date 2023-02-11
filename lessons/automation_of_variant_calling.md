@@ -443,14 +443,23 @@ RAW_VCF_FILE=$2
 LCR_FILE=$3
 
 MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}filt.vcf.gz
-LCR_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}LCR-filt.vcf
+PASSING_FILTER_VCF=${RAW_VCF_FILE%raw.vcf.gz}pass-filt.vcf.gz
+LCR_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}pass-filt-LCR.vcf
 
 gatk FilterMutectCalls \
 --reference $REFERENCE_SEQUENCE \
 --variant $RAW_VCF_FILE \
 --output $MUTECT_FILTERED_VCF
 
-java -jar $SNPEFF/SnpSift.jar intervals -x -i $MUTECT_FILTERED_VCF $LCR_FILE > $LCR_FILTERED_VCF
+# Filter for only PASSing SNPs
+java -jar $SNPEFF/SnpSift.jar filter \
+"( FILTER = 'PASS' )" \
+$MUTECT_FILTERED_VCF > $PASSING_FILTER_VCF
+
+java -jar $SNPEFF/SnpSift.jar intervals \
+-x \
+-i $PASSING_FILTER_VCF \
+$LCR_FILE > $LCR_FILTERED_VCF
 ```
 
 #### Variant Annotation
@@ -486,7 +495,7 @@ CSV_STATS=`echo -e "${REPORTS_DIRECTORY}annotation_${SAMPLE_NAME}_${REFERENCE_SE
 HTML_REPORT=`echo -e "${REPORTS_DIRECTORY}annotation_${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-effects-stats.html"`
 REFERENCE_DATABASE=GRCh38.p7.RefSeq
 DATADIR=/n/groups/hbctraining/variant_calling/reference/snpeff/data/
-FILTERED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-LCR-filt.vcf
+FILTERED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-pass-filt-LCR.vcf
 PEDIGREE_HEADER_FILE=/home/$USER/variant_calling/scripts/syn3_normal_syn3_tumor_pedigree_header.txt
 FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER=${FILTERED_VCF_FILE%.vcf}.pedigree_header.vcf
 SNPEFF_ANNOTATED_VCF_FILE=${FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER%.vcf}.snpeff.vcf
