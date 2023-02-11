@@ -11,7 +11,8 @@
 ### Learning Objectives
 
 ### Lessons
-* [Workshop schedule (trainer-led learning)](schedule/)
+* [Workshop schedule (trainer-led learning)](schedule/README.md)
+* [Self-learning](schedule/self-learning.md)
 
 ### Installation Requirements
 ***All:***
