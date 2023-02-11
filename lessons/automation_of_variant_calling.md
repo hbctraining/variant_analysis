@@ -105,22 +105,13 @@ Next we will need to remove all of the `SBATCH` directives:
 #SBATCH -e bwa_alignment_normal_%j.err
 ```
 
-We will be creating a wrapper script at the end that launches all of our automated scripts. Our wrapper script will hold some variables for us so we don't need them all within this script anymore. Next, we can delete the following variable lines:
-
-```
-# REMOVE THESE LINES
-REFERENCE_SEQUENCE_NAME=`basename $REFERENCE_SEQUENCE _genomic.fa`
-SAMPLE_NAME=`basename $LEFT_READS _1.fq.gz`
-```
-
-
-Next we will also need to change the variables from:
+We will be creating a wrapper script at the end that launches all of our automated scripts. Our wrapper script will hold some variables for us so we don't need them all within this script anymore. Next we will also need to change the variables from:
 
 ```
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
 LEFT_READS=/home/$USER/variant_calling/raw_data/syn3_normal_1.fq.gz
 RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
-SAMPLE_NAME=`basename $LEFT_READS _1.fq.gz
+SAMPLE=`basename $LEFT_READS _1.fq.gz
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.sam
 ```
 
@@ -130,7 +121,7 @@ To:
 REFERENCE_SEQUENCE=$1
 LEFT_READS=$2
 RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
-SAMPLE_NAME=$3
+SAMPLE=$3
 SAM_FILE=$4
 ```
 
