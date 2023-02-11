@@ -146,7 +146,7 @@ SAM_FILE=$4
 bwa mem \
 -M \
 -t 8 \
--R "@RG\tID:$SAMPLE_NAME\tPL:illumina\tPU:$SAMPLE_NAME\tSM:$SAMPLE_NAME" \
+-R "@RG\tID:$SAMPLE\tPL:illumina\tPU:$SAMPLE\tSM:$SAMPLE" \
 $REFERENCE_SEQUENCE \
 $LEFT_READS \
 $RIGHT_READS \
