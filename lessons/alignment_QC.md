@@ -280,7 +280,7 @@ Once the job has finished we would inspect the output files. This could be done 
       - Hard to compare across samples
       - Have to download the metrics files from the O2 cluster
     
-3) Collate metrics files using `MultiQC` and download the `MultiQC` HTML report from the O2 cluster
+3) Collate metrics files using [`MultiQC`](https://multiqc.info) and download the `MultiQC` HTML report from the O2 cluster
   
     **Pros:**
       - Alignment metrics are easy to compare across samples
