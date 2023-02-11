@@ -635,6 +635,14 @@ In this case, `Job_C.sbatch` won't queue until `Job_A.sbatch` and `Job_B.sbatch`
 
 #### Writing the Wrapper script
 
+Let's start by opening a file in `vim` called `variant_calling_wrapper.sh`:
+
+```
+vim variant_calling_wrapper.sh
+```
+
+Inside of this file copy and paste the following wrapper: 
+
 ```
 #!/bin/bash
 # This is the wrapper script for the variant calling pipeline. 
