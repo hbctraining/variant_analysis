@@ -31,7 +31,7 @@ There are several different types variants that require their own consideration.
 - Copy Number Variants (CNVs)
 - Structural Variants (SVs)
 
-Similarly to the tools in a workshop, variant calling for each of these types of variants requires tools created for it. `GATK` has packages that can address the needs of several of these:
+Similarly to the tools in a workshop, variant calling for each of these types of variants requires tools created for it. [`GATK`](https://gatk.broadinstitute.org/hc/en-us) has packages that can address the needs of several of these:
 
 - [`HaplotypeCaller`](https://gatk.broadinstitute.org/hc/en-us/articles/5358864757787-HaplotypeCaller) can be used for germline SNPs and Indels
 - [`MuTect2`](https://gatk.broadinstitute.org/hc/en-us/articles/5358911630107-Mutect2) can be used for somatic SNPs and Indels
