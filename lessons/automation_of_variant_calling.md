@@ -139,7 +139,7 @@ module load bwa/0.7.17
 REFERENCE_SEQUENCE=$1
 LEFT_READS=$2
 RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
-SAMPLE_NAME=$3
+SAMPLE=$3
 SAM_FILE=$4
 
 # Align reads with bwa
