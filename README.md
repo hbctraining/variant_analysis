@@ -6,9 +6,22 @@
 
 ### Description
 
+This ***Introduction to Variant Calling*** workshop is aimed at providing best practices for calling variants for paired normal/tumor datasets. Importantly, while this workshop series does focus on calling variants in the context of paired tumor/normal samples. Much of this workshop's pipeline and discussion is adaptable to other types of variant calling applications. This workshop series should provide participants with an ability to take raw sequence reads and process them into a VCF file with annotated variants. Furthermore, the workshop series ends with a tutorial for visualizing called variants within the Integrative Genomics Viewer (IGV). 
+
 > These materials were developed for a trainer-led workshop, but are also amenable to self-guided learning.
 
+#### Pre-Requisite
+
+This workshop series is designed for users with a background in the fundamentals of working in the shell environment on an high-performance computing cluster (HPCC). If you don't have this background or are unsure if you are ready for this workshop series, you should complete our [***Introduction to the Command Line***](https://hbctraining.github.io/Intro-to-shell-flipped/) workshop series.
+
 ### Learning Objectives
+
+- Evaluate QC metrics for variant calling
+- Call variants using GATK
+- Filter variants to retain only high-quality variant calls
+- Annotate variants using SnpEff and dbSNP
+- Prioritize variants by their impact
+- Visualize variants in IGV
 
 ### Lessons
 * [Workshop schedule (trainer-led learning)](schedule/README.md)
