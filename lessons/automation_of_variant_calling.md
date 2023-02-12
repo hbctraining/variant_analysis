@@ -250,9 +250,6 @@ INPUT_BAM=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_
 REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
 OUTPUT_METRICS_DIRECTORY=/home/${USER}/variant_calling/reports/picard/syn3_normal/
 OUTPUT_METRICS_FILE=${OUTPUT_METRICS_DIRECTORY}syn3_normal_GRCh38.p7.CollectAlignmentSummaryMetrics.txt
-
-# Make output directory
-mkdir -p $OUTPUT_METRICS_DIRECTORY
 ```
 
 To:
