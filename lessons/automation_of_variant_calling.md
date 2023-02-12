@@ -248,7 +248,11 @@ Then replace the `bash` variables from:
 # Assign variables
 INPUT_BAM=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam
 REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
-OUTPUT_METRICS_FILE=/home/${USER}/variant_calling/reports/picard/syn3_normal/syn3_normal_GRCh38.p7.CollectAlignmentSummaryMetrics.txt
+OUTPUT_METRICS_DIRECTORY=/home/${USER}/variant_calling/reports/picard/syn3_normal/
+OUTPUT_METRICS_FILE=${OUTPUT_METRICS_DIRECTORY}syn3_normal_GRCh38.p7.CollectAlignmentSummaryMetrics.txt
+
+# Make output directory
+mkdir -p $OUTPUT_METRICS_DIRECTORY
 ```
 
 To:
@@ -256,7 +260,8 @@ To:
 ```
 INPUT_BAM=$1
 REFERENCE=$2
-OUTPUT_METRICS_FILE=$3
+OUTPUT_METRICS_DIRECTORY=$3
+OUTPUT_METRICS_FILE=$4
 ```
 
 The automated `Picard` metrics submission script should look like:
@@ -268,7 +273,11 @@ module load picard/2.8.0
 
 INPUT_BAM=$1
 REFERENCE=$2
-OUTPUT_METRICS_FILE=$3
+OUTPUT_METRICS_DIRECTORY=$3
+OUTPUT_METRICS_FILE=$4
+
+# Make output directory
+mkdir -p $OUTPUT_METRICS_DIRECTORY
 
 picard CollectAlignmentSummaryMetrics \
 INPUT=$INPUT_BAM \
@@ -745,10 +754,12 @@ for SAMPLE in $FASTQ_DIRECTORY*_1.fq.gz; do
   COORDINATE_SORTED_BAM_FILE=`echo -e "${SAM_FILE%sam}coordinate_sorted.bam"`
   # Add this BAM file path to an array
   COORDINATE_SORTED_BAM_ARRAY+=($COORDINATE_SORTED_BAM_FILE)
+  # Assign Picard report directory
+  PICARD_METRICS_REPORTS_DIRECTORY=`echo -e "${REPORTS_DIRECTORY}picard/${SAMPLE_NAME}/"`
   # Assign Picard report file path
-  PICARD_METRICS_REPORT_FILE=`echo -e "${REPORTS_DIRECTORY}picard/${SAMPLE_NAME}/${SAMPLE_NAME}.CollectAlignmentSummaryMetrics.txt"`
+  PICARD_METRICS_REPORT_FILE=`echo -e "${PICARD_METRICS_REPORTS_DIRECTORY}${SAMPLE_NAME}.CollectAlignmentSummaryMetrics.txt"`
   #Submit the picard metrics sbatch script and save the output to a variable named $PICARD_METRICS_JOB_SUBMISSION
-  PICARD_METRICS_JOB_SUBMISSION=$(sbatch -p priority -t 0-00:30:00 -c 1 --mem 16G -o picard_metrics_${SAMPLE_NAME}_%j.out -e picard_metrics_${SAMPLE_NAME}_%j.err --dependency=afterok:$PICARD_PROCESSING_JOB_ID picard_metrics_automated.sbatch $COORDINATE_SORTED_BAM_FILE $REFERENCE_SEQUENCE $PICARD_METRICS_REPORT_FILE)
+  PICARD_METRICS_JOB_SUBMISSION=$(sbatch -p priority -t 0-00:30:00 -c 1 --mem 16G -o picard_metrics_${SAMPLE_NAME}_%j.out -e picard_metrics_${SAMPLE_NAME}_%j.err --dependency=afterok:$PICARD_PROCESSING_JOB_ID picard_metrics_automated.sbatch $COORDINATE_SORTED_BAM_FILE $REFERENCE_SEQUENCE $PICARD_METRICS_REPORTS_DIRECTORY $PICARD_METRICS_REPORT_FILE)
   # Parse out the job ID from the Picard metrics submission
   PICARD_METRICS_JOB_ID=`echo $PICARD_METRICS_JOB_SUBMISSION | cut -d ' ' -f 4`
   # Add the Picard metrics job ID to an array holding all of the Picard metrics job IDs
