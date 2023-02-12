@@ -498,9 +498,9 @@ REFERENCE_SEQUENCE=$1
 RAW_VCF_FILE=$2
 LCR_FILE=$3
 
-MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}filt.vcf.gz
-PASSING_FILTER_VCF=${RAW_VCF_FILE%raw.vcf.gz}pass-filt.vcf.gz
-LCR_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf.gz}pass-filt-LCR.vcf
+MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}filt.vcf
+PASSING_FILTER_VCF=${RAW_VCF_FILE%raw.vcf}pass-filt.vcf
+LCR_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}pass-filt-LCR.vcf
 
 gatk FilterMutectCalls \
 --reference $REFERENCE_SEQUENCE \
@@ -800,16 +800,16 @@ MULTIQC_JOB_ID=`echo $MULTIQC_JOB_SUBMISSION | cut -d ' ' -f 4`
 # Print to standard output the job that has been submitted
 echo -e "MultiQC job submitted as job ID $MULTIQC_JOB_ID"
 
-# Assign a variable that will be used in the Mutect2 filtering step
-MUTECT2_VCF_OUTPUT_FILTERED=`echo -e "${MUTECT2_VCF_OUTPUT%raw.vcf}LCR-filt.vcf"`
-
 # Submit the variant filtering sbatch script and save the output to a variable named $VARIANT_FILTERING_JOB_SUBMISSION
-VARIANT_FILTERING_JOB_SUBMISSION=$(sbatch -p priority -t 0-00:10:00 -c 1 --mem 8G -o variant_filtering${SAMPLE_NAME_STRING}_%j.out -e variant_filtering${SAMPLE_NAME_STRING}_%j.err --dependency=afterok:$MUTECT2_JOB_ID variant_filtering_automated.sbatch $REFERENCE_SEQUENCE $MUTECT2_VCF_OUTPUT $MUTECT2_VCF_OUTPUT_FILTERED)
+VARIANT_FILTERING_JOB_SUBMISSION=$(sbatch -p priority -t 0-00:10:00 -c 1 --mem 8G -o variant_filtering${SAMPLE_NAME_STRING}_%j.out -e variant_filtering${SAMPLE_NAME_STRING}_%j.err --dependency=afterok:$MUTECT2_JOB_ID variant_filtering_automated.sbatch $REFERENCE_SEQUENCE $MUTECT2_VCF_OUTPUT $LCR_FILE)
 
 # Parse out the job ID from output from the variant filtering submission
 VARIANT_FILTERING_JOB_ID=`echo $VARIANT_FILTERING_JOB_SUBMISSION | cut -d ' ' -f 4`
 # Print to standard output the job that has been submitted
 echo -e "Variant filtering job submitted as job ID $VARIANT_FILTERING_JOB_ID"
+
+# Assign a variable that was used in the Mutect2 filtering step
+MUTECT2_VCF_OUTPUT_FILTERED=`echo -e "${MUTECT2_VCF_OUTPUT%raw.vcf}pass-filt-LCR.vcf"`
 
 # Create PEDIGREE header file 
 echo -e "##PEDIGREE=<Derived=${TUMOR_SAMPLE},Original=${NORMAL_SAMPLE}>" > $PEDIGREE_HEADER_FILE
