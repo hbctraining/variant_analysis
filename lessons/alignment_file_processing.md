@@ -75,7 +75,7 @@ Next, let's define some variables that we will be using:
 # Assign file paths to variables
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.sam
 REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/picard/syn3_normal/
-SAMPLE_NAME=`basename $SAM_FILE _GRCh38.p7.sam`
+SAMPLE_NAME=syn3_normal
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
 REMOVE_DUPLICATES_BAM_FILE=`echo ${SAM_FILE%sam}remove_duplicates.bam`
 METRICS_FILE=${REPORTS_DIRECTORY}/${SAMPLE_NAME}.remove_duplicates_metrics.txt
@@ -202,7 +202,7 @@ module load picard/2.8.0
 # Assign file paths to variables
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.sam
 REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/picard/syn3_normal/
-SAMPLE_NAME=`basename $SAM_FILE _GRCh38.p7.sam`
+SAMPLE_NAME=syn3_normal
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
 REMOVE_DUPLICATES_BAM_FILE=`echo ${SAM_FILE%sam}remove_duplicates.bam`
 METRICS_FILE=${REPORTS_DIRECTORY}/${SAMPLE_NAME}.remove_duplicates_metrics.txt
@@ -555,7 +555,7 @@ module load picard/2.8.0
 # Assign file paths to variables
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_tumor_GRCh38.p7.sam
 REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/picard/syn3_tumor/
-SAMPLE_NAME=`basename $SAM_FILE _GRCh38.p7.sam`
+SAMPLE_NAME=syn3_tumor
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
 REMOVE_DUPLICATES_BAM_FILE=`echo ${SAM_FILE%sam}remove_duplicates.bam`
 METRICS_FILE=${REPORTS_DIRECTORY}/${SAMPLE_NAME}.remove_duplicates_metrics.txt
