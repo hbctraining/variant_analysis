@@ -168,9 +168,9 @@ Coverage is the average level of alignment for any random locus in the genome.  
   </pre>
         
   <ul><li><code>java -jar $PICARD/picard.jar CollectWgsMetrics</code> This calls the <code>CollectWgsMetrics</code> package within <code>Picard</code></li>
-  <li><code>INPUT=$COORDINATE_SORTED_BAM_FILE</code> Assign the input as the coordinate sorted BAM file</li>
-  <li><code>OUTPUT=$METRICS_OUTPUT_FILE</code> Assign the report output file </li>
-  <li><code>REFERENCE_SEQUENCE=$REFERENCE</code> This is the path to the reference genome that was used for the alignment.</li></ul>
+  <li><code>-INPUT $COORDINATE_SORTED_BAM_FILE</code> Assign the input as the coordinate sorted BAM file</li>
+  <li><code>-OUTPUT $METRICS_OUTPUT_FILE</code> Assign the report output file </li>
+  <li><code>-REFERENCE_SEQUENCE $REFERENCE</code> This is the path to the reference genome that was used for the alignment.</li></ul>
 <hr />
 </details>
 
