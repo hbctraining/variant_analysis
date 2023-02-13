@@ -230,7 +230,7 @@ sed 's/missense_variant/MISSENSE/g' | \
 awk '{print "sample_1","\t",$0}' > vcf_files/syn3_GRCh38.p7.missense_variants.txt
 ```
 
-[Next Lesson >>>](IGV.md)
+[Next Lesson >>>](14_IGV.md)
 
 [Back to Schedule](../schedule/README.md)
 
