@@ -133,7 +133,7 @@ Now, these variables will accept positional parameters that we can feed it from 
 
 ```
 #!/bin/bash
-# This script is the automated version for aligning sequencing reads against a reference genome using bwa
+# This script is for aligning sequencing reads against a reference genome using bwa
 
 # Load modules
 module load gcc/6.2.0
