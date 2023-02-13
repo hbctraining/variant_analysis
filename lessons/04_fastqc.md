@@ -289,7 +289,7 @@ sbatch fastqc_tumor.sbatch
 
 Traditionally, most people inspect their `FastQC` reports before continuing on with their analysis. However, we are going to merge all of our QC together using `MultiQC` and analyze it all after alignment.
 
-[Next Lesson >>>](sequence_alignment_theory.md)
+[Next Lesson >>>](05_sequence_alignment_theory.md)
 
 [Back to Schedule](../schedule/README.md)
 
