@@ -102,9 +102,6 @@ REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
 OUTPUT_METRICS_DIRECTORY=/home/${USER}/variant_calling/reports/picard/syn3_normal/
 OUTPUT_METRICS_FILE=${OUTPUT_METRICS_DIRECTORY}syn3_normal_GRCh38.p7.CollectAlignmentSummaryMetrics.txt
 
-# Make output directory
-mkdir -p $OUTPUT_METRICS_DIRECTORY
-
 # Run Picard CollectAlignmentSummaryMetrics
 java -jar $PICARD/picard.jar CollectAlignmentSummaryMetrics \
 -INPUT $INPUT_BAM \
