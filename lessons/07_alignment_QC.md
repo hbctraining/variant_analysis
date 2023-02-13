@@ -66,7 +66,7 @@ Next, we can add the `Picard` command to gather the alignment metrics:
 java -jar $PICARD/picard.jar CollectAlignmentSummaryMetrics \
 -INPUT $INPUT_BAM \
 -REFERENCE_SEQUENCE $REFERENCE \
--OUTPUT $OUTPUT_METRICS_FILE 
+-OUTPUT $OUTPUT_METRICS_FILE
 ```
 
 We can breakdown this command into each of it's components:
@@ -109,7 +109,7 @@ mkdir -p $OUTPUT_METRICS_DIRECTORY
 java -jar $PICARD/picard.jar CollectAlignmentSummaryMetrics \
 -INPUT $INPUT_BAM \
 -REFERENCE_SEQUENCE $REFERENCE \
--OUTPUT $OUTPUT_METRICS_FILE 
+-OUTPUT $OUTPUT_METRICS_FILE
 ```
 
 Create the tumor version of this submission script using `sed`:
