@@ -25,9 +25,10 @@
 4. [`MultiQC`](https://multiqc.info) version 1.12
 5. [`GATK`](https://gatk.broadinstitute.org/hc/en-us) version 4.1.9.0
 6. [`SnpEff and SnpSift suite`](http://pcingola.github.io/SnpEff/) version 4.3g
+7. [`bcftools`](http://www.htslib.org) version 1.14
 
 #### Optional
-1. [`samtools`](https://github.com/samtools/samtools) version 1.15.1
+1. [`samtools`](http://www.htslib.org) version 1.15.1
 2. [`bedtools`](https://bedtools.readthedocs.io/en/latest/index.html) version 2.30.0
 
 > ***NOTE:*** If you are not working on the O2 cluster and are using different versions of these software programs, these packages may still work with the provided commands. However,this workshop was designed on these versions specifically, so you may need to tweak some of the commands if you use different versions of this software.
