@@ -67,15 +67,19 @@ Our `FastQC` submission script should now look like:
 #!/bin/bash
 # This sbatch script is for running FastQC to evaluate read qualities
 
+# Load module
 module load fastqc/0.11.9
 
+# Assign variables
 LEFT_READS=$1
 RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
 OUTPUT_DIRECTORY=$2
 THREADS=$3
 
+# Create directory to hold output
 mkdir -p $OUTPUT_DIRECTORY
 
+# Run FastQC
 fastqc \
 $LEFT_READS \
 $RIGHT_READS \
@@ -501,9 +505,11 @@ The final automated `sbatch` should look like:
 #!/bin/bash
 # This sbatch script is for variant filtering 
 
+# Load modules
 module load gatk/4.1.9.0
 module load snpEff/4.3g
 
+# Assign variables
 REFERENCE_SEQUENCE=$1
 RAW_VCF_FILE=$2
 LCR_FILE=$3
