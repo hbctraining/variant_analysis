@@ -256,7 +256,7 @@ Once we have created this script we can go ahead and submit it for processing:
 sbatch bwa_alignment_tumor.sbatch 
 ```
 
-[Next Lesson >>>](alignment_file_processing.md)
+[Next Lesson >>>](06_alignment_file_processing.md)
 
 [Back to Schedule](../schedule/README.md)
 
