@@ -326,6 +326,7 @@ Change the following variables to accept positional parameters from:
 REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/
 NORMAL_SAMPLE_NAME=syn3_normal
 TUMOR_SAMPLE_NAME=syn3_tumor
+REFERENCE=GRCh38.p7
 ```
 
 To:
@@ -334,6 +335,7 @@ To:
 REPORTS_DIRECTORY=$1
 NORMAL_SAMPLE_NAME=$2
 TUMOR_SAMPLE_NAME=$3
+REFERENCE=$4
 ```
 
 The final `MultiQC` automation submission script should look like:
@@ -350,9 +352,9 @@ module load multiqc/1.12
 REPORTS_DIRECTORY=$1
 NORMAL_SAMPLE_NAME=$2
 TUMOR_SAMPLE_NAME=$3
-
-NORMAL_PICARD_METRICS=${REPORTS_DIRECTORY}picard/${NORMAL_SAMPLE_NAME}/${NORMAL_SAMPLE_NAME}.CollectAlignmentSummaryMetrics.txt
-TUMOR_PICARD_METRICS=${REPORTS_DIRECTORY}picard/${TUMOR_SAMPLE_NAME}/${TUMOR_SAMPLE_NAME}.CollectAlignmentSummaryMetrics.txt
+REFERENCE=$4
+NORMAL_PICARD_METRICS=${REPORTS_DIRECTORY}picard/${NORMAL_SAMPLE_NAME}/${NORMAL_SAMPLE_NAME}_${REFERENCE}.CollectAlignmentSummaryMetrics.txt
+TUMOR_PICARD_METRICS=${REPORTS_DIRECTORY}picard/${TUMOR_SAMPLE_NAME}/${TUMOR_SAMPLE_NAME}_${REFERENCE}.CollectAlignmentSummaryMetrics.txt
 NORMAL_FASTQC_1=${REPORTS_DIRECTORY}fastqc/${NORMAL_SAMPLE_NAME}/${NORMAL_SAMPLE_NAME}_1_fastqc.zip
 NORMAL_FASTQC_2=${REPORTS_DIRECTORY}fastqc/${NORMAL_SAMPLE_NAME}/${NORMAL_SAMPLE_NAME}_2_fastqc.zip
 TUMOR_FASTQC_1=${REPORTS_DIRECTORY}fastqc/${TUMOR_SAMPLE_NAME}/${TUMOR_SAMPLE_NAME}_1_fastqc.zip
@@ -813,7 +815,7 @@ MUTECT2_JOB_ID=`echo $MUTECT2_JOB_SUBMISSION | cut -d ' ' -f 4`
 echo -e "Mutect2 job submitted as job ID $MUTECT2_JOB_ID"
 
 # Submit MultiQC sbatch script and save the output to a variable named $MULTIQC_JOB_SUBMISSION
-MULTIQC_JOB_SUBMISSION=$(sbatch -p priority -t 0-00:10:00 -c 1 --mem 1G -o mulitqc${SAMPLE_NAME_STRING}_%j.out -e mulitqc${SAMPLE_NAME_STRING}_%j.err --dependency=afterok${DEPENDENT_PICARD_METRICS_JOB_IDS} multiqc_alignment_metrics_automated.sbatch $REPORTS_DIRECTORY $NORMAL_SAMPLE $TUMOR_SAMPLE)
+MULTIQC_JOB_SUBMISSION=$(sbatch -p priority -t 0-00:10:00 -c 1 --mem 1G -o mulitqc${SAMPLE_NAME_STRING}_%j.out -e mulitqc${SAMPLE_NAME_STRING}_%j.err --dependency=afterok${DEPENDENT_PICARD_METRICS_JOB_IDS} multiqc_alignment_metrics_automated.sbatch $REPORTS_DIRECTORY $NORMAL_SAMPLE $TUMOR_SAMPLE $REFERENCE_SEQUENCE_NAME)
 
 # Parse out the job ID from output from the Mutect2 submission
 MULTIQC_JOB_ID=`echo $MULTIQC_JOB_SUBMISSION | cut -d ' ' -f 4`
