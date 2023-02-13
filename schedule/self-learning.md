@@ -34,20 +34,20 @@
 
 ## Lessons
 
-1. [ICGC-TCGA DREAM Mutation Calling Challenge Synthetic Dataset](../lessons/syn3_dataset.md)
-2. [Project Organization](../lessons/project_organization.md)
-3. [File Formats](../lessons/file_formats.md)
-4. [Evaluating Read Quality with `FastQC`](../lessons/fastqc.md)
-5. [Sequence Read Alignment](../lessons/sequence_alignment_theory.md)
-6. [Alignment File Processing ](../lessons/alignment_file_processing.md)
-7. [Alignment File Quality Control](../lessons/alignment_QC.md)
-8. [Evaluating Quality Control Metrics](../lessons/evaluate_QC.md)
-9. [Variant Calling](../lessons/variant_calling.md)
-10. [Variant Filtering](../lessons/variant_filtering.md)
-11. [Variant Annotation with SnpEff](../lessons/variant_annotation.md)
-12. [Automation of Variant Calling Pipeline](../lessons/automation_of_variant_calling.md)
-13. [Variant Prioritization with SnpSift](../lessons/variant_prioritization.md)
-14. [Visualization in IGV](../lessons/IGV.md)
+1. [ICGC-TCGA DREAM Mutation Calling Challenge Synthetic Dataset](../lessons/01_syn3_dataset.md)
+2. [Project Organization](../lessons/02_project_organization.md)
+3. [File Formats](../lessons/03_file_formats.md)
+4. [Evaluating Read Quality with `FastQC`](../lessons/04_fastqc.md)
+5. [Sequence Read Alignment](../lessons/05_sequence_alignment_theory.md)
+6. [Alignment File Processing ](../lessons/06_alignment_file_processing.md)
+7. [Alignment File Quality Control](../lessons/07_alignment_QC.md)
+8. [Evaluating Quality Control Metrics](../lessons/08_evaluate_QC.md)
+9. [Variant Calling](../lessons/09_variant_calling.md)
+10. [Variant Filtering](../lessons/10_variant_filtering.md)
+11. [Variant Annotation with SnpEff](../lessons/11_variant_annotation.md)
+12. [Automation of Variant Calling Pipeline](../lessons/12_automation_of_variant_calling.md)
+13. [Variant Prioritization with SnpSift](../lessons/13_variant_prioritization.md)
+14. [Visualization in IGV](../lessons/14_IGV.md)
 
 > ***NOTE:*** If you aren't working on Harvard's O2 cluster the directory structure for the HPCC that you are using is likely different and you will need to modify paths to work within your HPCC's directory structure.
 
