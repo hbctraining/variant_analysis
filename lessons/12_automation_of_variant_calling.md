@@ -281,6 +281,7 @@ The automated `Picard` metrics submission script should look like:
 
 ```
 #!/bin/bash
+# This sbatch script is for collecting alignment metrics using Picard 
 
 # Load picard
 module load picard/2.27.5
