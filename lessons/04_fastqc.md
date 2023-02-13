@@ -173,6 +173,7 @@ First, we will add our shebang line, description and `sbatch` directives.
 Next, we will load the `FastQC` module:
 
 ```
+# Load module
 module load fastqc/0.11.9
 ```
 
@@ -186,6 +187,7 @@ Next, we will define the variables that we will be using. This step isn't necess
 Hopefully, the case made for assigning varibles outside of your command has been successful. The variables we will be setting for this script are:
 
 ```
+# Assign variables
 LEFT_READS=/home/$USER/variant_calling/raw_data/syn3_normal_1.fq.gz
 RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
 OUTPUT_DIRECTORY=~/variant_calling/reports/fastqc/syn3_normal/
@@ -197,6 +199,7 @@ Notice here how we are using string manipulation in `bash` to assign `$RIGHT_REA
 Now that we have assigned parameters to variables, we are going to get ready to run `FastQC` and before we run `FastQC` we need to make sure that the output directory exists to accept the output:
 
 ```
+# Create directory to hold output
 mkdir -p $OUTPUT_DIRECTORY
 ```
 
@@ -208,6 +211,7 @@ The `-p` option for `mkdir` does two things:
 Now we can run `FastQC`:
 
 ```
+# Run FastQC
 fastqc \
 $LEFT_READS \
 $RIGHT_READS \
@@ -237,15 +241,19 @@ All together, the final `sbatch` script should look like:
 #SBATCH -o fastqc_normal_%j.out
 #SBATCH -e fastqc_normal_%j.err
 
+# Load module
 module load fastqc/0.11.9
 
+# Assign variables
 LEFT_READS=/home/$USER/variant_calling/raw_data/syn3_normal_1.fq.gz
 RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
 OUTPUT_DIRECTORY=~/variant_calling/reports/fastqc/syn3_normal/
 THREADS=4
 
+# Create directory to hold output
 mkdir -p $OUTPUT_DIRECTORY
 
+# Run FastQC
 fastqc \
 $LEFT_READS \
 $RIGHT_READS \
