@@ -185,7 +185,7 @@ The QC for this dataset looks pretty good. We have a high alignment to our refer
 **3) As with any NGS QC analysis, be aware of the biological and technical aspects of your sample.** Perhaps your organism of interest or sample has some peculiar biological/technical aspect as this may or likely will come through in the QC analysis. This biological or technical aspect could skew some QC metrics or create patterns that we haven't shown here. For instance, our GC metrics were a bit elevated compared to the human genome, but we recalled that we are working from exome data and the human exome is more GC-rich than the rest of the genome, so our elevate GC percentages were reasonable. 
 
 
-[Next Lesson >>>](variant_calling.md)
+[Next Lesson >>>](09_variant_calling.md)
 
 [Back to Schedule](../schedule/README.md)
 
