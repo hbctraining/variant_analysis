@@ -340,7 +340,7 @@ The final `MultiQC` automation submission script should look like:
 
 ```
 #!/bin/bash
-# This script creates a MultiQC HTML report
+# This sbatch script is for collating alignment metrics from Picard using MultiQC
 
 # Load modules
 module load gcc/9.2.0
