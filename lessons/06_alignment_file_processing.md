@@ -1,10 +1,12 @@
-# Learning objectives
+# Alignment File Processing
+
+## Learning objectives
 
 - Differentiate between query-sorted and coordinate-sorted alignment files
 - Describe and remove duplicate reads
 - Process a raw SAM file for input into a BAM for GATK
 
-# Alignment file processing with `samtools` and `Picard`
+## Alignment file processing with `samtools` and `Picard`
 
 The processing of the alignment files (SAM/BAM files) can be done either with [`samtools`](https://github.com/samtools/samtools) or [`Picard`](https://broadinstitute.github.io/picard/) and they are for the most part interchangable. The arguments for either are below:
 
@@ -36,7 +38,7 @@ Below is a flow chart of the `Picard` pipeline that we will be using:
 <img src="../img/Picard_pipeline.png" width="800">
 </p>
 
-## Creating our `sbatch` script
+### Creating our `sbatch` script
 
 Let's go ahead and start making a new `sbatch` within `vim`:
 
@@ -89,7 +91,7 @@ Make a directory to hold the `Picard` reports:
 mkdir -p $REPORTS_DIRECTORY
 ```
 
-## Sorting and Removing Duplicates
+### Sorting and Removing Duplicates
 
 In order to appropriately flag and remove duplicates, we first need to ***query*** sort our SAM file. Oftentimes, when people discuss sorted BAM/SAM files, they are refering to **coordinate**-sorted BAM/SAM files. 
 
@@ -102,7 +104,7 @@ In order to appropriately flag and remove duplicates, we first need to ***query*
 
 `Picard` can mark and remove duplicates in either coordinate-sorted or query-sorted BAM/SAM files, however, if the alignments are query-sorted it can test secondary alignments for duplicates. A brief discussion of this nuance is discussed in the [`MarkDuplicates` manual of `Picard`](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-). As a result, we will first **query**-sort our SAM file and convert it to a BAM file:
 
-### Query-sort the Alignment File
+#### Query-sort the Alignment File
 
 With our reads aligned to the reference, we would see if we opened up the SAM file that the alignments are in the order they were processed by `bwa` and not in any particular order that would be useful for downstream analyses. So, we are going to ***sort them into order by query (read) name*** for the downstream `MarkDuplicates` tool. As a reminder, we are going to sort our BAM file by **coordinates** later in the processing and when people discuss a "sorted BAM/SAM" file they are usually referring to a BAM/SAM file that is **coordinate**-sorted.
 
@@ -126,7 +128,7 @@ The components of this command are:
 
 - `SORT_ORDER=queryname` The method with which we would like the file to be sorted. The options here are either `queryname` or `coordinate`.
 
-### Mark and Remove Duplicates
+#### Mark and Remove Duplicates
 
 An important step in processing a BAM file is to mark and remove PCR duplicates. These PCR duplicates can introduce artifacts because regions that have preferential PCR amplification could be over-represented. These reads are flagged by having identical mapping locations in the BAM file. Importantly, it is impossible to distinguish between PCR duplicates and identical fragments. However, one can reduce the latter by doing paired-end sequencing and providing appropriate amounts of input material. 
 
@@ -157,7 +159,7 @@ The componetns of this command are:
 
 - `REMOVE_DUPLICATES=true` Not only are we going to mark/flag our duplicates, we can also remove them. By setting the `REMOVE_DUPLICATES` parameter equal to `true` to can remove the duplicates.
 
-### Coordinate-sort the Alignment File
+#### Coordinate-sort the Alignment File
 
 For most downstream processes, coordinate-sorted alignment files are required. As a result, we will need to change our alignemnt file from being **query**-sorted to being **coordinate**-sorted and we will once again use the `SortSam` command within `Picard` to accomplish this. Since this BAM file will be the final BAM file that we make and will use for downstream analyses, we will need to create an index for it. The command we will be using for **coordinate**-sorting and indexing out BAM file is:
 
