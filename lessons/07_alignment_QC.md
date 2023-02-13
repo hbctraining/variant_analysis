@@ -425,7 +425,7 @@ sbatch multiqc_alignment_metrics.sbatch
 
 This job should finish fairly quickly and then we can proceed to downloading it with `FileZilla` in the next lesson.
 
-[Next Lesson >>>](evaluate_QC.md)
+[Next Lesson >>>](08_evaluate_QC.md)
 
 [Back to Schedule](../schedule/README.md)
 
