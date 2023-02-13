@@ -411,7 +411,7 @@ You can see that the only difference between these files is that `SnpEff` has ap
 Now that we have successfully annotateed our variants, let's talk about filtering our variants in the next lesson!
 
 
-[Next lesson >>](variant_filtering.md)
+[Next lesson >>](12_automation_of_variant_calling.md)
 
 [Back to Schedule](../schedule/README.md)
 
