@@ -335,6 +335,7 @@ module load multiqc/1.12
 Next, we will assign our variables:
 
 ```
+# Assign variables
 REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/
 NORMAL_SAMPLE_NAME=syn3_normal
 TUMOR_SAMPLE_NAME=syn3_tumor
@@ -351,12 +352,14 @@ OUTPUT_DIRECTORY=${REPORTS_DIRECTORY}/multiqc/
 Next, we need to add the output directory:
 
 ```
+# Create directory for output
 mkdir -p $OUTPUT_DIRECTORY
 ```
 
 Then, we will add the command to run `MultiQC`:
 
 ```
+# Run MultiQC
 multiqc \
 $NORMAL_PICARD_METRICS \
 $TUMOR_PICARD_METRICS \
@@ -385,6 +388,7 @@ So our final `sbatch` script should look like:
 module load gcc/9.2.0
 module load multiqc/1.12
 
+# Assign variables
 REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/
 NORMAL_SAMPLE_NAME=syn3_normal
 TUMOR_SAMPLE_NAME=syn3_tumor
@@ -397,8 +401,10 @@ TUMOR_FASTQC_1=${REPORTS_DIRECTORY}fastqc/${TUMOR_SAMPLE_NAME}/${TUMOR_SAMPLE_NA
 TUMOR_FASTQC_2=${REPORTS_DIRECTORY}fastqc/${TUMOR_SAMPLE_NAME}/${TUMOR_SAMPLE_NAME}_2_fastqc.zip
 OUTPUT_DIRECTORY=${REPORTS_DIRECTORY}/multiqc/
 
+# Create directory for output
 mkdir -p $OUTPUT_DIRECTORY
 
+# Run MultiQC
 multiqc \
 $NORMAL_PICARD_METRICS \
 $TUMOR_PICARD_METRICS \
