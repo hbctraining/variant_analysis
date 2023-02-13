@@ -6,7 +6,7 @@
 
 Please read the following page to learn about the dataset we will be using:
 
-[ICGC-TCGA DREAM Mutation Calling Challenge Synthetic Dataset](../lessons/syn3_dataset.md)
+[ICGC-TCGA DREAM Mutation Calling Challenge Synthetic Dataset](../lessons/01_syn3_dataset.md)
 
 ## Day 1
 
@@ -14,14 +14,14 @@ Please read the following page to learn about the dataset we will be using:
 |:-----------:|:----------:|:--------:|
 | 9:30 - 10:10 | [Workshop Introduction]() | Will |
 | 10:00 - 11:30 | [Introduction to Variant Calling]() | Sergey |
-| 11:30 - 11:50 | [Project Organization](../lessons/project_organization.md) | Will |
+| 11:30 - 11:50 | [Project Organization](../lessons/02_project_organization.md) | Will |
 | 11:50 - 12:00 | Overview of self-learning materials and homework submission | Will |
 
 ### Before the next class:
 
 I. Please **study the contents** and **work through all the code** within the following lessons:
 
-  1. [File Formats](../lessons/file_formats.md)
+  1. [File Formats](../lessons/03_file_formats.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>Before we dive too deeply into calling variants, there are a few file formats that we will see during our analysis. Understanding how these files are formatted will allow you to inspect them to ensure that the software programs that we are employing are working correctly.
@@ -34,7 +34,7 @@ I. Please **study the contents** and **work through all the code** within the fo
              <hr />
         </details>
         
-  2. [Evaluating Read Quality with `FastQC`](../lessons/fastqc.md)
+  2. [Evaluating Read Quality with `FastQC`](../lessons/04_fastqc.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>The first step in many NGS studies is first to evaluate the read qualites that you received from the sequencing facility. A common tool used for handling this analysis is <code>FastQC</code>. 
@@ -46,7 +46,7 @@ I. Please **study the contents** and **work through all the code** within the fo
           <hr />
         </details>
 
-  3. [Sequence Read Alignment](../lessons/sequence_alignment_theory.md)
+  3. [Sequence Read Alignment](../lessons/05_sequence_alignment_theory.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>Once we have completed our QC on sequence reads we will be aligning the reads to a reference sequence. This alignment step places each read in genomic space and creates the bedrock for calling variants.
@@ -56,7 +56,7 @@ I. Please **study the contents** and **work through all the code** within the fo
              <hr />
         </details>
 
-  4. [Alignment File Processing ](../lessons/alignment_file_processing.md)
+  4. [Alignment File Processing ](../lessons/06_alignment_file_processing.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>Before we can call variants from our alignment files, we need to do some processing to clean them up. The two major concerns here are organizing (sorting) our alignment files for our analyses and removing duplicates.
@@ -67,7 +67,7 @@ I. Please **study the contents** and **work through all the code** within the fo
              <hr />
         </details>
 
-  5. [Alignment File Quality Control](../lessons/alignment_QC.md)
+  5. [Alignment File Quality Control](../lessons/07_alignment_QC.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>Once we have our alignment files processed, we want to evaluate them to ensure that the data is of high-quality before proceeding into variant calling. We also need to merge our read quality QC from <code>FastQC</code> into a report with these alignment QC metrics using <code>MultiQC</code>.
@@ -77,7 +77,7 @@ I. Please **study the contents** and **work through all the code** within the fo
              <hr />
         </details>
         
-  6. [Evaluating Quality Control Metrics](../lessons/evaluate_QC.md)
+  6. [Evaluating Quality Control Metrics](../lessons/08_evaluate_QC.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>Many high-performance computing clusters are not designed to render the HTML reports produced by <code>MultiQC</code>. Thus, we will use <code>FileZilla</code> to dowload our <code>MultiQC</code> HTML report and interpret the results within it.
@@ -110,16 +110,16 @@ II. **Complete the exercises**:
 | Time |  Topic  | Instructor |
 |:-----------:|:----------:|:--------:|
 | 9:30 - 10:15 | Self-learning lessons review | All |
-| 10:15 - 11:00 | [Variant Calling](../lessons/variant_calling.md) | Will |
-| 11:00 - 11:30 | [Variant Filtering](../lessons/variant_filtering.md) | Will |
-| 11:30 - 12:00 | [Variant Annotation with SnpEff](../lessons/variant_annotation.md) | Will |
+| 10:15 - 11:00 | [Variant Calling](../lessons/09_variant_calling.md) | Will |
+| 11:00 - 11:30 | [Variant Filtering](../lessons/10_variant_filtering.md) | Will |
+| 11:30 - 12:00 | [Variant Annotation with SnpEff](../lessons/11_variant_annotation.md) | Will |
 
 
 ### Before the next class:
 
 I. Please **study the contents** and **work through all the code** within the following lessons:
 
-1. [Automation of Variant Calling Pipeline](../lessons/automation_of_variant_calling.md)
+1. [Automation of Variant Calling Pipeline](../lessons/12_automation_of_variant_calling.md)
 
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
@@ -147,8 +147,8 @@ II. **Complete the exercises**:
 | Time |  Topic  | Instructor |
 |:-----------:|:----------:|:--------:|
 | 9:30 - 10:00 | Self-learning lessons review | All |
-| 10:00 - 10:45 | [Variant Prioritization with SnpSift](../lessons/variant_prioritization.md) | Will |
-| 10:45 - 11:25 | [Visualization in IGV](../lessons/IGV.md) | Will |
+| 10:00 - 10:45 | [Variant Prioritization with SnpSift](../lessons/13_variant_prioritization.md) | Will |
+| 10:45 - 11:25 | [Visualization in IGV](../lessons/14_IGV.md) | Will |
 | 11:25 - 11:45 | Q & A | Will |
 | 11:45 - 12:00 | [Wrap up]() | Will |
 
