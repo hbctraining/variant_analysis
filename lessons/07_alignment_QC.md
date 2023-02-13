@@ -46,7 +46,7 @@ Next we need to load `Picard`:
 
 ```
 # Load picard
-module load picard/2.8.0
+module load picard/2.27.5
 ```
 
 Next, let's assign our files to variables:
@@ -94,7 +94,7 @@ The `sbatch` submission script for collecting the alignment metrics should look 
 #SBATCH -e picard_CollectAlignmentMetrics_normal_%j.err
 
 # Load picard
-module load picard/2.8.0
+module load picard/2.27.5
 
 # Assign variables
 INPUT_BAM=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam
@@ -181,7 +181,7 @@ We discussed BAM/SAM file formatting in the [file format lesson](file_formats.md
 First, we will need to make sure that the `Picard` module is loaded:
 
 ```
-module load picard/2.8.0
+module load picard/2.27.5
 ```
 
 Next, we will run the `ViewSam` package in `Picard`:
