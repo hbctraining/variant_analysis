@@ -200,7 +200,7 @@ Now your `Picard` alignment processing script should look like:
 # This sbatch script is for processing the alignment output from bwa and preparing it for use in GATK using Picard 
 
 # Load module
-module load picard/2.8.0
+module load picard/2.27.5
 
 # Assign file paths to variables
 SAM_FILE=$1
@@ -214,22 +214,25 @@ COORDINATE_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}coordinate_sorted.bam`
 # Make reports directory
 mkdir -p $REPORTS_DIRECTORY
 
-java -jar $PICARD/picard-2.8.0.jar SortSam \
-INPUT=$SAM_FILE \
-OUTPUT=$QUERY_SORTED_BAM_FILE \
-SORT_ORDER=queryname
+# Query-sort alginment file and convert to BAM
+java -jar $PICARD/picard.jar SortSam \
+-INPUT $SAM_FILE \
+-OUTPUT $QUERY_SORTED_BAM_FILE \
+-SORT_ORDER queryname
 
-java -jar $PICARD/picard-2.8.0.jar MarkDuplicates \
-INPUT=$QUERY_SORTED_BAM_FILE \
-OUTPUT=$REMOVE_DUPLICATES_BAM_FILE \
-METRICS_FILE=$METRICS_FILE \
-REMOVE_DUPLICATES=true
+# Mark and remove duplicates
+java -jar $PICARD/picard.jar MarkDuplicates \
+-INPUT $QUERY_SORTED_BAM_FILE \
+-OUTPUT $REMOVE_DUPLICATES_BAM_FILE \
+-METRICS_FILE $METRICS_FILE \
+-REMOVE_DUPLICATES true
 
-java -jar $PICARD/picard-2.8.0.jar SortSam \
-INPUT=$REMOVE_DUPLICATES_BAM_FILE \
-OUTPUT=$COORDINATE_SORTED_BAM_FILE \
-SORT_ORDER=coordinate \
-CREATE_INDEX=true
+# Coordinate-sort BAM file and create BAM index file
+java -jar $PICARD/picard.jar SortSam \
+-INPUT $REMOVE_DUPLICATES_BAM_FILE \
+-OUTPUT $COORDINATE_SORTED_BAM_FILE \
+-SORT_ORDER coordinate \
+-CREATE_INDEX true
 ```
 
 #### `Picard` Metrics
@@ -274,16 +277,19 @@ The automated `Picard` metrics submission script should look like:
 ```
 #!/bin/bash
 
-module load picard/2.8.0
+# Load picard
+module load picard/2.27.5
 
+# Assign variables
 INPUT_BAM=$1
 REFERENCE=$2
 OUTPUT_METRICS_FILE=$3
 
-picard CollectAlignmentSummaryMetrics \
-INPUT=$INPUT_BAM \
-REFERENCE_SEQUENCE=$REFERENCE \
-OUTPUT=$OUTPUT_METRICS_FILE 
+# Run Picard CollectAlignmentSummaryMetrics
+java -jar $PICARD/picard.jar CollectAlignmentSummaryMetrics \
+-INPUT $INPUT_BAM \
+-REFERENCE_SEQUENCE $REFERENCE \
+-OUTPUT $OUTPUT_METRICS_FILE 
 ```
 
 #### `MultiQC`
@@ -330,9 +336,11 @@ The final `MultiQC` automation submission script should look like:
 #!/bin/bash
 # This script creates a MultiQC HTML report
 
+# Load modules
 module load gcc/9.2.0
 module load multiqc/1.12
 
+# Assign variables
 REPORTS_DIRECTORY=$1
 NORMAL_SAMPLE_NAME=$2
 TUMOR_SAMPLE_NAME=$3
@@ -345,8 +353,10 @@ TUMOR_FASTQC_1=${REPORTS_DIRECTORY}fastqc/${TUMOR_SAMPLE_NAME}/${TUMOR_SAMPLE_NA
 TUMOR_FASTQC_2=${REPORTS_DIRECTORY}fastqc/${TUMOR_SAMPLE_NAME}/${TUMOR_SAMPLE_NAME}_2_fastqc.zip
 OUTPUT_DIRECTORY=${REPORTS_DIRECTORY}/multiqc/
 
+# Create directory for output
 mkdir -p $OUTPUT_DIRECTORY
 
+# Run MultiQC
 multiqc \
 $NORMAL_PICARD_METRICS \
 $TUMOR_PICARD_METRICS \
@@ -502,16 +512,18 @@ MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}filt.vcf
 PASSING_FILTER_VCF=${RAW_VCF_FILE%raw.vcf}pass-filt.vcf
 LCR_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}pass-filt-LCR.vcf
 
+# Filter Mutect Calls
 gatk FilterMutectCalls \
 --reference $REFERENCE_SEQUENCE \
 --variant $RAW_VCF_FILE \
 --output $MUTECT_FILTERED_VCF
 
-# Filter for only PASSing SNPs
+# Filter for only SNPs with PASS in the FILTER field
 java -jar $SNPEFF/SnpSift.jar filter \
 "( FILTER = 'PASS' )" \
 $MUTECT_FILTERED_VCF > $PASSING_FILTER_VCF
 
+# Filter LCR
 java -jar $SNPEFF/SnpSift.jar intervals \
 -x \
 -i $PASSING_FILTER_VCF \
