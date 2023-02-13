@@ -66,7 +66,7 @@ Load the `Picard` module:
 
 ```
 # Load module
-module load picard/2.8.0
+module load picard/2.27.5
 ```
 
 **Note: `Picard` is one of the pieces of software that does NOT require gcc/6.2.0 to also be loaded** 
@@ -112,21 +112,21 @@ Additionally, while SAM files are nice due to their human readability, they are 
 
 ```
 # Query-sort alginment file and convert to BAM
-java -jar $PICARD/picard-2.8.0.jar SortSam \
-INPUT=$SAM_FILE \
-OUTPUT=$QUERY_SORTED_BAM_FILE \
-SORT_ORDER=queryname
+java -jar $PICARD/picard.jar SortSam \
+-INPUT $SAM_FILE \
+-OUTPUT $QUERY_SORTED_BAM_FILE \
+-SORT_ORDER queryname
 ```
 
 The components of this command are:
 
-- `java -jar $PICARD/picard-2.8.0.jar SortSam ` Calls `Picard`'s `SortSam` software package
+- `java -jar $PICARD/picard.jar SortSam ` Calls `Picard`'s `SortSam` software package
 
-- `INPUT=$SAM_FILE` This is where we provide the SAM input file
+- `-INPUT $SAM_FILE` This is where we provide the SAM input file
 
-- `OUTPUT=$QUERY_SORTED_BAM_FILE` This is the BAM output file. Because the extension is `.bam` rather than `.sam`, `Picard` will recognize this and create the output as a BAM file rather than the SAM inoput we have provided it.
+- `-OUTPUT $QUERY_SORTED_BAM_FILE` This is the BAM output file. Because the extension is `.bam` rather than `.sam`, `Picard` will recognize this and create the output as a BAM file rather than the SAM inoput we have provided it.
 
-- `SORT_ORDER=queryname` The method with which we would like the file to be sorted. The options here are either `queryname` or `coordinate`.
+- `-SORT_ORDER queryname` The method with which we would like the file to be sorted. The options here are either `queryname` or `coordinate`.
 
 #### Mark and Remove Duplicates
 
@@ -140,24 +140,24 @@ Now we will add the command to our script that allows us to mark and remove dupl
 
 ```
 # Mark and remove duplicates
-java -jar $PICARD/picard-2.8.0.jar MarkDuplicates \
-INPUT=$QUERY_SORTED_BAM_FILE \
-OUTPUT=$REMOVE_DUPLICATES_BAM_FILE \
-METRICS_FILE=$METRICS_FILE \
-REMOVE_DUPLICATES=true
+java -jar $PICARD/picard.jar MarkDuplicates \
+-INPUT $QUERY_SORTED_BAM_FILE \
+-OUTPUT $REMOVE_DUPLICATES_BAM_FILE \
+-METRICS_FILE $METRICS_FILE \
+-REMOVE_DUPLICATES true
 ```
 
 The componetns of this command are:
 
-- `java -jar $PICARD/picard-2.8.0.jar MarkDuplicates` Calls `Picard`'s `MarkDuplicates` program
+- `java -jar $PICARD/picard.jar MarkDuplicates` Calls `Picard`'s `MarkDuplicates` program
 
-- `INPUT=$QUERY_SORTED_BAM_FILE` Uses our query-sorted BAM file as input
+- `-INPUT $QUERY_SORTED_BAM_FILE` Uses our query-sorted BAM file as input
 
-- `OUTPUT=$REMOVE_DUPLICATES_BAM_FILE` Write the output to a BAM file
+- `-OUTPUT $REMOVE_DUPLICATES_BAM_FILE` Write the output to a BAM file
 
-- `METRICS_FILE=$METRICS_FILE` Creates a metrics file (required by `Picard MarkDuplicates`)
+- `-METRICS_FILE $METRICS_FILE` Creates a metrics file (required by `Picard MarkDuplicates`)
 
-- `REMOVE_DUPLICATES=true` Not only are we going to mark/flag our duplicates, we can also remove them. By setting the `REMOVE_DUPLICATES` parameter equal to `true` to can remove the duplicates.
+- `-REMOVE_DUPLICATES true` Not only are we going to mark/flag our duplicates, we can also remove them. By setting the `REMOVE_DUPLICATES` parameter equal to `true` to can remove the duplicates.
 
 #### Coordinate-sort the Alignment File
 
@@ -165,22 +165,24 @@ For most downstream processes, coordinate-sorted alignment files are required. A
 
 ```
 # Coordinate-sort BAM file and create BAM index file
-java -jar $PICARD/picard-2.8.0.jar SortSam \
-INPUT=$REMOVE_DUPLICATES_BAM_FILE \
-OUTPUT=$COORDINATE_SORTED_BAM_FILE \
-SORT_ORDER=coordinate \
-CREATE_INDEX=true
+java -jar $PICARD/picard.jar SortSam \
+-INPUT $REMOVE_DUPLICATES_BAM_FILE \
+-OUTPUT $COORDINATE_SORTED_BAM_FILE \
+-SORT_ORDER coordinate \
+-CREATE_INDEX true
 ```
 
 The components of this command are:
 
-- `java -jar $PICARD/picard-2.8.0.jar SortSam` Calls `Picard`'s `SortSam` program
+- `java -jar $PICARD/picard.jar SortSam` Calls `Picard`'s `SortSam` program
 
-- `INPUT=$REMOVE_DUPLICATES_BAM_FILE` Our BAM file once we have removed our duplicates. **NOTE: Even though the software is called `SortSam`, it can use BAM or SAM files as input and also BAM or SAM files as output.**
+- `-INPUT $REMOVE_DUPLICATES_BAM_FILE` Our BAM file once we have removed our duplicates. **NOTE: Even though the software is called `SortSam`, it can use BAM or SAM files as input and also BAM or SAM files as output.**
 
-- `OUTPUT=COORDINATE_SORTED_BAM_FILE` Our BAM output file sorted by coordinates.
+- `-OUTPUT COORDINATE_SORTED_BAM_FILE` Our BAM output file sorted by coordinates.
 
-- `CREATE_INDEX=true` Setting the `CREATE_INDEX` equal to `true` will create an index of the final BAM output. The index creation can also be accomplished by using the `BuildBamIndex` command within `Picard`, but this `CREATE_INDEX` functionality is built into many `Picard` functions, so you can often use it at the last stage of processing your BAM file to save having to run `BuildBamIndex` after.
+- `-SORT_ORDER coordinate` Sort the output fil by **coordinates**
+
+- `-CREATE_INDEX true` Setting the `CREATE_INDEX` equal to `true` will create an index of the final BAM output. The index creation can also be accomplished by using the `BuildBamIndex` command within `Picard`, but this `CREATE_INDEX` functionality is built into many `Picard` functions, so you can often use it at the last stage of processing your BAM file to save having to run `BuildBamIndex` after.
 
 ---
 
@@ -199,7 +201,7 @@ Your final `sbatch` script for `Picard` should look like:
 #SBATCH -e picard_alignment_processing_normal_%j.err
 
 # Load module
-module load picard/2.8.0
+module load picard/2.27.5
 
 # Assign file paths to variables
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.sam
@@ -214,24 +216,24 @@ COORDINATE_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}coordinate_sorted.bam`
 mkdir -p $REPORTS_DIRECTORY
 
 # Query-sort alginment file and convert to BAM
-java -jar $PICARD/picard-2.8.0.jar SortSam \
-INPUT=$SAM_FILE \
-OUTPUT=$QUERY_SORTED_BAM_FILE \
-SORT_ORDER=queryname
+java -jar $PICARD/picard.jar SortSam \
+-INPUT $SAM_FILE \
+-OUTPUT $QUERY_SORTED_BAM_FILE \
+-SORT_ORDER queryname
 
 # Mark and remove duplicates
-java -jar $PICARD/picard-2.8.0.jar MarkDuplicates \
-INPUT=$QUERY_SORTED_BAM_FILE \
-OUTPUT=$REMOVE_DUPLICATES_BAM_FILE \
-METRICS_FILE=$METRICS_FILE \
-REMOVE_DUPLICATES=true
+java -jar $PICARD/picard.jar MarkDuplicates \
+-INPUT $QUERY_SORTED_BAM_FILE \
+-OUTPUT $REMOVE_DUPLICATES_BAM_FILE \
+-METRICS_FILE $METRICS_FILE \
+-REMOVE_DUPLICATES true
 
 # Coordinate-sort BAM file and create BAM index file
-java -jar $PICARD/picard-2.8.0.jar SortSam \
-INPUT=$REMOVE_DUPLICATES_BAM_FILE \
-OUTPUT=$COORDINATE_SORTED_BAM_FILE \
-SORT_ORDER=coordinate \
-CREATE_INDEX=true
+java -jar $PICARD/picard.jar SortSam \
+-INPUT $REMOVE_DUPLICATES_BAM_FILE \
+-OUTPUT $COORDINATE_SORTED_BAM_FILE \
+-SORT_ORDER coordinate \
+-CREATE_INDEX true
 ```
 
 <details>
@@ -494,15 +496,15 @@ The code for indexing a BAM file in <code>Picard</code> would look like:
 <pre>
 # SKIP THIS STEP
 # Index the BAM file
-java -jar $PICARD/picard-2.8.0.jar BuildBamIndex \
-INPUT=$BAM_FILE
+java -jar $PICARD/picard.jar BuildBamIndex \
+-INPUT $BAM_FILE
 </pre>
     
 The components of this command are:
 
-<ul><li><code>java -jar $PICARD/picard-2.8.0.jar BuildBamIndex</code> This calls the <code>BuildBamIndex</code> tools within <code>Picard</code></li>
+<ul><li><code>java -jar $PICARD/picard.jar BuildBamIndex</code> This calls the <code>BuildBamIndex</code> tools within <code>Picard</code></li>
     
-<li><code>INPUT=$BAM_FILE</code> This is the BAM file that you wish to index.</li></ul>
+<li><code>-INPUT $BAM_FILE</code> This is the BAM file that you wish to index.</li></ul>
 <hr />
 </details>
 <details>
@@ -552,7 +554,7 @@ As a result your tumor `Picard` processing script should look like:
 #SBATCH -e picard_alignment_processing_tumor_%j.err
 
 # Load module
-module load picard/2.8.0
+module load picard/2.27.5
 
 # Assign file paths to variables
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_tumor_GRCh38.p7.sam
@@ -567,24 +569,24 @@ COORDINATE_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}coordinate_sorted.bam`
 mkdir -p $REPORTS_DIRECTORY
 
 # Query-sort alginment file and convert to BAM
-java -jar $PICARD/picard-2.8.0.jar SortSam \
-INPUT=$SAM_FILE \
-OUTPUT=$QUERY_SORTED_BAM_FILE \
-SORT_ORDER=queryname
+java -jar $PICARD/picard.jar SortSam \
+-INPUT $SAM_FILE \
+-OUTPUT $QUERY_SORTED_BAM_FILE \
+-SORT_ORDER queryname
 
 # Mark and remove duplicates
-java -jar $PICARD/picard-2.8.0.jar MarkDuplicates \
-INPUT=$QUERY_SORTED_BAM_FILE \
-OUTPUT=$REMOVE_DUPLICATES_BAM_FILE \
-METRICS_FILE=$METRICS_FILE \
-REMOVE_DUPLICATES=true
+java -jar $PICARD/picard.jar MarkDuplicates \
+-INPUT $QUERY_SORTED_BAM_FILE \
+-OUTPUT $REMOVE_DUPLICATES_BAM_FILE \
+-METRICS_FILE $METRICS_FILE \
+-REMOVE_DUPLICATES true
 
 # Coordinate-sort BAM file and create BAM index file
-java -jar $PICARD/picard-2.8.0.jar SortSam \
-INPUT=$REMOVE_DUPLICATES_BAM_FILE \
-OUTPUT=$COORDINATE_SORTED_BAM_FILE \
-SORT_ORDER=coordinate \
-CREATE_INDEX=true
+java -jar $PICARD/picard.jar SortSam \
+-INPUT $REMOVE_DUPLICATES_BAM_FILE \
+-OUTPUT $COORDINATE_SORTED_BAM_FILE \
+-SORT_ORDER coordinate \
+-CREATE_INDEX true
 ```  
 
 # Submitting `Picard` processing
