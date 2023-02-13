@@ -290,7 +290,7 @@ Once the job has finished we would inspect the output files. This could be done 
     **Pros:**
       - Alignment metrics are easy to compare across samples
       - Easy to interpret results
-      - We can combine the `picard CollectAlignmentSummaryMetrics` output with our `FASTQC` reports
+      - We can combine the `CollectAlignmentSummaryMetrics` output with our `FASTQC` reports
   
     **Cons:**
       - Have to download a file from the O2 cluster
