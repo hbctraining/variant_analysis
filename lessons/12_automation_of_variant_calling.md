@@ -83,8 +83,8 @@ mkdir -p $OUTPUT_DIRECTORY
 fastqc \
 $LEFT_READS \
 $RIGHT_READS \
--o $OUTPUT_DIRECTORY \
--t $THREADS
+--outdir $OUTPUT_DIRECTORY \
+--threads $THREADS
 ```
 
 #### `bwa` Alignment
