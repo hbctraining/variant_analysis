@@ -517,7 +517,7 @@ gatk FilterMutectCalls \
 
 # Filter for only SNPs with PASS in the FILTER field
 java -jar $SNPEFF/SnpSift.jar filter \
---pass \
+"( FILTER = 'PASS' )" \
 $MUTECT_FILTERED_VCF > $PASSING_FILTER_VCF
 
 # Filter LCR
