@@ -458,7 +458,7 @@ gatk Mutect2 \
 Next, we can automate our variant filtering script. First, make a copy of our variant filtering `sbatch` script and open it in `vim`:
 
 ```
-cp variant_filtering.sbatch variant_filtering_automated.sbatch 
+cp variant_filtering_normal_tumor.sbatch variant_filtering_automated.sbatch 
 vim variant_filtering_automated.sbatch 
 ```
 
