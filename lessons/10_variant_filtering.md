@@ -200,7 +200,6 @@ Let's go ahead and make some edits to our variant filtering scripts. First, we n
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
 RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf
 LCR_FILE=/n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed
-
 MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}filt.vcf
 PASSING_FILTER_VCF=${RAW_VCF_FILE%raw.vcf}pass-filt.vcf
 LCR_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}pass-filt-LCR.vcf
