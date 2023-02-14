@@ -285,7 +285,7 @@ RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mut
 LCR_FILE=/n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed
 MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}filt.vcf
 PASSING_FILTER_VCF=${RAW_VCF_FILE%raw.vcf}pass-filt.vcf
-LCR_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}LCR-filt.vcf
+LCR_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}pass-filt-LCR.vcf
 
 # Filter Mutect Calls
 gatk FilterMutectCalls \
