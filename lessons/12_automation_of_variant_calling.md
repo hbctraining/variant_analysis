@@ -402,7 +402,6 @@ Because we will have some saved variables within the wrapper script we can trim 
 ```
 # REMOVE THESE LINES
 ALIGNMENT_DIRECTORY=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/
-VCF_DIRECTORY=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/
 REFERENCE_SEQUENCE_NAME=`basename $REFERENCE_SEQUENCE _genomic.fa`
 ```
 
@@ -417,7 +416,7 @@ TUMOR_SAMPLE_NAME=syn3-tumor
 REFERENCE_DICTIONARY=`echo ${REFERENCE_SEQUENCE%fa}dict`
 NORMAL_BAM_FILE=${ALIGNMENT_DIRECTORY}${NORMAL_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.coordinate_sorted.bam
 TUMOR_BAM_FILE=${ALIGNMENT_DIRECTORY}${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.coordinate_sorted.bam
-VCF_OUTPUT_FILE=${VCF_DIRECTORY}mutect2_${NORMAL_SAMPLE_NAME}_${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-raw.vcf.gz
+VCF_OUTPUT_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_${NORMAL_SAMPLE_NAME}_${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-raw.vcf
 ```
 
 To:
