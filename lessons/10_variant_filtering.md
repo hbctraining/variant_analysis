@@ -48,6 +48,7 @@ Next, we need to add the modules that we will be loading:
 ```
 # Load modules
 module load gatk/4.1.9.0
+module load snpEff/4.3g
 ```
 
 Next, we will add our variables:
@@ -56,7 +57,10 @@ Next, we will add our variables:
 # Assign variables
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
 RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf
+LCR_FILE=/n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed
 MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}filt.vcf
+PASSING_FILTER_VCF=${RAW_VCF_FILE%raw.vcf}pass-filt.vcf
+LCR_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}pass-filt-LCR.vcf
 ```
 
 Next, we can add the `FilterMutectCells` command:
@@ -83,25 +87,7 @@ More information on `FilterMutectCalls` can be found [here](https://gatk.broadin
 
 ## Filter VCF files for only variants with PASS in the FILTER field using `SnpSift`
 
-Now, we are going to filter for only variants that had a FILTER result of `PASS`. To do this filtering we are going to use `SnpSift`, which is part of the [`SnpEff and SnpSift suite`](http://pcingola.github.io/SnpEff/) of tools. We will be later be using `SnpEff` to annotate our variants and `SnpSift` to priotize our variants later, but for now we are just going to use `SnpSift` to filter out our variants. If some of the syntax for this command is unclear, that is fine. We are going to spend time covering the syntax later during the variant prioritization section. First, we need to add `SnpEff` to the modules we will be loading. So the modules loaded will now look like:
-
-```
-# Load modules
-module load gatk/4.1.9.0
-module load snpEff/4.3g
-```
-
-Next, add our output file to the variables at the top of our script, so that it now looks like:
-
-```
-# Assign variables
-REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
-RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf
-MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}filt.vcf
-PASSING_FILTER_VCF=${RAW_VCF_FILE%raw.vcf}pass-filt.vcf
-```
-
-Now, we can add our `SnpSift` command to the after the `FilterMutectCalls` command:
+Now, we are going to filter for only variants that had a FILTER result of `PASS`. To do this filtering we are going to use `SnpSift`, which is part of the [`SnpEff and SnpSift suite`](http://pcingola.github.io/SnpEff/) of tools. We will be later be using `SnpEff` to annotate our variants and `SnpSift` to priotize our variants later, but for now we are just going to use `SnpSift` to filter out our variants. If some of the syntax for this command is unclear, that is fine. We are going to spend time covering the syntax later during the variant prioritization section. Now, we can add our `SnpSift` command to the after the `FilterMutectCalls` command:
 
 ```
 # Filter for only SNPs with PASS in the FILTER field
@@ -117,8 +103,6 @@ $MUTECT_FILTERED_VCF > $PASSING_FILTER_VCF
   - `$MUTECT_FILTERED_VCF` This is the input file
  
   - `> $PASSING_FILTER_VCF` This is the output file
-
-Save and exit `vim`.
 
 ## Low-Complexity Regions
 
@@ -188,24 +172,7 @@ We can break with command down:
 
 In order to remove the LCRs from the VCF file, we will once again be using `SnpSift`. We will be discussing `SnpSift` at length in the variant prioritization steps later, but for now were are going to focus on using the `intervals` command build into `SnpSift`. Let's go back to our scripts directory and edit our variant filtering script.
 
-```
-cd ~/variant_calling/scripts/
-vim variant_filtering_normal_tumor.sbatch
-```
-
-Let's go ahead and make some edits to our variant filtering scripts. First, we need to add some additional `bash` variables:
-
-```
-# Assign variables
-REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
-RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf
-LCR_FILE=/n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed
-MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}filt.vcf
-PASSING_FILTER_VCF=${RAW_VCF_FILE%raw.vcf}pass-filt.vcf
-LCR_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}pass-filt-LCR.vcf
-```
-
-Add the `filter` command from `SnpSift` in order remove all sites that overlap with the BED file:
+Add the `filter` command from `SnpSift` to our `sbatch` script in order remove all sites that overlap with the BED file:
 
 ```
 # Filter LCR
