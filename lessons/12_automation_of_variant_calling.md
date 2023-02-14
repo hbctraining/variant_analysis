@@ -397,14 +397,6 @@ Once again, we need to remove the `sbatch` directives:
 #SBATCH -e mutect2_variant_calling_%j.err
 ```
 
-Because we will have some saved variables within the wrapper script we can trim down our variables a bit. Remove the following lines from our automated script:
-
-```
-# REMOVE THESE LINES
-ALIGNMENT_DIRECTORY=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/
-REFERENCE_SEQUENCE_NAME=`basename $REFERENCE_SEQUENCE _genomic.fa`
-```
-
 Next, change the rest of the variable lines from:
 
 ```
