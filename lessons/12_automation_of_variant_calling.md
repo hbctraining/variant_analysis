@@ -572,7 +572,7 @@ To:
 
 ```
 # Assign variables
-REPORTS_DIRECTORY=${1}snpeff/
+REPORTS_DIRECTORY=$1
 SAMPLE_NAME=$2
 REFERENCE_SEQUENCE_NAME=$3
 CSV_STATS=`echo -e "${REPORTS_DIRECTORY}annotation_${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-effects-stats.csv"`
@@ -599,7 +599,7 @@ module load bcftools/1.14
 module load snpEff/4.3g
 
 # Assign variables
-REPORTS_DIRECTORY=${1}snpeff/
+REPORTS_DIRECTORY=$1
 SAMPLE_NAME=$2
 REFERENCE_SEQUENCE_NAME=$3
 CSV_STATS=`echo -e "${REPORTS_DIRECTORY}annotation_${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-effects-stats.csv"`
@@ -823,8 +823,11 @@ MUTECT2_VCF_OUTPUT_FILTERED=`echo -e "${MUTECT2_VCF_OUTPUT%raw.vcf}pass-filt-LCR
 # Create PEDIGREE header file 
 echo -e "##PEDIGREE=<Derived=${TUMOR_SAMPLE},Original=${NORMAL_SAMPLE}>" > $PEDIGREE_HEADER_FILE
 
+# Create SnpEff reports directory
+$SNPEFF_REPORTS_DIRECTORY=`echo -e "${REPORTS_DIRECTORY}snpeff/"`
+
 # Submit the variant annotation sbatch script
-VARIANT_ANNOTATION_JOB_SUBMISSION=$(sbatch -p priority -t 0-02:00:00 -c 1 --mem 8G -o variant_annotation${SAMPLE_NAME_STRING}_%j.out -e variant_annotation${SAMPLE_NAME_STRING}_%j.err --dependency=afterok:$VARIANT_FILTERING_JOB_ID variant_annotation_automated.sbatch $REPORTS_DIRECTORY $SAMPLE_NAME_STRING $REFERENCE_SEQUENCE_NAME $SNPEFF_DATABASE $SNPEFF_DIRECTORY $MUTECT2_VCF_OUTPUT_FILTERED $PEDIGREE_HEADER_FILE $DBSNP_DATABASE)
+VARIANT_ANNOTATION_JOB_SUBMISSION=$(sbatch -p priority -t 0-02:00:00 -c 1 --mem 8G -o variant_annotation${SAMPLE_NAME_STRING}_%j.out -e variant_annotation${SAMPLE_NAME_STRING}_%j.err --dependency=afterok:$VARIANT_FILTERING_JOB_ID variant_annotation_automated.sbatch $SNPEFF_REPORTS_DIRECTORY $SAMPLE_NAME_STRING $REFERENCE_SEQUENCE_NAME $SNPEFF_DATABASE $SNPEFF_DIRECTORY $MUTECT2_VCF_OUTPUT_FILTERED $PEDIGREE_HEADER_FILE $DBSNP_DATABASE)
 
 # Parse out the job ID from output from the variant annotation submission
 VARIANT_ANNOTATION_JOB_ID=`echo $VARIANT_ANNOTATION_JOB_SUBMISSION | cut -d ' ' -f 4`
