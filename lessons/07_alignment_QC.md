@@ -302,7 +302,7 @@ However, for this workshop, we are going to collate our results in `MultiQC` and
 One nice feature of `MultiQC` is that it accepts many different file formats. It figures out which format was submitted and tailors the report to that type of analysis. Collating our `MultiQC` results would be relatively quick to just run from the command-line, but it's best practice to write our steps to scripts so that we always have a record of what we did and how we created our reports. We will start by writing a `sbatch` script in `vim` for submission:
 
 ```
-vim multiqc_alignment_metrics.sbatch
+vim multiqc_alignment_metrics_normal_tumor.sbatch
 ```
 
 First, we will add our sheband line, description and `sbatch` directives
