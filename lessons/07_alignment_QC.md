@@ -24,7 +24,7 @@ We are going to use `Picard` once again in order to collect our alignment statis
 
 ```
 cd ~/variant_calling/scripts/
-vim picard_CollectAlignmentMetrics_normal.sbatch
+vim picard_metrics_normal.sbatch
 ```
 
 First, we need to add our shebang line, description and `sbatch` directives to the script:
@@ -38,8 +38,8 @@ First, we need to add our shebang line, description and `sbatch` directives to t
 #SBATCH -t 0-00:30:00
 #SBATCH -c 1
 #SBATCH --mem 16G
-#SBATCH -o picard_CollectAlignmentMetrics_normal_%j.out
-#SBATCH -e picard_CollectAlignmentMetrics_normal_%j.err
+#SBATCH -o picard_metrics_normal_%j.out
+#SBATCH -e picard_metrics_%j.err
 ```
 
 Next we need to load `Picard`:
@@ -90,8 +90,8 @@ The `sbatch` submission script for collecting the alignment metrics should look 
 #SBATCH -t 0-00:30:00
 #SBATCH -c 1
 #SBATCH --mem 16G
-#SBATCH -o picard_CollectAlignmentMetrics_normal_%j.out
-#SBATCH -e picard_CollectAlignmentMetrics_normal_%j.err
+#SBATCH -o picard_metrics_normal_%j.out
+#SBATCH -e picard_metrics_%j.err
 
 # Load picard
 module load picard/2.27.5
@@ -126,8 +126,8 @@ squeue -u $USER
 **If your `Picard` alignment processing steps are completed**, then submit these jobs to collect alignment metrics:
 
 ```
-sbatch picard_CollectAlignmentMetrics_normal.sbatch
-sbatch picard_CollectAlignmentMetrics_tumor.sbatch
+sbatch picard_metrics_normal.sbatch
+sbatch picard_metrics_tumor.sbatch
 ```
 
 > **NOTE:** The syntax that `Picard` uses is quite particular and you may note in your error file the warning:
