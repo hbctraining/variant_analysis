@@ -75,6 +75,7 @@ Once inside insert mode, can can enter the shebang line, description and `SBATCH
 #!/bin/bash
 # Using SnpEff to annotate our variants
 
+# Assign sbatch directives
 #SBATCH -p priority
 #SBATCH -t 0-02:00:00
 #SBATCH -c 1
@@ -310,6 +311,7 @@ This final script should look like:
 #!/bin/bash
 # Using SnpEff to annotate our variants
 
+# Assign sbatch directives
 #SBATCH -p priority
 #SBATCH -t 0-02:00:00
 #SBATCH -c 1
