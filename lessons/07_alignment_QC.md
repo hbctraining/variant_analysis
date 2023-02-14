@@ -309,7 +309,7 @@ First, we will add our sheband line, description and `sbatch` directives
 
 ```
 #!/bin/bash
-# This sbatch script is for collating alignment metrics from Picard using MultiQC 
+# This sbatch script is for collating alignment metrics from Picard using MultiQC
 
 # Assign sbatch directives
 #SBATCH -p priority
@@ -371,7 +371,7 @@ So our final `sbatch` script should look like:
 
 ```
 #!/bin/bash
-# This sbatch script is for collating alignment metrics from Picard using MultiQC 
+# This sbatch script is for collating alignment metrics from Picard using MultiQC
 
 # Assign sbatch directives
 #SBATCH -p priority
