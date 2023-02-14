@@ -92,11 +92,14 @@ Now, we are going to filter for only variants that had a FILTER result of `PASS`
 ```
 # Filter for only SNPs with PASS in the FILTER field
 java -jar $SNPEFF/SnpSift.jar filter \
+-noLog \
 "( FILTER = 'PASS' )" \
 $MUTECT_FILTERED_VCF > $PASSING_FILTER_VCF
 ```
 
   - `java -jar $SNPEFF/SnpSift.jar filter` This calls the `filter` function within the `SnpSift` package
+  
+  - `-noLog` Does not report usage statistics to `SnpEff`'s servers. According to their [documentation](https://pcingola.github.io/SnpEff/se_commandline/#logging), it is so that they can monitor which features people are and aren't using. 
  
   - `"( FILTER = 'PASS' )"` This is the syntax that `SnpSift` uses to only retain variant calls with PASS in the FILTER filed of the VCF file
  
@@ -177,12 +180,15 @@ Add the `filter` command from `SnpSift` to our `sbatch` script in order remove a
 ```
 # Filter LCR
 java -jar $SNPEFF/SnpSift.jar intervals \
+-noLog \
 -x \
 -i $PASSING_FILTER_VCF \
 $LCR_FILE > $LCR_FILTERED_VCF
 ```
 
 - `-x` This option tells `SnpSift` to *exclude* sites found in the BED file. The default behavior of `SnpSift filter` is to only *include* sites found in the BED file.
+
+- `-noLog` This does not report command usage to <code>SnpEff</code>'s server
 
 - `-i $PASSING_FILTER_VCF` This is the VCF file that we would like to be filtered. It can either be `.gz` compressed or not. 
 
