@@ -450,7 +450,7 @@ gatk Mutect2 \
 --input $TUMOR_BAM_FILE \
 --tumor-sample $TUMOR_SAMPLE_NAME \
 --annotation ClippingRankSumTest --annotation DepthPerSampleHC --annotation MappingQualityRankSumTest --annotation MappingQualityZero --annotation QualByDepth --annotation ReadPosRankSumTest --annotation RMSMappingQuality --annotation FisherStrand --annotation MappingQuality --annotation DepthPerAlleleBySample --annotation Coverage \
--output $VCF_OUTPUT_FILE
+--output $VCF_OUTPUT_FILE
 ```
 
 #### Variant Filtering
