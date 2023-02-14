@@ -242,7 +242,7 @@ java -jar $PICARD/picard.jar SortSam \
 #### `Picard` Metrics
 
 ```
-cp picard_CollectAlignmentMetrics_normal.sbatch picard_metrics_automated.sbatch
+cp picard_metrics_normal.sbatch picard_metrics_automated.sbatch
 vim picard_metrics_automated.sbatch
 ```
 
@@ -255,8 +255,8 @@ Remove the `SBATCH` directives:
 #SBATCH -t 0-00:30:00
 #SBATCH -c 1
 #SBATCH --mem 16G
-#SBATCH -o picard_CollectAlignmentMetrics_normal_%j.out
-#SBATCH -e picard_CollectAlignmentMetrics_normal_%j.err
+#SBATCH -o picard_metrics_normal_%j.out
+#SBATCH -e picard_metrics_normal_%j.err
 ```
 
 Then replace the `bash` variables from:
@@ -303,7 +303,7 @@ java -jar $PICARD/picard.jar CollectAlignmentSummaryMetrics \
 Let's copy our 
 
 ```
-cp multiqc_alignment_metrics.sbatch multiqc_alignment_metrics_automated.sbatch 
+cp multiqc_alignment_metrics_normal_tumor.sbatch multiqc_alignment_metrics_automated.sbatch 
 vim multiqc_alignment_metrics_automated.sbatch
 ```
 
