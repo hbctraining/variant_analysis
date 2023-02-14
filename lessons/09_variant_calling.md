@@ -108,13 +108,13 @@ Lastly, we need to add the `MuTect2` command:
 # Run MuTect2
 gatk Mutect2 \
 --sequence-dictionary $REFERENCE_DICTIONARY \
--R $REFERENCE_SEQUENCE \
--I $NORMAL_BAM_FILE \
+--reference $REFERENCE_SEQUENCE \
+--input $NORMAL_BAM_FILE \
 --normal-sample $NORMAL_SAMPLE_NAME \
--I $TUMOR_BAM_FILE \
+--input $TUMOR_BAM_FILE \
 --tumor-sample $TUMOR_SAMPLE_NAME \
 --annotation ClippingRankSumTest --annotation DepthPerSampleHC --annotation MappingQualityRankSumTest --annotation MappingQualityZero --annotation QualByDepth --annotation ReadPosRankSumTest --annotation RMSMappingQuality --annotation FisherStrand --annotation MappingQuality --annotation DepthPerAlleleBySample --annotation Coverage \
--O $VCF_OUTPUT_FILE
+-output $VCF_OUTPUT_FILE
 ```
 
 Let's breakdown this command:
@@ -132,33 +132,33 @@ Let's breakdown this command:
   The command to do create the sequence dictionary is:<br>
   <pre>
   java -jar $PICARD/picard.jar CreateSequenceDictionary \
-  -REFERENCE /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
-  -OUTPUT /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.dict</pre>
+  --REFERENCE /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
+  --OUTPUT /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.dict</pre>
   
   The components of this command are:
   <ul><li><code>java -jar $PICARD/picard.jar CreateSequenceDictionary</code> This calls the <code>CreateSequenceDictionary</code> command within <code>Picard</code></li>
-  <li><code>-REFERENCE /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa</code> This is the reference sequence to create the sequence dictionary from.</li>
-  <li><code>-OUTPUT /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.dict</code> This is the output sequence dictionary from.</li></ul>
+  <li><code>--REFERENCE /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa</code> This is the reference sequence to create the sequence dictionary from.</li>
+  <li><code>--OUTPUT /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.dict</code> This is the output sequence dictionary from.</li></ul>
   
   Like indexing, once you have created the sequence dictionary for a reference genome once, you won't need to do it again.
 <hr />
 </details>
 
-- `-R $REFERENCE_SEQUENCE` This is the genome reference sequence
+- `--reference $REFERENCE_SEQUENCE` This is the genome reference sequence
 
-- `-I $NORMAL_BAM_FILE` This is the first `bam` file that we are providing GATK and it happens to be the normal sample
+- `--input $NORMAL_BAM_FILE` This is the first `bam` file that we are providing GATK and it happens to be the normal sample
 
 - `--normal-sample $NORMAL_SAMPLE_NAME` This is the name of that normal sample and will be used as a column header in the VCF file
 
-- `-I $TUMOR_BAM_FILE` This is the second `bam` file that we are providing GATK and it happens to be the tumor sample
+- `--input $TUMOR_BAM_FILE` This is the second `bam` file that we are providing GATK and it happens to be the tumor sample
 
 - `--tumor-sample $TUMOR_SAMPLE_NAME` This is the name of that tumor sample and will be used as a column header in the VCF file
 
-> NOTE: It is **VERY IMPORTANT** that the sample names (`--normal-sample $NORMAL_SAMPLE_NAME` and `--tumor-sample $TUMOR_SAMPLE_NAME`) are provided in the same order as the `-I` input BAM files!
+> NOTE: It is **VERY IMPORTANT** that the sample names (`--normal-sample $NORMAL_SAMPLE_NAME` and `--tumor-sample $TUMOR_SAMPLE_NAME`) are provided in the same order as the `--input` input BAM files!
 
 - ```--annotation ClippingRankSumTest --annotation DepthPerSampleHC --annotation MappingQualityRankSumTest --annotation MappingQualityZero --annotation QualByDepth --annotation ReadPosRankSumTest --annotation RMSMappingQuality --annotation FisherStrand --annotation MappingQuality --annotation DepthPerAlleleBySample --annotation Coverage``` These are a variety of additional annotations that we are going to add to the output VCF file. These are not required for `MuTect2` to run, but they provide additional details about our variants.
 
-- `-O $VCF_OUTPUT_FILE` This is our output VCF file
+- `--output $VCF_OUTPUT_FILE` This is our output VCF file
 
 > NOTE: In order to run `MuTect2` we also need to have a FASTA index file of our reference sequence in addition to our sequence dictionary. Similarly to the sequence dictionary and `bwa` indicies, we have already created this index for you. However, the dropdown below will walk you through how to do it, should you ever need to do it on your own:
 >
@@ -214,13 +214,13 @@ VCF_OUTPUT_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/
 # Run MuTect2
 gatk Mutect2 \
 --sequence-dictionary $REFERENCE_DICTIONARY \
--R $REFERENCE_SEQUENCE \
--I $NORMAL_BAM_FILE \
+--reference $REFERENCE_SEQUENCE \
+--input $NORMAL_BAM_FILE \
 --normal-sample $NORMAL_SAMPLE_NAME \
--I $TUMOR_BAM_FILE \
+--input $TUMOR_BAM_FILE \
 --tumor-sample $TUMOR_SAMPLE_NAME \
 --annotation ClippingRankSumTest --annotation DepthPerSampleHC --annotation MappingQualityRankSumTest --annotation MappingQualityZero --annotation QualByDepth --annotation ReadPosRankSumTest --annotation RMSMappingQuality --annotation FisherStrand --annotation MappingQuality --annotation DepthPerAlleleBySample --annotation Coverage \
--O $VCF_OUTPUT_FILE
+-output $VCF_OUTPUT_FILE
 ```
 
 ## Tumor-only Mode
