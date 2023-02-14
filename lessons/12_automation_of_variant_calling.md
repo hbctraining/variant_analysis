@@ -824,7 +824,7 @@ MUTECT2_VCF_OUTPUT_FILTERED=`echo -e "${MUTECT2_VCF_OUTPUT%raw.vcf}pass-filt-LCR
 echo -e "##PEDIGREE=<Derived=${TUMOR_SAMPLE},Original=${NORMAL_SAMPLE}>" > $PEDIGREE_HEADER_FILE
 
 # Create SnpEff reports directory
-$SNPEFF_REPORTS_DIRECTORY=`echo -e "${REPORTS_DIRECTORY}snpeff/"`
+SNPEFF_REPORTS_DIRECTORY=`echo -e "${REPORTS_DIRECTORY}snpeff/"`
 
 # Submit the variant annotation sbatch script
 VARIANT_ANNOTATION_JOB_SUBMISSION=$(sbatch -p priority -t 0-02:00:00 -c 1 --mem 8G -o variant_annotation${SAMPLE_NAME_STRING}_%j.out -e variant_annotation${SAMPLE_NAME_STRING}_%j.err --dependency=afterok:$VARIANT_FILTERING_JOB_ID variant_annotation_automated.sbatch $SNPEFF_REPORTS_DIRECTORY $SAMPLE_NAME_STRING $REFERENCE_SEQUENCE_NAME $SNPEFF_DATABASE $SNPEFF_DIRECTORY $MUTECT2_VCF_OUTPUT_FILTERED $PEDIGREE_HEADER_FILE $DBSNP_DATABASE)
