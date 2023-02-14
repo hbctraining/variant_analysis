@@ -112,7 +112,7 @@ java -jar $PICARD/picard.jar CollectAlignmentSummaryMetrics \
 Create the tumor version of this submission script using `sed`:
 
 ```
-sed 's/normal/tumor/g' picard_CollectAlignmentMetrics_normal.sbatch > picard_CollectAlignmentMetrics_tumor.sbatch
+sed 's/normal/tumor/g' picard_metrics_normal.sbatch > picard_metrics_tumor.sbatch
 ```
 
 Now that we have created these files to submit, let's check the status of our previous `Picard` alignment processing steps:
