@@ -64,20 +64,20 @@ Next, we can add the `Picard` command to gather the alignment metrics:
 ```
 # Run Picard CollectAlignmentSummaryMetrics
 java -jar $PICARD/picard.jar CollectAlignmentSummaryMetrics \
--INPUT $INPUT_BAM \
--REFERENCE_SEQUENCE $REFERENCE \
--OUTPUT $OUTPUT_METRICS_FILE
+--INPUT $INPUT_BAM \
+--REFERENCE_SEQUENCE $REFERENCE \
+--OUTPUT $OUTPUT_METRICS_FILE
 ```
 
 We can breakdown this command into each of it's components:
 
 - `java -jar $PICARD/picard.jar CollectAlignmentSummaryMetrics` Calls the `CollectAlignmentSummaryMetrics` from within `Picard`
 
-- `-INPUT $INPUT_BAM` This is the output from our previous `Picard` alignment processing steps.
+- `--INPUT $INPUT_BAM` This is the output from our previous `Picard` alignment processing steps.
 
-- `-REFERENCE_SEQUENCE $REFERENCE` This isn't a required parameter, but `picard` can do a subset of mismatch-related metrics if this is provided.
+- `--REFERENCE_SEQUENCE $REFERENCE` This isn't a required parameter, but `picard` can do a subset of mismatch-related metrics if this is provided.
 
-- `-OUTPUT $OUTPUT_METRICS_FILE` This is the file to write the output metrics to.
+- `--OUTPUT $OUTPUT_METRICS_FILE` This is the file to write the output metrics to.
 
 The `sbatch` submission script for collecting the alignment metrics should look like:
 
@@ -104,9 +104,9 @@ OUTPUT_METRICS_FILE=${OUTPUT_METRICS_DIRECTORY}syn3_normal_GRCh38.p7.CollectAlig
 
 # Run Picard CollectAlignmentSummaryMetrics
 java -jar $PICARD/picard.jar CollectAlignmentSummaryMetrics \
--INPUT $INPUT_BAM \
--REFERENCE_SEQUENCE $REFERENCE \
--OUTPUT $OUTPUT_METRICS_FILE
+--INPUT $INPUT_BAM \
+--REFERENCE_SEQUENCE $REFERENCE \
+--OUTPUT $OUTPUT_METRICS_FILE
 ```
 
 Create the tumor version of this submission script using `sed`:
@@ -159,15 +159,15 @@ Coverage is the average level of alignment for any random locus in the genome.  
   $REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa<br>
   # Run Picard CollectWgsMetrics \
   java -jar $PICARD/picard.jar CollectWgsMetrics \
-  -INPUT $COORDINATE_SORTED_BAM_FILE \
-  -OUTPUT $METRICS_OUTPUT_FILE \
-  -REFERENCE_SEQUENCE $REFERENCE
+  --INPUT $COORDINATE_SORTED_BAM_FILE \
+  --OUTPUT $METRICS_OUTPUT_FILE \
+  --REFERENCE_SEQUENCE $REFERENCE
   </pre>
         
   <ul><li><code>java -jar $PICARD/picard.jar CollectWgsMetrics</code> This calls the <code>CollectWgsMetrics</code> package within <code>Picard</code></li>
-  <li><code>-INPUT $COORDINATE_SORTED_BAM_FILE</code> Assign the input as the coordinate sorted BAM file</li>
-  <li><code>-OUTPUT $METRICS_OUTPUT_FILE</code> Assign the report output file </li>
-  <li><code>-REFERENCE_SEQUENCE $REFERENCE</code> This is the path to the reference genome that was used for the alignment.</li></ul>
+  <li><code>--INPUT $COORDINATE_SORTED_BAM_FILE</code> Assign the input as the coordinate sorted BAM file</li>
+  <li><code>--OUTPUT $METRICS_OUTPUT_FILE</code> Assign the report output file </li>
+  <li><code>--REFERENCE_SEQUENCE $REFERENCE</code> This is the path to the reference genome that was used for the alignment.</li></ul>
 <hr />
 </details>
 
@@ -184,7 +184,7 @@ module load picard/2.27.5
 Next, we will run the `ViewSam` package in `Picard`:
 
 ```
-java -jar $PICARD/picard.jar ViewSam -INPUT /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam | less
+java -jar $PICARD/picard.jar ViewSam --INPUT /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam | less
 ```
 
 This will open up the fully processed normal sample's BAM file in a human-readable format.
