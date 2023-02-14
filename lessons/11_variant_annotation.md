@@ -124,7 +124,7 @@ Next, we can add our `bcftools` command to append the header line required for c
 ```
 # Append Header
 bcftools annotate \
--h $PEDIGREE_HEADER_FILE \
+--header-lines $PEDIGREE_HEADER_FILE \
 $FILTERED_VCF_FILE \
 > $FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER
 ```
@@ -132,7 +132,7 @@ $FILTERED_VCF_FILE \
 Here is what each part of that command does:
 
   - `bcftools annotate` This calls the annotate function within `bcftools`
-  - `-h $PEDIGREE_HEADER_FILE` This is the header information that we want to append to the end of the VCF file's header lines
+  - `--header-lines $PEDIGREE_HEADER_FILE` This is the header information that we want to append to the end of the VCF file's header lines
   - `$FILTERED_VCF_FILE` This is our input VCF file without the appended header
   - `> $FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER` Then this is the output file with the appended header
 
@@ -344,7 +344,7 @@ mkdir -p $REPORTS_DIRECTORY
 
 # Append Header
 bcftools annotate \
--h $PEDIGREE_HEADER_FILE \
+--header-lines $PEDIGREE_HEADER_FILE \
 $FILTERED_VCF_FILE \
 > $FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER
 
