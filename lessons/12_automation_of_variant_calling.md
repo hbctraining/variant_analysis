@@ -815,7 +815,7 @@ MUTECT2_JOB_ID=`echo $MUTECT2_JOB_SUBMISSION | cut -d ' ' -f 4`
 echo -e "Mutect2 job submitted as job ID $MUTECT2_JOB_ID"
 
 # Submit MultiQC sbatch script and save the output to a variable named $MULTIQC_JOB_SUBMISSION
-MULTIQC_JOB_SUBMISSION=$(sbatch -p priority -t 0-00:10:00 -c 1 --mem 1G -o mulitqc${SAMPLE_NAME_STRING}_%j.out -e mulitqc${SAMPLE_NAME_STRING}_%j.err --dependency=afterok${DEPENDENT_PICARD_METRICS_JOB_IDS} multiqc_alignment_metrics_automated.sbatch $REPORTS_DIRECTORY $NORMAL_SAMPLE $TUMOR_SAMPLE $REFERENCE_SEQUENCE_NAME)
+MULTIQC_JOB_SUBMISSION=$(sbatch -p priority -t 0-00:10:00 -c 1 --mem 1G -o multiqc${SAMPLE_NAME_STRING}_%j.out -e multiqc${SAMPLE_NAME_STRING}_%j.err --dependency=afterok${DEPENDENT_PICARD_METRICS_JOB_IDS} multiqc_alignment_metrics_automated.sbatch $REPORTS_DIRECTORY $NORMAL_SAMPLE $TUMOR_SAMPLE $REFERENCE_SEQUENCE_NAME)
 
 # Parse out the job ID from output from the Mutect2 submission
 MULTIQC_JOB_ID=`echo $MULTIQC_JOB_SUBMISSION | cut -d ' ' -f 4`
