@@ -215,8 +215,8 @@ Now we can run `FastQC`:
 fastqc \
 $LEFT_READS \
 $RIGHT_READS \
--o $OUTPUT_DIRECTORY \
--t $THREADS
+--outdir $OUTPUT_DIRECTORY \
+--threads $THREADS
 ```
 
 This command is pretty strightforward, but we will explain each part:
@@ -224,8 +224,8 @@ This command is pretty strightforward, but we will explain each part:
 - `fastqc` This calls the `FastQC` software package
 - `$LEFT_READS` This is the left read (R1 or Read 1) input FASTQ file
 - `$Right_READS` This is the right read (R2 or Read 2) input FASTQ file
-- `-o $OUTPUT_DIRECTORY` This is the directory for the output files to be written to
-- `-t $THREADS` This specifies the number of threads that `FastQC` can use to speed up the processing
+- `--outdir $OUTPUT_DIRECTORY` This is the directory for the output files to be written to
+- `--threads $THREADS` This specifies the number of threads that `FastQC` can use to speed up the processing
 
 All together, the final `sbatch` script should look like:
 
@@ -257,8 +257,8 @@ mkdir -p $OUTPUT_DIRECTORY
 fastqc \
 $LEFT_READS \
 $RIGHT_READS \
--o $OUTPUT_DIRECTORY \
--t $THREADS
+--outdir $OUTPUT_DIRECTORY \
+--threads $THREADS
 ```
 
 Now we can submit this script to the cluster:
