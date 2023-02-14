@@ -795,7 +795,7 @@ TUMOR_BAM_MUTECT_INPUT=${COORDINATE_SORTED_BAM_ARRAY[$TUMOR_ARRAY_POSITION]}
 MUTECT2_VCF_OUTPUT=`echo -e "/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2${SAMPLE_NAME_STRING}_${REFERENCE_SEQUENCE_NAME}-raw.vcf"`
 
 # Submit the Mutect2 sbatch script and save the output to a variable named $MUTECT2_JOB_SUBMISSION 
-MUTECT2_JOB_SUBMISSION=$(sbatch -p priority -t 1-00:00:00 -c 1 --mem 16G -o mutect2_variant_calling${SAMPLE_NAME_STRING}_%j.out -e mutect2_variant_calling${SAMPLE_NAME_STRING}_%j.err --dependency=afterok${DEPENDENT_PICARD_METRICS_JOB_IDS} mutect2_automated.sbatch  $REFERENCE_SEQUENCE $NORMAL_SAMPLE $TUMOR_SAMPLE $NORMAL_BAM_MUTECT_INPUT $TUMOR_BAM_MUTECT_INPUT $MUTECT2_VCF_OUTPUT)
+MUTECT2_JOB_SUBMISSION=$(sbatch -p priority -t 1-00:00:00 -c 1 --mem 16G -o mutect2_variant_calling${SAMPLE_NAME_STRING}_%j.out -e mutect2_variant_calling${SAMPLE_NAME_STRING}_%j.err --dependency=afterok${DEPENDENT_PICARD_METRICS_JOB_IDS} mutect2_automated.sbatch  $REFERENCE_SEQUENCE $NORMAL_SAMPLE $NORMAL_BAM_MUTECT_INPUT $TUMOR_SAMPLE $TUMOR_BAM_MUTECT_INPUT $MUTECT2_VCF_OUTPUT)
 
 # Parse out the job ID from output from the Mutect2 submission
 MUTECT2_JOB_ID=`echo $MUTECT2_JOB_SUBMISSION | cut -d ' ' -f 4`
