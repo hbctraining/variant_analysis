@@ -505,7 +505,6 @@ module load snpEff/4.3g
 REFERENCE_SEQUENCE=$1
 RAW_VCF_FILE=$2
 LCR_FILE=$3
-
 MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}filt.vcf
 PASSING_FILTER_VCF=${RAW_VCF_FILE%raw.vcf}pass-filt.vcf
 LCR_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}pass-filt-LCR.vcf
