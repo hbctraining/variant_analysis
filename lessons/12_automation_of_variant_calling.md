@@ -401,14 +401,13 @@ Next, change the rest of the variable lines from:
 
 ```
 # Assign variables
-REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
-NORMAL_SAMPLE_NAME=syn3-normal
-TUMOR_SAMPLE_NAME=syn3-tumor
-
+REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
 REFERENCE_DICTIONARY=`echo ${REFERENCE_SEQUENCE%fa}dict`
-NORMAL_BAM_FILE=${ALIGNMENT_DIRECTORY}${NORMAL_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.coordinate_sorted.bam
-TUMOR_BAM_FILE=${ALIGNMENT_DIRECTORY}${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.coordinate_sorted.bam
-VCF_OUTPUT_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_${NORMAL_SAMPLE_NAME}_${TUMOR_SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-raw.vcf
+NORMAL_SAMPLE_NAME=syn3_normal
+NORMAL_BAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${NORMAL_SAMPLE_NAME}_GRCh38.p7.coordinate_sorted.bam
+TUMOR_SAMPLE_NAME=syn3_tumor
+TUMOR_BAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${TUMOR_SAMPLE_NAME}_GRCh38.p7.coordinate_sorted.bam
+VCF_OUTPUT_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_${NORMAL_SAMPLE_NAME}_${TUMOR_SAMPLE_NAME}_GRCh38.p7-raw.vcf
 ```
 
 To:
@@ -416,11 +415,10 @@ To:
 ```
 # Assign variables
 REFERENCE_SEQUENCE=$1
-NORMAL_SAMPLE_NAME=$2
-TUMOR_SAMPLE_NAME=$3
-
 REFERENCE_DICTIONARY=`echo ${REFERENCE_SEQUENCE%fa}dict`
-NORMAL_BAM_FILE=$4
+NORMAL_SAMPLE_NAME=$2
+NORMAL_BAM_FILE=$3
+TUMOR_SAMPLE_NAME=$4
 TUMOR_BAM_FILE=$5
 VCF_OUTPUT_FILE=$6
 ```
@@ -436,11 +434,10 @@ module load gatk/4.1.9.0
 
 # Assign variables
 REFERENCE_SEQUENCE=$1
-NORMAL_SAMPLE_NAME=$2
-TUMOR_SAMPLE_NAME=$3
-
 REFERENCE_DICTIONARY=`echo ${REFERENCE_SEQUENCE%fa}dict`
-NORMAL_BAM_FILE=$4
+NORMAL_SAMPLE_NAME=$2
+NORMAL_BAM_FILE=$3
+TUMOR_SAMPLE_NAME=$4
 TUMOR_BAM_FILE=$5
 VCF_OUTPUT_FILE=$6
 
