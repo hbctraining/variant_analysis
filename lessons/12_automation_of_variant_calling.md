@@ -372,7 +372,7 @@ $NORMAL_FASTQC_1 \
 $NORMAL_FASTQC_2 \
 $TUMOR_FASTQC_1 \
 $TUMOR_FASTQC_2 \
--o $OUTPUT_DIRECTORY
+--outdir $OUTPUT_DIRECTORY
 ```
 
 #### Variant calling with GATK
