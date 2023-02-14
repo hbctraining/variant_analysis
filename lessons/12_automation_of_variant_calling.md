@@ -220,23 +220,23 @@ mkdir -p $REPORTS_DIRECTORY
 
 # Query-sort alginment file and convert to BAM
 java -jar $PICARD/picard.jar SortSam \
--INPUT $SAM_FILE \
--OUTPUT $QUERY_SORTED_BAM_FILE \
--SORT_ORDER queryname
+--INPUT $SAM_FILE \
+--OUTPUT $QUERY_SORTED_BAM_FILE \
+--SORT_ORDER queryname
 
 # Mark and remove duplicates
 java -jar $PICARD/picard.jar MarkDuplicates \
--INPUT $QUERY_SORTED_BAM_FILE \
--OUTPUT $REMOVE_DUPLICATES_BAM_FILE \
--METRICS_FILE $METRICS_FILE \
--REMOVE_DUPLICATES true
+--INPUT $QUERY_SORTED_BAM_FILE \
+--OUTPUT $REMOVE_DUPLICATES_BAM_FILE \
+--METRICS_FILE $METRICS_FILE \
+--REMOVE_DUPLICATES true
 
 # Coordinate-sort BAM file and create BAM index file
 java -jar $PICARD/picard.jar SortSam \
--INPUT $REMOVE_DUPLICATES_BAM_FILE \
--OUTPUT $COORDINATE_SORTED_BAM_FILE \
--SORT_ORDER coordinate \
--CREATE_INDEX true
+--INPUT $REMOVE_DUPLICATES_BAM_FILE \
+--OUTPUT $COORDINATE_SORTED_BAM_FILE \
+--SORT_ORDER coordinate \
+--CREATE_INDEX true
 ```
 
 #### `Picard` Metrics
@@ -293,9 +293,9 @@ OUTPUT_METRICS_FILE=$3
 
 # Run Picard CollectAlignmentSummaryMetrics
 java -jar $PICARD/picard.jar CollectAlignmentSummaryMetrics \
--INPUT $INPUT_BAM \
--REFERENCE_SEQUENCE $REFERENCE \
--OUTPUT $OUTPUT_METRICS_FILE
+--INPUT $INPUT_BAM \
+--REFERENCE_SEQUENCE $REFERENCE \
+--OUTPUT $OUTPUT_METRICS_FILE
 ```
 
 #### `MultiQC`
@@ -444,13 +444,13 @@ VCF_OUTPUT_FILE=$6
 # Run MuTect2
 gatk Mutect2 \
 --sequence-dictionary $REFERENCE_DICTIONARY \
--R $REFERENCE_SEQUENCE \
--I $NORMAL_BAM_FILE \
+--reference $REFERENCE_SEQUENCE \
+--input $NORMAL_BAM_FILE \
 --normal-sample $NORMAL_SAMPLE_NAME \
--I $TUMOR_BAM_FILE \
+--input $TUMOR_BAM_FILE \
 --tumor-sample $TUMOR_SAMPLE_NAME \
 --annotation ClippingRankSumTest --annotation DepthPerSampleHC --annotation MappingQualityRankSumTest --annotation MappingQualityZero --annotation QualByDepth --annotation ReadPosRankSumTest --annotation RMSMappingQuality --annotation FisherStrand --annotation MappingQuality --annotation DepthPerAlleleBySample --annotation Coverage \
--O $VCF_OUTPUT_FILE
+-output $VCF_OUTPUT_FILE
 ```
 
 #### Variant Filtering
