@@ -364,7 +364,7 @@ $NORMAL_FASTQC_1 \
 $NORMAL_FASTQC_2 \
 $TUMOR_FASTQC_1 \
 $TUMOR_FASTQC_2 \
--o $OUTPUT_DIRECTORY
+--outdir $OUTPUT_DIRECTORY
 ```
 
 So our final `sbatch` script should look like:
@@ -409,7 +409,7 @@ $NORMAL_FASTQC_1 \
 $NORMAL_FASTQC_2 \
 $TUMOR_FASTQC_1 \
 $TUMOR_FASTQC_2 \
--o $OUTPUT_DIRECTORY
+--outdir $OUTPUT_DIRECTORY
 ```
 
 Like the previous step, we will need to check to ensure that the previous `Picard` step for collecting metrics for each sample is down before we can submit this script. To do this, we will check out `squeue`:
