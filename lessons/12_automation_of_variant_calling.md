@@ -618,7 +618,7 @@ mkdir -p $REPORTS_DIRECTORY
 
 # Append Header
 bcftools annotate \
--h $PEDIGREE_HEADER_FILE \
+--header-lines $PEDIGREE_HEADER_FILE \
 $FILTERED_VCF_FILE \
 > $FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER
 
