@@ -39,7 +39,7 @@ First, we need to add our shebang line, description and `sbatch` directives to t
 #SBATCH -c 1
 #SBATCH --mem 16G
 #SBATCH -o picard_metrics_normal_%j.out
-#SBATCH -e picard_metrics_%j.err
+#SBATCH -e picard_metrics_normal_%j.err
 ```
 
 Next we need to load `Picard`:
@@ -91,7 +91,7 @@ The `sbatch` submission script for collecting the alignment metrics should look 
 #SBATCH -c 1
 #SBATCH --mem 16G
 #SBATCH -o picard_metrics_normal_%j.out
-#SBATCH -e picard_metrics_%j.err
+#SBATCH -e picard_metrics_normal_%j.err
 
 # Load picard
 module load picard/2.27.5
