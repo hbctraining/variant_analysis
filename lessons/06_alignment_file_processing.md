@@ -175,7 +175,7 @@ The components of this command are:
 >***The Traditional Syntax***
 > When providing inputs in this fashion you will provide the option followed immediately without any whitespace by an `=` sign followed once again immediately without whitespace by the argument for that option. For example, we could have written the `SortSam` command as:
 > ```
->\# Query-sort alginment file and convert to BAM
+># Query-sort alginment file and convert to BAM
 >java -jar $PICARD/picard.jar SortSam \
 >INPUT=$SAM_FILE \
 >OUTPUT=$QUERY_SORTED_BAM_FILE \
@@ -195,7 +195,7 @@ The components of this command are:
 >```
 >It should also be noted that you can, as this is true for many software programs, provide a single/couple letter abbreviations for an option. For example, this command could have also been validly written as:
 >```
->\# Query-sort alginment file and convert to BAM
+># Query-sort alginment file and convert to BAM
 >java -jar $PICARD/picard.jar SortSam \
 >I=$SAM_FILE \
 >O=$QUERY_SORTED_BAM_FILE \
@@ -205,7 +205,7 @@ The components of this command are:
 >***The New (Barclay) Syntax***
 >Like the warning in the error output above described, `Picard` migrated to a new syntax several years back and this is the syntax we are demonstrating in this workshop. It uses a double hyphen (`--`) followed by the long-form name for the option followed by whitespace followed by the argument for that option. This is what we used above:
 >```
->\# Query-sort alginment file and convert to BAM
+># Query-sort alginment file and convert to BAM
 >java -jar $PICARD/picard.jar SortSam \
 >--INPUT $SAM_FILE \
 >--OUTPUT $QUERY_SORTED_BAM_FILE \
@@ -217,7 +217,7 @@ The components of this command are:
 >```
 >The above command using abbreivations would look like:
 >```
->\# Query-sort alginment file and convert to BAM
+># Query-sort alginment file and convert to BAM
 >java -jar $PICARD/picard.jar SortSam \
 >-I $SAM_FILE \
 >-O $QUERY_SORTED_BAM_FILE \
