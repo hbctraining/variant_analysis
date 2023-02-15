@@ -170,10 +170,60 @@ The components of this command are:
 
 - `--SORT_ORDER queryname` The method with which we would like the file to be sorted. The options here are either `queryname` or `coordinate`.
 
-#################################
-
-DISCUS PICARD SYNTAX HERE
-
+> **NOTE:** The syntax that `Picard` uses is quite particular and the syntax shown in the documentation is not always consistent. There are two main ways for providing input for `Picard`:
+> 
+>***The Traditional Syntax***
+> When providing inputs in this fashion you will provide the option followed immediately without any whitespace by an `=` sign followed once again immediately without whitespace by the argument for that option. For example, we could have written the `SortSam` command as:
+> ```
+>\# Query-sort alginment file and convert to BAM
+>java -jar $PICARD/picard.jar SortSam \
+>INPUT=$SAM_FILE \
+>OUTPUT=$QUERY_SORTED_BAM_FILE \
+>SORT_ORDER=queryname
+> ```
+> And this while work and produce a valid output, your error file might contain a warning that looks something like:
+> ```
+>********* NOTE: Picard's command line syntax is changing.
+>*********
+>********* For more information, please see:
+>********* https://github.com/broadinstitute/picard/wiki/Command-Line-Syntax-Transition-For-Users-(Pre-Transition)
+>*********
+>********* The command line looks like this in the new syntax:
+>*********
+>*********    SortSam -INPUT /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal.sam -OUTPUT /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal.query_sorted.bam -SORT_ORDER queryname
+>*********
+>```
+>It should also be noted that you can, as this is true for many software programs, provide a single/couple letter abbreviations for an option. For example, this command could have also been validly written as:
+>```
+>\# Query-sort alginment file and convert to BAM
+>java -jar $PICARD/picard.jar SortSam \
+>I=$SAM_FILE \
+>O=$QUERY_SORTED_BAM_FILE \
+>SO=queryname
+>```
+>However, we have elected to write out the full names of options wherever possible to increase readabilty of the code. This is entirely a preference issue and as you get more familiar with these commands, you may want to use thier abbreviations to reduce time typing and potential typos.
+>***The New (Barclay) Syntax***
+>Like the warning in the error output above described, `Picard` migrated to a new syntax several years back and this is the syntax we are demonstrating in this workshop. It uses a double hyphen (`--`) followed by the long-form name for the option followed by whitespace followed by the argument for that option. This is what we used above:
+>```
+>\# Query-sort alginment file and convert to BAM
+>java -jar $PICARD/picard.jar SortSam \
+>--INPUT $SAM_FILE \
+>--OUTPUT $QUERY_SORTED_BAM_FILE \
+>--SORT_ORDER queryname
+>```
+>Similiarly to the ***Traditional syntax***, you can also use the single/couple letter abbreviations for an option. However, if you do this, then you should only use a single hyphen (`-`). This practice of using double hypohens for the long-form name of an option and a single hyphen for the abbreviate form of an option is very common in ***MANY*** software packages and will often be annotated in manuals as:
+>```
+>-I, --INPUT This is the input file
+>```
+>The above command using abbreivations would look like:
+>```
+>\# Query-sort alginment file and convert to BAM
+>java -jar $PICARD/picard.jar SortSam \
+>-I $SAM_FILE \
+>-O $QUERY_SORTED_BAM_FILE \
+>-SO queryname
+>```
+>All four of these commands are equaly valid and all produce the same output. However, we think you should be aware of them as `Picard`'s documentation will sometimes use the ***New (Barclay)*** syntax is one place and the ***Traditional*** syntax in another place, sometimes even on the same page! We recommend Using the ***New (Barclay)*** syntax as to reduce error messages in your error output files and because `Picard` has been trying to migrate towards it.
 
 #### Mark and Remove Duplicates
 
