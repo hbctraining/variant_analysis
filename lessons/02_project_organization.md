@@ -170,7 +170,7 @@ mkdir alignments vcf_files
 
 Excellent! Our project space has now been organized and is ready for the analysis to begin!
 
-[Next Lesson >>>](03_file_formats.md)
+[Next Lesson >>](03_file_formats.md)
 
 [Back to Schedule](../schedule/README.md)
 
