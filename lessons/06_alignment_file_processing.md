@@ -77,6 +77,7 @@ Below is a flow chart of the `Picard` pipeline that we will be using:
 >  Or if you wanted them to be coordinate-sorted than you could use:
 >  
 >  <pre>--SORT_ORDER coordinate</pre>
+>  <hr />
 ></details>
 
 ### Creating our `sbatch` script
