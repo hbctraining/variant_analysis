@@ -263,33 +263,27 @@ The information here is the same as with <code>Picard</code>, so we won't rehash
 Once the job has finished we would inspect the output files. This could be done in one of a few ways:
 
 1) View each metrics file in a `less` buffer
-  
-    **Pros:**
-      - Simple to do
-  
-    **Cons:**
-      - Hard to compare across samples
-      - Tedious to parse the columns
+  - **Pros**
+    - Simple to do
+  - **Cons**
+    - Hard to compare across samples
+    - Tedious to parse the columns
     
 2) Download each metrics from the O2 cluster and import them into Excel/Excel-like program that puts tab-delmited files into a grid
-  
-    **Pros:**
-      - Easier to interpret the data than the `less` buffer approach
-  
-    **Cons:**
-      - Hard to compare across samples
-      - Have to download the metrics files from the O2 cluster
+  - **Pros**
+    - Easier to interpret the data than the `less` buffer approach
+  - **Cons**
+    - Hard to compare across samples
+    - Have to download the metrics files from the O2 cluster
     
 3) Collate metrics files using [`MultiQC`](https://multiqc.info) and download the `MultiQC` HTML report from the O2 cluster
-  
-    **Pros:**
-      - Alignment metrics are easy to compare across samples
-      - Easy to interpret results
-      - We can combine the `CollectAlignmentSummaryMetrics` output with our `FASTQC` reports
-  
-    **Cons:**
-      - Have to download a file from the O2 cluster
-      - Have to run samples through an extra `MultiQC` step
+  - **Pros**
+    - Alignment metrics are easy to compare across samples
+    - Easy to interpret results
+    - We can combine the `CollectAlignmentSummaryMetrics` output with our `FASTQC` reports
+  - **Cons**
+    - Have to download a file from the O2 cluster
+    - Have to run samples through an extra `MultiQC` step
 
 None of the above methods are wrong, but some are more elegant than others. One might use **Method 1)** if they only had a handful of samples (~<5) to analyze and only wanted a single statistic, like alignment rate, from each. Then, it might be fastest just to open them up in a `less` buffer. However, if one has lots of samples (>5) then the advantages of `MultiQC` collating the results starts to become really helpful and one might choose **Method 3)**. Unfortunately, `MultiQC` doesn't display *ALL* of the data contained in the metrics file, so one may be inclined to do **Method 2** and downloard the directory full of metrics files in order to view the metrics not included in the `MultiQC` report in a program like Microsoft Excel.
 
