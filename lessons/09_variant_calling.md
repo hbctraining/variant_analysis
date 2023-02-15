@@ -51,7 +51,7 @@ cd ~/variant_calling/scripts/
 vim mutect2_normal_tumor.sbatch
 ```
 
-First, let's add our shebang line, script description, `sbatch` directives and GATK module.
+First, let's add our shebang line, script description and `sbatch` directive:
 
 ```
 #!/bin/bash
@@ -64,7 +64,11 @@ First, let's add our shebang line, script description, `sbatch` directives and G
 #SBATCH --mem 16G
 #SBATCH -o mutect2_variant_calling_normal_tumor_%j.out
 #SBATCH -e mutect2_variant_calling_normal_tumor_%j.err
+```
 
+Next add the `GATK` module we are going to load:
+
+```
 # Load the GATK module
 module load gatk/4.1.9.0
 ```
