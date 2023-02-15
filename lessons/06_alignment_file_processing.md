@@ -321,7 +321,7 @@ REMOVED_DUPLICATES_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}remov
 <hr />
 </details></li>
 <li><details>
-    <summary>Click here for <b>Query</b>-sorting a SAM file and converting it to BAM for the <code>Samtools</code> pipeline</summary>
+    <summary>Click here for <b>query</b>-sorting a SAM file and converting it to BAM for the <code>Samtools</code> pipeline</summary>
 Similarly to <code>Picard</code>, we are going to need to initally <b>query</b>-sort our alignment. We are also going to be converting the SAM file into a BAM file at this step. Also similarly to <code>Picard</code>, we don't need to specify that our input or output files are BAM or SAM files. <code>Samtools</code> will use the extensions you provide it in your file names as guidance for whether you are providing it a BAM/SAM and whether you want the output to be a BAM/SAM file. Below is the code we will use to <b>query</b>-sort our SAM file and convert it into a BAM file:<br>
 <pre>
 # Sort SAM file and convert it to a query name sorted BAM file
@@ -563,9 +563,9 @@ The components of this command are:
     
 <ul><li><code>samtools index</code> Calls the <code>index</code> function within <code>samtools</code></li>
 
-<li><code>$BAM_FILE</code> This is a `bash` variable that holds the path to the BAM file that we want to index.</li></ul>
+<li><code>$BAM_FILE</code> This is a <code>bash</code> variable that holds the path to the BAM file that we want to index.</li></ul>
 
-We don't need to provide an output file for <code>samtools index</code>, by default it will generate a new file using the same path and filename as the BAM file, but add `.bai` as the extension to denote that it is a BAM-index file.
+We don't need to provide an output file for <code>samtools index</code>, by default it will generate a new file using the same path and filename as the BAM file, but add <code>.bai</code> as the extension instead of <code>.bam</code> to denote that it is a BAM-index file.
 </details>
 <b>NOTE: BAM indexes can only be made from coordinate-sorted BAM files.</b>
 <hr />
