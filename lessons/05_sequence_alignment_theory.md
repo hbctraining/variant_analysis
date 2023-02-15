@@ -55,6 +55,7 @@ This process may take up to 30+ minutes to run depending on the reference sequen
 <hr />
 </details>
 
+
 ### Setting up our `sbatch` Submission Script for alignment
 
 Now that we have indexed the reference sequence, we can align sequence reads to our indexed reference sequence. To align reads to the reference sequence, we will need to create and `sbatch` submission script in `vim`.
