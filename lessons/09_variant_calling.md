@@ -248,7 +248,7 @@ gnomAD
 
 ***
 
-[Next Lesson >>>](10_variant_filtering.md)
+[Next Lesson >>](10_variant_filtering.md)
 
 [Back to Schedule](../schedule/README.md)
 
