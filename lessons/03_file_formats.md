@@ -26,7 +26,38 @@ The benefits to having a **zero-based** system is the ease of calculating distan
 
 ### SAM
 
-SAM files are tab-delimited files that store alignment data for reads that have attempted to be aligned (sometimes also referred to as mapped) to a reference sequence, such as a reference genome or transcriptome. They also store information on reads that were unable to be aligned to the reference sequence. The format has 11 mandatory fields with additional optional fields. The fields are:
+SAM files are files that hold alignment information. There are two main parts of components to a SAM file are:
+
+1) Header section
+2) Alignment section
+
+#### Header section
+
+The header section of a SAM file has several parts.
+
+##### Metadata `@HD`
+
+This is the first line of the SAM file and begins with `@HD`. It is optional, but it will usually have information about format version of the SAM file and the way the alignments are organized (the sort order). We will discuss sort order more when we discuss [processing alignment files](06_alignment_file_processing.md#sorting-and-removing-duplicates).
+
+##### Sequence `@SQ`
+
+This section of the header enumerates the sequence names (`SN`) included in the reference used for the alignment and their lengths (`LN`). One nice use of these fields, is if you ever have to evaluate the reference sequence used in an alignment, you can see which sequences were included in the alignment. This is particularly relevant if you make a custom reference.
+
+##### Read Group `@RG`
+
+This section of the header provides the read group metadata. This can include information on the sample, platform used for sequencing, platform unit, etc. We will discuss read groups more when we discuss [read alignment](05_sequence_alignment_theory.md#short-read-alignment) and briefly when during [alignment processing](06_alignment_file_processing.md#pipeline-for-processing-alignment-file-with-picard) in case you need to add or alter a read group.
+
+##### Program `@PG`
+
+This section will give you a history of the program names (`PN`) used to make the SAM file, the commands used (`CL`) and the version number (`VN`) of the program used. This can be helpful when trying to recreate an alignment file if the alignment command isn't availible to you.
+
+##### Comments `@CO`
+
+This section is rarely used and just contains comments regarding the alignment file. We will not be adding comments to our alignments, but once the SAM file has been converted to its binary equivalent (BAM), you can use `Picard` (a tool developed by the Broad Institute that we will use extensively in this workshop) to add comments using the [`AddCommentsToBam`](https://broadinstitute.github.io/picard/command-line-overview.html#AddCommentsToBam) package.
+
+#### Alignment Section
+
+The alignment section of a SAM file stores alignment data for reads that have attempted to be aligned (sometimes also referred to as mapped) to a reference sequence, such as a reference genome or transcriptome. They also store information on reads that were unable to be aligned to the reference sequence. The section has 11 mandatory fields (columns) with additional optional fields. The fields are:
 
 |  Field Name  | Description |
 |--------------|-------------|
