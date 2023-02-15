@@ -698,7 +698,7 @@ sbatch picard_alignment_processing_normal.sbatch
 sbatch picard_alignment_processing_tumor.sbatch
 ```
   
-[Next Lesson >>>](07_alignment_QC.md)
+[Next Lesson >>](07_alignment_QC.md)
 
 [Back to Schedule](../schedule/README.md)
   
