@@ -244,7 +244,7 @@ grep '^##' sample.vcf
 It is important to note that BED files positioning have ***zero-based indexing***. 
 
 
-[Next Lesson >>>](04_fastqc.md)
+[Next Lesson >>](04_fastqc.md)
 
 [Back to Schedule](../schedule/README.md)
 
