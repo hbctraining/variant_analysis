@@ -38,6 +38,47 @@ Below is a flow chart of the `Picard` pipeline that we will be using:
 <img src="../img/Picard_pipeline.png" width="800">
 </p>
 
+> **NOTE:** Some pipelines will have you add read groups while procressing your alignment files. This may be necessary in those pipelines, because they either can't add the read groups within their alignment tool (a problem that is pretty rare now), they forgot to add their read groups or they didn't know that they could add read groups during the alignment step with their alignment tool. Regardless of the reason, you should be aware that it is not uncommon to see this step in other's pipelines as many programs including `GATK` require read groups in order to run. It doesn't matter too much when you add the read groups in these processing steps, but we would recommend doing it first. Also, a command one could use to add read group information, and the one we show in the dropdown below, is `Picard`'s `AddOrReplaceReadGroups`, which has the added benefit of allowing you to also sort your alignment file (our first step anyways) in the same step as adding the read group information. The dropdown below discusses how to add or replace read groups within `Picard`.
+>
+><details>
+>  <summary><b>Click here if you need to add or replace read groups using <code>Picard</code></b></summary>
+>    In order to add or replace read groups, we are going to use <code>Picard</code>'s <code>AddOrReplaceReadGroups</code> tool. First we would need to load the <code>Picard</code> module:
+>  <pre>
+>  # Load module
+>  module load picard/2.27.5</pre>
+>  
+>  The general syntax for <code>AddOrReplaceReadGroups</code> is:
+>  <pre>
+>  # Add or replace read group information
+>  java -jar $PICARD/picard.jar AddOrReplaceReadGroups \
+>  --INPUT $SAM_FILE \
+>  --OUTPUT $BAM_FILE \
+>  --RGID $READ_GROUP_ID \
+>  --RGLB $READ_GROUP_LIBRARY \
+>  --RGPL $READ_GROUP_PLATFORM \
+>  --RGPU $READ_GROUP_PLATFORM_UNIT \
+>  --RGSM $READ_GROUP_SAMPLE</pre>
+>  
+>  <ul><li><code>java -jar $PICARD/picard.jar AddOrReplaceReadGroups</code> This calls the <code>AddOrReplaceReadGroups</code> package within <code>Picard</code></li>
+>    <li><code>--INPUT $SAM_FILE</code>This is your input file. It could be a BAM/SAM alignment file, but because we recommend doing this first if you need to do it, this would be a SAM file. You don't need to specifiy that it is a BAM/SAM file, <code>Picard</code> with figure that out from the provided extension.</li>
+>    <li><code>--OUTPUT $BAM_FILE</code>This would be your output file. It could be BAM/SAM, but you would mostly likely pick BAM because you'd like to save space on the cluster. You don't need to specifiy that it is a BAM/SAM file, <code>Picard</code> with figure that out from the provided extension.</li>
+>    <li><code>--RGID $READ_GROUP_ID</code>This is your read group ID and must be unique</li>
+>    <li><code>--RGLB $READ_GROUP_LIBRARY</code>This is your read group library</li>
+>    <li><code>--RGPL $READ_GROUP_PLATFORM</code>This is the platform used for the sequencing</li>
+>    <li><code>--RGPU $READ_GROUP_PLATFORM_UNIT</code>This is the unit used to do the sequencing</li>
+>    <li><code>--RGSM $READ_GROUP_SAMPLE</code>This is the sample name that the sequencing was done on</li></ul>
+>    
+>    We discussed the Read Group tags previously in the <a href="https://hbctraining.github.io/variant_analysis/lessons/05_sequence_alignment_theory.html">Sequence Alignment Theory</a> and more information on them can be found <a href="https://gatk.broadinstitute.org/hc/en-us/articles/360035890671-Read-groups">here</a>.
+>  
+>  And if you would also sort your SAM/BAM file at the same time, you just need to add the <code>--SORT_ORDER</code> option to your command. If you don't add it, it will leave your read in the same order as they were provided. The main two sort orders to be aware of are query-sorted and coordinate-sorted. A full discussion  of them can be found shortly below. If you wanted the output to be query-sorted, then you could use:
+>    
+>  <pre>--SORT_ORDER queryname</pre>
+>  
+>  Or if you wanted them to be coordinate-sorted than you could use:
+>  
+>  <pre>--SORT_ORDER coordinate</pre>
+></details>
+
 ### Creating our `sbatch` script
 
 Let's go ahead and start making a new `sbatch` within `vim`:
@@ -127,6 +168,11 @@ The components of this command are:
 - `--OUTPUT $QUERY_SORTED_BAM_FILE` This is the BAM output file. Because the extension is `.bam` rather than `.sam`, `Picard` will recognize this and create the output as a BAM file rather than the SAM inoput we have provided it.
 
 - `--SORT_ORDER queryname` The method with which we would like the file to be sorted. The options here are either `queryname` or `coordinate`.
+
+#################################
+
+DISCUS PICARD SYNTAX HERE
+
 
 #### Mark and Remove Duplicates
 
