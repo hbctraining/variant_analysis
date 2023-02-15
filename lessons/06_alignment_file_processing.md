@@ -223,7 +223,7 @@ The components of this command are:
 >-O $QUERY_SORTED_BAM_FILE \
 >-SO queryname
 >```
->All four of these commands are equaly valid and all produce the same output. However, we think you should be aware of them as `Picard`'s documentation will sometimes use the ***New (Barclay)*** syntax is one place and the ***Traditional*** syntax in another place, sometimes even on the same page! We recommend Using the ***New (Barclay)*** syntax as to reduce error messages in your error output files and because `Picard` has been trying to migrate towards it.
+>All four of these commands are equaly valid and all produce the same output. However, we think you should be aware of them as `Picard`'s documentation will sometimes use the ***New (Barclay)*** syntax is one place and the ***Traditional*** syntax in another place, sometimes even on the same page! Additionally, you may come across both syntaxes when trying to troubleshoot any errors you encounter when using `Picard` and thus you should be familiar with this peculiarity of `Picard`. We recommend Using the ***New (Barclay)*** syntax as to reduce error messages in your error output files and because `Picard` has been trying to migrate towards it.
 
 #### Mark and Remove Duplicates
 
