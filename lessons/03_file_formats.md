@@ -75,7 +75,7 @@ The alignment section of a SAM file stores alignment data for reads that have at
 
 Information on the additional optional fields can be found [here](https://samtools.github.io/hts-specs/SAMv1.pdf).
 
-#### FLAG
+##### FLAG
 
 The bit-wise flags that SAM files use are very helpful for giving the user a rough understanding of the read. Details such as whether the read is paired, has an alignment to the provided reference sequence or is a PCR duplicate can all be encoded into the FLAG. 
 
@@ -110,7 +110,7 @@ Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on 
 
 ---
 
-#### CIGAR
+##### CIGAR
 
 The CIGAR string is an alphanumeric string to help give the user a better understanding of the alignment. There are several categories used in the CIGAR string, but the four most common ones that we are likely to encounter are:
 
