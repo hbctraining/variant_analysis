@@ -289,7 +289,47 @@ We can see that all instances of "normal" have been replaced with "tumor". Now w
 sed 's/normal/tumor/g' fastqc_normal.sbatch >  fastqc_tumor.sbatch
 ```
 
-Now, we have the tumor sample to analyze with FastQC:
+Now, we have the tumor sample to analyze with `FastQC`, so let's inspect the file to make sure it is right:
+
+```
+cat fastqc_tumor.sbatch
+```
+
+It should looke like:
+
+```
+#!/bin/bash
+# This sbatch script is for running FastQC to evaluate read qualities
+
+# Assign sbatch directives
+#SBATCH -p priority
+#SBATCH -t 0-00:30:00
+#SBATCH -c 4
+#SBATCH --mem 8G
+#SBATCH -o fastqc_tumor_%j.out
+#SBATCH -e fastqc_tumor_%j.err
+
+# Load module
+module load fastqc/0.11.9
+
+# Assign variables
+LEFT_READS=/home/$USER/variant_calling/raw_data/syn3_tumor_1.fq.gz
+RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
+OUTPUT_DIRECTORY=~/variant_calling/reports/fastqc/syn3_tumor/
+THREADS=4
+
+# Create directory to hold output
+mkdir -p $OUTPUT_DIRECTORY
+
+# Run FastQC
+fastqc \
+$LEFT_READS \
+$RIGHT_READS \
+--outdir $OUTPUT_DIRECTORY \
+--threads $THREADS
+```
+
+Once we have looked it over and it matches what we have, we can go ahead and submit this `SBATCH` submission script to the cluster:
 
 ```
 sbatch fastqc_tumor.sbatch
