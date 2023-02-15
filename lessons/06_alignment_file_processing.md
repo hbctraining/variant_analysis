@@ -525,7 +525,7 @@ samtools markdup \
 $COORDINATE_SORTED_BAM_FILE \
 ${REMOVED_DUPLICATES_BAM_FILE}##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai<br>
 </pre>
-</details></li>
+</details></li></ol>
 <hr />
 </details>
 
