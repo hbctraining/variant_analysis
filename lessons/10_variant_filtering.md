@@ -268,11 +268,13 @@ gatk FilterMutectCalls \
 
 # Filter for only SNPs with PASS in the FILTER field
 java -jar $SNPEFF/SnpSift.jar filter \
+-noLog \
 "( FILTER = 'PASS' )" \
 $MUTECT_FILTERED_VCF > $PASSING_FILTER_VCF
 
 # Filter LCR
 java -jar $SNPEFF/SnpSift.jar intervals \
+-noLog \
 -x \
 -i $PASSING_FILTER_VCF \
 $LCR_FILE > $LCR_FILTERED_VCF
