@@ -532,11 +532,9 @@ ${REMOVED_DUPLICATES_BAM_FILE}##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai<br>
 
 <details>
 <summary>Click here for information on indexing a <code>BAM</code> file</summary>
-  
 <br>Many software packages want an index of your BAM file in order to facilitate fast look-ups of a BAM file. While not all software packages that use a BAM file will require this, many will and thus it is a good practice to index your BAM file while processing it. In our previous line of <code>Picard</code> command, we provided it with the <code>CREATE_INDEX=true</code> option, so it automatically created an index for us after <b>coordinate</b>-sorting our BAM file. If for some reason we needed to create an BAM-index for a <b>coordinate</b>-sorted BAM file, we can do this in <code>Picard</code> or <code>samtools</code>.
-
 <details>
-  <summary><b>BAM-Indexing within <code>Picard</code></b></summary>  
+<summary><b>BAM-Indexing within <code>Picard</code></b></summary>  
 The code for indexing a BAM file in <code>Picard</code> would look like:
 <pre>
 # SKIP THIS STEP
@@ -553,9 +551,7 @@ The components of this command are:
 </details>
 <details>
 <summary><b>BAM-Indexing within <code>samtools</code></b></summary> 
-    
 The command to index a BAM file with <code>samtools</code> would be:
-
 <pre>
 #### SKIP THIS STEP
 # Index the BAM file
@@ -567,7 +563,7 @@ The components of this command are:
     
 <ul><li><code>samtools index</code> Calls the <code>index</code> function within <code>samtools</code></li>
 
-<li><code>$BAM_FILE</code> This is a `bash` variable that holds the path to the BAM file that we want to index.</li>
+<li><code>$BAM_FILE</code> This is a `bash` variable that holds the path to the BAM file that we want to index.</li></ul>
 
 We don't need to provide an output file for <code>samtools index</code>, by default it will generate a new file using the same path and filename as the BAM file, but add `.bai` as the extension to denote that it is a BAM-index file.
 </details>
