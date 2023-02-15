@@ -38,11 +38,11 @@ Many modern alignment tools rely on the Burrows-Wheeler Transform as part of the
 <details> 
 <summary><b>Click here for details on creating a <code>bwa</code> index</b></summary>
 While we will be using an index that has already been made for us, if you need to create and index for a reference sequence using <code>bwa</code>, the steps for this are laid out below.
-<ol><b><li>Navigate to your reference sequence directory</b><br>
+<ol><li><b>Navigate to your reference sequence directory</b><br>
 <pre>
 cd ~/path/to/reference/sequence/directory/
 </pre></li>
-<b><li>Create a <code>bwa</code> index:</b>
+<li><b>Create a <code>bwa</code> index:</b>
 <pre>
 bwa index reference_sequence.fasta
 </pre></li></ol><br>
