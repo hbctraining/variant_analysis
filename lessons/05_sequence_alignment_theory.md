@@ -36,7 +36,7 @@ Many modern alignment tools rely on the Burrows-Wheeler Transform as part of the
 > The Burrows-Wheeler Transform and Suffix Arrays are outside of the scope of this course, but a great place to get information on these methods are on [Dr. Ben Langmead's YouTube Channel](https://www.youtube.com/user/BenLangmead/videos). Dr. Langmead developed the algorithm for a similar alignment tool, Bowtie, and he makes many useful videos explaining how the components of these alignment tools work. 
 
 <details> 
-<summary>Click here for details on creating a <code>bwa</code> index</summary>
+<summary><b>Click here for details on creating a <code>bwa</code> index</b></summary>
 While we will be using an index that has already been made for us, if you need to create and index for a reference sequence using <code>bwa</code>, the steps for this are laid out below.
 <ol><b><li>Navigate to your reference sequence directory</b><br>
 <pre>
