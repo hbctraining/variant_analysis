@@ -26,11 +26,11 @@ If implemented correctly, they largely provide the same output. In this workshop
 
 Before we start processing our alignment SAM file provided by `bwa`, let's briefly discuss the steps that we will be doing in this pipeline. Several goals need to be accomplished:
 
-1) **Compress SAM file to BAM file.** The output of `bwa` is a SAM file and it is human readbale. However, it is quite large and we need to compress it to a binary version (BAM) which is much smaller.
-2) **Query-sort our alignment file.** Alignment file are initally ordered by the order of the reads in the FASTQ file, which is not particularly useful. `Picard` can more exhaustively look for duplicates if the file is sorted by read-name (query-sorted). We will discuss **query**-sorted and **coordinate**-sorted alignment files soon.
-3) **Mark and Remove Duplicates.** Duplicates can introduce bias into our analysis so it is considered best practice to remove them prior to variant calling.
-4) **Coordinate-sort our alignment file.** Most downstream software packages require that alignment files be **coordinate**-sorted, so we will need to re-sort our alignment file by **coordinates** now that we have remove the duplicates.
-5) **Index the alignment file.** Like the index for a book, indicies for alignment files help direct downstream software packages to where to they can find specific reads. Many software packages require the alignment file that you are analyzing to have an index file, usually with the same name as you alignment file, with the additional `.bai` (BAM-index) extension. Both `Picard` and `samtools` have a way of integrating this indexing as part of their sorting protocols and that is what we will be using. However, both packages have commands for indexing a BAM file independent of their sorting protocol ([BuildBamIndex](https://gatk.broadinstitute.org/hc/en-us/articles/360037057932-BuildBamIndex-Picard-) for `Picard` and [index](http://www.htslib.org/doc/samtools-index.html) for `samtools`).
+1. **Compress SAM file to BAM file.** The output of `bwa` is a SAM file and it is human readbale. However, it is quite large and we need to compress it to a binary version (BAM) which is much smaller.
+2. **Query-sort our alignment file.** Alignment file are initally ordered by the order of the reads in the FASTQ file, which is not particularly useful. `Picard` can more exhaustively look for duplicates if the file is sorted by read-name (query-sorted). We will discuss **query**-sorted and **coordinate**-sorted alignment files soon.
+3. **Mark and Remove Duplicates.** Duplicates can introduce bias into our analysis so it is considered best practice to remove them prior to variant calling.
+4. **Coordinate-sort our alignment file.** Most downstream software packages require that alignment files be **coordinate**-sorted, so we will need to re-sort our alignment file by **coordinates** now that we have remove the duplicates.
+5. **Index the alignment file.** Like the index for a book, indicies for alignment files help direct downstream software packages to where to they can find specific reads. Many software packages require the alignment file that you are analyzing to have an index file, usually with the same name as you alignment file, with the additional `.bai` (BAM-index) extension. Both `Picard` and `samtools` have a way of integrating this indexing as part of their sorting protocols and that is what we will be using. However, both packages have commands for indexing a BAM file independent of their sorting protocol ([BuildBamIndex](https://gatk.broadinstitute.org/hc/en-us/articles/360037057932-BuildBamIndex-Picard-) for `Picard` and [index](http://www.htslib.org/doc/samtools-index.html) for `samtools`).
 
 Below is a flow chart of the `Picard` pipeline that we will be using:
 
@@ -285,11 +285,11 @@ java -jar $PICARD/picard.jar SortSam \
 
 <details>
   <summary>Click here for alignment file processing using <code>Samtools</code></summary>
-<br><code>Samtools</code> is another popular tools used for processing BAM/SAM files. The output from <code>Samtools</code> compared to <code>Picard</code> is laregly the same. Below is the pipeline and explanation for how you would carry out the similar SAM/BAM processing steps within <code>Samtools</code>.<br>
+<br><code>Samtools</code> is another popular tool used for processing BAM/SAM files. The output from <code>Samtools</code> compared to <code>Picard</code> is largely the same. Below is the pipeline and explanation for how you would carry out the similar SAM/BAM processing steps within <code>Samtools</code>.<br>
 <p align="center">
 <img src="../img/Samtools_pipeline.png" width="800">
-</p>
-<br><ol><li><details>
+</p><br>
+<ol><li><details>
     <summary>Click here for setting up a <code>sbatch</code> script BAM/SAM Processing for the <code>Samtools</code> pipeline</summary>
 <h2>Setting up <code>sbatch</code> Script</h2>
 First, we are going to navigate to our scirpts folder and open a new <code>sbatch</code> submission script in <code>vim</code>:
@@ -320,11 +320,9 @@ REMOVED_DUPLICATES_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}remov
 </pre>
 <hr />
 </details></li>
-
 <li><details>
     <summary>Click here for <b>Query</b>-sorting a SAM file and converting it to BAM for the <code>Samtools</code> pipeline</summary>
 Similarly to <code>Picard</code>, we are going to need to initally <b>query</b>-sort our alignment. We are also going to be converting the SAM file into a BAM file at this step. Also similarly to <code>Picard</code>, we don't need to specify that our input or output files are BAM or SAM files. <code>Samtools</code> will use the extensions you provide it in your file names as guidance for whether you are providing it a BAM/SAM and whether you want the output to be a BAM/SAM file. Below is the code we will use to <b>query</b>-sort our SAM file and convert it into a BAM file:<br>
-    
 <pre>
 # Sort SAM file and convert it to a query name sorted BAM file
 samtools sort \
@@ -480,7 +478,7 @@ ${REMOVED_DUPLICATES_BAM_FILE}##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai<br>
 <summary>Click here for the final tumor sample <code>sbatch</code> script to do the BAM/SAM processing for the <code>samtools</code> pipeline</summary>
 In order to create the tumor <code>sbatch</code> submission script to process the BAM/SAM file using <code>samtools</code>, we will once again use <code>sed</code>:<br>
 <pre>
-sed 's/normal/tumor/g' samtools_processing_normal.sbatch > samtools_processing_tumor.sbatch  
+sed &#39;s/normal/tumor/g&#39; samtools_processing_normal.sbatch &gt; samtools_processing_tumor.sbatch  
 </pre>
 The final <code>sbatch</code> submission script for the tumor sample should look like:
 <pre>
