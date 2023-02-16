@@ -64,7 +64,7 @@ Therefore, for the first nucleotide in the read (C), there is less than a 1 in 1
 
 1. If the probability of a incorrect base call is 1 in 3,981, what is the associated PHRED score?
 
-Answer: -10 x log10(1/3981) = 36
+Answer: -10 x log10(1/3981) &asymp; 36
 
 ## `bash` String Manipulation
 
