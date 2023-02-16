@@ -149,6 +149,25 @@ Let's breakdown this `bwa` command.
 
 Now you have written your command to run `bwa` you are ready to run alignment. However, there are a few steps that we are going to add to the script so that they run immediately after the alignemnt finishes.
 
+## Exercise
+
+1. The read group field LB (Library) is a required field to when adding read groups using `Picard`'s `AddOrReplaceReadGroups`, but we don't currently have this field in our read group information. How would we alter out `bwa` command to include `LB` as well?
+
+Answer: 
+Change `-R "@RG\tID:$SAMPLE\tPL:illumina\tPU:$SAMPLE\tSM:$SAMPLE"` 
+To `-R "@RG\tID:$SAMPLE\tPL:illumina\tPU:$SAMPLE\tSM:$SAMPLE\tLB:$SAMPLE"`
+
+2. If we wanted to increase the number of threads used by `bwa` for processing our alignment to 12, where are the two places we would need to modify our `SBATCH` script to accommodate this?
+
+Answer:
+Change `#SBATCH -c 8` within the `SBATCH` directives
+To `#SBATCH -c 12`
+
+And 
+
+Change `-t 8 \` within the `bwa` command
+To `-t 12 \`
+
 ### Submitting `sbatch` bwa script
 
 Now your `sbatch` script for `bwa` should look like this:
