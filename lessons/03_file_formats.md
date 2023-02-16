@@ -321,7 +321,7 @@ Answer: `grep '^##source' sample.vcf`
 
 **Bonus Challenge**3. For the sample at position 806262 on chromosome 19, what is the reference allele?
 
-Answer: C, `less sample.vcf` then search `/19<Press Tab here to create ^I>806262` or `grep -e $'^19\t806262' sample.vcf` 
+Answer: C, `less sample.vcf` then search `/19<kbd>Tab</kbd>806262` or `grep -e $'^19\t806262' sample.vcf` 
 
 ## BED
 
