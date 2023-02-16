@@ -621,6 +621,37 @@ We don't need to provide an output file for <code>samtools index</code>, by defa
 <hr />
 </details>
 
+## Exercises
+
+1. When inspecting a SAM file you see the following order:
+
+<p align="center">
+<img src="../img/Sort_order_question.png" width="500">
+</p>
+Is this SAM file's sort order: unsorted, query-sorted, coordinate-sorted or is it ambiguous?
+
+Answer: Query-sorted
+
+2. We are comparing our `SortSam` command with our colleague's command. Is there anything wrong with their syntax? Why or why not?
+
+**Our syntax**
+```
+java -jar $PICARD/picard.jar SortSam \
+--INPUT $SAM_FILE \
+--OUTPUT $QUERY_SORTED_BAM_FILE \
+--SORT_ORDER queryname
+```
+
+**Our colleague's syntax**
+```
+java -jar $PICARD/picard.jar SortSam \
+I=$SAM_FILE \
+O=$QUERY_SORTED_BAM_FILE \
+SO=queryname
+```
+
+Answer: No, it is just using the traditional syntax with abbreviations.
+
 ## Creating the Tumor SAM/BAM procressing
     
 Similarly to the `bwa` script, we will now need use `sed` to create a `sbtach` script that will be used for processing the tumor SAM file into a BAM file that can be used as input to GATK. The `sed` command to do this would be:
