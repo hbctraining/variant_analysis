@@ -150,9 +150,7 @@ The [Variant Call Format (VCF)](https://samtools.github.io/hts-specs/VCFv4.2.pdf
 - Header Line
 - Data Lines
 
-### Meta-information Lines
-
-The first lines in a VCF file are called the ***meta-information lines***. These lines contain information regarding how the file was made and what the file contains. A sample of the meta-information lines can be found below:
+A sample VCF can be found below:
 
 ```
 ##fileformat=VCFv4.2
@@ -186,7 +184,39 @@ The first lines in a VCF file are called the ***meta-information lines***. These
 1       187019  .       G       A       .       map_qual;normal_artifact;weak_evidence  AS_FilterStatus=weak_evidence,map_qual;AS_SB_TABLE=56,76|6,3;ClippingRankSum=-4.266;DP=149;ECNT=1;FS=7.413;GERMQ=93;MBQ=34,33;MFRL=344,351;MMQ=50,20;MPOS=1;MQ=42.64;MQ0=0;MQRankSum=-4.743;NALOD=-1.314e+00;NLOD=10.65;POPAF=6.00;ReadPosRankSum=-4.367;TLOD=4.26      GT:AD:AF:DP:F1R2:F2R1:SB        0/0:60,3:0.061:63:27,3:30,0:25,35,3,0   0/1:72,6:0.085:78:31,4:39,2:31,41,3,3
 ```
 
-Meta-information lines always begin with `##`. Let's analyze a few of the meta-information lines to understand what they are describing:
+### Meta-information Lines
+
+The first lines in a VCF file are called the ***meta-information lines*** and they always start with `##`. These lines contain information regarding how the file was made and what the file contains. The meta-information lines are:
+
+```
+##fileformat=VCFv4.2
+##FILTER=<ID=FAIL,Description="Fail the site if all alleles fail but for different reasons.">
+##FILTER=<ID=PASS,Description="Site contains at least one allele that passes filters">
+##FILTER=<ID=base_qual,Description="alt median base quality">
+...
+##FORMAT=<ID=AD,Number=R,Type=Integer,Description="Allelic depths for the ref and alt alleles in the order listed">
+##FORMAT=<ID=AF,Number=A,Type=Float,Description="Allele fractions of alternate alleles in the tumor">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth (reads with MQ=255 or with bad mates are filtered)">
+...
+##GATKCommandLine=<ID=FilterMutectCalls,CommandLine="FilterMutectCalls --output /n/scratch3/users/w/wig051/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-filt.vcf --variant /n/scratch3/users/w/wig051/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf --reference /n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa ... Version="4.1.9.0",Date="February 15, 2023 10:32:47 PM EST">
+##GATKCommandLine=<ID=Mutect2,CommandLine="Mutect2 --tumor-sample syn3_tumor --normal-sample syn3_normal --output /n/scratch3/users/w/wig051/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf --input /n/scratch3/users/w/wig051/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam --input /n/scratch3/users/w/wig051/variant_calling/alignments/syn3_tumor_GRCh38.p7.coordinate_sorted.bam --reference /n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa --sequence-dictionary /n/groups/hbctraining/variant_calling/reference/GRCh38.p7.dict --annotation ClippingRankSumTest --annotation DepthPerSampleHC --annotation MappingQualityRankSumTest --annotation MappingQualityZero --annotation QualByDepth --annotation ReadPosRankSumTest --annotation RMSMappingQuality --annotation FisherStrand --annotation MappingQuality --annotation DepthPerAlleleBySample --annotation Coverage ... Version="4.1.9.0",Date="February 15, 2023 7:55:01 PM EST">
+##INFO=<ID=AS_FilterStatus,Number=A,Type=String,Description="Filter status for each allele, as assessed by ApplyRecalibration. Note that the VCF filter field will reflect the most lenient/sensitive status across all alleles.">
+##INFO=<ID=AS_SB_TABLE,Number=1,Type=String,Description="Allele-specific forward/reverse read counts for strand bias tests. Includes the reference and alleles separated by |.">
+##INFO=<ID=AS_UNIQ_ALT_READ_COUNT,Number=A,Type=Integer,Description="Number of reads with unique start and mate end positions for each alt at a variant site">
+...
+##MutectVersion=2.2
+##contig=<ID=1,length=248956422>
+##contig=<ID=HSCHR1_CTG1_UNLOCALIZED,length=175055>
+##contig=<ID=HSCHR1_CTG2_UNLOCALIZED,length=32032>
+...
+##filtering_status=These calls have been filtered by FilterMutectCalls to label false positives with a list of failed filters and true positives with PASS.
+##normal_sample=syn3_normal
+##source=FilterMutectCalls
+##source=Mutect2
+##tumor_sample=syn3_tumor
+```
+
+Let's analyze a few of the meta-information lines to understand what they are describing:
 
 - The first line `##fileformat=VCFv4.2` is telling us the version of the VCF file. 
 
@@ -215,7 +245,7 @@ Meta-information lines always begin with `##`. Let's analyze a few of the meta-i
 
 ### Header Line
 
-The header line is a single line between the meta-information lines and the data lines that provies a brief desciption of each field in the following data lines. An example header line could look like:
+The header line is a single line between the meta-information lines and the data lines that provies a brief desciption of each field in the following data lines. The header line starts with only a single `#`. The example header line looked like:
 
 ```
 #CHROM  POS ID  REF ALT QUAL  FILTER  INFO  FORMAT  syn3_normal     syn3_tumor
