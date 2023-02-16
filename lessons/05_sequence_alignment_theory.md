@@ -149,7 +149,7 @@ Let's breakdown this `bwa` command.
 
 Now you have written your command to run `bwa` you are ready to run alignment. However, there are a few steps that we are going to add to the script so that they run immediately after the alignemnt finishes.
 
-## Exercise
+## Exercises
 
 1. The read group field LB (Library) is a required field to when adding read groups using `Picard`'s `AddOrReplaceReadGroups`, but we don't currently have this field in our read group information. How would we alter out `bwa` command to include `LB` as well?
 
