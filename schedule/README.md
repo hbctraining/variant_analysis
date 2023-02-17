@@ -39,9 +39,8 @@ I. Please **study the contents** and **work through all the code** within the fo
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>The first step in many NGS studies is first to evaluate the read qualites that you received from the sequencing facility. A common tool used for handling this analysis is <code>FastQC</code>. 
          <br><br>This lesson will:<br>
-          <ul><li>Implement FastQC to evaluate read qualities</li>
+          <ul><li>Implement <code>FastQC</code> to evaluate read qualities</li>
           <li>Manipulate strings of bash variable</li>
-          <li>Evaluate FastQC output</li>
           <li>Utilize sed to find-and-replace text</li></ul>
           <hr />
         </details>
@@ -59,11 +58,11 @@ I. Please **study the contents** and **work through all the code** within the fo
   4. [Alignment File Processing ](../lessons/06_alignment_file_processing.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
-         <br>Before we can call variants from our alignment files, we need to do some processing to clean them up. The two major concerns here are organizing (sorting) our alignment files for our analyses and removing duplicates.
+         <br>Before we can call variants from our alignment files, we need to do some processing to clean up the alignment files. The two major concerns here are organizing (sorting) our alignment files for our analyses and removing duplicates.
          <br><br>This lesson will:<br>
              <ul><li>Differentiate between query-sorted and coordinate-sorted alignment files</li>
              <li>Describe and remove duplicate reads</li>
-             <li>Process a raw SAM file for input into a BAM for GATK</li></ul>
+             <li>Process a raw SAM file for input into a BAM for <code>GATK</code></li></ul>
              <hr />
         </details>
 
@@ -82,8 +81,8 @@ I. Please **study the contents** and **work through all the code** within the fo
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>Many high-performance computing clusters are not designed to render the HTML reports produced by <code>MultiQC</code>. Thus, we will use <code>FileZilla</code> to dowload our <code>MultiQC</code> HTML report and interpret the results within it.
          <br><br>This lesson will:<br>
-             <ul><li>Evaluating alignment rates</li>
-             <li>Intepretting read QC metrics within <code>MultiQC</code> HTML report</li></ul>
+             <ul><li>Evaluate alignment rates</li>
+             <li>Intepret read QC metrics within <code>MultiQC</code> HTML report</li></ul>
              <hr />
         </details>
         
