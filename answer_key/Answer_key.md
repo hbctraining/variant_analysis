@@ -38,8 +38,7 @@ Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on 
 <details>
   <summary><b>Click here to see the answer</b></summary>
   <pre>
-  grep '^##' sample.vcf
-  </pre>
+  grep '^##' sample.vcf</pre>
 </details>
 
 **5.** using `grep`, extract the lines containing the names of all of the software packages that were used in the creation of this VCF file?
@@ -47,8 +46,7 @@ Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on 
 <details>
   <summary><b>Click here to see the answer</b></summary>
   <pre>
-  grep '^##source' sample.vcf
-  </pre>
+  grep '^##source' sample.vcf</pre>
 </details>
 
 **Bonus Challenge** 6. For the sample at position 806262 on chromosome 19, what is the reference allele?
@@ -57,16 +55,13 @@ Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on 
   <summary><b>Click here to see the answer</b></summary>
   C
   <pre>
-  less sample.vcf
-  </pre>
+  less sample.vcf</pre>
   Then search the <code>less</code> buffer with:
   <pre>
-  /19<kbd>Tab</kbd>806262
-  </pre>
+  /19<kbd>Tab</kbd>806262</pre>
   <b>OR</b>
   <pre>
-  grep -e $'^19\t806262' sample.vcf
-  </pre>
+  grep -e $'^19\t806262' sample.vcf</pre>
 </details>
 
 ## Evaluating Read Qualities with `FastQC`
@@ -84,8 +79,7 @@ Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on 
   <summary><b>Click here to see the answer</b></summary>
   <pre>
   VCF_PATH=/The/path/to/my/vcf_file.vcf
-  echo ${VCF_PATH%.vcf}.filtered.vcf
-  </pre>
+  echo ${VCF_PATH%.vcf}.filtered.vcf</pre>
 </details>
 
 **3.** Assign the new path with the `.filtered.vcf` extension to a variable named `FILTERED_VCF_PATH` then `echo` this variable.
@@ -94,8 +88,7 @@ Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on 
   <summary><b>Click here to see the answer</b></summary>
   <pre>
   FILTERED_VCF_PATH=`echo ${VCF_PATH%.vcf}.filtered.vcf`
-  echo $FILTERED_VCF_PATH
-  </pre>
+  echo $FILTERED_VCF_PATH</pre>
 </details>
 
 **4.** Copy the BED file from  `/n/groups/hbctraining/variant_calling/sample_data/sample.bed` to `~/variant_calling/` directory. Move to the `~/variant_calling/` directory and use `sed` to stripe `chr` from the chromosome names and have the output look like:
@@ -105,8 +98,7 @@ Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on 
   <pre>
   cp /n/groups/hbctraining/variant_calling/sample_data/sample.bed ~/variant_calling/
   cd ~/variant_calling/
-  sed 's/chr//g' sample.bed
-  </pre>
+  sed 's/chr//g' sample.bed</pre>
 </details>
 
 **5.** Redirect this output to a new file called `sample.without_chr.bed`
@@ -114,8 +106,7 @@ Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on 
 <details>
   <summary><b>Click here to see the answer</b></summary>
   <pre>
-  sed 's/chr//g' sample.bed > sample.without_chr.bed
-  </pre>
+  sed 's/chr//g' sample.bed > sample.without_chr.bed</pre>
 </details>
 
 ## Sequence Alignment Theory
@@ -126,12 +117,10 @@ Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on 
   <summary><b>Click here to see the answer</b></summary>
   Change: 
   <pre>
-  -R &quot;@RG\tID:$SAMPLE\tPL:illumina\tPU:$SAMPLE\tSM:$SAMPLE&quot;
-  </pre>
+  -R &quot;@RG\tID:$SAMPLE\tPL:illumina\tPU:$SAMPLE\tSM:$SAMPLE&quot;</pre>
   To:
   <pre>
-  -R &quot;@RG\tID:$SAMPLE\tPL:illumina\tPU:$SAMPLE\tSM:$SAMPLE\tLB:$SAMPLE&quot;
-  </pre>
+  -R &quot;@RG\tID:$SAMPLE\tPL:illumina\tPU:$SAMPLE\tSM:$SAMPLE\tLB:$SAMPLE&quot;</pre>
 </details>
 
 **2.** If we wanted to increase the number of threads used by `bwa` for processing our alignment to 12, where are the two places we would need to modify our `SBATCH` script to accommodate this?
@@ -140,21 +129,17 @@ Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on 
   <summary><b>Click here to see the answer</b></summary>
   Change with the <code>SBATCH</code> directives:
   <pre>
-  #SBATCH -c 8
-  </pre>
+  #SBATCH -c 8</pre>
   To: 
   <pre>
-  #SBATCH -c 12
-  </pre>
+  #SBATCH -c 12</pre>
   AND
   Change the <code>bwa</code> command:
   <pre>
-  -t 8 \
-  </pre>
+  -t 8 \</pre>
   To:
   <pre>
-  -t 12 \
-  </pre>
+  -t 12 \</pre>
 </details>
 
 ## Alignment File Processing
@@ -223,8 +208,7 @@ And we want to start Job_B.sh after Job_A.sh finishes without error, what comman
 <details>
   <summary><b>Click here to see the answer</b></summary>
   <pre>
-  sbatch --dependency=afterok:213489 Job_B.sh
-  </pre>
+  sbatch --dependency=afterok:213489 Job_B.sh</pre>
 </details>
 
 **2.** If we submit Job_X.sh and `SLURM` returns:
@@ -244,8 +228,7 @@ And we want to start Job_Z.sh after Job_X.sh and Job_Y.sh finishes without error
 <details>
   <summary><b>Click here to see the answer</b></summary>
   <pre>
-  sbatch --dependency=afterok:213489:213496 Job_Z.sh
-  </pre>
+  sbatch --dependency=afterok:213489:213496 Job_Z.sh</pre>
 </details>
 
 **3.** If you want to submit Job_M.sh, and provide `reference.fa` as the first positional parameter and `input.bam` as the second positional parameter, how could you do this?
@@ -253,8 +236,7 @@ And we want to start Job_Z.sh after Job_X.sh and Job_Y.sh finishes without error
 <details>
   <summary><b>Click here to see the answer</b></summary>
   <pre>
-  sbatch Job_M.sh reference.fa input.bam
-  </pre>
+  sbatch Job_M.sh reference.fa input.bam</pre>
 </details>
 
 ***
