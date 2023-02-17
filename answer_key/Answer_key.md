@@ -106,7 +106,7 @@ Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on 
 <details>
   <summary><b>Click here to see the answer</b></summary>
   <pre>
-  sed 's/chr//g' sample.bed > sample.without_chr.bed</pre>
+  sed 's/chr//g' sample.bed &gt; sample.without_chr.bed</pre>
 </details>
 
 ## Sequence Alignment Theory
