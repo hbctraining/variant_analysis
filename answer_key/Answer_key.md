@@ -38,7 +38,7 @@ Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on 
 <details>
   <summary><b>Click here to see the answer</b></summary>
   <pre>
-  grep '^##' sample.vcf</pre>
+  grep &#39;^##&#39; sample.vcf</pre>
 </details>
 
 **5.** using `grep`, extract the lines containing the names of all of the software packages that were used in the creation of this VCF file?
@@ -46,7 +46,7 @@ Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on 
 <details>
   <summary><b>Click here to see the answer</b></summary>
   <pre>
-  grep '^##source' sample.vcf</pre>
+  grep &#39;^##source&#39; sample.vcf</pre>
 </details>
 
 **Bonus Challenge** 6. For the sample at position 806262 on chromosome 19, what is the reference allele?
@@ -61,7 +61,7 @@ Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on 
   /19<kbd>Tab</kbd>806262</pre>
   <b>OR</b>
   <pre>
-  grep -e $'^19\t806262' sample.vcf</pre>
+  grep -e $&#39;^19\t806262&#39; sample.vcf</pre>
 </details>
 
 ## Evaluating Read Qualities with `FastQC`
@@ -98,7 +98,7 @@ Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on 
   <pre>
   cp /n/groups/hbctraining/variant_calling/sample_data/sample.bed ~/variant_calling/
   cd ~/variant_calling/
-  sed 's/chr//g' sample.bed</pre>
+  sed &#39;s/chr//g&#39; sample.bed</pre>
 </details>
 
 **5.** Redirect this output to a new file called `sample.without_chr.bed`
@@ -106,7 +106,7 @@ Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on 
 <details>
   <summary><b>Click here to see the answer</b></summary>
   <pre>
-  sed 's/chr//g' sample.bed &gt; sample.without_chr.bed</pre>
+  sed &#39;s/chr//g&#39; sample.bed &gt; sample.without_chr.bed</pre>
 </details>
 
 ## Sequence Alignment Theory
