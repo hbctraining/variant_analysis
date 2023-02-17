@@ -327,6 +327,17 @@ cp /n/groups/hbctraining/variant_calling/sample_data/sample.vcf .
 
 It is important to note that BED files positioning have ***zero-based indexing***. 
 
+## Exercise
+
+**7.** Create a BED file within `~/variant_calling/` called `my_file.bed` and have it contain these three ranges:
+
+Chromosome 1 from 84573 to 94573
+
+Chromosome 2 from 465352 to 466352
+
+Chromosome 19 from 111237 to 111238
+
+***
 
 [Next Lesson >>](04_fastqc.md)
 
