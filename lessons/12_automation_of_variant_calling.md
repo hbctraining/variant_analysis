@@ -836,6 +836,34 @@ VARIANT_ANNOTATION_JOB_ID=`echo $VARIANT_ANNOTATION_JOB_SUBMISSION | cut -d ' ' 
 echo -e "Variant annotation job submitted as job ID $VARIANT_ANNOTATION_JOB_ID"
 ```
 
+## Exrecises
+
+1) If we submit Job_A.sh and `SLURM` returns:
+
+`Submitted batch job 213489`
+
+And we want to start Job_B.sh after Job_A.sh finishes without error, what command would we use to do this?
+
+Answer: sbatch --dependency=afterok:213489 Job_B.sh
+
+2) If we submit Job_X.sh and `SLURM` returns:
+
+`Submitted batch job 213489`
+
+Then we submit Job_Y.sh and `SLURM` returns:
+
+`Submitted batch job 213496`
+
+And we want to start Job_Z.sh after Job_X.sh and Job_Y.sh finishes without error, what command would we use to do this?
+
+Answer: sbatch --dependency=afterok:213489:213496 Job_Z.sh
+
+3) If you want to submit Job_M.sh, and provide `reference.fa` as the first positional parameter and `input.bam` as the second positional parameter, how could you do this?
+
+Answer: sbatch Job_M.sh reference.fa input.bam
+
+***
+
 [Next Lesson >>](13_variant_prioritization.md)
 
 [Back to Schedule](../schedule/README.md)
