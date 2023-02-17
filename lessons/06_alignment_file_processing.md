@@ -630,6 +630,7 @@ We don't need to provide an output file for <code>samtools index</code>, by defa
 </p>
 Is this SAM file's sort order: unsorted, query-sorted, coordinate-sorted or is it ambiguous?
 
+
 **2.** We are comparing our `SortSam` command with our colleague's command. Is there anything wrong with their syntax? Why or why not?
 
 **Our syntax**
