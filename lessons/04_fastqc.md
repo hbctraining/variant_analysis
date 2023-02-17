@@ -164,7 +164,7 @@ cd ~/variant_calling/scripts/
 vim fastqc_normal.sbatch
 ```
 
-First, we will add our shebang line, description and `sbatch` directives.
+Now that we have opened up `vim`, we need to enter `insert-mode` by pressing `i`. Once in `insert-mode`, we will add our shebang line, description and `sbatch` directives.
 
 ```
 #!/bin/bash
