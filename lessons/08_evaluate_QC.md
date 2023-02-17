@@ -2,8 +2,8 @@
 
 ## Learning Objectives
 
-- Interpret `FastQC` figures for read quality
 - Evaluate read alignment
+- Interpret `FastQC` figures for read quality
 
 ## Downloading `MultiQC` HTML Report with `FileZilla`
 
