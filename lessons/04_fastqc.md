@@ -1,4 +1,4 @@
-# Evaluating Read Qualities with `FastQC`
+# Evaluating Read Qualities with FastQC
 
 ## Learning objectives
 - Implement `FastQC` to evaluate read qualities
@@ -7,13 +7,11 @@
 
 ## Importance of Evaluating Read Qualities
 
-Before engaging in any next-generation sequencing project is it best practice to inspect your sequence reads to ensure that they are of good quality. Sources of error are be numerous and include poor library construction and a malfunctioning sequencer. Therefore, it is critically important that you analyze your sequenced reads to ensure that they are high-quality before you devote time and resources to downstream analyses.
+Before engaging in any next-generation sequencing project is it best practice to inspect your sequence reads to ensure that they are of high-quality. Sources of error are be numerous and include poor library construction and a malfunctioning sequencer. Therefore, it is critically important that you analyze your sequenced reads to ensure that they are high-quality before you devote time and resources to downstream analyses.
 
 <p align="center">
 <img src="../img/Read_QC_Pipeline.png" width="800">
 </p>
-
-Before we discuss implementing `FastQC` we are going to introduce string manipulation in `bash` which we will be using throughout our work.
 
 ## Unmapped read data (FASTQ)
 
@@ -42,9 +40,9 @@ The line 4 has characters encoding the quality of each nucleotide in the read. T
     Quality score: 0........10........20........30........40                                
 ```
  
-Using the quality encoding character legend, the first nucelotide in the read (C) is called with a quality score of 31 (corresponding to encoding character `@`), and our Ns are called with a score of 2 (corresponding to encoding character `#`). **As you can tell by now, this is a bad read.** 
+Using the above quality encoding character legend, the first nucelotide in the read (C) is called with a quality score of 31 (corresponding to encoding character `@`), and our Ns are called with a score of 2 (corresponding to encoding character `#`). **As you can tell by now, this is a bad read.** 
 
-Each quality score represents the probability that the corresponding nucleotide call is incorrect. This quality score is logarithmically based and is calculated as:
+Each PHRED quality score represents the probability that the corresponding nucleotide call is incorrect, with higher PHRED scores representing lower probabilities of incorrect base calls. This quality score is logarithmically based and is calculated as:
 
 	Q = -10 x log10(P), where P is the probability that a base call is erroneous
 
@@ -59,19 +57,21 @@ These probabaility values are the results from the base calling algorithm and de
 
 Therefore, for the first nucleotide in the read (C), there is less than a 1 in 1000 chance that the base was called incorrectly. Whereas, for the the end of the read there is greater than 50% probabaility that the base is called incorrectly.
 
+Before we discuss implementing `FastQC` we are going to introduce string manipulation in `bash` which we will be using throughout our work.
+
 ## Exercise
 
 **1.** If the probability of a incorrect base call is 1 in 3,981, what is the associated PHRED score?
 
 ## `bash` String Manipulation
 
-String manipulation in `bash` can be a very helpful tool in minimizing typos whenever evaluating a script that uses `bash`. Before we discuss manipulating strings, we should first define a string. A string is a data type that is used to represent text rather than integers. Examples of strings include:
+String manipulation in `bash` can be a very helpful tool in minimizing typos whenever evaluating a script that uses `bash`. Before we discuss manipulating strings, we should first define a string. A string is a data type that is used to store alphanumeric characters. Examples of strings include:
 
 - "Hello World"
 - "/path/to/file.txt"
 - "TPS_Report_2019"
 
-With this understanding of what strings are, we might start to see some value in them, particularly with respect to filepaths. Imagine you have two filepaths:
+With this understanding of what strings are, we might start to see some value in them, particularly with respect to file paths. Imagine you have two file paths:
 
 ```
 /This/is/my/extremely/super/duper/long/and/annoying/filepath/file_1.txt
@@ -147,7 +147,7 @@ A brief overview of some `bash` text manipulation shortcuts are in the table bel
 
 **3.** Assign the new path with the `.filtered.vcf` extension to a variable named `FILTERED_VCF_PATH` then `echo` this variable.
 
-## `FastQC`
+## FastQC
 
 [`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) is a popular tool for analyzing read quality for NGS data. It can evaluate many aspects of your NGS data including:
 - Read quality by position
@@ -179,7 +179,7 @@ First, we will add our shebang line, description and `sbatch` directives.
 #SBATCH -e fastqc_normal_%j.err
 ```
 
-Next, we will load the `FastQC` module:
+Next, we will add loading the `FastQC` module to our script:
 
 ```
 # Load module
@@ -189,11 +189,14 @@ module load fastqc/0.11.9
 Next, we will define the variables that we will be using. This step isn't necessary and you can alternatively just manually input full paths to files and parameters within the actual command. However, the use of variables instead has some distinct advantages:
 
 1) Anything used more than once could have more easily been a variable and less prone to typos. Perhaps this is a common filepath or sample name that you need to write many times. If it is a variable, you only need to type it once instead of each occurance.
+
 2) The use of variable allows us to use `bash` string manipulation to assign variables rather than typing each out
+
 3) Can help keep your commands cleaner and more organized
+
 4) Can help make repurposing your script for a different project easier, since it might just be the variables changing and you don't need to even touch the actual command
 
-Hopefully, the case made for assigning varibles outside of your command has been successful. The variables we will be setting for this script are:
+Hopefully, the case made for assigning varibles outside of your command has been successful. The variables we will be adding to this script are:
 
 ```
 # Assign variables
@@ -205,7 +208,7 @@ THREADS=4
 
 Notice here how we are using string manipulation in `bash` to assign `$RIGHT_READS`. The left and right reads from paired-end sequencing will oftentimes be in the same directory. So this is a case where string manipulation in `bash` will be really helpful in saving time and reducing typos. 
 
-Now that we have assigned parameters to variables, we are going to get ready to run `FastQC` and before we run `FastQC` we need to make sure that the output directory exists to accept the output:
+Now that we have assigned parameters to variables, we are going to get ready to run `FastQC` and before we run `FastQC` we need to make sure that the creation of the output directory exists in our script to accept the output:
 
 ```
 # Create directory to hold output
@@ -215,6 +218,7 @@ mkdir -p $OUTPUT_DIRECTORY
 The `-p` option for `mkdir` does two things:
 
 1) It will make any parent directories necessary
+
 2) If the directory already exits it will not return an warning message.
 
 Now we can run `FastQC`:
@@ -231,8 +235,8 @@ $RIGHT_READS \
 This command is pretty strightforward, but we will explain each part:
 
 - `fastqc` This calls the `FastQC` software package
-- `$LEFT_READS` This is the left read (R1 or Read 1) input FASTQ file
-- `$Right_READS` This is the right read (R2 or Read 2) input FASTQ file
+- `$LEFT_READS` This is the left read (R1 or Read 1) from the input FASTQ file
+- `$Right_READS` This is the right read (R2 or Read 2) from the input FASTQ file
 - `--outdir $OUTPUT_DIRECTORY` This is the directory for the output files to be written to
 - `--threads $THREADS` This specifies the number of threads that `FastQC` can use to speed up the processing
 
@@ -292,7 +296,7 @@ In our case, we are hoping to replace each instance of "normal" with "tumor". Th
 sed 's/normal/tumor/g' fastqc_normal.sbatch
 ```
 
-We can see that all instances of "normal" have been replaced with "tumor". Now we would like to redirect this output to a file called `fastqc_tumor.sbatch` rather than standard output, se we need to add redirection to the end of out command:
+We can see that all instances of "normal" have been replaced with "tumor". Now we would like to redirect this output to a file called `fastqc_tumor.sbatch` rather than standard output, so we need to add redirection to the end of out command:
 
 ```
 sed 's/normal/tumor/g' fastqc_normal.sbatch >  fastqc_tumor.sbatch
@@ -349,6 +353,12 @@ Traditionally, most people inspect their `FastQC` reports before continuing on w
 ## Exercises
 
 **4.** Copy the BED file from  `/n/groups/hbctraining/variant_calling/sample_data/sample.bed` to `~/variant_calling/` directory. Move to the `~/variant_calling/` directory and use `sed` to stripe `chr` from the chromosome names and have the output look like:
+
+```
+1	200	300
+1	600	900
+2	10	1000
+```
 
 **5.** Redirect this output to a new file called `sample.without_chr.bed`
 
