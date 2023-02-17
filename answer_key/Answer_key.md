@@ -67,7 +67,9 @@ Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on 
 **7.** Create a BED file within `~/variant_calling/` called `my_file.bed` and have it contain these three ranges:
 
 Chromosome 1 from 84573 to 94573
+
 Chromosome 2 from 465352 to 466352
+
 Chromosome 19 from 111237 to 111238
 
 <details>
