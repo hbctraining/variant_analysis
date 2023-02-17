@@ -7,19 +7,21 @@
 
 ## Logging into O2
 
-For this workshop we will be using training accounts to log in. These have been created for us by the [HMS Research Computing (HMS-RC) team](https://it.hms.harvard.edu/our-services/research-computing), they are the folks that manage the O2 cluster. We will be providing each of you with your own training account associated with a password for the duration of this workshop. Your training account and password can be found [here]().
+For this workshop we will be using training accounts to log into O2. These have been created for us by the [HMS Research Computing (HMS-RC) team](https://it.hms.harvard.edu/our-services/research-computing) and they are the folks that manage the O2 cluster. We will be providing each of you with your own training account associated with a password for the duration of this workshop. Your training account and password can be found [here](https://docs.google.com/spreadsheets/d/1kBlYowhjjHJC9ZovmbBULmbqozKpprM17vZ2wPlhNg0/edit#gid=0).
 
-> If you are interested in getting your own personal account on O2, please follow the instructions provided here after this workshop.
+> If you are interested in getting your own personal account on O2, please follow the instructions provided [here](https://harvardmed.atlassian.net/wiki/spaces/O2/pages/1918304257/How+to+request+or+retain+an+O2+account) after this workshop.
 
-Let's get started with the hands-on component by typing in the following command to log in to O2:
+Let's get started with the hands-on component by typing in the following command to log into our command-line:
 
 ```
 ssh username@o2.hms.harvard.edu
 ```
 
-You will receive a prompt for your password, and you should type in your associated password; ***note that the cursor will not move as you type in your password***.
+You will receive a prompt for your password, and you should type in your associated password. 
 
-A warning might pop up the first time you try to connect to a remote machine, type "Yes" or "Y".
+***Note: that the cursor will not move as you type in your password***.
+
+A warning might pop up the first time you try to connect to a remote machine, type <kbd>Yes</kbd> or <kbd>Y</kbd>, then hit <kbd>Enter/Return</kbd>.
 
 Once logged in, you should see the O2 icon, some news, and the command prompt, e.g. [rc_training10@login01 ~]$.
 
@@ -59,7 +61,7 @@ It will prompt you with the following:
 Do you want to create a scratch3 directory under /n/scratch3/users? [y/N]> 
 ```
 
-To this you will respond `y`, then hit `Enter/Return`.
+To this you will respond <kbd>y</kbd>, then hit <kbd>Enter/Return</kbd>.
 
 
 Next, it will prompt you with:
@@ -73,7 +75,7 @@ it will be DELETED with NO POSSIBILITY of retrieval.
 I understand HMS RC guidelines for using Scratch3: 
 ```
 
-Type `YES`, then hit `Enter/Return`.
+Type <kbd>YES</kbd>, then hit <kbd>Enter/Return</kbd>.
 
 It should return:
 
@@ -142,7 +144,7 @@ echo $USER
 echo ${USER:0:1}
 ```
 
-By using `${USER:0:1}`, we have seen how you can produce substrings in `bash`. The syntax is:
+By using `${USER:0:1}`, we can see how you can produce substrings in `bash`. The syntax is:
 
 ```
 ${VARIABLE:START:LENGTH}
