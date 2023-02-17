@@ -62,7 +62,7 @@ Therefore, for the first nucleotide in the read (C), there is less than a 1 in 1
 
 ## Exercise
 
-1. If the probability of a incorrect base call is 1 in 3,981, what is the associated PHRED score?
+**1.** If the probability of a incorrect base call is 1 in 3,981, what is the associated PHRED score?
 
 ## `bash` String Manipulation
 
@@ -144,9 +144,9 @@ A brief overview of some `bash` text manipulation shortcuts are in the table bel
 
 ## Exercises
 
-2. Assign the path, `/The/path/to/my/vcf_file.vcf`, to a variable named `VCF_PATH` and replace the `.vcf` extension with `.filtered.vcf`.
+**2.** Assign the path, `/The/path/to/my/vcf_file.vcf`, to a variable named `VCF_PATH` and replace the `.vcf` extension with `.filtered.vcf`.
 
-3. Assign the new path with the `.filtered.vcf` extension to a variable named `FILTERED_VCF_PATH` then `echo` this variable.
+**3.** Assign the new path with the `.filtered.vcf` extension to a variable named `FILTERED_VCF_PATH` then `echo` this variable.
 
 ## `FastQC`
 
@@ -349,9 +349,9 @@ Traditionally, most people inspect their `FastQC` reports before continuing on w
 
 ## Exercises
 
-4. Copy the BED file from  `/n/groups/hbctraining/variant_calling/sample_data/sample.bed` to `~/variant_calling/` directory. Move to the `~/variant_calling/` directory and use `sed` to stripe `chr` from the chromosome names and have the output look like:
+**4.** Copy the BED file from  `/n/groups/hbctraining/variant_calling/sample_data/sample.bed` to `~/variant_calling/` directory. Move to the `~/variant_calling/` directory and use `sed` to stripe `chr` from the chromosome names and have the output look like:
 
-5. Redirect this output to a new file called `sample.without_chr.bed`
+**5.** Redirect this output to a new file called `sample.without_chr.bed`
 
 ***
 
