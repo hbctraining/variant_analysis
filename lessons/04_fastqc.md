@@ -3,7 +3,6 @@
 ## Learning objectives
 - Implement `FastQC` to evaluate read qualities
 - Manipulate strings of `bash` variable
-- Evaluate `FastQC` output
 - Utilize `sed` to find-and-replace text
 
 ## Importance of Evaluating Read Qualities
