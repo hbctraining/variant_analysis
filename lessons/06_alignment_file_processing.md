@@ -623,16 +623,14 @@ We don't need to provide an output file for <code>samtools index</code>, by defa
 
 ## Exercises
 
-1. When inspecting a SAM file you see the following order:
+**1.** When inspecting a SAM file you see the following order:
 
 <p align="center">
 <img src="../img/Sort_order_question.png" width="500">
 </p>
 Is this SAM file's sort order: unsorted, query-sorted, coordinate-sorted or is it ambiguous?
 
-Answer: Query-sorted
-
-2. We are comparing our `SortSam` command with our colleague's command. Is there anything wrong with their syntax? Why or why not?
+**2.** We are comparing our `SortSam` command with our colleague's command. Is there anything wrong with their syntax? Why or why not?
 
 **Our syntax**
 ```
@@ -649,8 +647,6 @@ I=$SAM_FILE \
 O=$QUERY_SORTED_BAM_FILE \
 SO=queryname
 ```
-
-Answer: No, it is just using the traditional syntax with abbreviations.
 
 ## Creating the Tumor SAM/BAM procressing
     
