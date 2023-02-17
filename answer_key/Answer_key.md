@@ -114,6 +114,12 @@ Chromosome 19 from 111237 to 111238
 
 **4.** Copy the BED file from  `/n/groups/hbctraining/variant_calling/sample_data/sample.bed` to `~/variant_calling/` directory. Move to the `~/variant_calling/` directory and use `sed` to stripe `chr` from the chromosome names and have the output look like:
 
+```
+1	200	300
+1	600	900
+2	10	1000
+```
+
 <details>
   <summary><b>Click here to see the answer</b></summary>
   <pre>
