@@ -131,7 +131,7 @@ A CIGAR string is expressed from the left of the read and going to the right. It
 
 **Exercise**
 
-1. Below is an alignment, what would be the CIGAR string for this alignment?
+3. Below is an alignment, what would be the CIGAR string for this alignment?
 
 <p align="center">
 <img src="../img/CIGAR_exercise.png" width="600">
@@ -313,15 +313,9 @@ cp /n/groups/hbctraining/variant_calling/sample_data/sample.vcf .
 
 1. Using `grep`, extract only the meta-information lines from the VCF file. 
 
-Answer: `grep '^##' sample.vcf`
-
 2. using `grep`, extract the lines containing the names of all of the software packages that were used in the creation of this VCF file?
 
-Answer: `grep '^##source' sample.vcf`
-
-**Bonus Challenge**3. For the sample at position 806262 on chromosome 19, what is the reference allele?
-
-Answer: C, `less sample.vcf` then search `/19<kbd>Tab</kbd>806262` or `grep -e $'^19\t806262' sample.vcf` 
+**Bonus Challenge** 3. For the sample at position 806262 on chromosome 19, what is the reference allele?
 
 ## BED
 
