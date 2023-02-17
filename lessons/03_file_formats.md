@@ -28,8 +28,8 @@ The benefits to having a **zero-based** system is the ease of calculating distan
 
 SAM files are files that hold alignment information. There are two main parts of components to a SAM file are:
 
-1) Header section
-2) Alignment section
+- Header section
+- Alignment section
 
 #### Header section
 
@@ -49,7 +49,7 @@ This section of the header provides the read group metadata. This can include in
 
 ##### Program `@PG`
 
-This section will give you a history of the program names (`PN`) used to make the SAM file, the commands used (`CL`) and the version number (`VN`) of the program used. This can be helpful when trying to recreate an alignment file if the alignment command isn't availible to you.
+This section will give you a history of the program names (`PN`) used to make the SAM file, the commands used (`CL`) and the version number (`VN`) of the programs used. This can be helpful when trying to recreate an alignment file if the alignment command isn't availible to you.
 
 ##### Comments `@CO`
 
@@ -70,8 +70,8 @@ The alignment section of a SAM file stores alignment data for reads that have at
 | RNEXT | Reference sequence name for the mate pair or next read |
 | PNEXT | Position for the mate pair or next read | 
 | TLEN | The observed distance of the alignment |
-| SEQ | The nucleotide sequence. If '\*' then the sequence is not stored. If '=', the seqeunce matches the reference. |
-| QUAL | The base quality in Phred +33 standard. If '\*' base quality is not stored.
+| SEQ | The nucleotide sequence. If '\*', then the sequence is not stored. If '=', the seqeunce matches the reference. |
+| QUAL | The base quality in Phred +33 standard. If '\*', then the base quality is not stored.
 
 Information on the additional optional fields can be found [here](https://samtools.github.io/hts-specs/SAMv1.pdf).
 
@@ -79,7 +79,7 @@ Information on the additional optional fields can be found [here](https://samtoo
 
 The bit-wise flags that SAM files use are very helpful for giving the user a rough understanding of the read. Details such as whether the read is paired, has an alignment to the provided reference sequence or is a PCR duplicate can all be encoded into the FLAG. 
 
-The simplest way to consider a unique flag is that it is the sum of many bit-wise toggle. The table below tries to illustrate this concept.
+The simplest way to consider a unique flag is that it is the sum of many bit-wise toggles. The table below tries to illustrate this concept.
 
 |  Value   | Interpretation |  Value  | Interpretation |
 |----------|----------------|---------|----------------|
@@ -94,9 +94,9 @@ The simplest way to consider a unique flag is that it is the sum of many bit-wis
 | 0 | This is the primary alignment | 256 | This is not the primary alignment |
 | 0 | Read passing QC checks | 512 | Read not passing QC checks |
 | 0 | Read is not a PCR or optical duplicate | 1028 | Read is a PCR or optical duplicate |
-| 0 | This is a supplementary alignment | 2056 | This is not a supplementary alignment |
+| 0 | This is not a supplementary alignment | 2056 | This is a supplementary alignment |
 
-For each alignment, an aligner goes through this table and assigns the alignement a score for each row. The scores are summed up and that produces the flag. This [tool on the Broad's Website](https://broadinstitute.github.io/picard/explain-flags.html) can be very helpful for decoding the SAM FLAGs that you can encounter.
+For each alignment, an aligner goes through this table and assigns the alignment a score for each row. The scores are summed up and that produces the flag. This [tool on the Broad's Website](https://broadinstitute.github.io/picard/explain-flags.html) can be very helpful for decoding the SAM FLAGs that you can encounter.
 
 ---
 
@@ -106,7 +106,7 @@ Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on 
 
 **1.** An alignment has a FLAG of 115. What do we know about this read?
 
-**2.** What would be the FLAG be for a read alignment for the first read in a pair-end read, where the first read was unmapped while the second read was mapped to the reverse strand?
+**2.** What would be the FLAG for a read alignment for the first read in a pair-end read, where the first read was unmapped while the second read was mapped to the reverse strand?
 
 ---
 
@@ -141,7 +141,7 @@ A CIGAR string is expressed from the left of the read and going to the right. It
 
 ### BAM
 
-As you might suspect, because SAM files hold alignment information for all of the reads in an sequencing run and there are oftentimes millions of sequence reads, SAM files are very large and cumbersome to store. As a result, SAM files are often stored in a binary compressed version called a BAM file. Most software packages are agnostic to this difference and will accept both SAM and BAM files, despite BAM files not being human readable. It is generally considered best practice to your data in BAM format for long periods of time unless you specifically need the SAM version of the alignment in order to reduce unnecessary storage on a shared computing cluster.
+As you might suspect, because SAM files hold alignment information for all of the reads in an sequencing run and there are oftentimes millions of sequence reads, SAM files are very large and cumbersome to store. As a result, SAM files are often stored in a binary compressed version called a BAM file. Most software packages are agnostic to this difference and will accept both SAM and BAM files, despite BAM files not being human readable. It is generally considered best practice to your data in BAM format for long periods of time, unless you specifically need the SAM version of the alignment, in order to reduce unnecessary storage on a shared computing cluster.
 
 ## VCF
 
@@ -186,7 +186,7 @@ A sample VCF can be found below:
 
 ### Meta-information Lines
 
-The first lines in a VCF file are called the ***meta-information lines*** and they always start with `##`. These lines contain information regarding how the file was made and what the file contains. The meta-information lines are:
+The first lines in a VCF file are called the ***meta-information lines*** and they always start with `##`. These lines contain information regarding how the file was made and what the file contains. The meta-information lines from the above example are:
 
 ```
 ##fileformat=VCFv4.2
@@ -245,7 +245,7 @@ Let's analyze a few of the meta-information lines to understand what they are de
 
 ### Header Line
 
-The header line is a single line between the meta-information lines and the data lines that provies a brief desciption of each field in the following data lines. The header line starts with only a single `#`. The example header line looked like:
+The header line is a single line between the meta-information lines and the data lines that provies a brief desciption of each field in the following data lines. The example header line looked like:
 
 ```
 #CHROM  POS ID  REF ALT QUAL  FILTER  INFO  FORMAT  syn3_normal     syn3_tumor
@@ -300,11 +300,11 @@ Let's analyze this last line more closely:
 1       1324300 .       G       A       .       PASS    AS_FilterStatus=SITE;AS_SB_TABLE=47,6|11,0;ClippingRankSum=0.390;DP=68;ECNT=1;FS=2.373;GERMQ=93;MBQ=27,27;MFRL=337,338;MMQ=60,60;MPOS=27;MQ=60.00;MQ0=0;MQRankSum=0.000;NALOD=1.54;NLOD=9.88;POPAF=6.00;ReadPosRankSum=-0.125;TLOD=24.65        GT:AD:AF:DP:F1R2:F2R1:SB        0/0:33,0:0.028:33:12,0:20,0:32,1,0,0    0/1:20,11:0.367:31:6,6:12,5:15,5,11,0
 ```
 
-This variant is on chromosome `1` at position `1324300`. It has a `.` in the third field because it hasn't been annotated with dbSNP yet, but that may change if we annotate this file. The reference allele in the position was a `G` and a variant allele, `A`, was found. The fifth field `.` signifies that it doesn't have a PHRED quality score associated with this variant. This variant passed all of the filters. For each sample we will have information on the genotype, allele depths listed in order, the alternate allele frequency, depth at this site, counts of reads in F1R2 pair orientation supporting each allele, counts of reads in F2R1 pair orientation supporting each allele and some statistics on strand bias. 
+This variant is on chromosome `1` at position `1324300`. It has a `.` in the third field because it hasn't been annotated with dbSNP yet, but that may change if we annotate this file. The reference allele in the position was a `G` and a variant allele, `A`, was found. The sixth field `.` signifies that it doesn't have a PHRED quality score associated with this variant. This variant passed all of the filters. For each sample we will have information on the genotype, allele depths listed in order, the alternate allele frequency, depth at this site, counts of reads in F1R2 pair orientation supporting each allele, counts of reads in F2R1 pair orientation supporting each allele and some statistics on strand bias. 
 
 ### Exercises
 
-Let's analzye this sample VCF file found here `/n/groups/hbctraining/variant_calling/sample_data/sample.vcf `. First let's move into out `variant_calling` directory and copy over the file:
+Let's analzye this sample VCF file found here `/n/groups/hbctraining/variant_calling/sample_data/sample.vcf`. First let's move into out `variant_calling` directory and copy over the file:
 
 ```
 cd ~/variant_calling/
@@ -313,9 +313,9 @@ cp /n/groups/hbctraining/variant_calling/sample_data/sample.vcf .
 
 **4.** Using `grep`, extract only the meta-information lines from the VCF file. 
 
-**5.** using `grep`, extract the lines containing the names of all of the software packages that were used in the creation of this VCF file?
+**5.** Using `grep`, extract the lines containing the names of all of the software packages that were used in the creation of this VCF file?
 
-**Bonus Challenge:** **6.** For the sample at position 806262 on chromosome 19, what is the reference allele?
+**Bonus Challenge:** **6.** For the variant at position 806262 on chromosome 19, what is the reference allele?
 
 ## BED
 
