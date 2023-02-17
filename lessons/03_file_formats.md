@@ -104,9 +104,9 @@ For each alignment, an aligner goes through this table and assigns the alignemen
 
 Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on the Broad's Website](https://broadinstitute.github.io/picard/explain-flags.html). 
 
-1. An alignment has a FLAG of 115. What do we know about this read?
+**1.** An alignment has a FLAG of 115. What do we know about this read?
 
-2. What would be the FLAG be for a read alignment for the first read in a pair-end read, where the first read was unmapped while the second read was mapped to the reverse strand?
+**2.** What would be the FLAG be for a read alignment for the first read in a pair-end read, where the first read was unmapped while the second read was mapped to the reverse strand?
 
 ---
 
@@ -131,7 +131,7 @@ A CIGAR string is expressed from the left of the read and going to the right. It
 
 **Exercise**
 
-3. Below is an alignment, what would be the CIGAR string for this alignment?
+**3.** Below is an alignment, what would be the CIGAR string for this alignment?
 
 <p align="center">
 <img src="../img/CIGAR_exercise.png" width="600">
@@ -311,11 +311,11 @@ cd ~/variant_calling/
 cp /n/groups/hbctraining/variant_calling/sample_data/sample.vcf .
 ```
 
-1. Using `grep`, extract only the meta-information lines from the VCF file. 
+**4.** Using `grep`, extract only the meta-information lines from the VCF file. 
 
-2. using `grep`, extract the lines containing the names of all of the software packages that were used in the creation of this VCF file?
+**5.** using `grep`, extract the lines containing the names of all of the software packages that were used in the creation of this VCF file?
 
-**Bonus Challenge** 3. For the sample at position 806262 on chromosome 19, what is the reference allele?
+**Bonus Challenge:** **6.** For the sample at position 806262 on chromosome 19, what is the reference allele?
 
 ## BED
 
