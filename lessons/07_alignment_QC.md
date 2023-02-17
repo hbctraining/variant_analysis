@@ -167,10 +167,20 @@ module load picard/2.27.5
 Next, we will run the `ViewSam` package in `Picard`:
 
 ```
-java -jar $PICARD/picard.jar ViewSam --INPUT /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam | less
+java -jar $PICARD/picard.jar ViewSam \
+--INPUT /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam \
+--ALIGNMENT_STATUS All \
+--PF_STATUS All \
+| less
 ```
 
-This will open up the fully processed normal sample's BAM file in a human-readable format.
+This will open up the fully processed normal sample's BAM file in a human-readable format. Let's briefly discuss this command:
+
+- `java -jar $PICARD/picard.jar ViewSam` This calls the `ViewSam` package within `Picard`
+- `--INPUT /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam` This is the input file that we would like to view
+- `--ALIGNMENT_STATUS All` This option filter what reads we would like to see, just the aligned reads (`Aligned`), just the unaligned (`Unaligned`) or all of the reads (`All`)
+- `--PF_STATUS All` This option always us to filter the reads we see based upon a chastity filter. More information on Illumina's chastity filter can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035890991-PF-reads-Illumina-chastity-filter). We can show only reads that pass this chastity filter (`PF`), fail the chastity filter (`nonPF`) or all reads (`all`).
+- `| less` Lastly, we want to pipe the output to a `less` function.
 
 We can see the top line is the header and it tells you information about the alignment file:
 
@@ -243,6 +253,17 @@ The information here is the same as with <code>Picard</code>, so we won't rehash
 <hr />
 </details>
 
+## Exercises
+
+1) Inspect your coordinate-sorted BAM file with `ViewSam` package within `Picard`. What version of `bwa` was used in the alignment?
+
+Answer: bwa version 0.7.17-r1188
+
+3) Inspect your coordinate-sorted BAM file with `ViewSam` package within `Picard`. What is the flag for your first aligned read? Using the [Broad's decoding FLAG tool](https://broadinstitute.github.io/picard/explain-flags.html), what does this flag mean?
+
+Answer: 129
+Read is paried and it is the second read in the pair.
+
 ## Options for Inspecting `Picard` Alignment Metrics
 
 Once the job has finished we would inspect the output files. This could be done in one of a few ways:
@@ -259,7 +280,7 @@ Once the job has finished we would inspect the output files. This could be done 
     - Easier to interpret the data than the `less` buffer approach
   - **Cons**
     - Hard to compare across samples
-    - Have to download the metrics files from the O2 cluster
+    - Have to download multiple metrics files from the O2 cluster
     
 3) Collate metrics files using [`MultiQC`](https://multiqc.info) and download the `MultiQC` HTML report from the O2 cluster
   - **Pros**
@@ -270,7 +291,7 @@ Once the job has finished we would inspect the output files. This could be done 
     - Have to download a file from the O2 cluster
     - Have to run samples through an extra `MultiQC` step
 
-None of the above methods are wrong, but some are more elegant than others. One might use **Method 1)** if they only had a handful of samples (~<5) to analyze and only wanted a single statistic, like alignment rate, from each. Then, it might be fastest just to open them up in a `less` buffer. However, if one has lots of samples (>5) then the advantages of `MultiQC` collating the results starts to become really helpful and one might choose **Method 3)**. Unfortunately, `MultiQC` doesn't display *ALL* of the data contained in the metrics file, so one may be inclined to do **Method 2** and downloard the directory full of metrics files in order to view the metrics not included in the `MultiQC` report in a program like Microsoft Excel.
+None of the above methods are wrong, but some are more elegant than others. One might use **Method 1)** if they only had a handful of samples (~<5) to analyze and only wanted a single statistic, like alignment rate, from each. Then, it might be fastest just to open them up in a `less` buffer. However, if one has lots of samples (>5) then the advantages of `MultiQC` collating the results starts to become really helpful and one might choose **Method 3)**. Unfortunately, `MultiQC` doesn't display *ALL* of the data contained in the metrics file, so one may be inclined to do **Method 2** and download the directory full of metrics files in order to view the metrics not included in the `MultiQC` report in a program like Microsoft Excel.
 
 However, for this workshop, we are going to collate our results in `MultiQC` and download the HTML report to our local computers.
 
