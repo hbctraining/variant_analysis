@@ -12,7 +12,7 @@ Please read the following page to learn about the dataset we will be using:
 
 | Time |  Topic  | Instructor |
 |:-----------:|:----------:|:--------:|
-| 9:30 - 10:10 | [Workshop Introduction]() | Will |
+| 9:30 - 10:10 | [Workshop Introduction](../lectures/Variant_calling_Intro_to_workshop_all.pdf) | Will |
 | 10:00 - 11:30 | [Introduction to Variant Calling]() | Sergey |
 | 11:30 - 11:50 | [Project Organization](../lessons/02_project_organization.md) | Will |
 | 11:50 - 12:00 | Overview of self-learning materials and homework submission | Will |
@@ -150,7 +150,7 @@ II. **Complete the exercises**:
 | 10:00 - 10:45 | [Variant Prioritization with SnpSift](../lessons/13_variant_prioritization.md) | Will |
 | 10:45 - 11:25 | [Visualization in IGV](../lessons/14_IGV.md) | Will |
 | 11:25 - 11:45 | Q & A | Will |
-| 11:45 - 12:00 | [Wrap up]() | Will |
+| 11:45 - 12:00 | [Wrap up](../lectures/Variant_calling_wrapup_all.pdf) | Will |
 
 ***
 
