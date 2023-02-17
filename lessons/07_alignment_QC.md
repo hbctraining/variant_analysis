@@ -255,14 +255,9 @@ The information here is the same as with <code>Picard</code>, so we won't rehash
 
 ## Exercises
 
-1) Inspect your coordinate-sorted BAM file with `ViewSam` package within `Picard`. What version of `bwa` was used in the alignment?
+**1.** Inspect your coordinate-sorted BAM file with `ViewSam` package within `Picard`. What version of `bwa` was used in the alignment?
 
-Answer: bwa version 0.7.17-r1188
-
-3) Inspect your coordinate-sorted BAM file with `ViewSam` package within `Picard`. What is the flag for your first aligned read? Using the [Broad's decoding FLAG tool](https://broadinstitute.github.io/picard/explain-flags.html), what does this flag mean?
-
-Answer: 129
-Read is paried and it is the second read in the pair.
+**2.** Inspect your coordinate-sorted BAM file with `ViewSam` package within `Picard`. What is the flag for your first aligned read? Using the [Broad's decoding FLAG tool](https://broadinstitute.github.io/picard/explain-flags.html), what does this flag mean?
 
 ## Options for Inspecting `Picard` Alignment Metrics
 
