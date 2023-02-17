@@ -30,7 +30,7 @@ Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on 
 
 <details>
   <summary><b>Click here to see the answer</b></summary>
-  3M1X2M1X1D4M2X2M1M1D1M
+  3M1X2M1X1D4M2X2M1M1I1M
 </details>
 
 **4.** Using `grep`, extract only the meta-information lines from the VCF file. 
