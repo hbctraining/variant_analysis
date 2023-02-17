@@ -15,7 +15,7 @@ Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on 
     <li>First in pair</li></ul>
 </details>
 
-**2.** What would be the FLAG be for a read alignment for the first read in a pair-end read, where the first read was unmapped while the second read was mapped to the reverse strand?
+**2.** What would be the FLAG for a read alignment for the first read in a pair-end read, where the first read was unmapped while the second read was mapped to the reverse strand?
 
 <details>
   <summary><b>Click here to see the answer</b></summary>
