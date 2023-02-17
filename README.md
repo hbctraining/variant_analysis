@@ -29,7 +29,7 @@ This workshop series is designed for users with a background in the fundamentals
 
 ### Installation Requirements
 ***All:***
-- [FileZilla Client](https://filezilla-project.org/download.php?type=client) (make sure you get ‘FileZilla Client')
+- [FileZilla Client](https://filezilla-project.org/download.php?type=client) (make sure you get 'FileZilla Client')
 - [Integrative Genomics Viewer (IGV)](https://software.broadinstitute.org/software/igv/)
 
 ***Mac users:***
