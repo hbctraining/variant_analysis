@@ -64,6 +64,25 @@ Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on 
   grep -e $&#39;^19\t806262&#39; sample.vcf</pre>
 </details>
 
+**7.** Create a BED file within `~/variant_calling/` called `my_file.bed` and have it contain these three ranges:
+
+Chromosome 1 from 84573 to 94573
+Chromosome 2 from 465352 to 466352
+Chromosome 19 from 111237 to 111238
+
+<details>
+  <summary><b>Click here to see the answer</b></summary>
+  Open <code>vim</code> with:
+  <pre>
+  vim my_file.bed</pre>
+  Enter insert mode and type:
+  <pre>
+  1 84573 94573
+  2 465352  466352
+  19  111237 111238</pre>
+  Exit insert mode by pressing <kbd>Esc</kbd>, then save and quit the file by typing <code>:wq</code> while in Command mode. 
+</details>
+
 ## Evaluating Read Qualities with `FastQC`
 
 **1.** If the probability of a incorrect base call is 1 in 3,981, what is the associated PHRED score?
