@@ -64,8 +64,6 @@ Therefore, for the first nucleotide in the read (C), there is less than a 1 in 1
 
 1. If the probability of a incorrect base call is 1 in 3,981, what is the associated PHRED score?
 
-Answer: -10 x log10(1/3981) &asymp; 36
-
 ## `bash` String Manipulation
 
 String manipulation in `bash` can be a very helpful tool in minimizing typos whenever evaluating a script that uses `bash`. Before we discuss manipulating strings, we should first define a string. A string is a data type that is used to represent text rather than integers. Examples of strings include:
@@ -146,21 +144,9 @@ A brief overview of some `bash` text manipulation shortcuts are in the table bel
 
 ## Exercises
 
-1. Assign the path, `/The/path/to/my/vcf_file.vcf`, to a variable named `VCF_PATH` and replace the `.vcf` extension with `.filtered.vcf`.
+2. Assign the path, `/The/path/to/my/vcf_file.vcf`, to a variable named `VCF_PATH` and replace the `.vcf` extension with `.filtered.vcf`.
 
-Answer: 
-```
-VCF_PATH=/The/path/to/my/vcf_file.vcf
-echo ${VCF_PATH%.vcf}.filtered.vcf
-```
-
-2. Assign the new path with the `.filtered.vcf` extension to a variable named `FILTERED_VCF_PATH` then `echo` this variable.
-
-Answer:
-```
-FILTERED_VCF_PATH=`echo ${VCF_PATH%.vcf}.filtered.vcf`
-echo $FILTERED_VCF_PATH
-```
+3. Assign the new path with the `.filtered.vcf` extension to a variable named `FILTERED_VCF_PATH` then `echo` this variable.
 
 ## `FastQC`
 
@@ -363,21 +349,9 @@ Traditionally, most people inspect their `FastQC` reports before continuing on w
 
 ## Exercises
 
-1. Copy the BED file from  `/n/groups/hbctraining/variant_calling/sample_data/sample.bed` to `~/variant_calling/` directory. Move to the `~/variant_calling/` directory and use `sed` to stripe `chr` from the chromosome names and have the output look like:
+4. Copy the BED file from  `/n/groups/hbctraining/variant_calling/sample_data/sample.bed` to `~/variant_calling/` directory. Move to the `~/variant_calling/` directory and use `sed` to stripe `chr` from the chromosome names and have the output look like:
 
-Answer:
-```
-cp /n/groups/hbctraining/variant_calling/sample_data/sample.bed ~/variant_calling/
-cd ~/variant_calling/
-sed 's/chr//g' sample.bed
-```
-
-2. Redirect this output to a new file called `sample.without_chr.bed`
-
-Answer:
-```
-sed 's/chr//g' sample.bed > sample.without_chr.bed
-```
+5. Redirect this output to a new file called `sample.without_chr.bed`
 
 ***
 
