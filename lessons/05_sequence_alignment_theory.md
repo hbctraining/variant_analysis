@@ -5,9 +5,6 @@
 - Enumerate difficulties with alignment
 - Create an `sbatch` script to align reads
 
-<p align="center">
-<img src="../img/Variant_calling_workflow.png" width="300">
-</p>
 
 ## Understanding Alignment
 
@@ -24,7 +21,7 @@ Sequence Read Alignment may appear to be a simple task at first glance. One has 
 
 However, likely the largest and most difficult part of this task is creating an alignment algorithm that can account for these factors and still provide alignment for ***millions*** of reads within a reasonable time frame. There are a multitude of alignment tools availible today, including [bwa](https://bio-bwa.sourceforge.net), [HISAT2](http://daehwankimlab.github.io/hisat2/) and [STAR](https://github.com/alexdobin/STAR). Many of them has strengths and weakness and are more appropriate for a certain type of analysis. In this course, we will be using `bwa`. 
 
-## `bwa`
+## bwa
 
 Many modern alignment tools rely on the Burrows-Wheeler Transform as part of their alignment and `bwa` does as well. `bwa` runs in several parts:
 
@@ -37,7 +34,7 @@ Many modern alignment tools rely on the Burrows-Wheeler Transform as part of the
 
 <details> 
 <summary><b>Click here for details on creating a <code>bwa</code> index</b></summary>
-While we will be using an index that has already been made for us, if you need to create and index for a reference sequence using <code>bwa</code>, the steps for this are laid out below.
+While we will be using an index that has already been made for us, if you need to create an index for a reference sequence using <code>bwa</code>, the steps for this are laid out below.
 <ol><li><b>Navigate to your reference sequence directory</b><br>
 <pre>
 cd ~/path/to/reference/sequence/directory/
@@ -64,7 +61,7 @@ cd ~/variant_calling/scripts/
 vim bwa_alignment_normal.sbatch
 ```
 
-Now that we have opened up `vim` we need to enter `insert-mode` by pressing `i`. Once in `insert-mode`, we can copy and paste the following shebang line and `sbatch` directives:
+Now, we can copy and paste the following shebang line and `sbatch` directives:
 
 ```
 #!/bin/bash
@@ -88,9 +85,7 @@ module load bwa/0.7.17
 
 > Remember that on O2, many of the common tools were compiled using `GCC` version 6.2.0, so to be able to access them, we first need to load the `GCC` module.
 
-> Also, you can see that we also loaded the `samtools` version 1.15.1 module. That is not required for alignment, however, this script will have a few steps after alignment that will require `samtools`. It is common to load all modules at the top of a `sbtach` submission script. The only exception to this practice happen in the rare case that they are dependency conflicts between modules. In this case, you may see people loading/unloading/swapping modules within their `sbatch` scripts.
-
-Now that we have the module load command for `bwa` in our SBATCH script, we are going to declare some bash variables that we are going to use:
+Now that we have the `module load` command for `bwa` in our SBATCH script, we are going to declare some bash variables that we are going to use:
 
 ```
 # Assign files to bash variables
@@ -103,7 +98,7 @@ SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMP
 
 Some of these variable assignment are straightforward and are simply assigning paths to known files to `bash` variables. However, `$RIGHT_READS` uses the string manipulation we discussed in the `FastQC` lesson in order to swap the last parts of their filename. 
 
-We also uses `basename` is parse out the path from a file and when coupled with an argument after the filename, it will trim the end of the file as well as we can see with `$REFERENCE_SEQUENCE_NAME` and `$SAMPLE_NAME`
+We also uses `basename` is parse out the path from a file and when coupled with an argument after the filename, it will trim the end of the file as well as we can see with the `$REFERENCE_SEQUENCE_NAME` and `$SAMPLE_NAME variables.
   
 # Short Read Alignment
 
@@ -123,13 +118,13 @@ $RIGHT_READS \
 
 Let's breakdown this `bwa` command.
 
-- `mem` This is the specific tools we want to use within `bwa` and this is one of the tools that `bwa` provides for alignment.
+- `mem` This is the specific package we want to use within `bwa` and this is one of the tools that `bwa` provides for alignment.
 
 - `-M` This will mark shorter split hits as secondary
 
-- `-t 8` We are going to take advantage of multithreading. In order to do this, we need to specifiy the number of ***t***hreads. We are going to use 8.
+- `-t 8` We are going to take advantage of multithreading. In order to do this, we need to specifiy the number of threads that we are going to use as 8.
 
-- `-R "@RG\tID:$SAMPLE_NAME\tPL:illumina\tPU:$SAMPLE_NAME\tSM:$SAMPLE_NAME" \` This adds what is called Read Group information. Some software packages, such as `GATK`, require Read Groups, while others are agnostic towards them. However, they can provide important metadata about your reads and thus it is considered best practice to include Read Group Information at the alignment step. This Read Group information consists of several fields separated by tab-characters (\t), including:
+- `-R "@RG\tID:$SAMPLE_NAME\tPL:illumina\tPU:$SAMPLE_NAME\tSM:$SAMPLE_NAME" \` This adds what is called read group information. Some software packages, such as `GATK`, require read groups, while others are agnostic towards them. However, they can provide important metadata about your reads and thus it is considered best practice to include read group Information at the alignment step. This read group information consists of several fields separated by tab-characters (\t), including:
 
     - **ID**: This is the identification for a given batch of reads. This ***MUST*** be unique to your experiment. 
 
@@ -139,15 +134,21 @@ Let's breakdown this `bwa` command.
 
     - **SM**: This is to mark which *sample* your reads are coming from. Note, this does not need to be unique like the **ID** field, since you may have multiple Read Group **ID**s coming from a single sample. For example, you may be merging alignment (BAM/SAM) files that originated from the same individual, but we sequenced on different lanes or machines. In this case, those would have different Read Group **ID**s, but the same **SM** value.
 
-    - More information about Read Groups and some fields we didn't discuss can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035890671-Read-groups).
+    - More information about read groups and some fields we didn't discuss can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035890671-Read-groups).
   
 - `$REFERENCE_SEQUENCE` This calls the variable that holds the path to our reference sequence (`/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa`).
   
-- `$LEFT_READS` and `$RIGHT_READS` These are variables with paths to the FASTQ sequence read files that we wish to align (`~/variant_calling/fastq_files/synthetic_challenge_set3_normal_NGv3_1.fq.gz` and `~/variant_calling/fastq_files/synthetic_challenge_set3_normal_NGv3_2.fq.gz`). In this case you can see that the reads are paired-end reads because 1) we have provided two sets of reads and 2) they have `_1`/`_2` right before the `.fq`/`.fastq` extension. This is a very common annotation for pair-end reads. Alternatively, sometimes they might also be annotated as `_R1`/`_R2`, but once again, they will almost always be placed right before the `.fq`/`.fastq` extension. We can also, note that these reads are currently compressed with gzip as annotated by the `.gz` extension. This is not a problem as `bwa` can read both gzip compressed and uncompressed FASTQ files.
+- `$LEFT_READS` and `$RIGHT_READS` These are variables with paths to the FASTQ sequence read files that we wish to align (`~/variant_calling/fastq_files/synthetic_challenge_set3_normal_NGv3_1.fq.gz` and `~/variant_calling/fastq_files/synthetic_challenge_set3_normal_NGv3_2.fq.gz`, respectively). In this case you can see that the reads are paired-end reads because: 
+
+1) we have provided two sets of reads and 
+
+2) they have `_1`/`_2` right before the `.fq`/`.fastq` extension. 
+
+This is a very common annotation for pair-end reads. Alternatively, sometimes they might also be annotated as `_R1`/`_R2`, but once again, they will almost always be placed right before the `.fq`/`.fastq` extension. We can also, note that these reads are currently compressed with gzip as annotated by the `.gz` extension. This is not a problem as `bwa` can read both gzip compressed and uncompressed FASTQ files.
 
 - `-o $SAM_FILE` This calls a variable that holds the path to your output file (`~/variant_calling/alignments/normal_GRCh38.p7.sam`) where your alignments written. Notice this is a SAM file (an uncompressed alignment file).
 
-Now you have written your command to run `bwa` you are ready to run alignment. However, there are a few steps that we are going to add to the script so that they run immediately after the alignemnt finishes.
+Now you have written your command to run `bwa` you are ready to run alignment. 
 
 ## Exercises
 
