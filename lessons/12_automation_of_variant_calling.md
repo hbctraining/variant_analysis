@@ -8,11 +8,13 @@
 
 Now that we have completed most of the variant calling workflow, we would like to explore ways to automate it to make future runs identical and also minimize downtime in the workflow. Automating this workflow with consist of three parts:
 
-1) Editing our `sbatch` submission scripts to accept positional parameters for variable
-2) Creating a wrapper script to execute each script with the appropriate parameters
-3) Using the `--dependency` option in `sbatch` to construct dependent pipeline for scripts that have diffent computational requirements
+**1)** Editing our `sbatch` submission scripts to accept positional parameters for variables
 
-The workflow and methodolgies we used up to this point are completely fine and could work for you. However, you may have many scripts that you need to create if you have many samples and that can be cumbersome, so we are going to introduce this way of automating the process.
+**2)** Creating a wrapper script to execute each script with the appropriate parameters
+
+**3)** Using the `--dependency` option in `sbatch` to construct a dependent pipeline for scripts that have diffent computational requirements
+
+The workflow and methodolgies we used up to this point are completely fine and could work for you. However, you may have many scripts that you need to create if you have many samples then that can be cumbersome, so we are going to introduce this way of automating the process.
 
 ### Editing our `sbatch` Submission Scripts
 
@@ -22,7 +24,7 @@ Currently, within our `sbatch` submission scripts, we have `bash` variables set 
 cd ~/variant_calling/scripts/
 ```
 
-#### `FastQC`
+#### FastQC
 
 Because many of some variables already weren't explictly defined (`$RIGHT_READS` and `$SAM_FILE`), but were rather dependent on our explicitly defined variables (`$REFERENCE_SEQUENCE` and `LEFT_READS`) we won't need to edit our script as much. **We are able to do this because `sbatch` accepts positional parameters.** So let's create a new script and make this edit.
 
@@ -87,16 +89,16 @@ $RIGHT_READS \
 --threads $THREADS
 ```
 
-#### `bwa` Alignment
+#### bwa Alignment
 
-Now, we will need to make similar edits to our `bwa` script.
+Now, we will need to make similar edits to a new `bwa` script:
 
 ```
 cp bwa_alignment_normal.sbatch bwa_alignment_automated.sbatch
 vim bwa_alignment_automated.sbatch
 ```
 
-Next we will need to remove all of the `SBATCH` directives:
+Next, we will need to remove all of the `SBATCH` directives:
 
 ```
 # REMOVE THESE LINES
@@ -109,7 +111,7 @@ Next we will need to remove all of the `SBATCH` directives:
 #SBATCH -e bwa_alignment_normal_%j.err
 ```
 
-We will be creating a wrapper script at the end that launches all of our automated scripts. Our wrapper script will hold some variables for us so we don't need them all within this script anymore. Next we will also need to change the variables from:
+Next, we will also need to change the variables from:
 
 ```
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
@@ -129,7 +131,7 @@ SAMPLE=$3
 SAM_FILE=$4
 ```
 
-Now, these variables will accept positional parameters that we can feed it from the wrapper script. Our `bwa` submission script should look like:
+Our final `bwa` submission script should look like:
 
 ```
 #!/bin/bash
@@ -157,9 +159,9 @@ $RIGHT_READS \
 -o $SAM_FILE
 ```
 
-#### `Picard` processing
+#### Picard processing
 
-Because `Picard` and `bwa` have different computational requirements (i.e. different numbers of CPUs, memory), we are going to need to automate the `sbatch` submission scripts separately and then use a wrapper script to tie them all together. Similarly to the `bwa` script, we will just need to edit our variables to automate the behavior of the script. Let's start by creating a new script:
+Similarly to the previous scripts, we will just need to remove our `SBATCH` directives and edit our variables to automate the behavior of the script. Let's start by creating a new script:
 
 ```
 cp picard_alignment_processing_normal.sbatch picard_alignment_processing_automated.sbatch
@@ -179,9 +181,7 @@ Once again, we will remove the `sbatch` directives:
 #SBATCH -e picard_alignment_processing_normal_%j.err
 ```
 
-Because all of the variables we set except `$SAM_FILE` are dependent on the value of `$SAM_FILE`, we only need to change this to be a positional parameter.
-
-Change the following line:
+Next, we will change the following lines to accept positional parameters by changing:
 
 ```
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.sam
@@ -239,7 +239,9 @@ java -jar $PICARD/picard.jar SortSam \
 --CREATE_INDEX true
 ```
 
-#### `Picard` Metrics
+#### Picard Metrics
+
+Now we will conver the `Picard` metrics step:
 
 ```
 cp picard_metrics_normal.sbatch picard_metrics_automated.sbatch
@@ -259,7 +261,7 @@ Remove the `SBATCH` directives:
 #SBATCH -e picard_metrics_normal_%j.err
 ```
 
-Then replace the `bash` variables from:
+Then change the `bash` variables from:
 
 ```
 # Assign variables
@@ -276,7 +278,7 @@ REFERENCE=$2
 OUTPUT_METRICS_FILE=$3
 ```
 
-The automated `Picard` metrics submission script should look like:
+The automated `Picard` metrics submission script should now look like:
 
 ```
 #!/bin/bash
@@ -297,16 +299,16 @@ java -jar $PICARD/picard.jar CollectAlignmentSummaryMetrics \
 --OUTPUT $OUTPUT_METRICS_FILE
 ```
 
-#### `MultiQC`
+#### MultiQC
 
-Let's copy our 
+Let's create our new `MultiQC` submission script:
 
 ```
 cp multiqc_alignment_metrics_normal_tumor.sbatch multiqc_alignment_metrics_automated.sbatch 
 vim multiqc_alignment_metrics_automated.sbatch
 ```
 
-Remove our `SBATCH` directives:
+Remove the `SBATCH` directives:
 
 ```
 # REMOVE THESE LINES
@@ -374,7 +376,7 @@ $TUMOR_FASTQC_2 \
 --outdir $OUTPUT_DIRECTORY
 ```
 
-#### Variant calling with GATK
+#### Variant calling with MuTect2
 
 Let's make a copy of the `MuTect2` script that we wrote so that we can adapt it for our automation.
 
@@ -647,13 +649,15 @@ $SNPEFF_ANNOTATED_VCF_FILE \
 
 Now that we have each of our individual `sbatch` submission scripts written, we can tie them all together in a wrapper script. Before we do this though, we are going to briefly discuss the  `--dependency` option in the `sbatch` command. The `--dependency` option is very helpful for a few cases:
 
-1) When designing a pipeline to run on a cluster where different parts of the pipeline have different computational requirements 
-2) When running a pipeline where you expect the output from one job to finish at a time when you won't be availible to submit it as input to the next step in the pipeline
-3) When multiple parts of the pipeline all need to be completed before the next step can begin
+1) When designing a pipeline to run on a cluster where different parts of the pipeline have different computational requirements.
+
+2) When running a pipeline where you expect the output from one job to finish at a time when you won't be availible to submit it as input to the next step in the pipeline.
+
+3) When multiple parts of the pipeline all need to be completed before the next step can begin.
 
 #### Making one sbatch submission dependent on another
 
-Using the `--dependency` option in `sbatch` will likely make the execution of your pipelines faster and also help you be a better citizen of the cluster because each part of your pipeline can have customized computational requests. So how does the `--dependency` option work? Let's imagine that we have two jobs `Job_A.sbatch` and `Job_B.sbatch`. Additionally, we want to use the output from `Job_A.sbatch` as input for `Job_B.sbatch`. First we would submit `Job_A.sbatch` to the cluster like normal:
+Using the `--dependency` option in `sbatch` will likely make the execution of your pipelines faster and also help you be a better citizen of the cluster because each part of your pipeline can have customized computational requests. So how does the `--dependency` option work? Let's imagine that we have two jobs `Job_A.sbatch` and `Job_B.sbatch`. Additionally, we want to use the output from `Job_A.sbatch` as input for `Job_B.sbatch`. First, we would submit `Job_A.sbatch` to the cluster like normal:
 
 ```
 # Don't run this, it is an example
@@ -685,7 +689,7 @@ There are different types of dependencies besides `afterok`, but their usage is 
 
 #### Making one sbatch submission dependent multiple others
 
-Now let's imagine we have a case that we will experience shortly. We have a script (Job_C.sbatch) that is dependent on two job IDs (Job_A.sbatch and Job_B.sbatch), as is the case with `GATK` waiting for `Picard` for the normal and tumor samples to finish. In this case, each job ID just needs to be separated by a `:` like:
+Now let's imagine we have a case that we will experience shortly. We have a script (`Job_C.sbatch`) that is dependent on two job IDs (`Job_A.sbatch` and `Job_B.sbatch`), as is the case with `GATK` waiting for `Picard` metrics for the normal and tumor samples to finish. In this case, each job ID just needs to be separated by a `:` like:
 
 ```
 $ sbatch Job_A.sbatch
@@ -697,7 +701,7 @@ $ sbatch --dependency=afterok:10928:10931 Job_C.sbatch
 
 In this case, `Job_C.sbatch` won't queue until `Job_A.sbatch` and `Job_B.sbatch` exit without an error. Furthermore, you can queue a dependent job on a job that is dependent, thus creating an entire pipeline of dependent jobs.
 
-> NOTE: If any part of your pipeline gets an error, then the pipeline will stall and you will need to use `scancel` to cancel your dependent jobs and requeue them.
+> NOTE: The behavior on O2 is that if any part of your pipeline gets an error, then the pipeline will stop and the downstream dependent jobs will be cancelled. Some high-performance computing clusters will not cancel the downstream dependent jobs though and you will need to manually remove them from the queue with `scancel`.
 
 #### Writing the Wrapper script
 
@@ -836,25 +840,34 @@ VARIANT_ANNOTATION_JOB_ID=`echo $VARIANT_ANNOTATION_JOB_SUBMISSION | cut -d ' ' 
 echo -e "Variant annotation job submitted as job ID $VARIANT_ANNOTATION_JOB_ID"
 ```
 
+If we were to type:
+
+```
+### DON'T DO THIS
+sh variant_calling_wrapper.sh
+```
+
+This it would execute our automated pipeline. But since we already have the files we neeed, we don't want to do this.
+
 ## Exrecises
 
-**1.** If we submit Job_A.sh and `SLURM` returns:
+**1.** If we submit `Job_A.sh` and `SLURM` returns:
 
 `Submitted batch job 213489`
 
-And we want to start Job_B.sh after Job_A.sh finishes without error, what command would we use to do this?
+And we want to start `Job_B.sh` after `Job_A.sh` finishes without error, what command would we use to do this?
 
-**2.** If we submit Job_X.sh and `SLURM` returns:
+**2.** If we submit `Job_X.sh` and `SLURM` returns:
 
 `Submitted batch job 213489`
 
-Then we submit Job_Y.sh and `SLURM` returns:
+Then we submit `Job_Y.sh` and `SLURM` returns:
 
 `Submitted batch job 213496`
 
-And we want to start Job_Z.sh after Job_X.sh and Job_Y.sh finishes without error, what command would we use to do this?
+And we want to start `Job_Z.sh` after `Job_X.sh` and `Job_Y.sh` finish without error, what command would we use to do this?
 
-**3.** If you want to submit Job_M.sh, and provide `reference.fa` as the first positional parameter and `input.bam` as the second positional parameter, how could you do this?
+**3.** If you want to submit `Job_M.sh`, and provide `reference.fa` as the first positional parameter and `input.bam` as the second positional parameter, how could you do this?
 
 ***
 
