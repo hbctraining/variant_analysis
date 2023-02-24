@@ -7,19 +7,19 @@
 
 ## FilterMutectCalls
 
-The output from `Mutect2` is a raw variant calling output and the calls need to be filtered to ensure against errors such as:
+The output from `MuTect2` is a raw variant calling output and the calls need to be filtered to ensure against errors such as:
 
 - Technical artifacts
 - Non-somatic mutations
 - Sequencing Errors
 
-`FilterMutectCalls` evaluates the raw variant calls for each of these types of errors using a probabilitic model for errors. It then uses this model to determine the probability of an error and applies this filter across all of the variants. There are also "hard filters" that immediately flag a variant call for filtering.  `FilterMutectCalls` will annotate the FILTER field in the VCF file with whether the variant is passing with `PASS` or the reasons why it failed filtering. These include:
+`FilterMutectCalls` evaluates the raw variant calls for each of these types of errors using a probabilistic model for errors. It then uses this model to determine the probability of an error and applies this filter across all of the variants. There are also "hard filters" that immediately flag a variant call for filtering.  `FilterMutectCalls` will annotate the FILTER field in the VCF file with whether the variant is passing with `PASS` or the reasons why it failed filtering. These include:
 
 - Too many alternate alleles
 - Low median base quality scores 
 - Low median alignment quality scores
 
-> NOTE: While we are not concerned with cross-sample contamination for this dataset, if you were concerned about cross-sample contamination, then you would need to run `CalculateContamination` program within `GATK` to obtain a contamination table which you can input into `FilterMutectCells` with the `--contamination-table` option.
+> NOTE: While we are not concerned with cross-sample contamination for this dataset, if you were concerned about cross-sample contamination, then you would need to run `CalculateContamination` program within `GATK` to obtain a contamination table. You can use this contamination table as input into `FilterMutectCells` with the `--contamination-table` option.
 
 Let's begin by navigating to our scripts directory and creating the `sbatch` submission script that we will be using for filtering our VCF file:
 
@@ -85,9 +85,9 @@ Let's breakdown this command:
 
 More information on `FilterMutectCalls` can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360036856831-FilterMutectCalls) and a more technical guide to the filtering can be found [here](https://github.com/broadinstitute/gatk/blob/master/docs/mutect/mutect.pdf) in Section II.
 
-## Filter VCF files for only variants with PASS in the FILTER field using `SnpSift`
+## Filter VCF files for only variants with PASS in the FILTER field using SnpSift
 
-Now, we are going to filter for only variants that had a FILTER result of `PASS`. To do this filtering we are going to use `SnpSift`, which is part of the [`SnpEff and SnpSift suite`](http://pcingola.github.io/SnpEff/) of tools. We will be later be using `SnpEff` to annotate our variants and `SnpSift` to priotize our variants later, but for now we are just going to use `SnpSift` to filter out our variants. If some of the syntax for this command is unclear, that is fine. We are going to spend time covering the syntax later during the variant prioritization section. Now, we can add our `SnpSift` command to the after the `FilterMutectCalls` command:
+Now, we are going to filter for only variants that had a FILTER result of `PASS`. To do this filtering we are going to use `SnpSift`, which is part of the [`SnpEff` and `SnpSift` suite](http://pcingola.github.io/SnpEff/) of tools. We will later be using `SnpEff` to annotate our variants and `SnpSift` to prioritize our variants, but for now we are just going to use `SnpSift` to filter out our variants. If some of the syntax for this command is unclear, that is fine. We are going to spend time covering the syntax later during the [Variant Prioritization section](13_variant_prioritization.md). Now, we can add our `SnpSift` command after the `FilterMutectCalls` command:
 
 ```
 # Filter for only SNPs with PASS in the FILTER field
@@ -101,28 +101,28 @@ $MUTECT_FILTERED_VCF > $PASSING_FILTER_VCF
   
   - `-noLog` Does not report usage statistics to `SnpEff`'s servers. According to their [documentation](https://pcingola.github.io/SnpEff/se_commandline/#logging), it is so that they can monitor which features people are and aren't using. 
  
-  - `"( FILTER = 'PASS' )"` This is the syntax that `SnpSift` uses to only retain variant calls with PASS in the FILTER filed of the VCF file
+  - `"( FILTER = 'PASS' )"` This is the syntax that `SnpSift` uses to only retain variant calls with `PASS` in the `FILTER` field of the VCF file
  
-  - `$MUTECT_FILTERED_VCF` This is the input file
+  - `$MUTECT_FILTERED_VCF` This is the input VCF file
  
-  - `> $PASSING_FILTER_VCF` This is the output file
+  - `> $PASSING_FILTER_VCF` This is the output VCF file
 
 ## Low-Complexity Regions
 
-Low-complexity regions of the genome represent regions that have simple sequence repeats and variant callers are prone to make errors within these regions (see [Li, 2014](https://academic.oup.com/bioinformatics/article/30/20/2843/2422145)). It has been identified some insertions and deletions (Indels) are erroreously called within these low-complexity regions by various variant callers. They found:
+Low-complexity regions of the genome represent regions that have simple sequence repeats and variant callers are prone to make errors within these regions (see [Li, 2014](https://academic.oup.com/bioinformatics/article/30/20/2843/2422145)). Some insertions and deletions (Indels) are erroreously called within these low-complexity regions by various variant callers. They found:
 
 > "low-complexity regions (LCRs), 2% of the human genome, harbor 80–90% of heterozygous INDEL calls and up to 60% of heterozygous SNPs" with false positive rates ranging from "10% to as high as 40%".
 
-As a result of the high error rates in these low-complexity regions, it is recommended to remove of these regions with high error rates until better methods for variant calling in low-complexity regions can become established.
+As a result of the high error rates in these low-complexity regions, it is recommended to remove of these regions until better methods for variant calling in low-complexity regions can become established.
 
-### Using `SnpSift` to remove LCRs
+### Using SnpSift to remove LCRs
 
 The first step that one would need to do to remove LCRs would be to download them. We have already done this for you, but you can see the steps in the dropdown menu below:
 
 <details>
   <summary><b>Click here to see how to download and format the LCR BED file</b></summary>
-<h3>Downloading and Unpacking BED with LCRs</h3>
-The BED file (explained below) containing the LCRs for GRCh38 can be directly downloaded. However, we have already done this and formatted the BED file appropriately. If you are interested in this process, the steps are outlined below:
+<h3>Downloading and Unpacking the BED files with LCRs</h3>
+The BED file (explained below) containing the LCRs for GRCh38 and can be directly downloaded. However, we have already done this and formatted the BED file appropriately. If you are interested in this process, the steps are outlined below:
 
 <pre>
 # YOU DON'T NEED TO DO THIS
@@ -136,7 +136,7 @@ curl -o LCR-hs38_with_chr.bed.gz -L https://github.com/lh3/varcmp/blob/master/sc
   
  <ul><li><code>curl</code> This calls the curl command.</li>
    
- <li><code>-o LCR-hs38_with_chr.bed.gz</code> By using the <code>-o</code> (lowercase O), you are telling curl to download it and give it the following filename. You could also use a path here if you didn't want to download it to your current directly like <code>-o /home/${USER}/variant_calling/reference/LCR-hs38_with_chr.bed.gz</code>. <b>Importantly</b>, The <code>-O</code> (uppercase O) option without a string after it tells <code>curl</code> to use the filename of the file as it is online, which happens to be <code>LCR-hs38.bed.gz</code>. However, this file has a query parameter <code>?raw=true</code> at the URL and if you were to download this with <code>-O</code> without <code>?raw=true</code> on the end of the link you would get an HTML document, but if you did include it, then your file would be named <code>LCR-hs38.bed.gz?raw=true</code> and you would need to rename it. Thus, for this case you probably should use <code>-o</code> over <code>-O</code> to make the download be more straightforward.</li>
+ <li><code>-o LCR-hs38_with_chr.bed.gz</code> By using the <code>-o</code> (lowercase O), you are telling <code>curl</code> to download it and give it the following filename. You could also use a path here if you didn't want to download it to your current directly like <code>-o /home/${USER}/variant_calling/reference/LCR-hs38_with_chr.bed.gz</code>. <b>Importantly</b>, The <code>-O</code> (uppercase O) option without a string after it tells <code>curl</code> to use the filename of the file as it is online, which happens to be <code>LCR-hs38.bed.gz</code>. However, this file has a query parameter <code>?raw=true</code> in the URL and if you were to download this with <code>-O</code> without <code>?raw=true</code> on the end of the link you would get an HTML document.  If you did include it, then your file would be named <code>LCR-hs38.bed.gz?raw=true</code> and you would need to rename it. Thus, for this case you probably should use <code>-o</code> over <code>-O</code> to make the download be more straightforward.</li>
    
  <li><code>-L https://github.com/lh3/varcmp/blob/master/scripts/LCR-hs38.bed.gz?raw=true</code> This is the link you would like to download from</li></ul>
   
@@ -144,20 +144,20 @@ curl -o LCR-hs38_with_chr.bed.gz -L https://github.com/lh3/varcmp/blob/master/sc
   
  <pre>
  # YOU DON'T NEED TO DO THIS
- gunzip -c LCR-hs38_with_chr.bed.gz > LCR-hs38_with_chr.bed
- </pre>
+ gunzip -c LCR-hs38_with_chr.bed.gz > LCR-hs38_with_chr.bed</pre>
+
  
-When we can inspect our BED file we can see that it simply has the required 3 columns denoting the positioning of low-complexitiy regions in GRCh38.
+When we inspect our BED file we can see that it simply has the required 3 columns denoting the positioning of low-complexitiy regions in GRCh38.
  
 <pre>
 # YOU DON'T NEED TO DO THIS
-less LCR-hs38_with_chr.bed
-</pre>
+less LCR-hs38_with_chr.bed</pre>
+
 Unfortunately, this file is formatted with the chromosome names starting with <code>chr</code> and we would like to strip that off so that it is consistent with our chromosome numbering scheme. That can be easily done in <code>sed</code>:
 
 <pre>
 # YOU DON'T NEED TO DO THIS
-sed 's/^chr//g' LCR-hs38_with_chr.bed > LCR-hs38.bed
+sed 's/^chr//g' LCR-hs38_with_chr.bed &gt; LCR-hs38.bed
 </pre>
 
 We can break with command down:
@@ -167,13 +167,12 @@ We can break with command down:
 <li><code>'s/^chr//g' LCR-hs38_with_chr.bed</code> This tells <code>sed</code> to replace all instances of a "chr" beginning a line (that's what the <code>^</code> tells <code>sed</code>) in the file <code>LCR-hs38_with_chr.bed</code> with nothing</li>
 
 <li><code>&gt; LCR-hs38.bed</code> Write the output to this file</li></ul>
+<hr />
 </details>
-
-***
 
 #### Editing variant filtering script to include LCR filtering
 
-In order to remove the LCRs from the VCF file, we will once again be using `SnpSift`. We will be discussing `SnpSift` at length in the variant prioritization steps later, but for now were are going to focus on using the `intervals` command build into `SnpSift`. Let's go back to our scripts directory and edit our variant filtering script.
+In order to remove the LCRs from the VCF file, we will once again be using `SnpSift`. As we mentioned earlier, we will be discussing `SnpSift` at length in the [variant prioritization lesson](13_variant_prioritization.md), but for now were are going to focus on using the `intervals` command build into `SnpSift`. Let's go back to our scripts directory and edit our variant filtering script.
 
 Add the `filter` command from `SnpSift` to our `sbatch` script in order remove all sites that overlap with the BED file:
 
@@ -186,15 +185,17 @@ java -jar $SNPEFF/SnpSift.jar intervals \
 $LCR_FILE > $LCR_FILTERED_VCF
 ```
 
-- `-x` This option tells `SnpSift` to *exclude* sites found in the BED file. The default behavior of `SnpSift filter` is to only *include* sites found in the BED file.
+- `java -jar $SNPEFF/SnpSift.jar intervals` This calls the `intervals` package within `SnpSift`
 
 - `-noLog` This does not report command usage to <code>SnpEff</code>'s server
+
+- `-x` This option tells `SnpSift` to *exclude* sites found in the BED file. The default behavior of `SnpSift filter` is to only *include* sites found in the BED file.
 
 - `-i $PASSING_FILTER_VCF` This is the VCF file that we would like to be filtered. It can either be `.gz` compressed or not. 
 
 - `$LCR_FILE` This represents the BED file you want to use to filter your VCF file with. While in this case we only have one BED file, you can use multiple BED files if you have several filters that you wanted to apply. 
 
-- `> $LCR_FILTERED_VCF` Lastly, this is just redirecting the output into a new, filtered VCF to a file.
+- `> $LCR_FILTERED_VCF` Lastly, this is just redirecting the output into a new, filtered VCF file.
 
 
 [`bedtools`](https://bedtools.readthedocs.io/en/latest/index.html) is an useful suite of tools to use when handling BED files. It also has functionality for handling VCF files. A similar approach for filtering out low-complexity regions can also be done within the tool `bedtools` and is shown in a dropdown box below.
@@ -202,7 +203,7 @@ $LCR_FILE > $LCR_FILTERED_VCF
 <details>
   <summary><b>Click here to see how to use <code>bedtools</code> to exclude sites</b></summary>
 
-First, we will need to load the <code>bedtools</code> module. The <code>bedtools</code> module 
+First, we will need to load the <code>bedtools</code> module:
 
 <pre>
 module load gcc/9.2.0
@@ -220,15 +221,15 @@ bedtools intersect \
   
 We can breakdown this command:
   
-<ul><li><code>-header</code>This will maintain the header information from the <code>-a</code> file. However, it will not add the <code>bedtools</code> command to the header line like <code>SnpSift</code> does.</li>
+<ul><li><code>-header</code> This will maintain the header information from the <code>-a</code> file. However, it will not add the <code>bedtools</code> command to the header line like <code>SnpSift</code> does.</li>
   
-<li><code>-v</code>Traditionally, <code>bedtools intersect</code> will report the intersection of the file following <code>-a</code> and the file following <code>-b</code>. However, the <code>-v</code> option alters this behavior to find positions in the <code>-a</code> file not in <code>-b</code> file.</li>
+<li><code>-v</code> Traditionally, <code>bedtools intersect</code> will report the intersection of the file following <code>-a</code> and the file following <code>-b</code>. However, the <code>-v</code> option alters this behavior to find positions in the <code>-a</code> file not in <code>-b</code> file.</li>
   
-<li><code>-a $PASSING_FILTER_VCF</code> VCF file that we want filtered</li>
+<li><code>-a $PASSING_FILTER_VCF</code> This is the VCF file that we want filtered</li>
   
-<li><code>-b $LCR_FILE</code>BED file containing genomic coordinates for sites in the VCF file to exclude</li>
+<li><code>-b $LCR_FILE</code> This is the BED file containing genomic coordinates for sites in the VCF file to exclude</li>
   
-<li><code>&gt; $LCR_FILTERED_VCF</code></li> Redirecting the output of this filtering command to a new file.</li></ul>
+<li><code>&gt; $LCR_FILTERED_VCF</code> Redirecting the output of this filtering command to a new file.</li></ul>
 
 Both <code>bedtools</code> and <code>SnpSift</code> should result in the same variants passing filtering and the only difference is in the amount of metadata provided in the header lines where <code>SnpSift</code> provides the command that was used to produce that file, while <code>bedtools</code> does not. Because of this, one could argue that <code>SnpSift</code> is <i>slightly</i> better for this purpose than <code>bedtools</code>. However, much like the <code>samtools</code> versus <code>Picard</code> discussion we had in the BAM alignment procressing lesson, it is mostly up to personal preference.
 <hr />
@@ -288,7 +289,7 @@ sbatch variant_filtering_normal_tumor.sbatch
 
 ## Inspecting Filtered VCF File
 
-Once it has completed, which should be quickly. We can look at the output VCF file and note a few items that have been added to the meta-information lines:
+Once it has completed, which should be quick, we can look at the output VCF file and note a few items that have been added to the meta-information lines:
 
 ```
 less /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-LCR-filt.vcf
@@ -309,18 +310,20 @@ Let's inspect these lines a little:
 ##source=Mutect2
 ##tumor_sample=syn3-tumor
 ##SnpSiftVersion="SnpSift 4.3g (build 2016-11-28 08:32), by Pablo Cingolani"
-##SnpSiftCmd="SnpSift int -x -i /n/scratch3/users/w/wig051/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-filt.vcf /n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed"
+##SnpSiftCmd="SnpSift filter '( FILTER = 'PASS' )' /n/scratch3/users/${USER:0:1}/$USER/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-filt.vcf"
+##SnpSiftVersion="SnpSift 4.3g (build 2016-11-28 08:32), by Pablo Cingolani"
+##SnpSiftCmd="SnpSift int -x -i /n/scratch3/users/${USER:0:1}/$USER/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt.vcf /n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed"
 ```
 
-The first five lines have been added to our VCF file by GATK. They give information on the programs that have been run on the data, which is listed on the `##source=` lines. These lines also define the column header in the VCF file that corresponds to the normal (`##normal_sample=`) and tumor sample (`##tumor_sample=`). 
+The first five lines have been added to our VCF file by `GATK`. They give information on the programs that have been run on the data, which is listed on the `##source=` lines. These lines also define the column header in the VCF file that corresponds to the normal (`##normal_sample=`) and tumor sample (`##tumor_sample=`). The next four lines tell us about our `SnpSift` commands:
 
 `##SnpSiftVersion=` states the version of SnpSift that was used to produce this file.
 
-`##SnpSiftCmd=` provides the command that was used in SnpSift to carry out the LCR filtering.
+`##SnpSiftCmd=` provides the `filter` and `intervals` commands that were used by `SnpSift` to carry out the filtering.
 
 ---
 
-Now, we have successfuly filtered our raw VCF file to only include high-qulaity variant calls.
+Now, we have successfuly filtered our raw VCF file to only include high-qulaity variant calls, we are ready to begin annotating our variants.
 
 [Next lesson >>](11_variant_annotation.md)
 
