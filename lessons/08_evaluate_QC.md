@@ -7,11 +7,11 @@
 
 ## Downloading `MultiQC` HTML Report with `FileZilla`
 
-While the O2 cluster cluster is fantastic at many things, it is not designed to render HTML files. For that we will need a browser, such as Safari, Chrome, Firefox, etc., on our local computer. Thus, we will need to download the HTML report from the cluster to our local computers. There are ways to do this from the command line using tools like `scp` and `rsync`, however, we are going to use `FileZilla` which has an easy-to-use GUI to help us.
+While the O2 cluster is fantastic at many things, it is not designed to render HTML files. For that we will need a browser, such as Safari, Chrome, Firefox, etc., on our local computer. Thus, we will need to download the HTML report from the cluster to our local computers. There are ways to do this from the command line using tools like `scp` and `rsync`, however, we are going to use `FileZilla` which has an easy-to-use GUI to help us.
 
 ### Filezilla - Step 1
 
-Open up *FileZilla*, and click on the File tab. Choose 'Site Manager'.
+Open up `FileZilla`, and click on the File tab. Choose 'Site Manager'.
 
 <p align="center">
 <img src="../img/filezilla_setup.png" width="500">
@@ -31,7 +31,7 @@ Within the 'Site Manager' window, do the following:
 
 > NOTE: While using the temporary training accounts on the O2 cluster, two-factor authentication ***IS NOT*** required. However, if you explore this lesson when using your personal account, two-factor authentication ***IS*** required. 
 > 
-> In order to connect your laptop using FileZilla to the O2 cluster, follow steps 1-7 as outlined above. Once you have clicked 'Connect', you will receive a Duo push notification (but no indication in Filezilla) which you must approve within the short time window. Following Duo approval, FileZilla will connect to the O2 cluster.
+> In order to connect your laptop using `FileZilla` to the O2 cluster, follow steps 1-7 as outlined above. Once you have clicked 'Connect', you will receive a Duo push notification (but no indication in Filezilla) which you must approve within the short time window. Following Duo approval, `FileZilla` will connect to the O2 cluster.
 
 <p align="center">
 <img src="../img/filezilla_login.png" width="500">
@@ -41,11 +41,11 @@ Within the 'Site Manager' window, do the following:
 
 You will see messages printed in the message window in the top window pane, giving a you an indication of whether or not you have successfully connected to O2. Next, if this if your first time using Filezilla we recommend that you take some time to get familiar withe the basics of the interface. This [tutorial](https://wiki.filezilla-project.org/FileZilla_Client_Tutorial_(en)) is a helpful resource.
 
-You will see two panels in the interface. On the left hand side you will see your the files in your laptop and on the right hand side you have your home directory on O2. Both panels have a directory tree at the top and a detailed listing of the selected directory's contents underneath. In the right hand panel, navigate to where the HTML files are located on O2 `~/variant_calling/reports/`. Then decide where you would like to copy those files to on your computer and move to that directory on the left hand panel.
+You will see two panels in the interface. On the left hand side you will see your the files in your laptop and on the right hand side you have your home directory on O2. Both panels have a directory tree at the top and a detailed listing of the selected directory's contents underneath. In the right hand panel, navigate to where the HTML files are located on O2 `~/variant_calling/reports/multiqc/`. Then decide where you would like to copy those files to on your computer and move to that directory on the left hand panel.
 
 Once you have found the HTML output for `MultiQC` **copy it over** by double clicking it or drag it over to right hand side panel. Once you have the HTML file copied over to your computer, you can leave the `FileZilla` interface. You can then locate the HTML file on your computer and open the HTML report up in a browser (`Chrome`, `Firefox`, `Safari`, etc.). 
 
-## Inspect `MultiQC` HTML Report 
+## Inspect MultiQC HTML Report 
 
 ### General Statistics
 
@@ -57,14 +57,16 @@ Now we can evalute all of our `FastQC` and alignments metrics at once. The first
 
 A few quick takeaways from this table is that it gives us an overview of our alignments:
 
-  1) We had an alignment rate of 99% for both normal and tumor which is very good. 
-  2) The level of duplicates is not high (<10%).
-*Sergey* 
+  **1)** We had an alignment rate of 99% for both normal and tumor which is very good. 
+
+  **2)** The level of duplicates is not high (<10%).
+***Sergey* **
  Range of acceptable levels of duplicates if we are filtering them out?
 
-  3) The GC-content of our sequencing is 49%. The average GC content of the human genome is ~41%, but GC-content is higher in genic regions than intergenic regions. Given that our sequencing represents whole exome sequencing rather than whole genome sequencing, a moderately elevated GC-content compared to the genome average seems reasonable. If we see GC-content that drasatically differs (more than ~10%) from our expectation then that could be a reason to pause and look for reasons for this divergence. 
-  4) We can also see that we have ~49 million fragments for each sample, which should provide more than adequate depth for variant calling.
-  *Sergey*
+  **3)** The GC-content of our sequencing is 49%. The average GC content of the human genome is ~41%, but GC-content is higher in genic regions than intergenic regions. Given that our sequencing represents whole exome sequencing rather than whole genome sequencing, a moderately elevated GC-content compared to the genome average seems reasonable. If we see GC-content that drasatically differs (more than ~10%) from our expectation then that could be a reason to pause and look for reasons for this divergence. 
+  
+  **4)** We can also see that we have ~49 million fragments for each sample, which should provide more than adequate depth for variant calling.
+  ***Sergey***
   Recommendations on Depth for WES and WGS. My back of the envelope calculations for these 100-bp Paired end samples is that we have like 200X? Is that right
 
 ### Aligned Reads
@@ -77,16 +79,19 @@ The next figure in the report is a chart of the aligned reads. You can click on 
 
 ### Sequence Quality
 
-As we continue down the report, we can skip a few figures until we get to the sequence quality figure. A few things we should know about these figures. 
-  1) The y-axis is PHRED score, which we discussed in the `FastQC` lesson and the y-axis is position in the read. 
+As we continue down the report, we can skip a few figures until we get to the sequence quality figure. A few things we should know about this figure:
+  
+  1) The y-axis is PHRED score, which we discussed in the [`FastQC` lesson](04_fastqc.md) and the y-axis is position in the read. 
+  
   2) Typically, the shape of these figures have a steep incline in the first few bases before plateauing and finally tapering off a bit. The shape should be mostly smooth. If we saw large, abrupt drops in quality this could be reason to contact your sequencing facility.
+  
   3) The right read (or R2) often has low-quality than the left read (or R1) and this difference in quality if just an artifact of pair-end Illumina sequencing.
 
 <p align="center">
 <img src="../img/Base_quality_scores.png" width="800">
 </p>
 
-The shape that we see is very typical of a good sequencing run. Imporantly their aren't any sudden drops in read quality in these samples.
+The shape that we see is very typical of a good sequencing run. Imporantly. their aren't any sudden drops in read quality in these samples.
 
 ### Average Sequence Quality
 
@@ -119,7 +124,7 @@ Once we have clicked on the first sample, it will produce a new plot featuring t
 We can see the weak primer bias from the sequencing at the begining, but it base composition is relatively flat, which is exactly what we want to see in this plot. The next three samples look similar, but we have included included them in the dropdowns below.
 
 <details>
-  <summary>Click here to see the per base sequence content plot for the right reads of the normal sample</summary>
+  <summary><b>Click here to see the per base sequence content plot for the right reads of the normal sample</b></summary>
   <p align="center">
   <img src="../img/Sequence_content_2.png" width="800">
   </p>
@@ -127,7 +132,7 @@ We can see the weak primer bias from the sequencing at the begining, but it base
 </details>
   
 <details>
-  <summary>Click here to see the per base sequence content plot for the left reads of the tumor sample</summary>
+  <summary><b>Click here to see the per base sequence content plot for the left reads of the tumor sample</b></summary>
   <p align="center">
   <img src="../img/Sequence_content_3.png" width="800">
   </p>
@@ -135,7 +140,7 @@ We can see the weak primer bias from the sequencing at the begining, but it base
 </details>
 
 <details>
-  <summary>Click here to see the per base sequence content plot for the right reads of the tumor sample</summary>
+  <summary><b>Click here to see the per base sequence content plot for the right reads of the tumor sample</b></summary>
   <p align="center">
   <img src="../img/Sequence_content_4.png" width="800">
   </p>
@@ -150,7 +155,7 @@ Similar to the previous plots on sequence content, we are mostly looking to make
 <img src="../img/GC_content.png" width="800">
 </p>
 
-In the above figure, we see shape that we would expect to see. It is smooth, normally-centered around a GC-percentage reasonable for the human exome. We don't see any abrupt peaks and the curve looks mostly unimodal.
+In the above figure, we see the shape that we would expect to see. It is smooth, normally-centered around a GC-percentage reasonable for the human exome. We don't see any abrupt peaks and the curve looks mostly unimodal.
 
 ### Duplication Levels
 
@@ -178,7 +183,7 @@ The QC for this dataset looks pretty good. We have a high alignment to our refer
 
 ## Important Considerations on QC Metrics
 
-**1) Rarely will one single metric will tell you that there is something wrong about the data. Small deviations away from the "ideal" are normal and should mostly only be a concern if there are multiple deviations with moderate impact. Many of these metrics are somewhat redundant, so any problematic deviation should likely show up in multiple diagnostics.** For example, if you example a GC content of 41%, but your data comes back as 43%, that single metric on it's own is likely not too problematic. However, if the GC content comes back as 60%, there's only 40% alignment to the reference genome and there appears to be a multi-modal distribution in the GC content distribution, then you should definitely pause and evaluate sources of variation that could be creating this pattern.
+**1) Rarely will one single metric will tell you that there is something wrong about the data. Small deviations away from the "ideal" are normal and should mostly only be a concern if there are multiple deviations with moderate impact. Many of these metrics are somewhat redundant, so any problematic deviation should likely show up in multiple diagnostics.** For example, if you example the expected GC content for your sample is 41%, but your data comes back as 43%, that single metric on it's own is likely not too problematic. However, if the GC content comes back as 60%, there's only 40% alignment to the reference genome and there appears to be a multi-modal distribution in the GC content distribution, then you should definitely pause and evaluate sources of variation that could be creating this pattern.
 
 **2) A poor QC report *DOES NOT* mean that you need to through out all of the data immediately.** Oftentimes, there are still salvagable data in a dataset that fails QC on some metrics. Perhaps it means you will need to remove adaptor contamination or other contaminants. While it is unfortunate to have to discard reads and weaken your depth for finding variants, having clean data will substanially help the analyses more accuarately call variants. Of course, some datasets are beyond salvagable, but these are generally rare. 
 
