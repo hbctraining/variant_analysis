@@ -97,7 +97,7 @@ java -jar $SNPEFF/SnpSift.jar filter \
 $MUTECT_FILTERED_VCF > $PASSING_FILTER_VCF
 ```
 
-  - `java -jar $SNPEFF/SnpSift.jar filter` This calls the `filter` function within the `SnpSift` package
+  - `java -jar $SNPEFF/SnpSift.jar filter` is a `java` packaged program, so it needs to be called with `java -jar` followed by the path where the JAR file is located on the cluster. `$SNPEFF` is just a bash variable that contains the path to JAR file. This calls the `filter` function within the `SnpSift` package
   
   - `-noLog` Does not report usage statistics to `SnpEff`'s servers. According to their [documentation](https://pcingola.github.io/SnpEff/se_commandline/#logging), it is so that they can monitor which features people are and aren't using. 
  
