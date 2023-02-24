@@ -3,13 +3,13 @@
 ## Learning Objectives
 
 - Differentiate between germline and somatic variant calling
-- Call somatics variants from `bam` files using Mutect2
+- Call somatics variants from `bam` files using `MutTect2`
 
 ## Germline versus Somatic Variant Calling
 
-Variant calling can be broken up into two groups, germline and somatic. Germline variant calling refers to the process of calling variants that are ubiquitous across the organism (i.e. almost all cells carry these variants) and these are the types of variants that can be passed through the germline. Studies that evaluate population genetics are often concerned with germline variant calling. Somatic variant calling refers to the process of calling variants that differ between cells within a single organism and these variants are not passed through the germline. Somatic variant calling is often used when studying the progression of various cancers. These two types of variant calling methods have different assumptions regarding in the input data and thus are handled differently. 
+Variant calling can be broadly broken up into two groups, germline and somatic. Germline variant calling refers to the process of calling variants that are ubiquitous across the organism (i.e. almost all cells carry these variants) and these are the types of variants that can be passed through the germline. Studies that evaluate population genetics are often concerned with germline variant calling. Somatic variant calling refers to the process of calling variants that differ between cells within a single organism and these variants are not passed through the germline. Somatic variant calling is often used when studying the progression of various cancers. These two types of variant calling methods have different assumptions regarding in the input data and thus are handled differently. 
 
-For example, germline variant calling for the most part expects at most two alleles in relatively equal frequencies, while a single tumor sample could have various cancer lineages with various allele frequencies. This makes somatic variant calling more difficult than germline variant calling since low frequency variants and sequencing artifacts are difficult to distinguish from sequencing error. Additionally, oftentimes within somatic variant calling, you are also trying to avoid calling the germline variants. The image below should help distinguish between germline and somatic variants:
+For example, germline variant calling for the most part expects at most two alleles in relatively equal frequencies, while a single tumor sample could have various cancer lineages with various allele frequencies. This makes somatic variant calling more difficult than germline variant calling because low frequency variants and sequencing artifacts are difficult to distinguish from sequencing errors. Additionally, oftentimes within somatic variant calling, you are also trying to avoid calling the germline variants. The image below should help distinguish between germline and somatic variants:
 
 <p align="center">
 <img src="../img/Germline_Somatic_Variants.png" width="600">
@@ -19,8 +19,9 @@ In the above image we can see an example of a germline variant on the left. Appr
 
 As you can also presume, high coverage is helpful for two reasons:
 
-1) It helps distinguish sequencing errors and artifacts from true low frequency alleles in the tumor samples
-2) It helps distinugish germline variants from somatic variants
+**1)** It helps distinguish sequencing errors and artifacts from true low frequency alleles in the tumor samples
+
+**2)** It helps distinugish germline variants from somatic variants
 
 ## Types of variants that can be called
 
@@ -40,11 +41,11 @@ Similarly to the tools in a workshop, variant calling for each of these types of
 
 This course is going to focus on analyzing somatic SNPs, so we are going to use `MuTect2`.
 
-## `MuTect2`
+## MuTect2
 
 ### Basic workflow
 
-When using `MuTect2` will first re-evaluate the alignments of the normal and tumor samples and create "active regions" that appear to need a local re-assembly. During this process of local re-assembly the tumor sample's reads are interrogated to a higher degree for their quality than the normal samples and a *de Bruijn* graph of the region is created with an assembler. From here, most likely haplotypes are assembled and variants are called from these haplotypes. Let's start writing out a new `sbatch` submission script for MuTect2`:
+When using `MuTect2`, we will first re-evaluate the alignments of the normal and tumor samples and create "active regions" that appear to need a local re-assembly. During this process of local re-assembly the tumor sample's reads are interrogated to a higher degree for their quality than the normal samples and a *de Bruijn* graph of the region is created with an assembler. From here, most likely haplotypes are assembled and variants are called from these haplotypes. Let's start writing out a new `sbatch` submission script for `MuTect2`:
 
 ```
 cd ~/variant_calling/scripts/
@@ -104,7 +105,7 @@ VCF_OUTPUT_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/
 <hr />
 </details>
 
-> NOTE: Sometimes when there are many input variables that re-use many of the same textual elements (i.e. paths, sample names and reference genome names), like we have above, it is sometimes cleaner, less typo-prone and more reproducible to assign those repeated items to variables and then use text manipulation tools and variable subsitution in `bash` to create the rest of the variables. In the above example, some of the lines of variable assignment (`REFERENCE_SEQUENCE`,`ALIGNMENT_DIRECTORY, `NORMAL_SAMPLE_NAME` and `TUMOR_SAMPLE_NAME`) are likely lines you might edit from run-to-run, but the other lines (`REFERENCE_DICTIONARY`, `REFERENCE_SEQUENCE_NAME`, `NORMAL_BAM_FILE`, `TUMOR_BAM_FILE` and `VCF_OUTPUT_FILE`) will likely stay the same. Standardizing your paths and nomenclature will help you keep track of your files much easier.
+> NOTE: Sometimes when there are many input variables that re-use many of the same textual elements (i.e. paths, sample names and reference genome names), like we have above, it is sometimes cleaner, less typo-prone and more reproducible to assign those repeated items to variables and then use text manipulation tools and variable subsitution in `bash` to create the rest of the variables. In the above example, some of the lines of variable assignment (`REFERENCE_SEQUENCE`, `NORMAL_SAMPLE_NAME` and `TUMOR_SAMPLE_NAME`) are likely lines you might edit from run-to-run, but the other lines (`REFERENCE_DICTIONARY`, `NORMAL_BAM_FILE`, `TUMOR_BAM_FILE` and `VCF_OUTPUT_FILE`) will likely stay the same or similiar. Standardizing your paths and nomenclature will help you keep track of your files much easier.
 
 Lastly, we need to add the `MuTect2` command:
 
@@ -135,6 +136,7 @@ Let's breakdown this command:
   
   The command to do create the sequence dictionary is:<br>
   <pre>
+  # YOU DON'T NEED TO RUN THIS
   java -jar $PICARD/picard.jar CreateSequenceDictionary \
   --REFERENCE /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
   --OUTPUT /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.dict</pre>
@@ -142,9 +144,9 @@ Let's breakdown this command:
   The components of this command are:
   <ul><li><code>java -jar $PICARD/picard.jar CreateSequenceDictionary</code> This calls the <code>CreateSequenceDictionary</code> command within <code>Picard</code></li>
   <li><code>--REFERENCE /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa</code> This is the reference sequence to create the sequence dictionary from.</li>
-  <li><code>--OUTPUT /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.dict</code> This is the output sequence dictionary from.</li></ul>
+  <li><code>--OUTPUT /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.dict</code> This is the output sequence dictionary.</li></ul>
   
-  Like indexing, once you have created the sequence dictionary for a reference genome once, you won't need to do it again.
+  Like indexing, once you have created the sequence dictionary for a reference genome, you won't need to do it again.
 <hr />
 </details>
 
@@ -168,7 +170,7 @@ Let's breakdown this command:
 >
 ><details>
 >  <summary><b>Click here for details for creating a FASTA index file in <code>samtools</code></b></summary>
->    <br>FASTA index files for reference sequences are fairly common requirements for a variety of NGS software packages. <code>Picard</code> currently does not feature an ability to create a FASTA index file. However, <code>samtools</code> is a very popular tool that is used for a variety of processes for processing BAM/SAM files, but it also includes functionality for the creation of FASTA index files. First, we will need to load the <code>gcc</code> and <code>samtools</code> modules:
+>    <br>FASTA index files for reference sequences are fairly common requirements for a variety of NGS software packages. <code>Picard</code> currently does not feature an ability to create a FASTA index file. However, <code>samtools</code> is a very popular tool that is used for a variety of processes for processing BAM/SAM files and it also includes functionality for the creation of FASTA index files. First, we will need to load the <code>gcc</code> and <code>samtools</code> modules:
 >  
 >  <pre>
 >  module load gcc/6.2.0
@@ -233,7 +235,7 @@ MuTect2 is capable of running without a matched normal sample, otherwise called 
 
 ## Discuss PoNs?
 
-Panel of Normals are is a VCF of normal samples run through "tumor-only mode". If the variant is seen in multiple samples then this variant is included in the Panel of Normals. If these variants are then found in the tumor-sample then the variant is ignored. If panels of normal are used, then they should be gathered using a similiar sequeuncing design as the tumor samples.
+Panel of Normals are is a VCF of normal samples run through "tumor-only mode". If the variant is seen in multiple samples then this variant is included in the Panel of Normals. If these variants are then found in the tumor-sample then the variant is ignored. If panels of normal are used, then they should be gathered using a similiar sequencing design as the tumor samples.
 
 ## Discuss Common General Population Allele Frequencies?
 
