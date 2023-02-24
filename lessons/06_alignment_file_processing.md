@@ -722,9 +722,9 @@ First, we need to check the status of our `bwa` scripts and we can do this with 
 squeue -u $USER
 ```
   
-__***If you have `bwa` jobs still running,***__ then wait for them to complete (less than 2 hours) before continuing. There are ways to queue jobs together in SLURM using the `--dependency` option in `sbatch`. We will go over this in the automation lesson, but for now just hang tight until your jobs have finished.
+**If you have `bwa` jobs still running,** then wait for them to complete (less than 2 hours) before continuing. There are ways to queue jobs together in SLURM using the `--dependency` option in `sbatch`. We will go over this in the automation lesson, but for now just hang tight until your jobs have finished.
   
-__***If the only job running is your interactive job,***__ then it should be time to start your `Picard` processing scripts. You can go ahead and submit your `sbatch` scripts for `Picard` processing with:
+**If the only job running is your interactive job,** then it should be time to start your `Picard` processing scripts. You can go ahead and submit your `sbatch` scripts for `Picard` processing with:
   
 ```
 sbatch picard_alignment_processing_normal.sbatch
