@@ -9,7 +9,7 @@
 
 One of the most important metrics for your alignment file is the alignment rate. Alignment rates can vary based upon many factors, including:
 
-- **Quality of reference assembly** - A high-quality assembly like GRCh38.p7 will provide a more than adequate reference geneome for alignment. However, if you were studying a organism with a poorly assembled genome, parts of the reference genome could be missing from the assembly. Therefore, high-quality reads might not align because they there is missing reference sequence to align to that corresponds to their sequence.
+- **Quality of reference assembly** - A high-quality assembly like GRCh38.p7 will provide a an excellent reference genome for alignment. However, if you were studying a organism with a poorly assembled genome, parts of the reference genome could be missing from the assembly. Therefore, high-quality reads might not align because they there is missing reference sequence to align to that corresponds to their sequence.
 - **Quality of libraries** - If the library generation was poor and there wasn't enough input DNA, then your sequencing could be filled with low-quality reads
 - **Quality of the reads** - If the reads are poor quality, then it can make alignment more uncertain. If your `FASTQC` report shows any anomalous signs, contact your sequencing center for support.
 - **Contamination** - If your samples are contaminated, then it can also skew your alignment. For example, if your samples were heavily contaminated with some bacteria, then much of what you will sequence will be bacteria DNA and not your sample DNA. As a result, most of the sequence reads will not align to your target sequence. If you suspect contamination might be the source of a poor alignment, you could consider running [Kraken](https://ccb.jhu.edu/software/kraken/) to evaluate the levels of contamination in your samples.
@@ -42,7 +42,7 @@ First, we need to add our shebang line, description and `sbatch` directives to t
 #SBATCH -e picard_metrics_normal_%j.err
 ```
 
-Next we need to load `Picard`:
+Next, we need to load `Picard`:
 
 ```
 # Load picard
@@ -58,7 +58,7 @@ REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
 OUTPUT_METRICS_FILE=/home/${USER}/variant_calling/reports/picard/syn3_normal/syn3_normal_GRCh38.p7.CollectAlignmentSummaryMetrics.txt
 ```
 
-Next, we can add the `Picard` command to gather the alignment metrics:
+Lastly, we can add the `Picard` command to gather the alignment metrics:
 
 ```
 # Run Picard CollectAlignmentSummaryMetrics
@@ -74,7 +74,7 @@ We can breakdown this command into each of it's components:
 
 - `--INPUT $INPUT_BAM` This is the output from our previous `Picard` alignment processing steps.
 
-- `--REFERENCE_SEQUENCE $REFERENCE` This isn't a required parameter, but `picard` can do a subset of mismatch-related metrics if this is provided.
+- `--REFERENCE_SEQUENCE $REFERENCE` This isn't a required parameter, but `Picard` can do a subset of mismatch-related metrics if this is provided.
 
 - `--OUTPUT $OUTPUT_METRICS_FILE` This is the file to write the output metrics to.
 
@@ -130,10 +130,10 @@ sbatch picard_metrics_tumor.sbatch
 
 ## Collecting Coverage Metrics
 
-Coverage is the average level of alignment for any random locus in the genome.  `Picard` also has a package called `CollectWgsMetrics` which is also very nice for collecting data about coverage for our alignments. However, since our data set is whole exome sequencing rather than whole genome sequencing and thus only compromises about 1-2% of the human genome, average coverage across the whole genome is not a very useful metric. However, if one did have whole genome data, then running `CollectWgsMetrics` would be useful and even could be incorporated easily into the downstream <code>MultiQC</code> HTML report. In the dropdown box below be provide the code that you could use to collect this information.
+Coverage is the average level of alignment for any random locus in the genome.  `Picard` also has a package called `CollectWgsMetrics` which is also very nice for collecting data about coverage for alignments. However, since our data set is whole exome sequencing rather than whole genome sequencing and thus only compromises about 1-2% of the human genome, average coverage across the whole genome is not a very useful metric. However, if one did have whole genome data, then running `CollectWgsMetrics` would be useful and even could be incorporated easily into the downstream <code>MultiQC</code> HTML report. In the dropdown box below we provide the code that you could use to collect this information.
 
 <details>
-<summary>Click here to find out more on collecting coverage metrics for WGS datasets in <code>Picard</code></summary>
+<summary><b>Click here to find out more on collecting coverage metrics for WGS datasets in <code>Picard</code></b></summary>
 <br>The tool in <code>Picard</code> used for collecting coverage metrics for WGS datasets is called <code>CollectWgsMetrics</code>.<br><br>
   <pre>
   # Assign paths to bash variables
@@ -148,15 +148,15 @@ Coverage is the average level of alignment for any random locus in the genome.  
   </pre>
         
   <ul><li><code>java -jar $PICARD/picard.jar CollectWgsMetrics</code> This calls the <code>CollectWgsMetrics</code> package within <code>Picard</code></li>
-  <li><code>--INPUT $COORDINATE_SORTED_BAM_FILE</code> Assign the input as the coordinate sorted BAM file</li>
-  <li><code>--OUTPUT $METRICS_OUTPUT_FILE</code> Assign the report output file </li>
+  <li><code>--INPUT $COORDINATE_SORTED_BAM_FILE</code> This is the input as the coordinate sorted BAM file</li>
+  <li><code>--OUTPUT $METRICS_OUTPUT_FILE</code> This is the output report file </li>
   <li><code>--REFERENCE_SEQUENCE $REFERENCE</code> This is the path to the reference genome that was used for the alignment.</li></ul>
 <hr />
 </details>
 
 ## Inspecting procressed `BAM` files
 
-We discussed BAM/SAM file formatting in the [file format lesson](file_formats.md), but didn't discuss the header section and we could now inspect our processed BAM files to see what that looks like. In order to do this, we are going to use `Picard`, but once again this can be done in `samtools` as well (and more oftentimes is done in `samtools`) and that will be shown in a dropdown at the end of this section.
+We discussed BAM/SAM file formatting in the [file format lesson](03_file_formats.md), but didn't dive too deeply into the header section and we could now inspect our processed BAM files to see what that looks like. In order to do this, we are going to use `Picard`, but once again this can be done in `samtools` as well (and more oftentimes it is done in `samtools`) and that will be shown in a dropdown at the end of this section.
 
 First, we will need to make sure that the `Picard` module is loaded:
 
@@ -178,7 +178,7 @@ This will open up the fully processed normal sample's BAM file in a human-readab
 
 - `java -jar $PICARD/picard.jar ViewSam` This calls the `ViewSam` package within `Picard`
 - `--INPUT /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam` This is the input file that we would like to view
-- `--ALIGNMENT_STATUS All` This option filter what reads we would like to see, just the aligned reads (`Aligned`), just the unaligned (`Unaligned`) or all of the reads (`All`)
+- `--ALIGNMENT_STATUS All` This option filters what reads we would like to see, just the aligned reads (`Aligned`), just the unaligned (`Unaligned`) or all of the reads (`All`)
 - `--PF_STATUS All` This option always us to filter the reads we see based upon a chastity filter. More information on Illumina's chastity filter can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035890991-PF-reads-Illumina-chastity-filter). We can show only reads that pass this chastity filter (`PF`), fail the chastity filter (`nonPF`) or all reads (`all`).
 - `| less` Lastly, we want to pipe the output to a `less` function.
 
@@ -220,7 +220,7 @@ Lastly, we can see the aligned reads after all of this metadata concerning the f
 
 <details>
 <summary><b>Click here to see how to inspect BAM files in <code>samtools</code></b></summary>
-If we wanted to use <code>samtools</code> to view the BAM/SAM file, we would first need to make sure the <code>samtools</code> module is loaded (Note: that <code>samtools</code> does require <code>gcc</code> to be loaded as well:
+If we wanted to use <code>samtools</code> to view the BAM/SAM file, we would first need to make sure the <code>samtools</code> module is loaded (Note: <code>samtools</code> does require <code>gcc</code> to be loaded as well):
 
 <pre>
 module load gcc/6.2.0
@@ -249,7 +249,7 @@ samtools view -H /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignment
 
 The <code>-H</code> option modifies the output to only print the header lines. You won't get the read lines as well.
 
-The information here is the same as with <code>Picard</code>, so we won't rehash it. There are only differences that <code>samtools</code> adds the <code>view</code> command into the @PG lines.
+The information here is the same as with <code>Picard</code>, so we won't rehash it. The only difference is that <code>samtools</code> adds the <code>view</code> command into the @PG lines.
 <hr />
 </details>
 
@@ -263,21 +263,21 @@ The information here is the same as with <code>Picard</code>, so we won't rehash
 
 Once the job has finished we would inspect the output files. This could be done in one of a few ways:
 
-1) View each metrics file in a `less` buffer
+**1)** View each metrics file in a `less` buffer
   - **Pros**
     - Simple to do
   - **Cons**
     - Hard to compare across samples
     - Tedious to parse the columns
     
-2) Download each metrics from the O2 cluster and import them into Excel/Excel-like program that puts tab-delmited files into a grid
+**2)** Download each metrics from the O2 cluster and import them into Excel/Excel-like program that puts tab-delmited files into a grid
   - **Pros**
     - Easier to interpret the data than the `less` buffer approach
   - **Cons**
     - Hard to compare across samples
     - Have to download multiple metrics files from the O2 cluster
     
-3) Collate metrics files using [`MultiQC`](https://multiqc.info) and download the `MultiQC` HTML report from the O2 cluster
+**3)** Collate metrics files using [`MultiQC`](https://multiqc.info) and download the `MultiQC` HTML report from the O2 cluster
   - **Pros**
     - Alignment metrics are easy to compare across samples
     - Easy to interpret results
@@ -286,15 +286,16 @@ Once the job has finished we would inspect the output files. This could be done 
     - Have to download a file from the O2 cluster
     - Have to run samples through an extra `MultiQC` step
 
-None of the above methods are wrong, but some are more elegant than others. One might use **Method 1)** if they only had a handful of samples (~<5) to analyze and only wanted a single statistic, like alignment rate, from each. Then, it might be fastest just to open them up in a `less` buffer. However, if one has lots of samples (>5) then the advantages of `MultiQC` collating the results starts to become really helpful and one might choose **Method 3)**. Unfortunately, `MultiQC` doesn't display *ALL* of the data contained in the metrics file, so one may be inclined to do **Method 2** and download the directory full of metrics files in order to view the metrics not included in the `MultiQC` report in a program like Microsoft Excel.
+None of the above methods are wrong, but some are more elegant than others. One might use **Method 1)** if they only had a handful of samples (~<5) to analyze and only wanted a single statistic, like alignment rate, from each. Then, it might be fastest just to open them up in a `less` buffer. However, if one has lots of samples (>5) then the advantages of `MultiQC` collating the results starts to become really helpful and one might choose **Method 3)**. Unfortunately, `MultiQC` doesn't display *ALL* of the data contained in the metrics file, so one may be inclined to do **Method 2)** and download the directory full of metrics files in order to view the metrics not included in the `MultiQC` report in a program like Microsoft Excel.
 
 However, for this workshop, we are going to collate our results in `MultiQC` and download the HTML report to our local computers.
 
 ## Inspecting `Picard` Alignment Metrics
 
-One nice feature of `MultiQC` is that it accepts many different file formats. It figures out which format was submitted and tailors the report to that type of analysis. Collating our `MultiQC` results would be relatively quick to just run from the command-line, but it's best practice to write our steps to scripts so that we always have a record of what we did and how we created our reports. We will start by writing a `sbatch` script in `vim` for submission:
+One nice feature of `MultiQC` is that it accepts many different file formats. It figures out which format was submitted and tailors the report to that type of analysis. Collating our `MultiQC` results would be relatively quick to just run from the command-line, but it's best practice to write our steps to scripts so that we always have a record of what we did and how we created our reports. We will start by making sure we are in our scripts directory and writing a `sbatch` script in `vim` for submission:
 
 ```
+cd ~/variant_calling/scripts/
 vim multiqc_alignment_metrics_normal_tumor.sbatch
 ```
 
@@ -313,7 +314,7 @@ First, we will add our sheband line, description and `sbatch` directives
 #SBATCH -e multiqc_alignment_metrics_%j.err
 ```
 
-Next, we will load out modules:
+Next, we will load our modules:
 
 ```
 # Load modules
@@ -413,7 +414,7 @@ squeue -u $USER
 
 **If your `Picard` collect alignment metric steps are not completed yet**, wait until they have finished before submitting these jobs to `MultiQC`.
 
-**If your `Picard` collect alignment metric steps are completed**, then submit this `MultiQC` job to collate the alignment metrics:
+**If your `Picard` collect alignment metric steps are completed and the only job you have running is your interactive job**, then submit this `MultiQC` job to collate the alignment metrics:
 
 ```
 sbatch multiqc_alignment_metrics.sbatch
