@@ -88,7 +88,7 @@ Below is a flow chart of the `Picard` pipeline that we will be using:
 >   You can merge alignment files with different read group IDs from the same sample in both <code>Picard</code> and <code>samtools</code>. In the dropdowns below we will outline each method:
 > <details>
 >   <summary><b>Click to see how to merge SAM/BAM files in <code>Picard</code></b></summary>
->   First, we need to be sure to call <code>Picard</code>:
+>   First, we need to load the <code>Picard</code> module:
 >   <pre>
 >   module load picard/2.27.5</pre>
 >   We can define our variables as:
@@ -111,7 +111,7 @@ Below is a flow chart of the `Picard` pipeline that we will be using:
 > </details>
 > <details>
 >   <summary><b>Click to see how to merge SAM/BAM files in <code>samtools</code></b></summary>
->   First we need to load the <code>samtools</code> module, which also requires <code>gcc</code> to be loaded:
+>   First, we need to load the <code>samtools</code> module, which also requires <code>gcc</code> to be loaded:
 >   <pre>
 >   module load gcc/6.2.0
 >   module load samtools/1.15.1</pre>
@@ -135,7 +135,7 @@ Below is a flow chart of the `Picard` pipeline that we will be using:
 >   <li><code>$INPUT_BAM_1</code> This is the first SAM/BAM file that we would like to merge.</li>
 >   <li><code>$INPUT_BAM_2</code> This is the second SAM/BAM file that we would like to merge. We can continue to add addiitonal input SAM/BAM files to this list as needed.</li>
 >   <li><code>--output-fmt BAM</code> This specifies the output format as <code>BAM</code>. If for some reason you wanted a <code>SAM</code> output file then you would use <code>--output-fmt SAM</code> instead.</li>
->   <li><code>-@ $THREADS</code> This specifies the number of threads we want to use for this process. We are using 8 threads in this example, but this could be different depending on your cluster.</li></ul>
+>   <li><code>-@ $THREADS</code> This specifies the number of threads we want to use for this process. We are using 8 threads in this example, but this could be different depending on the parameters that you would like to use.</li></ul>
 > </details>
 ><hr />
 ></details>
