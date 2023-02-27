@@ -1,3 +1,3 @@
 <p align="center">
-<img src="../img/Swatches_color_IGV.png" width="800">
+<img src="../img/Trimmed_test.gif" width="800">
 </p>
