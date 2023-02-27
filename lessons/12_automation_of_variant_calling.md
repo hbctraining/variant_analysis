@@ -649,11 +649,11 @@ $SNPEFF_ANNOTATED_VCF_FILE \
 
 Now that we have each of our individual `sbatch` submission scripts written, we can tie them all together in a wrapper script. Before we do this though, we are going to briefly discuss the  `--dependency` option in the `sbatch` command. The `--dependency` option is very helpful for a few cases:
 
-1) When designing a pipeline to run on a cluster where different parts of the pipeline have different computational requirements.
+**1)** When designing a pipeline to run on a cluster where different parts of the pipeline have different computational requirements.
 
-2) When running a pipeline where you expect the output from one job to finish at a time when you won't be availible to submit it as input to the next step in the pipeline.
+**2)** When running a pipeline where you expect the output from one job to finish at a time when you won't be availible to submit it as input to the next step in the pipeline.
 
-3) When multiple parts of the pipeline all need to be completed before the next step can begin.
+**3)** When multiple parts of the pipeline all need to be completed before the next step can begin.
 
 #### Making one sbatch submission dependent on another
 
