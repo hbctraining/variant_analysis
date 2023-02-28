@@ -4,7 +4,6 @@
 
 - Filter records in a VCF file various effects/impacts
 - Extract fields of interest from VCF file
-- Create the input necessary to create an OncoPrint
 
 Now that we have annotated and filtered our variants, we are likely interested in subsetting our variants to find those of most interest to our study. Perhaps we are interested in finding variants that substantially disrupt a transcript, such as a variant causing a premature stop codon, or just find all of the missense mutations in the sample. `SnpSift` is part of the `SnpEff` suite and it is built explicitly for this purpose.
 
@@ -24,46 +23,61 @@ First, you can filter your SnpEff annotated VCF file based upon the first seven 
 - **QUAL**
 - **FILTER**
 
-Let's go ahead and do our first `SnpSift` command to extract variants, but before we do we will need to load the `SnpEff` module:
+Let's go ahead and do our first `SnpSift` command to extract variants, but before we do let's move to the directory with our VCF files and load the `SnpEff` module:
 
 ```
+cd /n/scratch3/users/${USER:0:1}/$USER/variant_calling/vcf_files/
 module load snpEff/4.3g
 ```
 
-Now that we have loaded the SnpEff module we can utilize the SnpSift to find all of the variants on `chr1` and pipe the output into `less`:
+Now that we have loaded the SnpEff module we can utilize the `SnpSift` to find all of the variants on  Chromosome `1` and pipe the output into `less`:
 
 ```
-java -jar $SNPEFF/SnpSift.jar filter "( CHROM = 'chr1' )" syn3_GRCh38.p7-LCR-filt.snpeff.vcf  | less
+java -jar $SNPEFF/SnpSift.jar filter -noLog "( CHROM = '1' )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | less
 ```
 
 Let's break down the syntax a bit:
 
-- `java -jar $SNPEFF/SnpSift.jar` This calls the `SnpSift` program.
+- `java -jar $SNPEFF/SnpSift.jar filter` This calls the `filter` package within `SnpSift`.
 
-- `filter` There are several useful commands within `SnpSift`, but `filter` is the one we will be using to extract variants meeting out criteria
+- `-noLog` This does not report command usage to `SnpEff`'s server
 
-- `"( CHROM = 'chr1' )"` This is the syntax needed to extract variants on `chr1`. The left side of the equals sign corresponds to the VCF field you wish to filter by and the right side if the string you would like to match.
+- `"( CHROM = '1' )"` This is the syntax needed to extract variants on Chromosome `1`. The left side of the equals sign corresponds to the VCF field you wish to filter by and the right side is the string you would like to match.
 
-- `syn3_GRCh38.p7-LCR-filt.snpeff.vcf` The input VCF file. Importantly, this need to go at the end.
+- `mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf` This is the input VCF file. Importantly, this needs to go at the end.
 
 - `| less` Piping the output into a `less` buffer page for inspection.
+
+#### Revisiting "( FILTER = 'PASS' )"
+
+Now, we that we have a basic understanding of some of the syntax used in `SnpSift`, we can revisit the [filtering command that we used earlier](https://github.com/hbctraining/variant_analysis/blob/main/lessons/10_variant_filtering.md#filter-vcf-files-for-only-variants-with-pass-in-the-filter-field-using-snpsift). There we used:
+
+```
+# Filter for only SNPs with PASS in the FILTER field
+java -jar $SNPEFF/SnpSift.jar filter \
+-noLog \
+"( FILTER = 'PASS' )" \
+$MUTECT_FILTERED_VCF > $PASSING_FILTER_VCF
+```
+
+As we can see here, we are telling `SnpSift` to look at the `FILTER` field and requiring the output to have the value of `PASS` there.
 
 ### Multiple Filters
 
 It is likely that you could want to filter on multiple criteria. You can do that by separating the filter criteria with either and `&` (and) or `|` (or).
 
-For example, let's consider a case where you want to filter your filter for any variant on `chr1` ***OR*** `chr2`. That might look like:
+For example, let's consider a case where you want to filter your filter for any variant on Chromosome `1` ***OR*** Chromosome `2`. That might look like:
 
 ```
-java -jar $SNPEFF/SnpSift.jar filter "( CHROM = 'chr1' ) | ( CHROM = 'chr2' )" syn3_GRCh38.p7-LCR-filt.snpeff.vcf  | less
+java -jar $SNPEFF/SnpSift.jar filter "( CHROM = '1' ) | ( CHROM = '2' )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | less
 ```
 
-Note the `"( CHROM = 'chr1' ) | ( CHROM = 'chr2' )"` syntax allows us to filter for `chr1` or `chr2` by using the `|` to separate our criteria.
+Note the `"( CHROM = '1' ) | ( CHROM = '2' )"` syntax allows us to filter for Chromosome `1` **or** Chromosome `2` by using the `|` to separate our criteria within the double quotes. While you might be most familiar with the `|` symbol as the pipe command in `bash`, it is not uncommon in other instances or languages like `R` for it to stand for "or". In fact, in bash, "or" is `||`, so it is closely related. The important point here is that the `|` within the double quotes stands for "or" when using `SnpSift` and it is not a pipe.
 
-Alternatively, we could be interested in variants on `chr1` between positions `1000000` and `2000000`. It would look like:
+Alternatively, we could be interested in variants on Chromosome `1` between positions `1000000` and `2000000`. It would look like:
 
 ```
-java -jar $SNPEFF/SnpSift.jar filter "( CHROM = 'chr1' ) & ( POS > 1000000 ) & ( POS < 2000000 )" syn3_GRCh38.p7-LCR-filt.snpeff.vcf  | less
+java -jar $SNPEFF/SnpSift.jar filter -noLog "( CHROM = '1' ) & ( POS > 1000000 ) & ( POS < 2000000 )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf   | less
 ```
 
 ### INFO Field
@@ -75,24 +89,27 @@ java -jar $SNPEFF/SnpSift.jar filter "( CHROM = 'chr1' ) & ( POS > 1000000 ) & (
 If you are interested in all of the variants corresponding to a single gene of interest, you can filter by the gene name in this case `CPSF3L`:
 
 ```
-java -jar $SNPEFF/SnpSift.jar filter "( ANN[*].GENE = 'CPSF3L' )" syn3_GRCh38.p7-LCR-filt.snpeff.vcf  | less
+java -jar $SNPEFF/SnpSift.jar filter -noLog "( ANN[*].GENE = 'CPSF3L' )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf   | less
 ```
 
 To filter by the gene name you will need `"( ANN[*].GENE = 'INSERT_GENE_NAME' )"`. 
 
-> NOTE: When handling multiple valued fields (i.e. fields with commas), `SnpSift` uses a 0-based index to describing those elements. In the above example, the output have multiple annotations for `CPSF3L`, but if we wanted to specify that the first one needed to be `CPSF3L`, then we would need to filter by `"( ANN[0].GENE = 'CPSF3L' )"`. The `*` tell `SnpSift` to extract the record if "any" annotations corresponds to `CPSF3L`. For most cases, you will want to use the `*`, but you should know why it is there.
+> NOTE: When handling multiple valued fields (i.e. fields with commas), `SnpSift` uses a 0-based index to describing those elements. In the example below, we can see that the first four `ANN` fields are for the gene `CPTP` before we get to the annotations for `CPSF3L`. So instead if you have used `"( ANN[0].GENE = 'CPSF3L' )"` instead of `"( ANN[*].GENE = 'CPSF3L' )"`, then it will only return the entries which have `"CPSF3L"` in the first `GENE` annotation field and exclude the example below. The `*` tell `SnpSift` to extract the record if "any" annotations corresponds to `CPSF3L`. For most cases, you will want to use the `*`, but you should understand why it is there.
+> ```
+> 1       1324300 .       G       A       .       PASS    AS_FilterStatus=SITE;AS_SB_TABLE=47,6|11,0;ClippingRankSum=0.39;DP=68;ECNT=1;FS=2.373;GERMQ=93;MBQ=27,27;MFRL=337,338;MMQ=60,60;MPOS=27;MQ=60;MQ0=0;MQRankSum=0;NALOD=1.54;NLOD=9.88;POPAF=6;ReadPosRankSum=-0.125;TLOD=24.65;ANN=A|upstream_gene_variant|MODIFIER|CPTP|CPTP|transcript|NM_001029885.1|protein_coding||c.-2611G>A|||||463|,A|upstream_gene_variant|MODIFIER|CPTP|CPTP|transcript|XM_005244802.1|protein_coding||c.-3008G>A|||||456|,A|upstream_gene_variant|MODIFIER|CPTP|CPTP|transcript|XM_005244801.3|protein_coding||c.-2611G>A|||||843|,A|upstream_gene_variant|MODIFIER|CPTP|CPTP|transcript|XM_011542200.2|protein_coding||c.-2611G>A|||||1315|,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|XM_011541647.1|protein_coding|1/18|c.28+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|NM_001256456.1|protein_coding|1/18|c.-428+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|NM_001256460.1|protein_coding|1/17|c.-167+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|NM_001256462.1|protein_coding|1/14|c.28+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|NM_001256463.1|protein_coding|1/14|c.28+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|NM_017871.5|protein_coding|1/16|c.28+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|XM_017001558.1|protein_coding|1/18|c.-438+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|XM_017001557.1|protein_coding|1/17|c.-361+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|XM_011541648.1|protein_coding|1/18|c.-91+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|XM_011541650.1|protein_coding|1/16|c.-254+281C>T||||||  GT:AD:AF:DP:F1R2:F2R1:SB        0/0:33,0:0.028:33:12,0:20,0:32,1,0,0    0/1:20,11:0.367:31:6,6:12,5:15,5,11,0
+> ```
 
 #### Effects
 
 It is also quite common to want to filter your output by the effects the variants have on the annotated gene models. The syntax for this is quite similar to the example for genes:
 
 ```
-java -jar $SNPEFF/SnpSift.jar filter "( ANN[*].EFFECT has 'missense_variant' )" syn3_GRCh38.p7-LCR-filt.snpeff.vcf  | less
+java -jar $SNPEFF/SnpSift.jar filter -noLog "( ANN[*].EFFECT has 'missense_variant' )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | less
 ```
 
-To filter by a variant effect, the filter syntax is "( ANN[\*].EFFECT has 'VARIANT_EFFECT' )"
+To filter by a variant effect, the filter syntax is `"( ANN[*].EFFECT has 'VARIANT_EFFECT' )"`
 
-> Note: Importantly, notice the use of `has` instead of `=` here. Sometimes effects will contain mutliple effects such as `missense_variant&splice_donor_variant`. Using `ANN[\*].EFFECT = missense_variant` here ***WILL NOT*** return this line, because the line is not equal to `missense_variant`, however `ANN[\*].EFFECT has missense_variant` ***WILL*** return this line. Oftentimes for effects, one would be interested in the `has` query as opposed to the `=` one.
+> Note: Importantly, notice the use of `has` instead of `=` here. Sometimes effects field will contain mutliple effects such as `missense_variant&splice_donor_variant`. Using `ANN[*].EFFECT = missense_variant` here ***WILL NOT*** return this line, because the line is not equal to `missense_variant`, however `ANN[*].EFFECT has missense_variant` ***WILL*** return this line. Oftentimes for effects, one would be interested in the `has` query as opposed to the `=` one.
 
 There are many different variant effects and some of the more common ones are:
 
@@ -132,19 +149,25 @@ Many more effects can be found [here](https://pcingola.github.io/SnpEff/se_input
 
 - `MODIFER` These variants are typically in non-coding regions and their impacts are difficult to assertain. 
 
-More information on these categories can be found [here](https://pcingola.github.io/SnpEff/se_inputoutput/#impact-prediction) and a complete listing of the categories for each effect can be found [here]((https://pcingola.github.io/SnpEff/se_inputoutput/#effect-prediction-details). 
+More information on these categories can be found [here](https://pcingola.github.io/SnpEff/se_inputoutput/#impact-prediction) and a complete listing of the categories for each effect can be found [here](https://pcingola.github.io/SnpEff/se_inputoutput/#effect-prediction-details). 
 
 Let's go ahead and filter out all of our `HIGH` impact muations:
 
 ```
-java -jar $SNPEFF/SnpSift.jar filter "( ANN[*].IMPACT has 'HIGH' )"  syn3_GRCh38.p7-LCR-filt.snpeff.vcf  | less
+java -jar $SNPEFF/SnpSift.jar filter -noLog "( ANN[*].IMPACT has 'HIGH' )"  mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | less
 ```
 
 > ***Note:*** Similarly to `EFFECT`, oftentimes you will want to use `has` rather than `=`.
 
+Let's go ahead and redirect the output of these "high-impact" mutations to a new VCF file:
+
+```
+java -jar $SNPEFF/SnpSift.jar filter -noLog "( ANN[*].IMPACT has 'HIGH' )"  mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  > mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.high_impact.vcf 
+```
+
 #### Other ANN fields
 
-In addition to `GENE`, `EFFECT` and `IMPACT`, there are a whole host of other `ANN` fields. Some of the others we may come across are:
+In addition to `GENE`, `EFFECT` and `IMPACT`, there are a whole host of other `ANN` fields. Some of the other `ANN` fields that we will come across later are:
 
 - `TRID` - Transcript ID or NCBI accesssion number
 - `HGVS_P` - The alteration in protein notation
@@ -154,80 +177,104 @@ A full list of `ANN` fields can be found [here](http://pcingola.github.io/SnpEff
 
 ## vcfEffOnePerLine
 
-A useful tool within the `SnpSift` toolkit is the `perl` script named `vcfEffOnePerLine.pl`. This script allows the user to separate each effect onto its own line instead of having them lumped into a single line. In order to utilize this script we need to pipe the output of our `filter` command into `$SNPEFF/scripts/vcfEffOnePerLine.pl`. We can use it on our previous example to demonstrate:
+A useful tool within the `SnpSift` toolkit is the `perl` script named `vcfEffOnePerLine.pl`. This script allows the user to separate each effect onto its own line instead of having them lumped into a single line. In order to utilize this script we need to pipe the output of our `filter` command into `$SNPEFF/scripts/vcfEffOnePerLine.pl`. We can use it on our previous example to demonstrate (be patient, it might take ~15 seconds to run):
 
 ```
-java -jar $SNPEFF/SnpSift.jar filter "( ANN[*].IMPACT has 'HIGH' )"  syn3_GRCh38.p7-LCR-filt.snpeff.vcf  | $SNPEFF/scripts/vcfEffOnePerLine.pl | less
+java -jar $SNPEFF/SnpSift.jar filter -noLog "( ANN[*].IMPACT has 'HIGH' )"  mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf | $SNPEFF/scripts/vcfEffOnePerLine.pl | less
 ```
 
 Now, we can see that each variant has a separate entry depending on its effect.
 
 ```
-chrX    153285023       .       C       A       .       strand_bias;weak_evidence       AS_FilterStatus=weak_evidence,strand_bias;AS_SB_TABLE=12,45|0,2;ClippingRankSum=1.288;DP=61;ECNT=1;FS=0.000;GERMQ=93;MBQ=26,35;MFRL=339,349;MMQ=60,60;MPOS=15;MQ=60.00;MQ0=0;MQRankSum=0.000;NALOD=1.45;NLOD=8.07;POPAF=6.00;ReadPosRankSum=-1.027;TLOD=3.78;LOF=(IRAK1|IRAK1|3|1.00);NMD=(IRAK1|IRAK1|3|1.00);ANN=A|stop_gained|HIGH|IRAK1|IRAK1|transcript|NM_001569.3|protein_coding|2/14|c.163G>T|p.Glu55*|242/3571|163/2139|55/712||       GT:AD:AF:DP:F1R2:F2R1:SB        0/0:28,0:0.035:28:15,0:12,0:7,21,0,0    0/1:29,2:0.091:31:17,0:10,2:5,24,0,2
-chrX    153285023       .       C       A       .       strand_bias;weak_evidence       AS_FilterStatus=weak_evidence,strand_bias;AS_SB_TABLE=12,45|0,2;ClippingRankSum=1.288;DP=61;ECNT=1;FS=0.000;GERMQ=93;MBQ=26,35;MFRL=339,349;MMQ=60,60;MPOS=15;MQ=60.00;MQ0=0;MQRankSum=0.000;NALOD=1.45;NLOD=8.07;POPAF=6.00;ReadPosRankSum=-1.027;TLOD=3.78;LOF=(IRAK1|IRAK1|3|1.00);NMD=(IRAK1|IRAK1|3|1.00);ANN=A|stop_gained|HIGH|IRAK1|IRAK1|transcript|NM_001025242.1|protein_coding|2/14|c.163G>T|p.Glu55*|242/3481|163/2049|55/682||    GT:AD:AF:DP:F1R2:F2R1:SB        0/0:28,0:0.035:28:15,0:12,0:7,21,0,0    0/1:29,2:0.091:31:17,0:10,2:5,24,0,2
-chrX    153285023       .       C       A       .       strand_bias;weak_evidence       AS_FilterStatus=weak_evidence,strand_bias;AS_SB_TABLE=12,45|0,2;ClippingRankSum=1.288;DP=61;ECNT=1;FS=0.000;GERMQ=93;MBQ=26,35;MFRL=339,349;MMQ=60,60;MPOS=15;MQ=60.00;MQ0=0;MQRankSum=0.000;NALOD=1.45;NLOD=8.07;POPAF=6.00;ReadPosRankSum=-1.027;TLOD=3.78;LOF=(IRAK1|IRAK1|3|1.00);NMD=(IRAK1|IRAK1|3|1.00);ANN=A|stop_gained|HIGH|IRAK1|IRAK1|transcript|NM_001025243.1|protein_coding|2/13|c.163G>T|p.Glu55*|242/3334|163/1902|55/633||    GT:AD:AF:DP:F1R2:F2R1:SB        0/0:28,0:0.035:28:15,0:12,0:7,21,0,0    0/1:29,2:0.091:31:17,0:10,2:5,24,0,2
-chrX    153285023       .       C       A       .       strand_bias;weak_evidence       AS_FilterStatus=weak_evidence,strand_bias;AS_SB_TABLE=12,45|0,2;ClippingRankSum=1.288;DP=61;ECNT=1;FS=0.000;GERMQ=93;MBQ=26,35;MFRL=339,349;MMQ=60,60;MPOS=15;MQ=60.00;MQ0=0;MQRankSum=0.000;NALOD=1.45;NLOD=8.07;POPAF=6.00;ReadPosRankSum=-1.027;TLOD=3.78;LOF=(IRAK1|IRAK1|3|1.00);NMD=(IRAK1|IRAK1|3|1.00);ANN=A|downstream_gene_variant|MODIFIER|MIR718|MIR718|transcript|NR_031757.1|pseudogene||n.*348G>T|||||348|       GT:AD:AF:DP:F1R2:F2R1:SB        0/0:28,0:0.035:28:15,0:12,0:7,21,0,0    0/1:29,2:0.091:31:17,0:10,2:5,24,0,2
-chrX    153285023       .       C       A       .       strand_bias;weak_evidence       AS_FilterStatus=weak_evidence,strand_bias;AS_SB_TABLE=12,45|0,2;ClippingRankSum=1.288;DP=61;ECNT=1;FS=0.000;GERMQ=93;MBQ=26,35;MFRL=339,349;MMQ=60,60;MPOS=15;MQ=60.00;MQ0=0;MQRankSum=0.000;NALOD=1.45;NLOD=8.07;POPAF=6.00;ReadPosRankSum=-1.027;TLOD=3.78;LOF=(IRAK1|IRAK1|3|1.00);NMD=(IRAK1|IRAK1|3|1.00);ANN=A|downstream_gene_variant|MODIFIER|MECP2|MECP2|transcript|NM_004992.3|protein_coding||c.*10795G>T|||||2241|  GT:AD:AF:DP:F1R2:F2R1:SB        0/0:28,0:0.035:28:15,0:12,0:7,21,0,0    0/1:29,2:0.091:31:17,0:10,2:5,24,0,2
+1	6471577	.	A	ACTCACGTGCAAGCATCACACCGGCACGC	.	PASS	AS_FilterStatus=SITE;AS_SB_TABLE=49,52|6,4;ClippingRankSum=-1.498;DP=119;ECNT=1;FS=2.779;GERMQ=93;MBQ=32,32;MFRL=341,338;MMQ=60,60;MPOS=20;MQ=60;MQ0=0;MQRankSum=0;NALOD=1.82;NLOD=19.17;POPAF=6;ReadPosRankSum=-1.659;TLOD=33.37;LOF=(PLEKHG5|PLEKHG5|8|1.00);NMD=(PLEKHG5|PLEKHG5|8|1.00);ANN=ACTCACGTGCAAGCATCACACCGGCACGC|frameshift_variant&stop_gained|HIGH|PLEKHG5|PLEKHG5|transcript|NM_001265592.1|protein_coding|13/22|c.1428_1429insGCGTGCCGGTGTGATGCTTGCACGTGAG|p.Trp477fs|1493/4794|1428/3258|476/1085||	GT:AD:AF:DP:F1R2:F2R1:SB	0/0:63,0:0.015:63:37,0:25,0:33,30,0,0	0/1:38,10:0.216:48:19,5:17,4:16,22,6,4
+1	6471577	.	A	ACTCACGTGCAAGCATCACACCGGCACGC	.	PASS	AS_FilterStatus=SITE;AS_SB_TABLE=49,52|6,4;ClippingRankSum=-1.498;DP=119;ECNT=1;FS=2.779;GERMQ=93;MBQ=32,32;MFRL=341,338;MMQ=60,60;MPOS=20;MQ=60;MQ0=0;MQRankSum=0;NALOD=1.82;NLOD=19.17;POPAF=6;ReadPosRankSum=-1.659;TLOD=33.37;LOF=(PLEKHG5|PLEKHG5|8|1.00);NMD=(PLEKHG5|PLEKHG5|8|1.00);ANN=ACTCACGTGCAAGCATCACACCGGCACGC|frameshift_variant&stop_gained|HIGH|PLEKHG5|PLEKHG5|transcript|NM_001265593.1|protein_coding|12/21|c.1398_1399insGCGTGCCGGTGTGATGCTTGCACGTGAG|p.Trp467fs|1424/4725|1398/3228|466/1075||	GT:AD:AF:DP:F1R2:F2R1:SB	0/0:63,0:0.015:63:37,0:25,0:33,30,0,0	0/1:38,10:0.216:48:19,5:17,4:16,22,6,4
+1	6471577	.	A	ACTCACGTGCAAGCATCACACCGGCACGC	.	PASS	AS_FilterStatus=SITE;AS_SB_TABLE=49,52|6,4;ClippingRankSum=-1.498;DP=119;ECNT=1;FS=2.779;GERMQ=93;MBQ=32,32;MFRL=341,338;MMQ=60,60;MPOS=20;MQ=60;MQ0=0;MQRankSum=0;NALOD=1.82;NLOD=19.17;POPAF=6;ReadPosRankSum=-1.659;TLOD=33.37;LOF=(PLEKHG5|PLEKHG5|8|1.00);NMD=(PLEKHG5|PLEKHG5|8|1.00);ANN=ACTCACGTGCAAGCATCACACCGGCACGC|frameshift_variant&stop_gained|HIGH|PLEKHG5|PLEKHG5|transcript|NM_001042665.1|protein_coding|12/21|c.1191_1192insGCGTGCCGGTGTGATGCTTGCACGTGAG|p.Trp398fs|1397/4698|1191/3021|397/1006||	GT:AD:AF:DP:F1R2:F2R1:SB	0/0:63,0:0.015:63:37,0:25,0:33,30,0,0	0/1:38,10:0.216:48:19,5:17,4:16,22,6,4
+1	6471577	.	A	ACTCACGTGCAAGCATCACACCGGCACGC	.	PASS	AS_FilterStatus=SITE;AS_SB_TABLE=49,52|6,4;ClippingRankSum=-1.498;DP=119;ECNT=1;FS=2.779;GERMQ=93;MBQ=32,32;MFRL=341,338;MMQ=60,60;MPOS=20;MQ=60;MQ0=0;MQRankSum=0;NALOD=1.82;NLOD=19.17;POPAF=6;ReadPosRankSum=-1.659;TLOD=33.37;LOF=(PLEKHG5|PLEKHG5|8|1.00);NMD=(PLEKHG5|PLEKHG5|8|1.00);ANN=ACTCACGTGCAAGCATCACACCGGCACGC|frameshift_variant&stop_gained|HIGH|PLEKHG5|PLEKHG5|transcript|NM_001042664.1|protein_coding|12/21|c.1191_1192insGCGTGCCGGTGTGATGCTTGCACGTGAG|p.Trp398fs|1414/4715|1191/3021|397/1006||	GT:AD:AF:DP:F1R2:F2R1:SB	0/0:63,0:0.015:63:37,0:25,0:33,30,0,0	0/1:38,10:0.216:48:19,5:17,4:16,22,6,4
+1	6471577	.	A	ACTCACGTGCAAGCATCACACCGGCACGC	.	PASS	AS_FilterStatus=SITE;AS_SB_TABLE=49,52|6,4;ClippingRankSum=-1.498;DP=119;ECNT=1;FS=2.779;GERMQ=93;MBQ=32,32;MFRL=341,338;MMQ=60,60;MPOS=20;MQ=60;MQ0=0;MQRankSum=0;NALOD=1.82;NLOD=19.17;POPAF=6;ReadPosRankSum=-1.659;TLOD=33.37;LOF=(PLEKHG5|PLEKHG5|8|1.00);NMD=(PLEKHG5|PLEKHG5|8|1.00);ANN=ACTCACGTGCAAGCATCACACCGGCACGC|frameshift_variant&stop_gained|HIGH|PLEKHG5|PLEKHG5|transcript|NM_001265594.1|protein_coding|12/22|c.1191_1192insGCGTGCCGGTGTGATGCTTGCACGTGAG|p.Trp398fs|1428/4529|1191/2793|397/930||	GT:AD:AF:DP:F1R2:F2R1:SB	0/0:63,0:0.015:63:37,0:25,0:33,30,0,0	0/1:38,10:0.216:48:19,5:17,4:16,22,6,4
+1	6471577	.	A	ACTCACGTGCAAGCATCACACCGGCACGC	.	PASS	AS_FilterStatus=SITE;AS_SB_TABLE=49,52|6,4;ClippingRankSum=-1.498;DP=119;ECNT=1;FS=2.779;GERMQ=93;MBQ=32,32;MFRL=341,338;MMQ=60,60;MPOS=20;MQ=60;MQ0=0;MQRankSum=0;NALOD=1.82;NLOD=19.17;POPAF=6;ReadPosRankSum=-1.659;TLOD=33.37;LOF=(PLEKHG5|PLEKHG5|8|1.00);NMD=(PLEKHG5|PLEKHG5|8|1.00);ANN=ACTCACGTGCAAGCATCACACCGGCACGC|frameshift_variant&stop_gained|HIGH|PLEKHG5|PLEKHG5|transcript|NM_020631.4|protein_coding|12/21|c.1191_1192insGCGTGCCGGTGTGATGCTTGCACGTGAG|p.Trp398fs|1343/4644|1191/3021|397/1006||	GT:AD:AF:DP:F1R2:F2R1:SB	0/0:63,0:0.015:63:37,0:25,0:33,30,0,0	0/1:38,10:0.216:48:19,5:17,4:16,22,6,4
+1	6471577	.	A	ACTCACGTGCAAGCATCACACCGGCACGC	.	PASS	AS_FilterStatus=SITE;AS_SB_TABLE=49,52|6,4;ClippingRankSum=-1.498;DP=119;ECNT=1;FS=2.779;GERMQ=93;MBQ=32,32;MFRL=341,338;MMQ=60,60;MPOS=20;MQ=60;MQ0=0;MQRankSum=0;NALOD=1.82;NLOD=19.17;POPAF=6;ReadPosRankSum=-1.659;TLOD=33.37;LOF=(PLEKHG5|PLEKHG5|8|1.00);NMD=(PLEKHG5|PLEKHG5|8|1.00);ANN=ACTCACGTGCAAGCATCACACCGGCACGC|frameshift_variant&stop_gained|HIGH|PLEKHG5|PLEKHG5|transcript|NM_001042663.1|protein_coding|13/22|c.1359_1360insGCGTGCCGGTGTGATGCTTGCACGTGAG|p.Trp454fs|1460/4761|1359/3189|453/1062||	GT:AD:AF:DP:F1R2:F2R1:SB	0/0:63,0:0.015:63:37,0:25,0:33,30,0,0	0/1:38,10:0.216:48:19,5:17,4:16,22,6,4
+1	6471577	.	A	ACTCACGTGCAAGCATCACACCGGCACGC	.	PASS	AS_FilterStatus=SITE;AS_SB_TABLE=49,52|6,4;ClippingRankSum=-1.498;DP=119;ECNT=1;FS=2.779;GERMQ=93;MBQ=32,32;MFRL=341,338;MMQ=60,60;MPOS=20;MQ=60;MQ0=0;MQRankSum=0;NALOD=1.82;NLOD=19.17;POPAF=6;ReadPosRankSum=-1.659;TLOD=33.37;LOF=(PLEKHG5|PLEKHG5|8|1.00);NMD=(PLEKHG5|PLEKHG5|8|1.00);ANN=ACTCACGTGCAAGCATCACACCGGCACGC|frameshift_variant&stop_gained|HIGH|PLEKHG5|PLEKHG5|transcript|NM_198681.3|protein_coding|13/22|c.1422_1423insGCGTGCCGGTGTGATGCTTGCACGTGAG|p.Trp475fs|1972/5273|1422/3252|474/1083||	GT:AD:AF:DP:F1R2:F2R1:SB	0/0:63,0:0.015:63:37,0:25,0:33,30,0,0	0/1:38,10:0.216:48:19,5:17,4:16,22,6,4
 ```
 
 Which was previously:
 
 ```
-chrX    153285023       .       C       A       .       strand_bias;weak_evidence       AS_FilterStatus=weak_evidence,strand_bias;AS_SB_TABLE=12,45|0,2;ClippingRankSum=1.288;DP=61;ECNT=1;FS=0.000;GERMQ=93;MBQ=26,35;MFRL=339,349;MMQ=60,60;MPOS=15;MQ=60.00;MQ0=0;MQRankSum=0.000;NALOD=1.45;NLOD=8.07;POPAF=6.00;ReadPosRankSum=-1.027;TLOD=3.78;ANN=A|stop_gained|HIGH|IRAK1|IRAK1|transcript|NM_001569.3|protein_coding|2/14|c.163G>T|p.Glu55*|242/3571|163/2139|55/712||,A|stop_gained|HIGH|IRAK1|IRAK1|transcript|NM_001025242.1|protein_coding|2/14|c.163G>T|p.Glu55*|242/3481|163/2049|55/682||,A|stop_gained|HIGH|IRAK1|IRAK1|transcript|NM_001025243.1|protein_coding|2/13|c.163G>T|p.Glu55*|242/3334|163/1902|55/633||,A|downstream_gene_variant|MODIFIER|MIR718|MIR718|transcript|NR_031757.1|pseudogene||n.*348G>T|||||348|,A|downstream_gene_variant|MODIFIER|MECP2|MECP2|transcript|NM_004992.3|protein_coding||c.*10795G>T|||||2241|;LOF=(IRAK1|IRAK1|3|1.00);NMD=(IRAK1|IRAK1|3|1.00)        GT:AD:AF:DP:F1R2:F2R1:SB        0/0:28,0:0.035:28:15,0:12,0:7,21,0,0    0/1:29,2:0.091:31:17,0:10,2:5,24,0,2
+1	6471577	.	A	ACTCACGTGCAAGCATCACACCGGCACGC	.	PASS	AS_FilterStatus=SITE;AS_SB_TABLE=49,52|6,4;ClippingRankSum=-1.498;DP=119;ECNT=1;FS=2.779;GERMQ=93;MBQ=32,32;MFRL=341,338;MMQ=60,60;MPOS=20;MQ=60;MQ0=0;MQRankSum=0;NALOD=1.82;NLOD=19.17;POPAF=6;ReadPosRankSum=-1.659;TLOD=33.37;ANN=ACTCACGTGCAAGCATCACACCGGCACGC|frameshift_variant&stop_gained|HIGH|PLEKHG5|PLEKHG5|transcript|NM_001265592.1|protein_coding|13/22|c.1428_1429insGCGTGCCGGTGTGATGCTTGCACGTGAG|p.Trp477fs|1493/4794|1428/3258|476/1085||,ACTCACGTGCAAGCATCACACCGGCACGC|frameshift_variant&stop_gained|HIGH|PLEKHG5|PLEKHG5|transcript|NM_001265593.1|protein_coding|12/21|c.1398_1399insGCGTGCCGGTGTGATGCTTGCACGTGAG|p.Trp467fs|1424/4725|1398/3228|466/1075||,ACTCACGTGCAAGCATCACACCGGCACGC|frameshift_variant&stop_gained|HIGH|PLEKHG5|PLEKHG5|transcript|NM_001042665.1|protein_coding|12/21|c.1191_1192insGCGTGCCGGTGTGATGCTTGCACGTGAG|p.Trp398fs|1397/4698|1191/3021|397/1006||,ACTCACGTGCAAGCATCACACCGGCACGC|frameshift_variant&stop_gained|HIGH|PLEKHG5|PLEKHG5|transcript|NM_001042664.1|protein_coding|12/21|c.1191_1192insGCGTGCCGGTGTGATGCTTGCACGTGAG|p.Trp398fs|1414/4715|1191/3021|397/1006||,ACTCACGTGCAAGCATCACACCGGCACGC|frameshift_variant&stop_gained|HIGH|PLEKHG5|PLEKHG5|transcript|NM_001265594.1|protein_coding|12/22|c.1191_1192insGCGTGCCGGTGTGATGCTTGCACGTGAG|p.Trp398fs|1428/4529|1191/2793|397/930||,ACTCACGTGCAAGCATCACACCGGCACGC|frameshift_variant&stop_gained|HIGH|PLEKHG5|PLEKHG5|transcript|NM_020631.4|protein_coding|12/21|c.1191_1192insGCGTGCCGGTGTGATGCTTGCACGTGAG|p.Trp398fs|1343/4644|1191/3021|397/1006||,ACTCACGTGCAAGCATCACACCGGCACGC|frameshift_variant&stop_gained|HIGH|PLEKHG5|PLEKHG5|transcript|NM_001042663.1|protein_coding|13/22|c.1359_1360insGCGTGCCGGTGTGATGCTTGCACGTGAG|p.Trp454fs|1460/4761|1359/3189|453/1062||,ACTCACGTGCAAGCATCACACCGGCACGC|frameshift_variant&stop_gained|HIGH|PLEKHG5|PLEKHG5|transcript|NM_198681.3|protein_coding|13/22|c.1422_1423insGCGTGCCGGTGTGATGCTTGCACGTGAG|p.Trp475fs|1972/5273|1422/3252|474/1083||;LOF=(PLEKHG5|PLEKHG5|8|1.00);NMD=(PLEKHG5|PLEKHG5|8|1.00)	GT:AD:AF:DP:F1R2:F2R1:SB	0/0:63,0:0.015:63:37,0:25,0:33,30,0,0	0/1:38,10:0.216:48:19,5:17,4:16,22,6,4
 ```
 
-This step is particularly helpful for cleaning up the files for use in the next step `extractFields`.
+This step is particularly helpful for cleaning up the files for use in the next step, `extractFields`.
 
 ## extractFields
 
 Lastly, we have another extremely useful feature of `SnpSift` and that is the `extractFields` command. This allows us to parse the VCF file and print only the fields we are interested in. 
 
-If we wanted to parse out the missense mutations, create a single line for each effect, then extract the fields for chromosome, position, gene ID as well as the alteration in terms of protein and DNA space and also the effect.
+If we wanted to parse out the missense mutations, create a single line for each effect, then extract the fields for chromosome, position, gene ID as well as the alteration in terms of protein and DNA space and also the predicted effect, then we could create am output like that using:
 
 ```
-java -jar $SNPEFF/SnpSift.jar \
-filter \
-"( ANN[*].EFFECT has 'missense_variant' )"  vcf_files/syn3_GRCh38.p7-LCR-filt.snpeff.vcf| \
+java -jar $SNPEFF/SnpSift.jar filter \
+-noLog \
+"( ANN[*].EFFECT has 'missense_variant' )"  \
+mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | \
 $SNPEFF/scripts/vcfEffOnePerLine.pl | \
-java -jar $SNPEFF/SnpSift.jar \
-extractFields \
--  \
+java -jar $SNPEFF/SnpSift.jar extractFields \
+- \
 "CHROM" "POS" "ANN[*].GENE" "ANN[*].TRID" "EFF[*].HGVS_P" "ANN[*].HGVS_C" "ANN[*].EFFECT" | less
 ```
 
-Note the use of `-` within the `extractFields` fields command. `-` is very commonly used to define the input as coming from standard input, or in other words, the input is being piped into the command. 
+Let's breakdown this command:
 
-`"CHROM" "POS" "ANN[*].GENE" "ANN[*].TRID" "EFF[*].HGVS_P" "ANN[*].HGVS_C" "ANN[*].EFFECT"` is defining the fields that we would like to filter. 
+- `java -jar $SNPEFF/SnpSift.jar filter` This calls the `filter` package within `SnpSift`
 
-Notice however, that some of the fields don't correspond to a `missense_variant`. This is because when we initially extracted sites we filtered sites where at least one effect was a `missense_variant`, then we separated the variants into separate lines before extracting our fields of interest. At this point if we wanted to remove those non-missense variant lines, we can pipe the output into a simple `grep` command:
+- `-noLog` This does not report command usage to `SnpEff`'s server
+
+- `"( ANN[*].EFFECT has 'missense_variant' )"` Filter out lines where `missense_variant` is annotation in ***ANY*** annotation.
+
+- `mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf |` This is our input file and then pipe this output.
+
+- `$SNPEFF/scripts/vcfEffOnePerLine.pl` Place each effect on it's own line and pipe this output.
+
+- `java -jar $SNPEFF/SnpSift.jar extractFields` This calls the `extractFields` package within `SnpSift`
+
+- `-` The use of `-` is very commonly used to define the input as coming from standard input, or in other words, the input is being piped into the command. 
+
+- `"CHROM" "POS" "ANN[*].GENE" "ANN[*].TRID" "EFF[*].HGVS_P" "ANN[*].HGVS_C" "ANN[*].EFFECT"` This is defining the fields that we would like to filter. 
+
+Notice, however, that some of the fields don't correspond to a `missense_variant`. This is because when we initially extracted sites we filtered sites where at least one effect was a `missense_variant`, then we separated the variants into separate lines before extracting our fields of interest. At this point if we wanted to  only keep the missense variant lines, so we can pipe the output into a simple `grep` command:
 
 ```
-java -jar $SNPEFF/SnpSift.jar \
-filter \
-"( ANN[*].EFFECT has 'missense_variant' )"  vcf_files/syn3_GRCh38.p7-LCR-filt.snpeff.vcf| \
+java -jar $SNPEFF/SnpSift.jar filter \
+-noLog \
+"( ANN[*].EFFECT has 'missense_variant' )"  \
+mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | \
 $SNPEFF/scripts/vcfEffOnePerLine.pl | \
-java -jar $SNPEFF/SnpSift.jar \
-extractFields \
--  \
-"CHROM" "POS" "ANN[*].GENE" "ANN[*].TRID" "EFF[*].HGVS_P" "ANN[*].HGVS_C" | \
+java -jar $SNPEFF/SnpSift.jar extractFields \
+- \
+"CHROM" "POS" "ANN[*].GENE" "ANN[*].TRID" "EFF[*].HGVS_P" "ANN[*].HGVS_C" "ANN[*].EFFECT" | \
 grep 'missense_variant' | less
 ```
 
-## Output for OncoPrint
+This provides us with an clean, organized, tab-delimited table of our output. 
+
+## Exercises
+
+**1)** Extract from `mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf ` all of the `MODERATE`-impact mutations on Chromosome 12.
+
+**2)** Pipe the output from **Exercise 1)** into a command to only display one line for each effect.
+
 ```
-java -jar $SNPEFF/SnpSift.jar \
-filter \
-"( ANN[*].EFFECT has 'missense_variant' )"  vcf_files/syn3_GRCh38.p7-LCR-filt.snpeff.vcf| \
-$SNPEFF/scripts/vcfEffOnePerLine.pl | \
-java -jar $SNPEFF/SnpSift.jar \
-extractFields \
--  \
-"ANN[*].GENE" "EFF[*].HGVS_P" "ANN[*].EFFECT"  | \
-sort | \
-uniq | \
-awk '$3 == "missense_variant"' | \
-sed 's/missense_variant/MISSENSE/g' | \
-awk '{print "sample_1","\t",$0}' > vcf_files/syn3_GRCh38.p7.missense_variants.txt
+java -jar $SNPEFF/SnpSift.jar filter "( CHROM = '12' ) & ( ANN[*].IMPACT has 'MODERATE' )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | $SNPEFF/scripts/vcfEffOnePerLine.pl | less
+```
+
+**3)** Pipe the output from **Exercise 2)** into a command to extract the chromosome, position, gene and effect.
+
+```
+java -jar $SNPEFF/SnpSift.jar filter "( CHROM = '12' ) & ( ANN[*].IMPACT has 'MODERATE' )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | $SNPEFF/scripts/vcfEffOnePerLine.pl | java -jar $SNPEFF/SnpSift.jar extractFields - "CHROM" "POS" "ANN[*].GENE" "ANN[*].EFFECT" | less
+```
+
+**4)** Redirect the output from **Exercise 3)** into a new file called `mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.chr12_moderate-impact.txt`
+
+```
+java -jar $SNPEFF/SnpSift.jar filter "( CHROM = '12' ) & ( ANN[*].IMPACT has 'MODERATE' )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | $SNPEFF/scripts/vcfEffOnePerLine.pl | java -jar $SNPEFF/SnpSift.jar extractFields - "CHROM" "POS" "ANN[*].GENE" "ANN[*].EFFECT" > mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.chr12_moderate-impact.txt
 ```
 
 [Next Lesson >>](14_IGV.md)
