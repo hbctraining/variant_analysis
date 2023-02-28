@@ -63,7 +63,7 @@ Before we discuss implementing `FastQC` we are going to introduce string manipul
 
 **1.** If the probability of a incorrect base call is 1 in 3,981, what is the associated PHRED score?
 
-## `bash` String Manipulation
+## bash String Manipulation
 
 String manipulation in `bash` can be a very helpful tool in minimizing typos whenever evaluating a script that uses `bash`. Before we discuss manipulating strings, we should first define a string. A string is a data type that is used to store alphanumeric characters. Examples of strings include:
 
@@ -155,7 +155,7 @@ A brief overview of some `bash` text manipulation shortcuts are in the table bel
 - Overrepresented sequences
 - More
 
-### Running `FastQC` for normal samples
+### Running FastQC for normal samples
 
 In order to run `FastQC` we are going to develop an `sbatch` script to run on the cluster. First, we will need to change directories to where our scripts are stored and start a new submission script using `vim`:
 
@@ -280,7 +280,7 @@ Now we can submit this script to the cluster:
 sbatch fastqc_normal.sbatch
 ```
 
-### Running `FastQC` for the tumor sample
+### Running FastQC for the tumor sample
 
 Now that we have created the `sbatch` script for our normal samples, we need to repeat the process for our tumor samples. All of the parameters will stay the same, we just need to edit the SBATCH error file, SBATCH output file and LEFT_READS variable. You could very well do this by hand and it would be just fine. However, to cut down on typos we are going to use `sed`. `sed` is a powerful tool within `bash` and [has a wide variety of applications](https://hbctraining.github.io/Training-modules/Intermediate_shell/lessons/sed.html). However, one of the most common uses for `sed` is as a "find-and-replace" tool. The syntax for this type of task is:
 
