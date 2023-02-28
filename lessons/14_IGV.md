@@ -8,7 +8,7 @@
 - Saving an IGV session and opening a saved IGV session
 
 
-## Downloading our VCF file with `FileZilla`
+## Downloading our VCF file with FileZilla
 
 The first thing we need to do to visualize our variants in IGV is to download our VCF to our local computer from the O2 cluster using `FileZilla`. Below is a refresher on the steps that we need to do in order to connect to O2 using `FileZilla`.
 
@@ -34,7 +34,7 @@ Within the 'Site Manager' window, do the following:
 
 > NOTE: While using the temporary training accounts on the O2 cluster, two-factor authentication ***IS NOT*** required. However, if you explore this lesson when using your personal account, two-factor authentication ***IS*** required. 
 > 
-> In order to connect your computer using FileZilla to the O2 cluster, follow steps 1-7 as outlined above. Once you have clicked 'Connect', you will receive a Duo push notification (but no indication in Filezilla) which you must approve within the short time window. Following Duo approval, FileZilla will connect to the O2 cluster.
+> In order to connect your computer using `FileZilla` to the O2 cluster, follow steps 1-7 as outlined above. Once you have clicked 'Connect', you will receive a Duo push notification (but no indication in Filezilla) which you must approve within the short time window. Following Duo approval, `FileZilla` will connect to the O2 cluster.
 
 <p align="center">
 <img src="../img/filezilla_login.png" width="500">
@@ -51,7 +51,7 @@ Once you are connected to O2, navigate the O2 window to where your VCF files are
 From here you should see you your annotated VCF file:
 
 ```
-mutect2_syn3_normal_syn3_tumor_GRCh38.p7-LCR-filt.pedigree_header.snpeff.dbSNP.vcf
+mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf
 ```
 
 Drag this file over to your your computer and places it in the appropriate directory. We are going to place ours in Desktop.
@@ -76,7 +76,7 @@ Drag this file over to your your computer and places it in the appropriate direc
 
 ### Selecting a Genome
 
-To get started, we are going to open up IGV on our computers. Once open, we are going to navigate to the reference genome that we are insterested in using fromt he dropdown menu in the top left of the IGV window. In this case, we are going to select "Human(GRCh38/hg38)":
+To get started, we are going to open up IGV on our computers. Once open, we are going to navigate to the reference genome that we are interested in using from the dropdown menu in the top left of the IGV window. In this case, we are going to select "Human(GRCh38/hg38)":
 
 <p align="center">
 <img src="../img/Select_genome_IGV.png" width="1000">
@@ -84,7 +84,7 @@ To get started, we are going to open up IGV on our computers. Once open, we are 
 
 ### Loading Our VCF File
 
-In order to load a file, like our VCF file, into IGV, we need to go to the top of our screen and left-click <kbd>File</kbd> -> <kbd>Load from File...</kbd>:
+In order to load a file, like our VCF file, into IGV, we need to go to the top of our screen and left-click <kbd>File</kbd> &#8594; <kbd>Load from File...</kbd>:
 
 <p align="center">
 <img src="../img/Load_from_file_IGV.png" width="600">
@@ -102,11 +102,11 @@ Now our IGV window should display the loaded file:
 <img src="../img/Loaded_file_IGV.png" width="600">
 </p>
 
-This loaded file is referred to as a *track* in IGV. We can have multipple tracks loaded as once and in the next section we will demonstrate how to load tracks provided by IGV.
+This loaded file is referred to as a *track* in IGV. We can have multiple tracks loaded as once and in the next section we will demonstrate how to load tracks provided by IGV.
 
 ### Load IGV Provided Tracks
 
-For a select few genomes, like human, IGV comes with a few annotation tracks such as RefSeq genes. While Refseq genes is loaded by default in the lower panel of the IGV window, the other tracks are not automatically loaded. Let's see how to load these track by left-clicking on <kbd>File</kbd> -> <kbd>Load from Server...</kbd>:
+For a select few genomes, like human, IGV comes with a few annotation tracks such as RefSeq genes. While Refseq genes is loaded by default in the lower panel of the IGV window, the other tracks are not automatically loaded. Let's see how to load these track by left-clicking on <kbd>File</kbd> &#8594; <kbd>Load from Server...</kbd>:
 
 <p align="center">
 <img src="../img/Load_from_server_IGV.png" width="600">
@@ -176,7 +176,7 @@ Alternatively, if there is a gene we are particularly interested in going to, we
 <img src="../img/Gene_jump_IGV.png" width="400">
 </p>
 
-If we zoom in enough we can get down to seeing individual variants. Underneath the top part of the varaint track, we can see the tracks for the variant in the normal and tumor samples. The intensity of the variant marks on those tracks is proportional to the frequency of the variant in the sample:
+If we zoom in enough we can get down to seeing individual variants. Underneath the top part of the variant track, we can see the tracks for the variant in the normal and tumor samples. The intensity of the variant marks on those tracks is proportional to the frequency of the variant in the sample:
 
 <p align="center">
 <img src="../img/Zoomed_variant_IGV.png" width="800">
@@ -185,7 +185,7 @@ If we zoom in enough we can get down to seeing individual variants. Underneath t
 
 ### Modifying Tracks
 
-Now that we have an idea of how we can navigate in the IGV window, we want to learn how to modify our tracks. IGV provides lots of ways in which you can modify the tracks.
+Now that we have an idea of how we can navigate in the IGV window, we want to learn how to modify the tracks. IGV provides lots of ways in which you can modify the tracks.
 
 #### Resizing Tracks
 
@@ -252,16 +252,16 @@ Many tracks load into IGV as blue by default, but you do have options for which 
 <img src="../img/Change_track_color_IGV.png" width="400">
 </p>
 
-A window will pop-up on the default "Swatches" tab on the top. You can pick from a wide array for pre-selected colors here. If you find one you like, left-click the color then click <kbr>OK</kbd>:
+A window will pop-up on the default "Swatches" tab on the top. You can pick from a wide array for pre-selected colors here. If you find one you like, left-click the color then click <kbd>OK</kbd>:
 
 <p align="center">
-<img src="../img/Swatches_color_IGV.png" width="400">
+<img src="../img/Swatches_color_IGV.png" width="600">
 </p>
 
-However, you may want finer control over your color selection and you can use some of the other tabs to do this. The "RGB" tab allows you to define the level of Red, Green and Blue you want in the color. Or particular note, it also allows you to place the hexidemical code for the color you want in the "Color Code" text box. For instance, this could be of interest if you are trying to keep consistent colors from other figures where you defined a hexidecimal code for a given dataset. Once you have selected a color that you like, you can left-click <kbd>OK</kbd>:
+However, you may want finer control over your color selection and you can use some of the other tabs to do this. The "RGB" tab allows you to define the level of red, green and blue you want in the color. Of particular note, it also allows you to place the hexidemical code for the color you want in the "Color Code" text box. For instance, this could be of interest if you are trying to keep consistent colors from other figures where you defined a hexidecimal code for a given dataset. Once you have selected a color that you like, you can left-click <kbd>OK</kbd>:
 
 <p align="center">
-<img src="../img/RGB_color_IGV.png" width="400">
+<img src="../img/RGB_color_IGV.png" width="600">
 </p>
 
 Now that we've changed a few features in our IGV window it should now look something like this:
@@ -294,7 +294,7 @@ Oftentimes, you'll want to save your IGV session or load up an IGV session that 
 
 #### Saving an IGV Session
 
-Now that you have edited your tracks to get them just the way you want you them, you might want to save the IGV session so that you can easily reload it for when you want to revisit it. To save your IGV session, go to the top bar and left-click <kbd>File</kbd> -> <kbd>Save Session...</kbd>:
+Now that you have edited your tracks to get them just the way you want you them, you might want to save the IGV session so that you can easily reload it for when you want to revisit it. To save your IGV session, go to the top bar and left-click <kbd>File</kbd> &#8594; <kbd>Save Session...</kbd>:
 
 <p align="center">
 <img src="../img/Save_session_IGV.png" width="400">
@@ -310,7 +310,7 @@ Let's go ahead and close our IGV session now.
 
 #### Loading an IGV Session
 
-If we now open IGV back up, we will notice that it provides a fresh session. If we want to load a previous IGV session we will need to load it. To load an IGV session, go to the top bar and left-click <kbd>File</kbd> -> <kbd>Open Session...</kbd>:
+If we now open IGV back up, we will notice that it provides a fresh session. If we want to load a previous IGV session we will need to load it. To load an IGV session, go to the top bar and left-click <kbd>File</kbd> &#8594; <kbd>Open Session...</kbd>:
 
 <p align="center">
 <img src="../img/Load_session_IGV.png" width="400">
@@ -326,14 +326,21 @@ We can now see that we have loaded our previous IGV session! ***It is VERY IMPOR
 
 ## Exercises
 
-1) Download and load the SnpSift file that we created with "High Impact" mutations
-2) Load the IGV provided "Variation and Repeats" track to your IGV session
-3) Change the height of the CpG Islands track to 60
-4) Navigate to your favorite gene. Do you see any high-impact variants there?
-5) Find a high impact variant on Chromosome 4
-6) Rename the "Refseq Genes" track to "Genes"
-7) Save the IGV session as "Improved_IGV_session.xml"
-8) ***Bonus Challenge*** Change the type of plot for "GC%" from a line plot to a heatmap.
+**1)** Download and load the SnpSift file that we created with "High Impact" mutations
+
+**2)** Load the IGV provided "Variation and Repeats" track to your IGV session
+
+**3)** Change the height of the CpG Islands track to 60
+
+**4)** Navigate to your favorite gene. Do you see any high-impact variants there?
+
+**5)** Find a high impact variant on Chromosome 4
+
+**6)** Rename the "Refseq Genes" track to "Genes"
+
+**7)** Save the IGV session as "Improved_IGV_session.xml"
+
+**8)** *Bonus Challenge* Change the type of plot for "GC%" from a line plot to a heatmap.
 
 [Back to Schedule](../schedule/README.md)
 
