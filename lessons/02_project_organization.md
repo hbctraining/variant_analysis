@@ -27,7 +27,7 @@ Once logged in, you should see the O2 icon, some news, and the command prompt, e
 
 > Note 1: ssh stands for secure shell. All of the information (like your password) going between your computer and the O2 login computer is encrypted when using ssh.
 
-## `home` or `scratch`
+## home or scratch
 
 Within the [Introduction to the Command-line course](https://hbctraining.github.io/Intro-to-shell-flipped/schedule/), we introduced your `home` and `scratch` workspaces, but let's give a brief recap of each and their purpose:
 
@@ -45,7 +45,7 @@ Within the [Introduction to the Command-line course](https://hbctraining.github.
 
 Due to the limited storage space on `home`, we are going to take advantage of `scratch` to hold some of our intermediate files for this workshop. This is a very common use of the `scratch` space as many analyses will have large intermediate files, which would otherwise fill up our `home` directories.
 
-### Creating a `scratch` space
+### Creating a scratch space
 
 While on the login node, we will create our space on `scratch`. In order to create a space on `scratch`, we will need to run a script provided by the HMS Research Computing team:
 
