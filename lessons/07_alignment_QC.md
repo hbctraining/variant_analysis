@@ -154,7 +154,7 @@ Coverage is the average level of alignment for any random locus in the genome.  
 <hr />
 </details>
 
-## Inspecting procressed `BAM` files
+## Inspecting procressed BAM files
 
 We discussed BAM/SAM file formatting in the [file format lesson](03_file_formats.md), but didn't dive too deeply into the header section and we could now inspect our processed BAM files to see what that looks like. In order to do this, we are going to use `Picard`, but once again this can be done in `samtools` as well (and more oftentimes it is done in `samtools`) and that will be shown in a dropdown at the end of this section.
 
@@ -259,7 +259,7 @@ The information here is the same as with <code>Picard</code>, so we won't rehash
 
 **2.** Inspect your coordinate-sorted BAM file with `ViewSam` package within `Picard`. What is the flag for your first aligned read? Using the [Broad's decoding FLAG tool](https://broadinstitute.github.io/picard/explain-flags.html), what does this flag mean?
 
-## Options for Inspecting `Picard` Alignment Metrics
+## Options for Inspecting Picard Alignment Metrics
 
 Once the job has finished we would inspect the output files. This could be done in one of a few ways:
 
@@ -290,7 +290,7 @@ None of the above methods are wrong, but some are more elegant than others. One 
 
 However, for this workshop, we are going to collate our results in `MultiQC` and download the HTML report to our local computers.
 
-## Inspecting `Picard` Alignment Metrics
+## Inspecting Picard Alignment Metrics
 
 One nice feature of `MultiQC` is that it accepts many different file formats. It figures out which format was submitted and tailors the report to that type of analysis. Collating our `MultiQC` results would be relatively quick to just run from the command-line, but it's best practice to write our steps to scripts so that we always have a record of what we did and how we created our reports. We will start by making sure we are in our scripts directory and writing a `sbatch` script in `vim` for submission:
 
