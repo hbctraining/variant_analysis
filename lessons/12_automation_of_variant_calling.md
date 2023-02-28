@@ -16,7 +16,7 @@ Now that we have completed most of the variant calling workflow, we would like t
 
 The workflow and methodolgies we used up to this point are completely fine and could work for you. However, you may have many scripts that you need to create if you have many samples then that can be cumbersome, so we are going to introduce this way of automating the process.
 
-### Editing our `sbatch` Submission Scripts
+### Editing our sbatch Submission Scripts
 
 Currently, within our `sbatch` submission scripts, we have `bash` variables set to hold various files. Instead of explicitly defining those variables now as a given file, we are going to use positional parameters to allow ourselves to plug-in various files. First let's navigate to our scripts directory:
 
