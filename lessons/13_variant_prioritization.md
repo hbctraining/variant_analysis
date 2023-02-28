@@ -72,7 +72,7 @@ For example, let's consider a case where you want to filter your filter for any 
 java -jar $SNPEFF/SnpSift.jar filter "( CHROM = '1' ) | ( CHROM = '2' )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | less
 ```
 
-Note the `"( CHROM = '1' ) | ( CHROM = '2' )"` syntax allows us to filter for Chromosome `1` **or** Chromosome `2` by using the `|` to separate our criteria within the double quotes. While you might be most familiar with the `|` symbol as the pipe command in `bash`, it is not uncommon in other instances or languages like `R` for it to stand for "or". In fact, in bash, "or" is `||`, so it is closely related. The important point here is that the `|` within the double quotes stands for "or" when using `SnpSift` and it is not a pipe.
+>Note: The `"( CHROM = '1' ) | ( CHROM = '2' )"` syntax allows us to filter for Chromosome `1` **or** Chromosome `2` by using the `|` to separate our criteria within the double quotes. While you might be most familiar with the `|` symbol as the pipe command in `bash`, it is not uncommon in other instances or languages like `R` for it to stand for "or". In fact, in bash, "or" is `||`, so it is closely related. The important point here is that the `|` within the double quotes stands for "or" when using `SnpSift` and it is not a pipe.
 
 Alternatively, we could be interested in variants on Chromosome `1` between positions `1000000` and `2000000`. It would look like:
 
@@ -261,21 +261,10 @@ This provides us with an clean, organized, tab-delimited table of our output.
 
 **2)** Pipe the output from **Exercise 1)** into a command to only display one line for each effect.
 
-```
-java -jar $SNPEFF/SnpSift.jar filter "( CHROM = '12' ) & ( ANN[*].IMPACT has 'MODERATE' )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | $SNPEFF/scripts/vcfEffOnePerLine.pl | less
-```
-
 **3)** Pipe the output from **Exercise 2)** into a command to extract the chromosome, position, gene and effect.
-
-```
-java -jar $SNPEFF/SnpSift.jar filter "( CHROM = '12' ) & ( ANN[*].IMPACT has 'MODERATE' )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | $SNPEFF/scripts/vcfEffOnePerLine.pl | java -jar $SNPEFF/SnpSift.jar extractFields - "CHROM" "POS" "ANN[*].GENE" "ANN[*].EFFECT" | less
-```
 
 **4)** Redirect the output from **Exercise 3)** into a new file called `mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.chr12_moderate-impact.txt`
 
-```
-java -jar $SNPEFF/SnpSift.jar filter "( CHROM = '12' ) & ( ANN[*].IMPACT has 'MODERATE' )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | $SNPEFF/scripts/vcfEffOnePerLine.pl | java -jar $SNPEFF/SnpSift.jar extractFields - "CHROM" "POS" "ANN[*].GENE" "ANN[*].EFFECT" > mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.chr12_moderate-impact.txt
-```
 
 [Next Lesson >>](14_IGV.md)
 
