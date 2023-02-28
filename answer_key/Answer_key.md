@@ -266,6 +266,41 @@ And we want to start Job_Z.sh after Job_X.sh and Job_Y.sh finishes without error
   sbatch Job_M.sh reference.fa input.bam</pre>
 </details>
 
+## Variant Prioritization
+
+**1.** Extract from `mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf ` all of the `MODERATE`-impact mutations on Chromosome 12.
+
+<details>
+  <summary><b>Click here to see the answer</b></summary>
+  <pre>
+  java -jar $SNPEFF/SnpSift.jar filter "( CHROM = '12' ) & ( ANN[*].IMPACT has 'MODERATE' )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | less</pre>
+</details>
+
+**2.** Pipe the output from **Exercise 1)** into a command to only display one line for each effect.
+
+<details>
+  <summary><b>Click here to see the answer</b></summary>
+  <pre>
+  java -jar $SNPEFF/SnpSift.jar filter "( CHROM = '12' ) & ( ANN[*].IMPACT has 'MODERATE' )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | $SNPEFF/scripts/vcfEffOnePerLine.pl | less</pre>
+</details>
+
+**3.** Pipe the output from **Exercise 2)** into a command to extract the chromosome, position, gene and effect.
+
+<details>
+  <summary><b>Click here to see the answer</b></summary>
+  <pre>
+  java -jar $SNPEFF/SnpSift.jar filter "( CHROM = '12' ) & ( ANN[*].IMPACT has 'MODERATE' )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | $SNPEFF/scripts/vcfEffOnePerLine.pl | java -jar $SNPEFF/SnpSift.jar extractFields - "CHROM" "POS" "ANN[*].GENE" "ANN[*].EFFECT" | less</pre>
+</details>
+
+**4.** Redirect the output from **Exercise 3)** into a new file called `mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.chr12_moderate-impact.txt`
+
+<details>
+  <summary><b>Click here to see the answer</b></summary>
+  <pre>
+  java -jar $SNPEFF/SnpSift.jar filter "( CHROM = '12' ) & ( ANN[*].IMPACT has 'MODERATE' )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | $SNPEFF/scripts/vcfEffOnePerLine.pl | java -jar $SNPEFF/SnpSift.jar extractFields - "CHROM" "POS" "ANN[*].GENE" "ANN[*].EFFECT" > mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.chr12_moderate-impact.txt</pre>
+</details>
+
+
 ***
 
 [Back to Schedule](../schedule/README.md)
