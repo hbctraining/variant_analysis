@@ -1,11 +1,11 @@
-# Evaluating `MultiQC` Report
+# Evaluating MultiQC Report
 
 ## Learning Objectives
 
 - Evaluate read alignment
 - Intepret read QC metrics within `MultiQC` HTML report
 
-## Downloading `MultiQC` HTML Report with `FileZilla`
+## Downloading MultiQC HTML Report with FileZilla
 
 While the O2 cluster is fantastic at many things, it is not designed to render HTML files. For that we will need a browser, such as Safari, Chrome, Firefox, etc., on our local computer. Thus, we will need to download the HTML report from the cluster to our local computers. There are ways to do this from the command line using tools like `scp` and `rsync`, however, we are going to use `FileZilla` which has an easy-to-use GUI to help us.
 
