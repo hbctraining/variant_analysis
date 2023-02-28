@@ -6,7 +6,7 @@
 - Describe and remove duplicate reads
 - Process a raw SAM file for input into a BAM for GATK
 
-## Alignment file processing with `samtools` and `Picard`
+## Alignment file processing with samtools and Picard
 
 The processing of the alignment files (SAM/BAM files) can be done either with [`samtools`](https://github.com/samtools/samtools) or [`Picard`](https://broadinstitute.github.io/picard/) and they are, for the most part, interchangable. The arguments for either are below:
 
@@ -140,7 +140,7 @@ Below is a flow chart of the `Picard` pipeline that we will be using:
 ><hr />
 ></details>
 
-### Creating our `sbatch` script
+### Creating our sbatch script
 
 Let's go ahead and start making a new `sbatch` within `vim`:
 
@@ -771,7 +771,7 @@ java -jar $PICARD/picard.jar SortSam \
 --CREATE_INDEX true
 ```  
 
-# Submitting `Picard` processing
+# Submitting Picard processing
   
 Now we are ready to submit our normal and tumor `Picard` processing scripts to the O2 cluster. However, we might have a problem. If you managed to go quickly into this lesson from the previous lesson, your `bwa` alignment scripts may still be running and your SAM files are not complete yet!
   
