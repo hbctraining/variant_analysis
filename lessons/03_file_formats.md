@@ -16,7 +16,7 @@ Depending on your file format, position data for next-generation analyses is sto
 - **One-based** is shown at the bottom of the image
 
 <p align="center">
-<img src="../img/Interbase.png" width="300">
+<img src="../img/Indexing_strings.png" width="500">
 </p>
 
 The benefits to having a **zero-based** system is the ease of calculating distance or length of sequences. We can easily determine the length of the `ATG` sequence using the zero-based coordinates by subtracting the start from the end, whereas for one-based coordinates we would need to add one after the subtraction. As we go through the various file formats, it will be important to note which are 0-based and which are 1-based.
