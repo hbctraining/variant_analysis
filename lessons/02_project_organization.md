@@ -1,9 +1,9 @@
 # Project Organization
 
 ## Learning Objectives
-- Configure a workspace on the `scratch` drive
+- Configure a workspace on the `/n/scratch3` drive
 - Organize dataset for analysis
-- Differentiate between using `home` and `scratch` drives
+- Differentiate between using `/home` and `/n/scratch3` drives
 
 ## Logging into O2
 
@@ -12,6 +12,8 @@ For this workshop we will be using training accounts to log into O2. These have 
 > If you are interested in getting your own personal account on O2, please follow the instructions provided [here](https://harvardmed.atlassian.net/wiki/spaces/O2/pages/1918304257/How+to+request+or+retain+an+O2+account) after this workshop.
 
 Let's get started with the hands-on component by typing in the following command to log into our command-line:
+
+**Where is the Jiffy?**
 
 ```
 ssh username@o2.hms.harvard.edu
@@ -27,33 +29,33 @@ Once logged in, you should see the O2 icon, some news, and the command prompt, e
 
 > Note 1: ssh stands for secure shell. All of the information (like your password) going between your computer and the O2 login computer is encrypted when using ssh.
 
-## home or scratch
+## `/home` or `/n/scratch3`?
 
-Within the [Introduction to the Command-line course](https://hbctraining.github.io/Intro-to-shell-flipped/schedule/), we introduced your `home` and `scratch` workspaces, but let's give a brief recap of each and their purpose:
+Within the [Introduction to the Command-line course](https://hbctraining.github.io/Intro-to-shell-flipped/schedule/), we introduced your home directory (`/home/user_name`) and scratch `/n/scratch/3` workspace, but let's give a brief recap of each and their purpose:
 
-`home`
+### `/home`
  - Limited to 100GiB of storage per user
  - Backed-up daily up to 14 days, weekly up to 60 days
  - Can you found at `/home/$USER/`
  - Great place for storing valuable file/scripts
 
-`scratch`
+### `/n/scratch3`
  - Up to 10TiB or 1 million files/directories per user
  - No back-ups
  - Purged from the system if not accessed for 30 days
  - Great for storing reproducible, intermediate files
 
-Due to the limited storage space on `home`, we are going to take advantage of `scratch` to hold some of our intermediate files for this workshop. This is a very common use of the `scratch` space as many analyses will have large intermediate files, which would otherwise fill up our `home` directories.
+Due to the limited storage space on `/home`, we are going to take advantage of scratch to hold some of our intermediate files for this workshop. This is a very common use of the scratch space as many analyses will have large intermediate files, which would otherwise fill up our home directories.
 
 ### Creating a scratch space
 
-While on the login node, we will create our space on `scratch`. In order to create a space on `scratch`, we will need to run a script provided by the HMS Research Computing team:
+While on the login node, we will create our space on `/n/scratch3`. In order to do so, we will need to run a script provided by the HMS Research Computing team:
 
 ```
 $ sh /n/cluster/bin/scratch3_create.sh
 ```
 
-> Note: You *MUST* be on a login node in order to create a space on `scratch`.
+> Note: You *MUST* be on a login node in order to create a space on `/n/scratch3`.
 
 It will prompt you with the following:
 
@@ -93,41 +95,62 @@ $ srun --pty -p interactive -t 0-3:00 --mem 1G  /bin/bash
 
 Make sure that your command prompt is now preceded by a character string that contains the word `compute`.
 
-## Organizing our project
+## Implementing data management best practices
 
-The first thing we should do is make sure that we are at our `home` directory by using:
+In a [previous lesson](https://hbctraining.github.io/Intro-to-rnaseq-hpc-salmon-flipped/lessons/04a_data_organization.html), we describe the data lifecycle and the **different aspects to consider when working on your own projects**. Here, we implement some of those strategies to get ourselves setup before we begin with any analysis. 
+
+<p align="center">
+<img src="../img/data-lifecycle-base.png" width="900">
+</p>
+
+_Image acquired from the [Harvard Biomedical Data Management Website](https://datamanagement.hms.harvard.edu/data-lifecycle)_
+
+
+### Organizing our project
+For each experiment you work on and analyze data for, it is considered best practice to get organized by creating a planned storage space (directory structure). We will start by creating a directory that we can use for the rest of the workshop. First, make sure that you are in your home directory.
 
 ```
-cd ~
-pwd
+$ cd 
+$ pwd
 ```
 
 This should let us know that we are located at: `/home/rc_trainingXX`
 
-Once we have established our location, let's begin by making the directory that we will be using to hold our work in the `home` workspace:
+Once we have established our location, let's begin by making the directory for our project (i.e. the analysis in this workshop):
 
 ```
-mkdir variant_calling
+$ mkdir variant_calling
 ```
 
-Next, we are going to move into this newly created directory and create some additional directories to hold our work:
+Next, we are going to move into this newly created directory and create some additional sub-directories to hold our work:
 
 ```
-cd variant_calling
-mkdir scripts results figures raw_data reports
+$ cd variant_calling
+$ mkdir scripts results figures raw_data reports
 ```
 
-Let's move into our `raw_data` directory and copy the FASTQ data that we are going to use for our analysis:
+Our project directory now has the following structure within it to keep files organized:
+
+```bash
+variant_calling/
+├── figures/
+├── raw_data/
+├── reports/
+├── results/
+└── scripts/
+```
+
+Let's move into our `raw_data` directory and copy the FASTQ files that we are going to use for our analysis:
 
 ```
-cd raw_data
-cp /n/groups/hbctraining/variant_calling/raw_data/*.fq.gz .
+$ cd raw_data
+$ cp /n/groups/hbctraining/variant_calling/raw_data/*.fq.gz .
 ```
 
-This may take up to a minute as it has a lot of data to copy. Now that we have created the directories that we are going to use in our `home` space. Let's move to our `scratch` space so that we can set up the directories that we are going to there to hold our intermediate files:
+This may take up to a minute as there is a lot of data to copy. Now that we have created the directories that we are going to use in our `home` space. Let's move to our `/n/scratch3` space so that we can set up the directories that we are going to there to hold our intermediate files:
 
 ```
-cd /n/scratch3/users/${USER:0:1}/$USER
+$ cd /n/scratch3/users/${USER:0:1}/$USER
 ```
 
 A few quick notes about this previous `cd` command:
@@ -135,13 +158,13 @@ A few quick notes about this previous `cd` command:
 1. You can see that we use the `$USER` variable twice in this `cd` command. `$USER` is an environment variable that is your username. You could check it by using `echo`:
 
 ```
-echo $USER
+$ echo $USER
 ```
 
 2. Perhaps the more puzzling part of the command is the use of `${USER:0:1}` in the path. The `users` on the scratch space are organized into subdirectories starting with the first letter of their username. `${USER:0:1}` will return the first letter of the username. You can test it using `echo` as well:
 
 ```
-echo ${USER:0:1}
+$ echo ${USER:0:1}
 ```
 
 By using `${USER:0:1}`, we can see how you can produce substrings in `bash`. The syntax is:
@@ -160,17 +183,18 @@ Of course, it you knew the first letter of your username you could use that inst
 Now that we are located in our `scratch` space, let's go ahead and create a directory for our analysis:
 
 ```
-mkdir variant_calling
+$ mkdir variant_calling
 ```
 
 Now, move inside this newly created directory and create the following directories to hold our intermediate files:
 
 ```
-cd variant_calling
-mkdir alignments vcf_files
+$ cd variant_calling
+$ mkdir alignments vcf_files
 ```
 
 Excellent! Our project space has now been organized and is ready for the analysis to begin!
+
 
 [Next Lesson >>](03_file_formats.md)
 
