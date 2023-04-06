@@ -10,7 +10,7 @@
 
 ## Indexing
 
-Depending on your file format, position data for next-generation analyses is stored in one of two ways. 
+Depending on your file format, the genomic coordinate information for next-generation analyses is stored in one of two ways. 
 
 - **Zero-based** is shown at the top of the image
 - **One-based** is shown at the bottom of the image
@@ -19,14 +19,14 @@ Depending on your file format, position data for next-generation analyses is sto
 <img src="../img/Indexing_strings.png" width="500">
 </p>
 
-The benefits to having a **zero-based** system is the ease of calculating distance or length of sequences. We can easily determine the length of the `ATG` sequence using the zero-based coordinates by subtracting the start from the end, whereas for one-based coordinates we would need to add one after the subtraction. As we go through the various file formats, it will be important to note which are 0-based and which are 1-based.
+The benefits to having a **zero-based** system is the ease of calculating distance or length of sequences. We can easily determine the length of the `ATG` sequence using the zero-based coordinates by **subtracting the start from the end**, whereas for **one-based** coordinates we would **need to add one after the subtraction**. As we go through the various file formats, it will be **important to note which are 0-based and which are 1-based**.
 
 
-## Alignment Files
+## Alignment File Formats
 
-### SAM
+### SAM (Sequence Alignment Map)
 
-SAM files are files that hold alignment information. There are two main parts of components to a SAM file are:
+SAM files are text-based files that hold alignment information. There are two main parts of components to a SAM file are:
 
 - Header section
 - Alignment section
@@ -57,7 +57,7 @@ This section is rarely used and just contains comments regarding the alignment f
 
 #### Alignment Section
 
-The alignment section of a SAM file stores alignment data for reads that have attempted to be aligned (sometimes also referred to as mapped) to a reference sequence, such as a reference genome or transcriptome. They also store information on reads that were unable to be aligned to the reference sequence. The section has 11 mandatory fields (columns) with additional optional fields. The fields are:
+The alignment section of a SAM file stores alignment data for reads that have attempted to be aligned (sometimes also referred to as mapped) to a reference sequence, such as a reference genome or transcriptome. They also store information on reads that were unable to be aligned to the reference sequence. Each line in this section corresponds to a single read. Each line has 11 mandatory fields (columns) with additional optional fields. The fields are:
 
 |  Field Name  | Description |
 |--------------|-------------|
@@ -141,9 +141,9 @@ A CIGAR string is expressed from the left of the read and going to the right. It
 
 ### BAM
 
-As you might suspect, because SAM files hold alignment information for all of the reads in an sequencing run and there are oftentimes millions of sequence reads, SAM files are very large and cumbersome to store. As a result, SAM files are often stored in a binary compressed version called a BAM file. Most software packages are agnostic to this difference and will accept both SAM and BAM files, despite BAM files not being human readable. It is generally considered best practice to your data in BAM format for long periods of time, unless you specifically need the SAM version of the alignment, in order to reduce unnecessary storage on a shared computing cluster.
+As you might suspect, because SAM files hold alignment information for all of the reads in an sequencing run and there are oftentimes millions of sequence reads, SAM files are very large and cumbersome to store. As a result, **SAM files are often stored in a binary compressed version called a BAM file**. Most software packages are agnostic to this difference and will accept both SAM and BAM files, despite BAM files not being human readable. It is generally considered best practice to your data in BAM format for long periods of time, unless you specifically need the SAM version of the alignment, in order to reduce unnecessary storage on a shared computing cluster.
 
-## VCF
+## Variant calling file formats
 
 The [Variant Call Format (VCF)](https://samtools.github.io/hts-specs/VCFv4.2.pdf) is a standardized, text-file format for describing variants identifed from a sequencing experiment. This allows for downstream processes to be streamlined and also allows for researchers to easily collaborate and manipulate a shared set of variant calls. A VCF file is composed of three main parts:
 - Meta-information Lines
@@ -317,7 +317,7 @@ cp /n/groups/hbctraining/variant_calling/sample_data/sample.vcf .
 
 **Bonus Challenge:** **6.** For the variant at position 806262 on chromosome 19, what is the reference allele?
 
-## BED
+## BED Files
 
 **B**rowser **E**xtensible **D**ata (BED) is a tab-delimited file format that contains information on genomic features. A BED file's first three columns (Chromosome, Starting Position and Ending Position) are required fields. Some BED files have additional columns but these are not required.
 
