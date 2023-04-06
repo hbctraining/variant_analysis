@@ -1,4 +1,4 @@
-# Project Organization
+# Setting up the project
 
 ## Learning Objectives
 - Configure a workspace on the `/n/scratch3` drive
