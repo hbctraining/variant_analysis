@@ -1,12 +1,14 @@
 # Workshop Schedule
 
-## Pre-reading
+> **NOTE:** The *Basic Data Skills* [Introduction to the command-line interface](https://hbctraining.github.io/Intro-to-shell-flipped/schedule/) workshop is a prerequisite.
 
-**Before the workshop:**
 
-Please read the following page to learn about the dataset we will be using:
+## Pre-reading:
 
-[ICGC-TCGA DREAM Mutation Calling Challenge Synthetic Dataset](../lessons/01_syn3_dataset.md)
+* Please **study the contents** within the following lessons:
+  * [ICGC-TCGA DREAM Mutation Calling Challenge Synthetic Dataset](../lessons/01_syn3_dataset.md)
+  * [Best Practices in Research Data Management (RDM)](https://hbctraining.github.io/Intro-to-rnaseq-hpc-salmon-flipped/lessons/04a_data_organization.html)
+
 
 ## Day 1
 
