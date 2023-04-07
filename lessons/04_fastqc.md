@@ -59,10 +59,13 @@ Therefore, for the first nucleotide in the read (C), there is less than a 1 in 1
 
 Before we discuss implementing `FastQC` we are going to introduce string manipulation in `bash` which we will be using throughout our work.
 
-## Exercise
+***
+
+**Exercise**
 
 **1.** If the probability of a incorrect base call is 1 in 3,981, what is the associated PHRED score?
 
+***
 
 ## FastQC
 
@@ -83,12 +86,14 @@ $ module avail fastqc
 We can decide on the version we would like to use and go ahead and load the FastQC module to use:
 
 ```
-$ module load fastqc/0.11.3
+$ module load fastqc/0.11.9
 ```
 
 You should now see that the module is loaded:
 
-Now that we have loaded the module, FASTQC is directly available to you like any other basic UNIX command. That is, at the command prompt we just need to provide the name of the tool to use it. This is because the path to the executable file for FastQC has now been added to our $PATH variable. Check your $PATH variable to see whether or not you see a relevant path. Is it appended to the beginning or end? Do you see any additional paths added?
+Now that we have loaded the module, FASTQC is directly available to you like any other basic UNIX command. That is, at the command prompt we just need to provide the name of the tool to use it. _This is because the path to the executable file for FastQC has now been added to our $PATH variable._ 
+
+> Check your $PATH variable to see whether or not you see a relevant path. Is it appended to the beginning or end? Do you see any additional paths added?
 
 To run FastQC we need to specify two arguments: 
 1. the file name(s) of our FASTQ input (one file for single-end; two files for paired-end)
@@ -101,18 +106,18 @@ $ fastqc -o ~/variant_calling/results/fastqc/ \
      ~/variant_calling/raw_data/syn3_normal_1.fq.gz variant_calling/raw_data/syn3_normal_2.fq.gz
 ```
 
-This would be fine if we just had a one or two samples to run. But a typical dataset can contain 10s to 100s of samples, and you don't want to be sitting around running each sample interactively. **This would be much for efficient if we submitted this as a job.**
+This would be fine if we just had a one or two samples to run. But a typical dataset can contain 10s to 100s of samples, and you don't want to be sitting around running each sample interactively. **It would be much more efficient if we submitted this as a job.**
 
 ### Running FastQC for normal samples
 
 In order to run `FastQC` we are going to develop an `sbatch` script to run on the cluster. First, we will need to change directories to where our scripts are stored and start a new submission script using `vim`:
 
 ```
-cd ~/variant_calling/scripts/
-vim fastqc_normal.sbatch
+$ cd ~/variant_calling/scripts/
+$ vim fastqc_normal.sbatch
 ```
 
-Now that we have opened up `vim`, we need to enter `insert-mode` by pressing `i`. Once in `insert-mode`, we will add our shebang line, description and `sbatch` directives.
+Now that we have opened up `vim`, we need to enter `insert-mode` by pressing `i`. Once in `insert-mode`, we will add our shebang line, description and `sbatch` directives. These directives indicate to SLURM what resources we need in order to run the job.
 
 ```
 #!/bin/bash
@@ -134,15 +139,12 @@ Next, we will add loading the `FastQC` module to our script:
 module load fastqc/0.11.9
 ```
 
-Next, we will define the variables that we will be using. This step isn't necessary and you can alternatively just manually input full paths to files and parameters within the actual command. However, the use of variables instead has some distinct advantages:
+Next, we will **define the variables that we will be using**. This step isn't necessary and you can alternatively just manually input full paths to files and parameters within the actual command. However, the use of variables instead has some distinct advantages:
 
-1) Anything used more than once could have more easily been a variable and less prone to typos. Perhaps this is a common filepath or sample name that you need to write many times. If it is a variable, you only need to type it once instead of each occurance.
-
-2) The use of variable allows us to use `bash` string manipulation to assign variables rather than typing each out
-
-3) Can help keep your commands cleaner and more organized
-
-4) Can help make repurposing your script for a different project easier, since it might just be the variables changing and you don't need to even touch the actual command
+1. If it is a variable, you only need to type it once to define the value instead of re-writing each occurance of the value.
+2. The use of variable allows us to use `bash` string manipulation to assign variables rather than typing each out
+3. Variables help keep your commands cleaner and more organized
+4. Variables help make repurposing your script for a different project easier, since it might just be the variables changing and you don't need to even touch the actual command
 
 Hopefully, the case made for assigning varibles outside of your command has been successful. The variables we will be adding to this script are:
 
@@ -154,7 +156,12 @@ OUTPUT_DIRECTORY=~/variant_calling/reports/fastqc/syn3_normal/
 THREADS=4
 ```
 
-Notice here how we are using string manipulation in `bash` to assign `$RIGHT_READS`. The left and right reads from paired-end sequencing will oftentimes be in the same directory. So this is a case where string manipulation in `bash` will be really helpful in saving time and reducing typos. 
+Notice here how **we are using string manipulation in `bash` to assign the `$RIGHT_READS` variable.** The left and right reads from paired-end sequencing will oftentimes be in the same directory. So this is a case where string manipulation in `bash` will be really helpful in saving time and reducing typos. 
+
+> #### How does the `%` symbol function?
+> Here, we introduce the % tool for text manipulation. % is placed within the {} of a variable and tells bash to remove the shortest match from the end that contains the text that follows the %. So in our case, the substring "1.fq.gz" will get removed. Then outside of the `{}` we have added the extension for the second read file.
+
+
 
 Now that we have assigned parameters to variables, we are going to get ready to run `FastQC` and before we run `FastQC` we need to make sure that the creation of the output directory exists in our script to accept the output:
 
