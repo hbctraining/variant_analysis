@@ -102,9 +102,20 @@ To run FastQC we need to specify two arguments:
 **Example code is provided below. DO NOT RUN!**
 
 ```
+## DO NOT RUN!
+
 $ fastqc -o ~/variant_calling/results/fastqc/ \
-     ~/variant_calling/raw_data/syn3_normal_1.fq.gz variant_calling/raw_data/syn3_normal_2.fq.gz
+      --threads 4 \
+     ~/variant_calling/raw_data/syn3_normal_1.fq.gz variant_calling/raw_data/syn3_normal_2.fq.gz 
 ```
+
+This command is pretty strightforward, but we will explain each part:
+
+- `fastqc` This calls the `FastQC` software package
+- `--outdir` or `-o`: This is the directory for the output files to be written to
+- `--threads` This specifies the number of threads that `FastQC` can use to speed up the processing
+-  This is the left and right read (R1 and R2) from the input FASTQ file (paired-end data)
+
 
 This would be fine if we just had a one or two samples to run. But a typical dataset can contain 10s to 100s of samples, and you don't want to be sitting around running each sample interactively. **It would be much more efficient if we submitted this as a job.**
 
@@ -146,7 +157,7 @@ Next, we will **define the variables that we will be using**. This step isn't ne
 3. Variables help keep your commands cleaner and more organized
 4. Variables help make repurposing your script for a different project easier, since it might just be the variables changing and you don't need to even touch the actual command
 
-Hopefully, the case made for assigning varibles outside of your command has been successful. The variables we will be adding to this script are:
+Hopefully, the case made for assigning varibles outside of your command has been successful. The **variables we will be adding to this script** are:
 
 ```
 # Assign variables
@@ -156,14 +167,12 @@ OUTPUT_DIRECTORY=~/variant_calling/reports/fastqc/syn3_normal/
 THREADS=4
 ```
 
-Notice here how **we are using string manipulation in `bash` to assign the `$RIGHT_READS` variable.** The left and right reads from paired-end sequencing will oftentimes be in the same directory. So this is a case where string manipulation in `bash` will be really helpful in saving time and reducing typos. 
+Notice here how **we are using string manipulation in bash to assign the `$RIGHT_READS` variable.** The left and right reads from paired-end sequencing will oftentimes be in the same directory. So this is a case where string manipulation in `bash` will be really helpful in saving time and reducing typos. 
 
-> #### How does the `%` symbol function?
-> Here, we introduce the % tool for text manipulation. % is placed within the {} of a variable and tells bash to remove the shortest match from the end that contains the text that follows the %. So in our case, the substring "1.fq.gz" will get removed. Then outside of the `{}` we have added the extension for the second read file.
+> #### String manipulation in bash using `%` 
+> Here, we introduce the % tool for text manipulation. % is placed within the {} of a variable and tells bash to remove the shortest match from the end that contains the text that follows the %. So in our case, the substring "1.fq.gz" will get removed. Then outside of the `{}` we have added the extension for the second read file. For more practice with string manipulation in bash [check out these materials]().
 
-
-
-Now that we have assigned parameters to variables, we are going to get ready to run `FastQC` and before we run `FastQC` we need to make sure that the creation of the output directory exists in our script to accept the output:
+Before we run `FastQC` we need to make sure that the creation of the output directory exists in our script to accept the output:
 
 ```
 # Create directory to hold output
@@ -172,11 +181,10 @@ mkdir -p $OUTPUT_DIRECTORY
 
 The `-p` option for `mkdir` does two things:
 
-1) It will make any parent directories necessary
+1. It will make any parent directories necessary
+2. If the directory already exists it will not return an warning message.
 
-2) If the directory already exits it will not return an warning message.
-
-Now we can run `FastQC`:
+Now we can add the code to run `FastQC`, an use the variables we had created:
 
 ```
 # Run FastQC
@@ -186,14 +194,6 @@ $RIGHT_READS \
 --outdir $OUTPUT_DIRECTORY \
 --threads $THREADS
 ```
-
-This command is pretty strightforward, but we will explain each part:
-
-- `fastqc` This calls the `FastQC` software package
-- `$LEFT_READS` This is the left read (R1 or Read 1) from the input FASTQ file
-- `$Right_READS` This is the right read (R2 or Read 2) from the input FASTQ file
-- `--outdir $OUTPUT_DIRECTORY` This is the directory for the output files to be written to
-- `--threads $THREADS` This specifies the number of threads that `FastQC` can use to speed up the processing
 
 All together, the final `sbatch` script should look like:
 
@@ -237,30 +237,35 @@ sbatch fastqc_normal.sbatch
 
 ### Running FastQC for the tumor sample
 
-Now that we have created the `sbatch` script for our normal samples, we need to repeat the process for our tumor samples. All of the parameters will stay the same, we just need to edit the SBATCH error file, SBATCH output file and LEFT_READS variable. You could very well do this by hand and it would be just fine. However, to cut down on typos we are going to use `sed`. `sed` is a powerful tool within `bash` and [has a wide variety of applications](https://hbctraining.github.io/Training-modules/Intermediate_shell/lessons/sed.html). However, one of the most common uses for `sed` is as a "find-and-replace" tool. The syntax for this type of task is:
+Now that we have created the `sbatch` script for our normal samples, we need to **repeat the process for our tumor samples**. All of the parameters will stay the same, we just need to edit the SBATCH error file, SBATCH output file and LEFT_READS variable. You could very well do this by hand and it would be just fine. However, to cut down on typos we are going to use `sed`. `sed` is a powerful tool within `bash` and [has a wide variety of applications](https://hbctraining.github.io/Training-modules/Intermediate_shell/lessons/sed.html). 
+
+We will create the new script by **using `sed` as a "find-and-replace" tool**. The syntax for this type of task is:
 
 ```
 sed 's/pattern/replacement/g' file.txt 
 ```
 
-The `s` before `/pattern/replacement/` is telling `sed` that we are going to use its **substittion** function and the `g` after `/pattern/replacement/` is telling `sed` that we want to apply that change **globally**, or every instance in the file. `pattern` represents the pattern that we are looking for and `replacement` is what we wish to replace the `pattern` with. Lastly, we need to provide `sed` some text source to apply this "find-and-replace" function, so we have provided it with `file.txt`, but you can also pipe in a string or file to apply this function to. 
+* The `s` before `/pattern/replacement/` is telling `sed` that we are going to use its **substitution** function 
+* The `g` after `/pattern/replacement/` is telling `sed` that we want to apply that change **globally**, or every instance in the file. 
+* `pattern` represents the pattern that we are looking for 
+* `replacement` is what we wish to replace the `pattern` with. 
 
-In our case, we are hoping to replace each instance of "normal" with "tumor". Therefore, we could call `sed` to do this using:
-
-```
-sed 's/normal/tumor/g' fastqc_normal.sbatch
-```
-
-We can see that all instances of "normal" have been replaced with "tumor". Now we would like to redirect this output to a file called `fastqc_tumor.sbatch` rather than standard output, so we need to add redirection to the end of out command:
+In our case, **we are replacing each instance of "normal" with "tumor"**. Therefore, we could call `sed` to do this using:
 
 ```
-sed 's/normal/tumor/g' fastqc_normal.sbatch >  fastqc_tumor.sbatch
+$ sed 's/normal/tumor/g' fastqc_normal.sbatch
+```
+
+We can see that all instances of "normal" have been replaced with "tumor". Now we would like to **redirect this output to a file called `fastqc_tumor.sbatch`** rather than standard output, so we need to add redirection to the end of out command:
+
+```
+$ sed 's/normal/tumor/g' fastqc_normal.sbatch >  fastqc_tumor.sbatch
 ```
 
 Now, we have the tumor sample to analyze with `FastQC`, so let's inspect the file to make sure it is right:
 
 ```
-cat fastqc_tumor.sbatch
+$ cat fastqc_tumor.sbatch
 ```
 
 It should looke like:
@@ -297,7 +302,7 @@ $RIGHT_READS \
 --threads $THREADS
 ```
 
-Once we have looked it over and it matches what we have, we can go ahead and submit this `SBATCH` submission script to the cluster:
+Once we have looked it over and it matches what we have, we can go ahead and **submit this `SBATCH` submission script to the cluster**:
 
 ```
 sbatch fastqc_tumor.sbatch
@@ -305,17 +310,6 @@ sbatch fastqc_tumor.sbatch
 
 Traditionally, most people inspect their `FastQC` reports before continuing on with their analysis. However, we are going to merge all of our QC together using `MultiQC` and analyze it all after alignment.
 
-## Exercises
-
-**4.** Copy the BED file from  `/n/groups/hbctraining/variant_calling/sample_data/sample.bed` to `~/variant_calling/` directory. Move to the `~/variant_calling/` directory and use `sed` to stripe `chr` from the chromosome names and have the output look like:
-
-```
-1	200	300
-1	600	900
-2	10	1000
-```
-
-**5.** Redirect this output to a new file called `sample.without_chr.bed`
 
 ***
 
