@@ -23,7 +23,7 @@ The largest and most difficult part of this task is creating an alignment algori
 
 ## bwa
 
-Many modern alignment tools rely on the Burrows-Wheeler Transform as part of their alignment algorithm; `bwa` is one of those tools. **There are twp parts to runnning `bwa`**:
+Many modern alignment tools rely on the Burrows-Wheeler Transform as part of their alignment algorithm; `bwa` is one of those tools. **There are two parts to runnning `bwa`**:
 
 1. Create an index of the reference sequence (done once)
     1. Create a Suffix Array Index
@@ -93,7 +93,7 @@ Next, we are going to declare some bash variables that we are going to use withi
 * `REFERENCE_SEQUENCE`: the path to the bwa index
 * `LEFT_READS`: path to the left read FASTQ file (R1 or 1)
 * `RIGHT_READS`:  path to the left read FASTQ file (R1 or 1)
-* `SAMPLE`: sample prefix (for naming output file)
+* `SAMPLE`: sample prefix (for naming output file and providing read group information)
 * `SAM_FILE`: Path and filename for the output alignment file
 
 ```
@@ -124,13 +124,11 @@ $RIGHT_READS \
 
 Let's breakdown this `bwa` command.
 
-- `mem` This is the specific package we want to use within `bwa` and this is one of the tools that `bwa` provides for alignment.
+* `mem` This is the specific package we want to use within `bwa` and this is one of the tools that `bwa` provides for alignment.
+* `-M` This will mark shorter split hits as secondary
+* `-t 8` We are going to take advantage of multithreading. In order to do this, we need to specifiy the number of threads that we are going to use as 8.
 
-- `-M` This will mark shorter split hits as secondary
-
-- `-t 8` We are going to take advantage of multithreading. In order to do this, we need to specifiy the number of threads that we are going to use as 8.
-
-- `-R "@RG\tID:$SAMPLE_NAME\tPL:illumina\tPU:$SAMPLE_NAME\tSM:$SAMPLE_NAME" \` This adds what is called read group information. Some software packages, such as `GATK`, require read groups, while others are agnostic towards them. However, they can provide important metadata about your reads and thus it is considered best practice to include read group Information at the alignment step. This read group information consists of several fields separated by tab-characters (\t), including:
+* `-R` This adds what is called **read group information**. Some software packages, such as `GATK`, require read groups, while others are agnostic towards them. However, they can provide important metadata about your reads and thus it is considered best practice to include read group Information at the alignment step. This read group information consists of several fields separated by tab-characters (\t), including:
 
     - **ID**: This is the identification for a given batch of reads. This ***MUST*** be unique to your experiment. 
 
@@ -142,17 +140,13 @@ Let's breakdown this `bwa` command.
 
     - More information about read groups and some fields we didn't discuss can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035890671-Read-groups).
   
-- `$REFERENCE_SEQUENCE` This calls the variable that holds the path to our reference sequence (`/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa`).
-  
-- `$LEFT_READS` and `$RIGHT_READS` These are variables with paths to the FASTQ sequence read files that we wish to align (`~/variant_calling/fastq_files/synthetic_challenge_set3_normal_NGv3_1.fq.gz` and `~/variant_calling/fastq_files/synthetic_challenge_set3_normal_NGv3_2.fq.gz`, respectively). In this case you can see that the reads are paired-end reads because: 
+- Finally, we also provide required inputs which include FASTQ files, reference sequence, and output file/path information
 
-1) we have provided two sets of reads and 
 
-2) they have `_1`/`_2` right before the `.fq`/`.fastq` extension. 
-
-This is a very common annotation for pair-end reads. Alternatively, sometimes they might also be annotated as `_R1`/`_R2`, but once again, they will almost always be placed right before the `.fq`/`.fastq` extension. We can also, note that these reads are currently compressed with gzip as annotated by the `.gz` extension. This is not a problem as `bwa` can read both gzip compressed and uncompressed FASTQ files.
-
-- `-o $SAM_FILE` This calls a variable that holds the path to your output file (`~/variant_calling/alignments/normal_GRCh38.p7.sam`) where your alignments written. Notice this is a SAM file (an uncompressed alignment file).
+> **A note on paired-end reads:** In this case you can see that the reads are paired-end reads because we have provided two FASTQ files as input and they have `_1`/`_2` right before the `.fq`/`.fastq` extension. 
+> 
+> This is a very common annotation for paired-end reads. Alternatively, sometimes they might also be annotated as `_R1`/`_R2`, but once again, they will almost always be placed right before the `.fq`/`.fastq` extension. You will need to edit the script if you are working with the files that have this syntax.
+>
 
 Now you have written your command to run `bwa` you are ready to run alignment. 
 
@@ -203,21 +197,21 @@ $RIGHT_READS \
 If so, go ahead and submit the our `sbatch` script to the cluster:
 
 ```
-sbatch bwa_alignment_normal.sbatch
+$ sbatch bwa_alignment_normal.sbatch
 ```
 
 ## Creating Tumor `sbatch` script
 
-Now we are going to replace all of the instances of "normal" with "tumor" using a `sed` command just like we did in the previous `FastQC` exercise. Therefore, we can call `sed` and redirect the output to a file called `bwa_alignment_tumor.sbatch` using:
+W are going to replace all of the instances of "normal" with "tumor" using a `sed` command just like we did in the previous `FastQC` exercise. Therefore, we can call `sed` and redirect the output to a file called `bwa_alignment_tumor.sbatch` using:
 
 ```
-sed 's/normal/tumor/g' bwa_alignment_normal.sbatch >  bwa_alignment_tumor.sbatch
+$ sed 's/normal/tumor/g' bwa_alignment_normal.sbatch >  bwa_alignment_tumor.sbatch
 ```
 
 If we look at the output with:
 
 ```
-cat bwa_alignment_tumor.sbatch 
+$ cat bwa_alignment_tumor.sbatch 
 ```
 
 Then it should look like this:
