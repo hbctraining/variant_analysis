@@ -202,13 +202,15 @@ In order to appropriately flag and remove duplicates, we first need to ***query*
 <img src="../img/SAM_sorting.png" width="800">
 </p>
 
-`Picard` can mark and remove duplicates in either coordinate-sorted or query-sorted BAM/SAM files, however, if the alignments are query-sorted it can test secondary alignments for duplicates. A brief discussion of this nuance is discussed in the [`MarkDuplicates` manual of `Picard`](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-). As a result, we will first **query**-sort our SAM file and convert it to a BAM file:
+Picard can mark and remove duplicates in either coordinate-sorted or query-sorted BAM/SAM files, however, if the alignments are query-sorted it can test secondary alignments for duplicates. A brief discussion of this nuance is discussed in the [`MarkDuplicates` manual of `Picard`](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-). As a result, we will first **query**-sort our SAM file and convert it to a BAM file:
 
 #### Query-sort the Alignment File
 
-With our reads aligned to the reference, we would see if we opened up the SAM file that the alignments are in the order they were processed by `bwa` and not in any particular order that would be useful for downstream analyses. So, we are going to ***sort them into order by query (read) name*** for the downstream `MarkDuplicates` tool. As a reminder, we are going to sort our BAM file by **coordinates** later in the processing and when people discuss a "sorted BAM/SAM" file they are usually referring to a BAM/SAM file that is **coordinate**-sorted.
+If we opened up the SAM file, we would see that the alignments are not in any particular order and just a consequence of how they were processed by `bwa`. We are going to ***sort them into order by query (read) name for the downstream `MarkDuplicates` tool***. 
 
-Additionally, while SAM files are nice due to their human readability, they are typically quite large files and it is not an efficient use of space on the cluster. Fortunately, there is a binary compression version of SAM called BAM. While we sort the reads, we are going to use to convert our SAM file to a BAM file. We don't need to specify this SAM-to-BAM conversion explicitly, because `Picard` will make this change by interpretting the file extensions that we provide in the `INPUT` and `OUTPUT` file options.
+> **NOTE:** At **a later step, we will also sort our BAM file by coordinates**. This is typically the type of sort that people are referring to when they discuss coordinate-sorted.
+
+Additionally, SAM files are quite large files and it is not an efficient use of space on the cluster. Fortunately, there is a binary compression version of SAM called BAM. **While we sort the reads, we are also going to convert our SAM file to a BAM file**. We don't need to specify this conversion explicitly, because `Picard` will make this change by interpreting the file extensions that we provide in the `INPUT` and `OUTPUT` file options.
 
 ```
 # Query-sort alginment file and convert to BAM
@@ -220,70 +222,27 @@ java -jar $PICARD/picard.jar SortSam \
 
 The components of this command are:
 
-- `java -jar $PICARD/picard.jar SortSam ` Calls `Picard`'s `SortSam` software package
+- `java -jar $PICARD/picard.jar SortSam ` Calls Picard's `SortSam` software package
 
 - `--INPUT $SAM_FILE` This is where we provide the SAM input file
 
-- `--OUTPUT $QUERY_SORTED_BAM_FILE` This is the BAM output file. Because the extension is `.bam` rather than `.sam`, `Picard` will recognize this and create the output as a BAM file rather than as a SAM file like the input we have provided it.
+- `--OUTPUT $QUERY_SORTED_BAM_FILE` This is the BAM output file. Because the extension is `.bam` rather than `.sam`, Picard will recognize this and create the output as a BAM file rather than as a SAM file like the input we have provided it.
 
-- `--SORT_ORDER queryname` The method with which we would like the file to be sorted. The options here are either `queryname` or `coordinate`.
+- `--SORT_ORDER queryname` The options here are either `queryname` or `coordinate`.
 
-> **NOTE:** The syntax that `Picard` uses is quite particular and the syntax shown in the documentation is not always consistent. There are two main ways for providing input for `Picard`:
+> #### Different types of syntax for Picard
+> The syntax that `Picard` uses is quite particular and the syntax shown in the documentation is not always consistent. There are two main ways for providing input for `Picard`:
 > 
->***The Traditional Syntax***
-> When providing inputs in this fashion you will provide the option followed immediately without any whitespace by an `=` sign followed once again immediately without whitespace by the argument for that option. For example, we could have written the `SortSam` command as:
-> ```
-># Query-sort alginment file and convert to BAM
->java -jar $PICARD/picard.jar SortSam \
->INPUT=$SAM_FILE \
->OUTPUT=$QUERY_SORTED_BAM_FILE \
->SORT_ORDER=queryname
-> ```
-> And this while work and produce a valid output, your error file might contain a warning that looks something like:
-> ```
->********* NOTE: Picard's command line syntax is changing.
->*********
->********* For more information, please see:
->********* https://github.com/broadinstitute/picard/wiki/Command-Line-Syntax-Transition-For-Users-(Pre-Transition)
->*********
->********* The command line looks like this in the new syntax:
->*********
->*********    SortSam -INPUT /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal.sam -OUTPUT /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal.query_sorted.bam -SORT_ORDER queryname
->*********
->```
->It should also be noted that you can, as this is true for many software programs, provide a single/couple letter abbreviations for an option. For example, this command could have also been validly written as:
->```
-># Query-sort alginment file and convert to BAM
->java -jar $PICARD/picard.jar SortSam \
->I=$SAM_FILE \
->O=$QUERY_SORTED_BAM_FILE \
->SO=queryname
->```
->However, we have elected to write out the full names of options wherever possible to increase readabilty of the code. This is entirely a preference issue and as you get more familiar with these commands, you may want to use thier abbreviations to reduce time typing and potential typos.
+> 1. The **Traditional Syntax**
+>  * When providing inputs in this fashion you will provide the option followed immediately without any whitespace by an `=` sign followed once again immediately without whitespace by the argument for that option.
+>  * It will work and produce a valid output, but your error file might contain a warning
 >
->
->***The New (Barclay) Syntax***
->Like the warning in the error output above described, `Picard` migrated to a new syntax several years back and this is the syntax we are demonstrating in this workshop. It uses a double hyphen (`--`) followed by the long-form name for the option followed by whitespace followed by the argument for that option. This is what we used above:
->```
-># Query-sort alginment file and convert to BAM
->java -jar $PICARD/picard.jar SortSam \
->--INPUT $SAM_FILE \
->--OUTPUT $QUERY_SORTED_BAM_FILE \
->--SORT_ORDER queryname
->```
->Similiarly to the ***Traditional syntax***, you can also use the single/couple letter abbreviations for an option. However, if you do this, then you should only use a single hyphen (`-`). This practice of using double hypohens for the long-form name of an option and a single hyphen for the abbreviate form of an option is very common in ***MANY*** software packages and will often be annotated in manuals as:
->```
->-I, --INPUT This is the input file
->```
->The above command using abbreivations would look like:
->```
-># Query-sort alginment file and convert to BAM
->java -jar $PICARD/picard.jar SortSam \
->-I $SAM_FILE \
->-O $QUERY_SORTED_BAM_FILE \
->-SO queryname
->```
->All four of these commands are equaly valid and all produce the same output. However, we think you should be aware of them as `Picard`'s documentation will sometimes use the ***New (Barclay)*** syntax is one place and the ***Traditional*** syntax in another place, sometimes even on the same page! Additionally, you may come across both syntaxes when trying to troubleshoot any errors you encounter when using `Picard` and thus you should be familiar with this peculiarity of `Picard`. We recommend Using the ***New (Barclay)*** syntax as to reduce error messages in your error output files and because `Picard` has been trying to migrate towards it.
+> 2. The **New (Barclay) Syntax**
+>  * Picard migrated to a new syntax several years back and this is the syntax we are demonstrating in this workshop. 
+>  * It uses a double hyphen (`--`) followed by the long-form name for the option _followed by whitespace_ followed by the argument for that option. 
+> 
+>  For either syntax, you can also provide a single/couple letter abbreviations for an option (as is the case with many other software). However, we have elected to write out the full names of options wherever possible to increase readabilty of the code. 
+>  Commands written in either syntax are equally valid and produce the same output. However, we think you should be aware of the differences as Picard's documentation will sometimes use the New (Barclay) syntax is one place and the Traditional syntax in another place, sometimes even on the same page! 
 
 #### Mark and Remove Duplicates
 
@@ -293,7 +252,7 @@ An important step in processing a BAM file is to mark and remove PCR duplicates.
 <img src="../img/Duplicate_reads.png" width="800">
 </p>
 
-Now we will add the command to our script that allows us to mark and remove duplicates in `Picard`:
+Now we will add the command to our script that allows us to mark and remove duplicates in Picard:
 
 ```
 # Mark and remove duplicates
@@ -318,7 +277,7 @@ The components of this command are:
 
 #### Coordinate-sort the Alignment File
 
-For most downstream processes, coordinate-sorted alignment files are required. As a result, we will need to change our alignment file from being **query**-sorted to being **coordinate**-sorted and we will once again use the `SortSam` command within `Picard` to accomplish this. Since this BAM file will be the final BAM file that we make and will use for downstream analyses, we will need to create an index for it at the same time. The command we will be using for **coordinate**-sorting and indexing our BAM file is:
+For most downstream processes, coordinate-sorted alignment files are required. As a result, we will need to **change our alignment file from being query-sorted to being coordinate-sorted** and we will once again use the `SortSam` command within `Picard` to accomplish this. Since this BAM file will be the final BAM file that we make and will use for downstream analyses, **we will need to create an index for it at the same time**. The command we will be using for coordinate-sorting and indexing our BAM file is:
 
 ```
 # Coordinate-sort BAM file and create BAM index file
@@ -683,6 +642,8 @@ We don't need to provide an output file for <code>samtools index</code>, by defa
 <hr />
 </details>
 
+---
+
 ## Exercises
 
 **1.** When inspecting a SAM file you see the following order:
@@ -710,6 +671,8 @@ I=$SAM_FILE \
 O=$QUERY_SORTED_BAM_FILE \
 SO=queryname
 ```
+
+---
 
 ## Creating the Tumor SAM/BAM procressing
     
