@@ -6,21 +6,16 @@
 - Describe and remove duplicate reads
 - Process a raw SAM file for input into a BAM for GATK
 
-## Alignment file processing with samtools and Picard
+## Alignment file processing with Picard Tools
 
-The processing of the alignment files (SAM/BAM files) can be done either with [`samtools`](https://github.com/samtools/samtools) or [`Picard`](https://broadinstitute.github.io/picard/) and they are, for the most part, interchangable. The arguments for either are below:
+[Picard](https://broadinstitute.github.io/picard/) is a set of command line tools for manipulating high-throughput sequencing (HTS) data and formats such as SAM/BAM/CRAM and VCF. It is maintained by the Broad Institute, and is open-source under the MIT license and free for all uses. Picard is written in Java and does not have functionality for multi-threading.
 
-`samtools`
-- The software we will be using to call variants (`GATK`) can be picky about how the files are formatted and so you need to be careful about the formatting as to not produce an error in `GATK`
-- More user-friendly
-- Multi-threaded
 
-`Picard`
-- Maintained by the Broad Institute, so it has excellent integration with GATK (also maintained by the Broad Institute)
-- Written in Java and the error messages are not as easily interpretable 
-- Single-threaded
+> ### Why not use `samtools`?
+> The processing of the alignment files (SAM/BAM files) can also be done with [`samtools`](https://github.com/samtools/samtools). While there are some advantages to using samtools (i.e. more user-friendly, multi-threading capability), there are slight formatting differences which can cause errors downstream. Since we will be using GATK later in this workshop (also from the Broad Institute), Picard seemed like a more suitable fit.
+>
+> **For each step the `samtools` code will be provided in a dropdown for each section if you would like to know how to do the step in `samtools`.**
 
-If implemented correctly, they largely provide the same output. In this workshop, we will be using `Picard`, but the `samtools` code will be provided in a dropdown for each section if you would like to know how to do the step in `samtools`.
 
 ## Pipeline for processing alignment file with Picard
 
@@ -38,7 +33,8 @@ Below is a flow chart of the `Picard` pipeline that we will be using:
 <img src="../img/Picard_pipeline.png" width="800">
 </p>
 
-> **NOTE:** Some pipelines will have you add read groups while procressing your alignment files. This may be necessary in those pipelines, because they either can't add the read groups within their alignment tool (a problem that is pretty rare now), they forgot to add their read groups or they didn't know that they could add read groups during the alignment step with their alignment tool. Regardless of the reason, you should be aware that it is not uncommon to see this step in other's pipelines as many programs including `GATK` require read groups in order to run. It doesn't matter too much when you add the read groups in these processing steps, but we would recommend doing it first. Also, a command one could use to add read group information, and the one we show in the dropdown below, is `Picard`'s `AddOrReplaceReadGroups`, which has the added benefit of allowing you to also sort your alignment file (our first step anyways) in the same step as adding the read group information. The dropdown below discusses how to add or replace read groups within `Picard`.
+> #### Do I need to add read groups?
+> Some pipelines will have you add read groups while procressing your alignment files. It is usually not necessary because the alignmnet tool typically does for you. If you are needing to add read groups, we recommend doing it first (before all the processing steps outlined above ). You can use Picard `AddOrReplaceReadGroups`, which has the added benefit of allowing you to also sort your alignment file (our first step anyways) in the same step as adding the read group information. The dropdown below discusses how to add or replace read groups within `Picard`.
 >
 ><details>
 >  <summary><b>Click here if you need to add or replace read groups using <code>Picard</code></b></summary>
@@ -81,75 +77,77 @@ Below is a flow chart of the `Picard` pipeline that we will be using:
 >  <hr />
 ></details>
 
-> **NOTE:** You may encounter a situation where your reads from a single sample were sequenced across different lanes/machines. As a result, each alignment will have different read group IDs, but the same sample ID (the SM tag in your SAM/BAM file). You will need to merge these files here before continuing. The dropdown menu below will detail how to do this.
->
-><details>
-> <summary><b>Click here if you need to merge alignment files from the same sample</b></summary>
->   You can merge alignment files with different read group IDs from the same sample in both <code>Picard</code> and <code>samtools</code>. In the dropdowns below we will outline each method:
-> <details>
->   <summary><b>Click to see how to merge SAM/BAM files in <code>Picard</code></b></summary>
->   First, we need to load the <code>Picard</code> module:
->   <pre>
->   module load picard/2.27.5</pre>
->   We can define our variables as:
->   <pre>
->   INPUT_BAM_1=Read_group_1.bam
->   INPUT_BAM_2=Read_group_2.bam
->   MERGED_OUTPUT=Merged_output.bam</pre>
->   Here is the command we would need to run to merge the SAM/BAM files:
->   <pre>
->   java -jar $PICARD/picard.jar MergeSamFiles \
->   --INPUT $INPUT_BAM_1 \
->   --INPUT $INPUT_BAM_2 \
->   --OUTPUT $MERGED_OUTPUT</pre>
->   We can breakdown this command:
->   <ul><li><code>java -jar $PICARD/picard.jar MergeSamFiles</code> This calls the <code>MergeSamFiles</code> from within <code>Picard</code></li>
->   <li><code>--INPUT $INPUT_BAM_1</code> This is the first SAM/BAM file that we would like to merge.</li>
->   <li><code>--INPUT $INPUT_BAM_2</code> This is the second SAM/BAM file that we would like to merge. We can continue to add <code>--INPUT</code> lines as needed.</li>
->   <li><code>--OUTPUT $MERGED_OUTPUT</code> This is the output merged SAM/BAM file</li></ul>
->   <hr />
-> </details>
-> <details>
->   <summary><b>Click to see how to merge SAM/BAM files in <code>samtools</code></b></summary>
->   First, we need to load the <code>samtools</code> module, which also requires <code>gcc</code> to be loaded:
->   <pre>
->   module load gcc/6.2.0
->   module load samtools/1.15.1</pre>
->   We can define our variables as:
->   <pre>
->   INPUT_BAM_1=Read_group_1.bam
->   INPUT_BAM_2=Read_group_2.bam
->   MERGED_OUTPUT=Merged_output.bam
->   THREADS=8</pre>
->   Here is the command we would need to run to merge the SAM/BAM files:
->   <pre>
->   samtools merge \
->   -o $MERGED_OUTPUT \
->   $INPUT_BAM_1 \
->   $INPUT_BAM_2 \
->   --output-fmt BAM \
->   -@ $THREADS</pre>
->   We can break down this command:
->   <ul><li><code>samtools merge</code> This calls the <code>merge</code> package within <code>samtools</code>.</li>
->   <li><code>-o $MERGED_OUTPUT</code> This is the merged output file.</li>
->   <li><code>$INPUT_BAM_1</code> This is the first SAM/BAM file that we would like to merge.</li>
->   <li><code>$INPUT_BAM_2</code> This is the second SAM/BAM file that we would like to merge. We can continue to add addiitonal input SAM/BAM files to this list as needed.</li>
->   <li><code>--output-fmt BAM</code> This specifies the output format as <code>BAM</code>. If for some reason you wanted a <code>SAM</code> output file then you would use <code>--output-fmt SAM</code> instead.</li>
->   <li><code>-@ $THREADS</code> This specifies the number of threads we want to use for this process. We are using 8 threads in this example, but this could be different depending on the parameters that you would like to use.</li></ul>
-> </details>
-><hr />
-></details>
 
-### Creating our sbatch script
 
-Let's go ahead and start making a new `sbatch` within `vim`:
+### Merging samples across sequencing lanes or runs 
+For samples that were sequenced across different lanes/machines, each alignment will have different read group IDs but the same sample ID (the SM tag in your SAM/BAM file). You will **need to merge these files here before continuing**. The dropdown menus below will detail how to do this.
+
+> **NOTE:** This is not necessary for the dataset we are using in this workshop!
+
+<details>
+   <summary><b>Click to see how to merge SAM/BAM files in <code>Picard</code></b></summary>
+   First, we need to load the <code>Picard</code> module:
+   <pre>
+   module load picard/2.27.5</pre>
+   We can define our variables as:
+   <pre>
+   INPUT_BAM_1=Read_group_1.bam
+   INPUT_BAM_2=Read_group_2.bam
+   MERGED_OUTPUT=Merged_output.bam</pre>
+   Here is the command we would need to run to merge the SAM/BAM files:
+   <pre>
+   java -jar $PICARD/picard.jar MergeSamFiles \
+   --INPUT $INPUT_BAM_1 \
+   --INPUT $INPUT_BAM_2 \
+   --OUTPUT $MERGED_OUTPUT</pre>
+   We can breakdown this command:
+   <ul><li><code>java -jar $PICARD/picard.jar MergeSamFiles</code> This calls the <code>MergeSamFiles</code> from within <code>Picard</code></li>
+   <li><code>--INPUT $INPUT_BAM_1</code> This is the first SAM/BAM file that we would like to merge.</li>
+   <li><code>--INPUT $INPUT_BAM_2</code> This is the second SAM/BAM file that we would like to merge. We can continue to add <code>--INPUT</code> lines as needed.</li>
+   <li><code>--OUTPUT $MERGED_OUTPUT</code> This is the output merged SAM/BAM file</li></ul>
+   <hr />
+ </details>
+ <details>
+   <summary><b>Click to see how to merge SAM/BAM files in <code>samtools</code></b></summary>
+   First, we need to load the <code>samtools</code> module, which also requires <code>gcc</code> to be loaded:
+   <pre>
+   module load gcc/6.2.0
+   module load samtools/1.15.1</pre>
+   We can define our variables as:
+   <pre>
+   INPUT_BAM_1=Read_group_1.bam
+   INPUT_BAM_2=Read_group_2.bam
+   MERGED_OUTPUT=Merged_output.bam
+   THREADS=8</pre>
+   Here is the command we would need to run to merge the SAM/BAM files:
+   <pre>
+   samtools merge \
+   -o $MERGED_OUTPUT \
+   $INPUT_BAM_1 \
+   $INPUT_BAM_2 \
+   --output-fmt BAM \
+   -@ $THREADS</pre>
+   We can break down this command:
+   <ul><li><code>samtools merge</code> This calls the <code>merge</code> package within <code>samtools</code>.</li>
+   <li><code>-o $MERGED_OUTPUT</code> This is the merged output file.</li>
+   <li><code>$INPUT_BAM_1</code> This is the first SAM/BAM file that we would like to merge.</li>
+   <li><code>$INPUT_BAM_2</code> This is the second SAM/BAM file that we would like to merge. We can continue to add addiitonal input SAM/BAM files to this list as needed.</li>
+   <li><code>--output-fmt BAM</code> This specifies the output format as <code>BAM</code>. If for some reason you wanted a <code>SAM</code> output file then you would use <code>--output-fmt SAM</code> instead.</li>
+   <li><code>-@ $THREADS</code> This specifies the number of threads we want to use for this process. We are using 8 threads in this example, but this could be different depending on the parameters that you would like to use.</li></ul>
+ </details>
+<hr />
+</details>
+
+## Creating a script for alignment processing
+
+Let's go ahead and start making a new `sbatch` script within `vim`:
 
 ```
-cd ~/variant_calling/scripts/
-vim picard_alignment_processing_normal.sbatch
+$ cd ~/variant_calling/scripts/
+$ vim picard_alignment_processing_normal.sbatch
 ```
 
-Start the `sbatch` script with our shebang line, description of the script and our `sbatch` directives. 
+As always, we start the `sbatch` script with our shebang line, description of the script and our `sbatch` directives to request appropriate resources from the O2 cluster. 
 
 ```
 #!/bin/bash
@@ -164,14 +162,14 @@ Start the `sbatch` script with our shebang line, description of the script and o
 #SBATCH -e picard_alignment_processing_normal_%j.err
 ```
 
-Load the `Picard` module: 
+Next we load the `Picard` module: 
 
 ```
 # Load module
 module load picard/2.27.5
 ```
 
-**Note: `Picard` is one of the pieces of software that does NOT require gcc/6.2.0 to also be loaded** 
+**Note: `Picard` is software that does NOT require gcc/6.2.0 to also be loaded** 
 
 Next, let's define some variables that we will be using:
 
@@ -186,7 +184,7 @@ METRICS_FILE=${REPORTS_DIRECTORY}/${SAMPLE_NAME}.remove_duplicates_metrics.txt
 COORDINATE_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}coordinate_sorted.bam`
 ```
 
-Make a directory to hold the `Picard` reports:
+Finally, we also make a directory to hold the `Picard` reports:
 
 ```
 # Make reports directory
