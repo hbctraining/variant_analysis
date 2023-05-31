@@ -6,21 +6,16 @@
 - Describe and remove duplicate reads
 - Process a raw SAM file for input into a BAM for GATK
 
-## Alignment file processing with samtools and Picard
+## Alignment file processing with Picard Tools
 
-The processing of the alignment files (SAM/BAM files) can be done either with [`samtools`](https://github.com/samtools/samtools) or [`Picard`](https://broadinstitute.github.io/picard/) and they are, for the most part, interchangable. The arguments for either are below:
+[Picard](https://broadinstitute.github.io/picard/) is a set of command line tools for manipulating high-throughput sequencing (HTS) data and formats such as SAM/BAM/CRAM and VCF. It is maintained by the Broad Institute, and is open-source under the MIT license and free for all uses. Picard is written in Java and does not have functionality for multi-threading.
 
-`samtools`
-- The software we will be using to call variants (`GATK`) can be picky about how the files are formatted and so you need to be careful about the formatting as to not produce an error in `GATK`
-- More user-friendly
-- Multi-threaded
 
-`Picard`
-- Maintained by the Broad Institute, so it has excellent integration with GATK (also maintained by the Broad Institute)
-- Written in Java and the error messages are not as easily interpretable 
-- Single-threaded
+> ### Why not use `samtools`?
+> The processing of the alignment files (SAM/BAM files) can also be done with [`samtools`](https://github.com/samtools/samtools). While there are some advantages to using samtools (i.e. more user-friendly, multi-threading capability), there are slight formatting differences which can cause errors downstream. Since we will be using GATK later in this workshop (also from the Broad Institute), Picard seemed like a more suitable fit.
+>
+> **For each step the `samtools` code will be provided in a dropdown for each section if you would like to know how to do the step in `samtools`.**
 
-If implemented correctly, they largely provide the same output. In this workshop, we will be using `Picard`, but the `samtools` code will be provided in a dropdown for each section if you would like to know how to do the step in `samtools`.
 
 ## Pipeline for processing alignment file with Picard
 
@@ -38,7 +33,8 @@ Below is a flow chart of the `Picard` pipeline that we will be using:
 <img src="../img/Picard_pipeline.png" width="800">
 </p>
 
-> **NOTE:** Some pipelines will have you add read groups while procressing your alignment files. This may be necessary in those pipelines, because they either can't add the read groups within their alignment tool (a problem that is pretty rare now), they forgot to add their read groups or they didn't know that they could add read groups during the alignment step with their alignment tool. Regardless of the reason, you should be aware that it is not uncommon to see this step in other's pipelines as many programs including `GATK` require read groups in order to run. It doesn't matter too much when you add the read groups in these processing steps, but we would recommend doing it first. Also, a command one could use to add read group information, and the one we show in the dropdown below, is `Picard`'s `AddOrReplaceReadGroups`, which has the added benefit of allowing you to also sort your alignment file (our first step anyways) in the same step as adding the read group information. The dropdown below discusses how to add or replace read groups within `Picard`.
+> #### Do I need to add read groups?
+> Some pipelines will have you add read groups while procressing your alignment files. It is usually not necessary because the alignmnet tool typically does for you. If you are needing to add read groups, we recommend doing it first (before all the processing steps outlined above ). You can use Picard `AddOrReplaceReadGroups`, which has the added benefit of allowing you to also sort your alignment file (our first step anyways) in the same step as adding the read group information. The dropdown below discusses how to add or replace read groups within `Picard`.
 >
 ><details>
 >  <summary><b>Click here if you need to add or replace read groups using <code>Picard</code></b></summary>
@@ -81,75 +77,77 @@ Below is a flow chart of the `Picard` pipeline that we will be using:
 >  <hr />
 ></details>
 
-> **NOTE:** You may encounter a situation where your reads from a single sample were sequenced across different lanes/machines. As a result, each alignment will have different read group IDs, but the same sample ID (the SM tag in your SAM/BAM file). You will need to merge these files here before continuing. The dropdown menu below will detail how to do this.
->
-><details>
-> <summary><b>Click here if you need to merge alignment files from the same sample</b></summary>
->   You can merge alignment files with different read group IDs from the same sample in both <code>Picard</code> and <code>samtools</code>. In the dropdowns below we will outline each method:
-> <details>
->   <summary><b>Click to see how to merge SAM/BAM files in <code>Picard</code></b></summary>
->   First, we need to load the <code>Picard</code> module:
->   <pre>
->   module load picard/2.27.5</pre>
->   We can define our variables as:
->   <pre>
->   INPUT_BAM_1=Read_group_1.bam
->   INPUT_BAM_2=Read_group_2.bam
->   MERGED_OUTPUT=Merged_output.bam</pre>
->   Here is the command we would need to run to merge the SAM/BAM files:
->   <pre>
->   java -jar $PICARD/picard.jar MergeSamFiles \
->   --INPUT $INPUT_BAM_1 \
->   --INPUT $INPUT_BAM_2 \
->   --OUTPUT $MERGED_OUTPUT</pre>
->   We can breakdown this command:
->   <ul><li><code>java -jar $PICARD/picard.jar MergeSamFiles</code> This calls the <code>MergeSamFiles</code> from within <code>Picard</code></li>
->   <li><code>--INPUT $INPUT_BAM_1</code> This is the first SAM/BAM file that we would like to merge.</li>
->   <li><code>--INPUT $INPUT_BAM_2</code> This is the second SAM/BAM file that we would like to merge. We can continue to add <code>--INPUT</code> lines as needed.</li>
->   <li><code>--OUTPUT $MERGED_OUTPUT</code> This is the output merged SAM/BAM file</li></ul>
->   <hr />
-> </details>
-> <details>
->   <summary><b>Click to see how to merge SAM/BAM files in <code>samtools</code></b></summary>
->   First, we need to load the <code>samtools</code> module, which also requires <code>gcc</code> to be loaded:
->   <pre>
->   module load gcc/6.2.0
->   module load samtools/1.15.1</pre>
->   We can define our variables as:
->   <pre>
->   INPUT_BAM_1=Read_group_1.bam
->   INPUT_BAM_2=Read_group_2.bam
->   MERGED_OUTPUT=Merged_output.bam
->   THREADS=8</pre>
->   Here is the command we would need to run to merge the SAM/BAM files:
->   <pre>
->   samtools merge \
->   -o $MERGED_OUTPUT \
->   $INPUT_BAM_1 \
->   $INPUT_BAM_2 \
->   --output-fmt BAM \
->   -@ $THREADS</pre>
->   We can break down this command:
->   <ul><li><code>samtools merge</code> This calls the <code>merge</code> package within <code>samtools</code>.</li>
->   <li><code>-o $MERGED_OUTPUT</code> This is the merged output file.</li>
->   <li><code>$INPUT_BAM_1</code> This is the first SAM/BAM file that we would like to merge.</li>
->   <li><code>$INPUT_BAM_2</code> This is the second SAM/BAM file that we would like to merge. We can continue to add addiitonal input SAM/BAM files to this list as needed.</li>
->   <li><code>--output-fmt BAM</code> This specifies the output format as <code>BAM</code>. If for some reason you wanted a <code>SAM</code> output file then you would use <code>--output-fmt SAM</code> instead.</li>
->   <li><code>-@ $THREADS</code> This specifies the number of threads we want to use for this process. We are using 8 threads in this example, but this could be different depending on the parameters that you would like to use.</li></ul>
-> </details>
-><hr />
-></details>
 
-### Creating our sbatch script
 
-Let's go ahead and start making a new `sbatch` within `vim`:
+### Merging samples across sequencing lanes or runs 
+For samples that were sequenced across different lanes/machines, each alignment will have different read group IDs but the same sample ID (the SM tag in your SAM/BAM file). You will **need to merge these files here before continuing**. The dropdown menus below will detail how to do this.
+
+> **NOTE:** This is not necessary for the dataset we are using in this workshop!
+
+<details>
+   <summary><b>Click to see how to merge SAM/BAM files in <code>Picard</code></b></summary>
+   First, we need to load the <code>Picard</code> module:
+   <pre>
+   module load picard/2.27.5</pre>
+   We can define our variables as:
+   <pre>
+   INPUT_BAM_1=Read_group_1.bam
+   INPUT_BAM_2=Read_group_2.bam
+   MERGED_OUTPUT=Merged_output.bam</pre>
+   Here is the command we would need to run to merge the SAM/BAM files:
+   <pre>
+   java -jar $PICARD/picard.jar MergeSamFiles \
+   --INPUT $INPUT_BAM_1 \
+   --INPUT $INPUT_BAM_2 \
+   --OUTPUT $MERGED_OUTPUT</pre>
+   We can breakdown this command:
+   <ul><li><code>java -jar $PICARD/picard.jar MergeSamFiles</code> This calls the <code>MergeSamFiles</code> from within <code>Picard</code></li>
+   <li><code>--INPUT $INPUT_BAM_1</code> This is the first SAM/BAM file that we would like to merge.</li>
+   <li><code>--INPUT $INPUT_BAM_2</code> This is the second SAM/BAM file that we would like to merge. We can continue to add <code>--INPUT</code> lines as needed.</li>
+   <li><code>--OUTPUT $MERGED_OUTPUT</code> This is the output merged SAM/BAM file</li></ul>
+   <hr />
+ </details>
+ <details>
+   <summary><b>Click to see how to merge SAM/BAM files in <code>samtools</code></b></summary>
+   First, we need to load the <code>samtools</code> module, which also requires <code>gcc</code> to be loaded:
+   <pre>
+   module load gcc/6.2.0
+   module load samtools/1.15.1</pre>
+   We can define our variables as:
+   <pre>
+   INPUT_BAM_1=Read_group_1.bam
+   INPUT_BAM_2=Read_group_2.bam
+   MERGED_OUTPUT=Merged_output.bam
+   THREADS=8</pre>
+   Here is the command we would need to run to merge the SAM/BAM files:
+   <pre>
+   samtools merge \
+   -o $MERGED_OUTPUT \
+   $INPUT_BAM_1 \
+   $INPUT_BAM_2 \
+   --output-fmt BAM \
+   -@ $THREADS</pre>
+   We can break down this command:
+   <ul><li><code>samtools merge</code> This calls the <code>merge</code> package within <code>samtools</code>.</li>
+   <li><code>-o $MERGED_OUTPUT</code> This is the merged output file.</li>
+   <li><code>$INPUT_BAM_1</code> This is the first SAM/BAM file that we would like to merge.</li>
+   <li><code>$INPUT_BAM_2</code> This is the second SAM/BAM file that we would like to merge. We can continue to add addiitonal input SAM/BAM files to this list as needed.</li>
+   <li><code>--output-fmt BAM</code> This specifies the output format as <code>BAM</code>. If for some reason you wanted a <code>SAM</code> output file then you would use <code>--output-fmt SAM</code> instead.</li>
+   <li><code>-@ $THREADS</code> This specifies the number of threads we want to use for this process. We are using 8 threads in this example, but this could be different depending on the parameters that you would like to use.</li></ul>
+ </details>
+<hr />
+</details>
+
+## Creating a script for alignment processing
+
+Let's go ahead and start making a new `sbatch` script within `vim`:
 
 ```
-cd ~/variant_calling/scripts/
-vim picard_alignment_processing_normal.sbatch
+$ cd ~/variant_calling/scripts/
+$ vim picard_alignment_processing_normal.sbatch
 ```
 
-Start the `sbatch` script with our shebang line, description of the script and our `sbatch` directives. 
+As always, we start the `sbatch` script with our shebang line, description of the script and our `sbatch` directives to request appropriate resources from the O2 cluster. 
 
 ```
 #!/bin/bash
@@ -164,14 +162,14 @@ Start the `sbatch` script with our shebang line, description of the script and o
 #SBATCH -e picard_alignment_processing_normal_%j.err
 ```
 
-Load the `Picard` module: 
+Next we load the `Picard` module: 
 
 ```
 # Load module
 module load picard/2.27.5
 ```
 
-**Note: `Picard` is one of the pieces of software that does NOT require gcc/6.2.0 to also be loaded** 
+**Note: `Picard` is software that does NOT require gcc/6.2.0 to also be loaded** 
 
 Next, let's define some variables that we will be using:
 
@@ -186,7 +184,7 @@ METRICS_FILE=${REPORTS_DIRECTORY}/${SAMPLE_NAME}.remove_duplicates_metrics.txt
 COORDINATE_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}coordinate_sorted.bam`
 ```
 
-Make a directory to hold the `Picard` reports:
+Finally, we also make a directory to hold the `Picard` reports:
 
 ```
 # Make reports directory
@@ -204,13 +202,15 @@ In order to appropriately flag and remove duplicates, we first need to ***query*
 <img src="../img/SAM_sorting.png" width="800">
 </p>
 
-`Picard` can mark and remove duplicates in either coordinate-sorted or query-sorted BAM/SAM files, however, if the alignments are query-sorted it can test secondary alignments for duplicates. A brief discussion of this nuance is discussed in the [`MarkDuplicates` manual of `Picard`](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-). As a result, we will first **query**-sort our SAM file and convert it to a BAM file:
+Picard can mark and remove duplicates in either coordinate-sorted or query-sorted BAM/SAM files, however, if the alignments are query-sorted it can test secondary alignments for duplicates. A brief discussion of this nuance is discussed in the [`MarkDuplicates` manual of `Picard`](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-). As a result, we will first **query**-sort our SAM file and convert it to a BAM file:
 
 #### Query-sort the Alignment File
 
-With our reads aligned to the reference, we would see if we opened up the SAM file that the alignments are in the order they were processed by `bwa` and not in any particular order that would be useful for downstream analyses. So, we are going to ***sort them into order by query (read) name*** for the downstream `MarkDuplicates` tool. As a reminder, we are going to sort our BAM file by **coordinates** later in the processing and when people discuss a "sorted BAM/SAM" file they are usually referring to a BAM/SAM file that is **coordinate**-sorted.
+If we opened up the SAM file, we would see that the alignments are not in any particular order and just a consequence of how they were processed by `bwa`. We are going to ***sort them into order by query (read) name for the downstream `MarkDuplicates` tool***. 
 
-Additionally, while SAM files are nice due to their human readability, they are typically quite large files and it is not an efficient use of space on the cluster. Fortunately, there is a binary compression version of SAM called BAM. While we sort the reads, we are going to use to convert our SAM file to a BAM file. We don't need to specify this SAM-to-BAM conversion explicitly, because `Picard` will make this change by interpretting the file extensions that we provide in the `INPUT` and `OUTPUT` file options.
+> **NOTE:** At **a later step, we will also sort our BAM file by coordinates**. This is typically the type of sort that people are referring to when they discuss coordinate-sorted.
+
+Additionally, SAM files are quite large files and it is not an efficient use of space on the cluster. Fortunately, there is a binary compression version of SAM called BAM. **While we sort the reads, we are also going to convert our SAM file to a BAM file**. We don't need to specify this conversion explicitly, because `Picard` will make this change by interpreting the file extensions that we provide in the `INPUT` and `OUTPUT` file options.
 
 ```
 # Query-sort alginment file and convert to BAM
@@ -222,70 +222,27 @@ java -jar $PICARD/picard.jar SortSam \
 
 The components of this command are:
 
-- `java -jar $PICARD/picard.jar SortSam ` Calls `Picard`'s `SortSam` software package
+- `java -jar $PICARD/picard.jar SortSam ` Calls Picard's `SortSam` software package
 
 - `--INPUT $SAM_FILE` This is where we provide the SAM input file
 
-- `--OUTPUT $QUERY_SORTED_BAM_FILE` This is the BAM output file. Because the extension is `.bam` rather than `.sam`, `Picard` will recognize this and create the output as a BAM file rather than as a SAM file like the input we have provided it.
+- `--OUTPUT $QUERY_SORTED_BAM_FILE` This is the BAM output file. Because the extension is `.bam` rather than `.sam`, Picard will recognize this and create the output as a BAM file rather than as a SAM file like the input we have provided it.
 
-- `--SORT_ORDER queryname` The method with which we would like the file to be sorted. The options here are either `queryname` or `coordinate`.
+- `--SORT_ORDER queryname` The options here are either `queryname` or `coordinate`.
 
-> **NOTE:** The syntax that `Picard` uses is quite particular and the syntax shown in the documentation is not always consistent. There are two main ways for providing input for `Picard`:
+> #### Different types of syntax for Picard
+> The syntax that `Picard` uses is quite particular and the syntax shown in the documentation is not always consistent. There are two main ways for providing input for `Picard`:
 > 
->***The Traditional Syntax***
-> When providing inputs in this fashion you will provide the option followed immediately without any whitespace by an `=` sign followed once again immediately without whitespace by the argument for that option. For example, we could have written the `SortSam` command as:
-> ```
-># Query-sort alginment file and convert to BAM
->java -jar $PICARD/picard.jar SortSam \
->INPUT=$SAM_FILE \
->OUTPUT=$QUERY_SORTED_BAM_FILE \
->SORT_ORDER=queryname
-> ```
-> And this while work and produce a valid output, your error file might contain a warning that looks something like:
-> ```
->********* NOTE: Picard's command line syntax is changing.
->*********
->********* For more information, please see:
->********* https://github.com/broadinstitute/picard/wiki/Command-Line-Syntax-Transition-For-Users-(Pre-Transition)
->*********
->********* The command line looks like this in the new syntax:
->*********
->*********    SortSam -INPUT /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal.sam -OUTPUT /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal.query_sorted.bam -SORT_ORDER queryname
->*********
->```
->It should also be noted that you can, as this is true for many software programs, provide a single/couple letter abbreviations for an option. For example, this command could have also been validly written as:
->```
-># Query-sort alginment file and convert to BAM
->java -jar $PICARD/picard.jar SortSam \
->I=$SAM_FILE \
->O=$QUERY_SORTED_BAM_FILE \
->SO=queryname
->```
->However, we have elected to write out the full names of options wherever possible to increase readabilty of the code. This is entirely a preference issue and as you get more familiar with these commands, you may want to use thier abbreviations to reduce time typing and potential typos.
+> 1. The **Traditional Syntax**
+>  * When providing inputs in this fashion you will provide the option followed immediately without any whitespace by an `=` sign followed once again immediately without whitespace by the argument for that option.
+>  * It will work and produce a valid output, but your error file might contain a warning
 >
->
->***The New (Barclay) Syntax***
->Like the warning in the error output above described, `Picard` migrated to a new syntax several years back and this is the syntax we are demonstrating in this workshop. It uses a double hyphen (`--`) followed by the long-form name for the option followed by whitespace followed by the argument for that option. This is what we used above:
->```
-># Query-sort alginment file and convert to BAM
->java -jar $PICARD/picard.jar SortSam \
->--INPUT $SAM_FILE \
->--OUTPUT $QUERY_SORTED_BAM_FILE \
->--SORT_ORDER queryname
->```
->Similiarly to the ***Traditional syntax***, you can also use the single/couple letter abbreviations for an option. However, if you do this, then you should only use a single hyphen (`-`). This practice of using double hypohens for the long-form name of an option and a single hyphen for the abbreviate form of an option is very common in ***MANY*** software packages and will often be annotated in manuals as:
->```
->-I, --INPUT This is the input file
->```
->The above command using abbreivations would look like:
->```
-># Query-sort alginment file and convert to BAM
->java -jar $PICARD/picard.jar SortSam \
->-I $SAM_FILE \
->-O $QUERY_SORTED_BAM_FILE \
->-SO queryname
->```
->All four of these commands are equaly valid and all produce the same output. However, we think you should be aware of them as `Picard`'s documentation will sometimes use the ***New (Barclay)*** syntax is one place and the ***Traditional*** syntax in another place, sometimes even on the same page! Additionally, you may come across both syntaxes when trying to troubleshoot any errors you encounter when using `Picard` and thus you should be familiar with this peculiarity of `Picard`. We recommend Using the ***New (Barclay)*** syntax as to reduce error messages in your error output files and because `Picard` has been trying to migrate towards it.
+> 2. The **New (Barclay) Syntax**
+>  * Picard migrated to a new syntax several years back and this is the syntax we are demonstrating in this workshop. 
+>  * It uses a double hyphen (`--`) followed by the long-form name for the option _followed by whitespace_ followed by the argument for that option. 
+> 
+>  For either syntax, you can also provide a single/couple letter abbreviations for an option (as is the case with many other software). However, we have elected to write out the full names of options wherever possible to increase readabilty of the code. 
+>  Commands written in either syntax are equally valid and produce the same output. However, we think you should be aware of the differences as Picard's documentation will sometimes use the New (Barclay) syntax is one place and the Traditional syntax in another place, sometimes even on the same page! 
 
 #### Mark and Remove Duplicates
 
@@ -295,7 +252,7 @@ An important step in processing a BAM file is to mark and remove PCR duplicates.
 <img src="../img/Duplicate_reads.png" width="800">
 </p>
 
-Now we will add the command to our script that allows us to mark and remove duplicates in `Picard`:
+Now we will add the command to our script that allows us to mark and remove duplicates in Picard:
 
 ```
 # Mark and remove duplicates
@@ -320,7 +277,7 @@ The components of this command are:
 
 #### Coordinate-sort the Alignment File
 
-For most downstream processes, coordinate-sorted alignment files are required. As a result, we will need to change our alignment file from being **query**-sorted to being **coordinate**-sorted and we will once again use the `SortSam` command within `Picard` to accomplish this. Since this BAM file will be the final BAM file that we make and will use for downstream analyses, we will need to create an index for it at the same time. The command we will be using for **coordinate**-sorting and indexing our BAM file is:
+For most downstream processes, coordinate-sorted alignment files are required. As a result, we will need to **change our alignment file from being query-sorted to being coordinate-sorted** and we will once again use the `SortSam` command within `Picard` to accomplish this. Since this BAM file will be the final BAM file that we make and will use for downstream analyses, **we will need to create an index for it at the same time**. The command we will be using for coordinate-sorting and indexing our BAM file is:
 
 ```
 # Coordinate-sort BAM file and create BAM index file
@@ -685,6 +642,8 @@ We don't need to provide an output file for <code>samtools index</code>, by defa
 <hr />
 </details>
 
+---
+
 ## Exercises
 
 **1.** When inspecting a SAM file you see the following order:
@@ -712,6 +671,8 @@ I=$SAM_FILE \
 O=$QUERY_SORTED_BAM_FILE \
 SO=queryname
 ```
+
+---
 
 ## Creating the Tumor SAM/BAM procressing
     
