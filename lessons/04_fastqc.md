@@ -140,6 +140,7 @@ Check whether you are in an interactive session or not by checking your command 
 1. Does your command prompt have the word `login`?
 	```bash
 	$ srun --pty -p interactive -t 0-3:00 --mem 1G -c 4 /bin/bash
+	```
 3. Does your command prompt have the word `compute`?
 	```bash
 	$ exit
