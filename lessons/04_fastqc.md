@@ -174,7 +174,52 @@ $ ls -l ~/variant_calling/results/fastqc/
 
 The FastQC output that we are most interested in is the `html` file for each sample. These reports should be inspected carefully as part of the analysis pipeline, and we are going to review one file to give you an idea of the QC metrics collected by FastQC. However, it is valuable to compare the outputs for all files together and we will show you how to do that using another tool called MultiQC after a few more steps in the analysis pipeline.
 
-### Review QC metrics from FastQC
+### Batch script for FastQC
+
+We ran the analysis in an interactive session above, but what if we had many more samples? It is common for variant analysis projects, especially exome-seq projects to have 100s of samples. 
+
+In that case, best practice is to set up one, or several, batch jobs on the cluster. *More information about batch jobs can be [found in this lesson](https://hbctraining.github.io/Intro-to-rnaseq-hpc-salmon-flipped/lessons/03_working_on_HPC.html).*
+
+Below is an example of the script you could set up.
+
+```bash
+#!/bin/bash
+## This sbatch script is for running FastQC to evaluate read qualities
+## This script will used 4 cores to perform the QC analysis for all files in the raw_data/ folder within the folder specified with $folder
+
+## Assign sbatch directives
+#SBATCH -p priority
+#SBATCH -t 0-00:30:00
+#SBATCH -c 4
+#SBATCH --mem 8G
+#SBATCH -o fastqc_normal_%j.out
+#SBATCH -e fastqc_normal_%j.err
+
+## set variable(s) and 
+folder=~/variant_calling/
+
+## create output folder using the -p parameter
+mkdir -p ${folder}/reports/fastqc/
+
+## Load module
+module load fastqc/0.11.9
+
+## Run FastQC
+fastqc -o ${folder}/results/fastqc/ -t 4 ${folder}/raw_data/*.gz 
+```
+
+Some notes for the above script:
+* If you wanted to run more than 4 samples, you should change the number of cores you are requesting `#SBATCH -c` AND the `-t` parameter for the `fastqc` command. 
+* Keep in mind the limit of [how many cores can be requested](https://harvardmed.atlassian.net/wiki/spaces/O2/pages/1586793632/Using+Slurm+Basic#Time-limits) for a given partition (`-p`).
+* FastQC does not need 4 threads for 4 files, but it is utilized to speed things up. So, if you have 50 files, you can still get the FastQC run done successfully with 20 cores.
+
+**Exercise**
+
+1. What would you call the above script?
+2. Where would you save the above script?
+3. What command will you use to run the script?
+
+## Review QC metrics from FastQC
 
 [NEEDS WORK] 
 * Connect to local computer using filezilla
