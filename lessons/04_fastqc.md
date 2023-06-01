@@ -213,6 +213,8 @@ Some notes for the above script:
 * Keep in mind the limit of [how many cores can be requested](https://harvardmed.atlassian.net/wiki/spaces/O2/pages/1586793632/Using+Slurm+Basic#Time-limits) for a given partition (`-p`).
 * FastQC does not need 4 threads for 4 files, but it is utilized to speed things up. So, if you have 50 files, you can still get the FastQC run done successfully with 20 cores.
 
+***
+
 **Exercise**
 
 1. What would you call the above script?
