@@ -2,16 +2,20 @@
 
 ## Learning objectives
 - Implement FastQC to evaluate read quality
+- Evaluate FastQC metrics
 
 ## Importance of Evaluating Read Qualities
 
-Before engaging in any high-throughput sequencing project is it best practice to inspect your sequence reads to ensure that they are of high-quality. Sources of error are be numerous and include problems with library construction (most likely), a bad run on the sequencer or even a malfunctioning sequencer (very rare). Therefore, it is critically important that you analyze your sequenced reads to ensure that they are high-quality before you devote time and resources to any downstream analyses.
-
-This is especially critical for variant calling, since we want to be aware of whether a certain base or a series of bases look different from the reference (i.e. why they vary) due to an issue with the sequencing versus being a real/biological difference!
+Before engaging in any high-throughput sequencing project is it best practice to **inspect your sequence reads to ensure that they are of high-quality**. 
 
 <p align="center">
 <img src="../img/Read_QC_Pipeline.png" width="800">
 </p>
+
+Sources of error include problems with library construction (most likely), a bad run on the sequencer or even a malfunctioning sequencer (very rare). Therefore, it is critically important that you analyze your sequenced reads to ensure that they are high-quality before you devote time and resources to any downstream analyses.
+
+This is **especially critical for variant calling**, since we are comparing base-by-base differences to the reference (i.e. variants). We want to be sure this is biologocally meaningfula nd not just an artifact of a sequencing issue! 
+
 
 ## Unmapped read data (FASTQ)
 
