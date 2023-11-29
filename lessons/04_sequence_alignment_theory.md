@@ -1,14 +1,15 @@
-# Sequence Alignment Theory
+# Sequence Alignment 
 
 ## Learning Objectives
 
 - Enumerate difficulties with alignment
+- Describe the advanatgaes of using the bwa aligner
 - Create an `sbatch` script to align reads
 
 
-## Understanding Alignment
+## The importance of alignment for variant calling
 
-Sequence Read Alignment may appear to be a simple task at first glance. A FASTQ file contains a set of reads where each read represents a small section of the genome. In theory, it sounds like a simple case of string matching to identify where in the genome each read originated from. However, this task is complicated by a multitude of factors including:
+Read alignment is an essential first step in the characterization of DNA sequence variation. The accuracy of variant-calling results can be highly impacted by a low quality of read alignment. In theory, aligning reads sounds like a simple case of string matching to identify where in the genome each read originated from. However, this task is complicated by a multitude of factors including:
 
 - Errors in the sequencing reads
 - Errors in the reference genome
