@@ -6,6 +6,7 @@
 - Describe the advanatgaes of using the bwa aligner
 - Create an `sbatch` script to align reads
 
+**< ADD A WORKFLOW IMAGE HERE TO SHOW WHERE WE ARE IN THE WORKFLOW >**
 
 ## The importance of alignment for variant calling
 
@@ -26,7 +27,7 @@ The largest and most difficult part of this task is creating an alignment algori
 
 Many modern alignment tools rely on the Burrows-Wheeler Transform as part of their alignment algorithm; BWA is one of those tools. BWA is a software package for mapping low-divergent sequences against a large reference genome, such as the human genome. It consists of three algorithms: BWA-backtrack, BWA-SW and BWA-MEM. In this workshop we will demonstrate BWA-MEM.
 
- No matter which algorith you choose, **there are two steps to runnning `bwa`**:
+No matter which algorith you choose, **there are two steps to runnning `bwa`**:
 
 1. Create an index of the reference sequence (done once)
     1. Create a Suffix Array Index
@@ -59,6 +60,11 @@ This process may take up to 30+ minutes to run depending on the reference sequen
 
 ### Aligning reads with `bwa-mem`
 
+<p align="center">
+<img src="../img/bwa.png" width="800">
+</p>
+
+
 BWA-MEM is the latest algorithm of thee three available, and is generally recommended for high-quality queries as it is faster and more accurate. Other features include:
 
 * Performs local alignment (rather than end-over-end)
@@ -74,7 +80,7 @@ Let's begin by looking at the command used to run the alignment, and describing 
 bwa mem \
 -M \
 -t 8 \
--R "@RG\tID:C6C0TANXX_2\tSM:ZW177\tLB:ZW177lib\tPL:ILLUMINA" \
+-R "@RG\tID:C6C0TANXX_2\tSM:ZW177\tPL:ILLUMINA\tPU:ZW177" \
 /path/to/reference.fa \
 LEFT_read_1.fq \
 RIGHT_read_2.fq \
@@ -107,7 +113,7 @@ The term Read Group refers to **a set of reads that were generated from a single
 
 Let's use the read group from our example `bwa` command above to demonstrate the use of tags:
 
-**Add a figure of read group with labels here, pointing out each of the tags described below**
+**< ADD A FIGURE of read group with labels here, pointing out each of the tags described below >**
 
 ```
 -R "@RG\tID:C6C0TANXX_2\tSM:ZW177\tPL:ILLUMINA\tPU:ZW177" \
@@ -119,17 +125,28 @@ Let's use the read group from our example `bwa` command above to demonstrate the
 * **PU**: This is the platform unit and it is **ideally supposed to hold `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`**, where `<FLOWCELL_BARCODE>` is the barcode of the flowcell, `<LANE>` is the lane the data was run on and `<SAMPLE_BARCODE>` is supposed to be a library/sample specific identifer. In some software packages PU can take precedence over the ID field. **If you don't happen to have the `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`, just make this field something useful that will help identify the sample**. In this case, we didn't have that information so we are re-using the **ID** field here. 
 
 > More information about read groups and some fields we didn't discuss can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035890671-Read-groups).
+>
+
+***
+
+**Exercises**
+
+**1.** The read group field LB (Library) is a required field to when adding read groups using `Picard`'s `AddOrReplaceReadGroups`, but we don't currently have this field in our read group information. How would we alter out the `bwa` command to include `LB` as well?
+
+**2.** If we wanted to increase the number of threads used by `bwa` for processing our alignment to 12, where  would we need to modify our `bwa` command to accommodate this?
+
+***
 
 ### Creating a script for alignment
 
-To align reads to the reference sequence, we will need to create an `sbatch` job submission script in `vim`.
+To align reads to the reference sequence, we will need to give ourselves an appropriate amount of resources and so we will need to create an `sbatch` job submission script. Move into the scripts directory and open up `vim`.
 
 ```
 $ cd ~/variant_calling/scripts/
 $ vim bwa_alignment_normal.sbatch
 ```
 
-Now, we can copy and paste the following shebang line and `sbatch` directives into our script file:
+Now, we can copy and paste the following **shebang line and `sbatch` directives** into our script file:
 
 ```
 #!/bin/bash
@@ -144,7 +161,7 @@ Now, we can copy and paste the following shebang line and `sbatch` directives in
 #SBATCH -e bwa_alignment_normal_%j.err
 ```
 
-Next, we need to add the modules that we will be using for alignment:
+Next, we need to **add the modules** that we will be using for alignment:
 
 ```
 # Load modules
@@ -152,9 +169,16 @@ module load gcc/6.2.0
 module load bwa/0.7.17
 ```
 
-> Remember that on O2, many of the common tools were compiled using `GCC` version 6.2.0, so to be able to access them, we first need to load the `GCC` module.
+> NOTE: On O2, many of the common tools were compiled using `GCC` version 6.2.0, so to be able to access them, we first need to load the `GCC` module.
 
-Next, we are going to declare some bash variables that we are going to use within our script. The varaibles are described in more detail below:
+Finally, we need the `bwa` command we are going to run. Displayed below is the code we would use specifically for the `syn3_normal_1`. **DO NOT paste this code in your script!** 
+
+
+```
+bwa code
+```
+
+**Instead we will introduce bash variables** in our script which will allow us to quickly adapt this for use on all other samples we have in our dataset. The varaibles are described in more detail below:
 
 * `REFERENCE_SEQUENCE`: the path to the bwa index
 * `LEFT_READS`: path to the left read FASTQ file (R1 or 1)
@@ -171,7 +195,7 @@ SAMPLE=`basename $LEFT_READS _1.fq.gz`
 SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMPLE}_GRCh38.p7.sam
 ```
 
-> **NOTE:** `$RIGHT_READS` uses the string manipulation we discussed in the `FastQC` lesson in order to swap the last parts of their filename. We also uses `basename` to parse out the path from a file and when coupled with an argument after the filename, it will trim the end of the file as well as we can see with the `$SAMPLE_NAME variable.
+> **NOTE:** `$RIGHT_READS` uses the string manipulation we discussed in the `FastQC` lesson in order to swap the last parts of their filename. We also use `basename` to parse out the path from a file and when coupled with an argument after the filename, it will trim the end of the file as well as we can see with the `$SAMPLE` variable.
   
 
 We can **now add our command for running `bwa`** and utilize the variables we created above:
@@ -188,58 +212,17 @@ $RIGHT_READS \
 -o $SAM_FILE
 ```
 
-
-## Exercises
-
-**1.** The read group field LB (Library) is a required field to when adding read groups using `Picard`'s `AddOrReplaceReadGroups`, but we don't currently have this field in our read group information. How would we alter out `bwa` command to include `LB` as well?
-
-**2.** If we wanted to increase the number of threads used by `bwa` for processing our alignment to 12, where are the two places we would need to modify our `SBATCH` script to accommodate this?
-
 ### Submitting `sbatch` bwa script
 
-Now your `sbatch` script for `bwa` should look like this:
-
-```
-#!/bin/bash
-# This script is for aligning sequencing reads against a reference genome using bwa
-
-# Assign sbatch directives
-#SBATCH -p priority
-#SBATCH -t 0-04:00:00
-#SBATCH -c 8
-#SBATCH --mem 16G
-#SBATCH -o bwa_alignment_normal_%j.out
-#SBATCH -e bwa_alignment_normal_%j.err
-
-# Load modules
-module load gcc/6.2.0
-module load bwa/0.7.17
-
-# Assign files to bash variables
-REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
-LEFT_READS=/home/$USER/variant_calling/raw_data/syn3_normal_1.fq.gz
-RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
-SAMPLE=`basename $LEFT_READS _1.fq.gz`
-SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMPLE}_GRCh38.p7.sam
-
-# Align reads with bwa
-bwa mem \
--M \
--t 8 \
--R "@RG\tID:$SAMPLE\tPL:illumina\tPU:$SAMPLE\tSM:$SAMPLE" \
-$REFERENCE_SEQUENCE \
-$LEFT_READS \
-$RIGHT_READS \
--o $SAM_FILE
-```
-
-If so, go ahead and submit the our `sbatch` script to the cluster:
+Now your `sbatch` script for `bwa` is ready to submit:
 
 ```
 $ sbatch bwa_alignment_normal.sbatch
 ```
 
-## Creating Tumor `sbatch` script (this should be an exercise with answer key linked using content below)
+***
+
+**Excercise: Creating Tumor `sbatch` script**
 
 W are going to replace all of the instances of "normal" with "tumor" using a `sed` command just like we did in the previous `FastQC` exercise. Therefore, we can call `sed` and redirect the output to a file called `bwa_alignment_tumor.sbatch` using:
 
