@@ -64,7 +64,6 @@ This process may take up to 30+ minutes to run depending on the reference sequen
 <img src="../img/bwa.png" width="800">
 </p>
 
-
 BWA-MEM is the latest algorithm of thee three available, and is generally recommended for high-quality queries as it is faster and more accurate. Other features include:
 
 * Performs local alignment (rather than end-over-end)
@@ -100,7 +99,7 @@ Let's breakdown this `bwa` command.
 > **A note on paired-end reads:** In this case you can see that the reads are paired-end reads because we have provided two FASTQ files as input and they have `_1`/`_2` right before the `.fq`/`.fastq` extension. 
 > 
 > This is a very common annotation for paired-end reads. Alternatively, sometimes they might also be annotated as `_R1`/`_R2`, but once again, they will almost always be placed right before the `.fq`/`.fastq` extension. 
->
+
 
 ### Read groups
 
@@ -109,7 +108,7 @@ The term Read Group refers to **a set of reads that were generated from a single
 * **Simple case**: A single library preparation derived from a single biological sample was run on a single lane of a flowcell. All the reads from that lane run belong to the same read group.
 * **Complex case**: When samples are barcoded and pooled, and run across multiple lanes in a flowcell. In this case, each subset of reads originating from a separate library run on that lane will constitute a separate read group.
 
-**Read groups are identified in the SAM/BAM file by a number of tags** that are defined in the official SAM specification. These tags, when assigned appropriately, allow us to differentiate not only samples, but also various technical features that are associated with artifacts. Having this information allows to take steps towards mitigating the effects of artifacts in downstream analyses [1](https://sites.google.com/a/broadinstitute.org/legacy-gatk-documentation/dictionary/6472-Read-groups).
+**Read groups are identified in the SAM/BAM file by a number of tags** that are defined in the official SAM specification. These tags, when assigned appropriately, allow us to differentiate not only samples, but also various technical features that are associated with artifacts. Having this information allows to take steps towards mitigating the effects of artifacts in downstream analyses [[1]](https://sites.google.com/a/broadinstitute.org/legacy-gatk-documentation/dictionary/6472-Read-groups).
 
 Let's use the read group from our example `bwa` command above to demonstrate the use of tags:
 
@@ -124,8 +123,8 @@ Let's use the read group from our example `bwa` command above to demonstrate the
 * **PL**: This is the **platform** that the sequencing was run on. For aligning Illumina reads, you should use "illumina" here.
 * **PU**: This is the platform unit and it is **ideally supposed to hold `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`**, where `<FLOWCELL_BARCODE>` is the barcode of the flowcell, `<LANE>` is the lane the data was run on and `<SAMPLE_BARCODE>` is supposed to be a library/sample specific identifer. In some software packages PU can take precedence over the ID field. **If you don't happen to have the `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`, just make this field something useful that will help identify the sample**. In this case, we didn't have that information so we are re-using the **ID** field here. 
 
-> More information about read groups and some fields we didn't discuss can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035890671-Read-groups).
->
+ **More information about read groups and some fields we didn't discuss can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035890671-Read-groups).**
+
 
 ***
 
@@ -174,8 +173,16 @@ module load bwa/0.7.17
 Finally, we need the `bwa` command we are going to run. Displayed below is the code we would use specifically for the `syn3_normal_1`. **DO NOT paste this code in your script!** 
 
 
-```
-bwa code
+```bash
+## DO NOT PASTE THIS CODE: EXAMPLE ONLY
+bwa mem \
+    -M \
+    -t 8 \
+    -R "@RG\tID:$SAMPLE\tPL:illumina\tPU:$SAMPLE\tSM:$SAMPLE" \
+    /n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa \
+    ~/variant_calling/raw_data/syn3_normal_1.fq.gz \
+    ~/variant_calling/raw_data/syn3_normal_2.fq.gz \
+    -o /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.sam
 ```
 
 **Instead we will introduce bash variables** in our script which will allow us to quickly adapt this for use on all other samples we have in our dataset. The varaibles are described in more detail below:
@@ -203,13 +210,13 @@ We can **now add our command for running `bwa`** and utilize the variables we cr
 ```
 # Align reads with bwa
 bwa mem \
--M \
--t 8 \
--R "@RG\tID:$SAMPLE\tPL:illumina\tPU:$SAMPLE\tSM:$SAMPLE" \
-$REFERENCE_SEQUENCE \
-$LEFT_READS \
-$RIGHT_READS \
--o $SAM_FILE
+    -M \
+    -t 8 \
+    -R "@RG\tID:$SAMPLE\tPL:illumina\tPU:$SAMPLE\tSM:$SAMPLE" \
+    $REFERENCE_SEQUENCE \
+    $LEFT_READS \
+    $RIGHT_READS \
+    -o $SAM_FILE
 ```
 
 ### Submitting `sbatch` bwa script
