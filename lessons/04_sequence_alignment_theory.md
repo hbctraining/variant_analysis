@@ -96,7 +96,22 @@ Let's breakdown this `bwa` command.
 > This is a very common annotation for paired-end reads. Alternatively, sometimes they might also be annotated as `_R1`/`_R2`, but once again, they will almost always be placed right before the `.fq`/`.fastq` extension. 
 >
 
+### Read groups
 
+Let's talk a bit more about read groups
+
+
+    - **ID**: This is the identification for a given batch of reads. This ***MUST*** be unique to your experiment. 
+
+    - **PL**: This is the platform that the sequencing was run on. For aligning Illumina reads, you should use "illumina" here.
+
+    - **PU**: This is the platform unit and it is ideally supposed to hold `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`, where `<FLOWCELL_BARCODE>` is the barcode of the flowcell, `<LANE>` is the lane the data was run on and `<SAMPLE_BARCODE>` is supposed to be a library/sample specific identifer. In some software packages **PU** can take precedence over the **ID** field. If you don't happen to have the `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`, just make this field something useful that will help identify the sample. In this case, we didn't have that information so we are re-using the **ID** field here. 
+
+    - **SM**: This is to mark which *sample* your reads are coming from. Note, this does not need to be unique like the **ID** field, since you may have multiple Read Group **ID**s coming from a single sample. For example, you may be merging alignment (BAM/SAM) files that originated from the same individual, but we sequenced on different lanes or machines. In this case, each batch of reads from a sample would have different Read Group **ID**s, but the same **SM** value. We will discuss how to merge these alignments with different read groups from the same sample later in a dropdown menu within the [alignment processing lesson](06_alignment_file_processing.md).
+
+    - More information about read groups and some fields we didn't discuss can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035890671-Read-groups).
+
+### Creating a script for alignment
 
 To align reads to the reference sequence, we will need to create an `sbatch` job submission script in `vim`.
 
@@ -164,33 +179,6 @@ $RIGHT_READS \
 -o $SAM_FILE
 ```
 
-Let's breakdown this `bwa` command.
-
-* `mem` This is the specific package we want to use within `bwa` and this is one of the tools that `bwa` provides for alignment.
-* `-M` This will mark shorter split hits as secondary
-* `-t 8` We are going to take advantage of multithreading. In order to do this, we need to specifiy the number of threads that we are going to use as 8.
-
-* `-R` This adds what is called **read group information**. Some software packages, such as `GATK`, require read groups, while others are agnostic towards them. However, they can provide important metadata about your reads and thus it is considered best practice to include read group Information at the alignment step. This read group information consists of several fields separated by tab-characters (\t), including:
-
-    - **ID**: This is the identification for a given batch of reads. This ***MUST*** be unique to your experiment. 
-
-    - **PL**: This is the platform that the sequencing was run on. For aligning Illumina reads, you should use "illumina" here.
-
-    - **PU**: This is the platform unit and it is ideally supposed to hold `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`, where `<FLOWCELL_BARCODE>` is the barcode of the flowcell, `<LANE>` is the lane the data was run on and `<SAMPLE_BARCODE>` is supposed to be a library/sample specific identifer. In some software packages **PU** can take precedence over the **ID** field. If you don't happen to have the `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`, just make this field something useful that will help identify the sample. In this case, we didn't have that information so we are re-using the **ID** field here. 
-
-    - **SM**: This is to mark which *sample* your reads are coming from. Note, this does not need to be unique like the **ID** field, since you may have multiple Read Group **ID**s coming from a single sample. For example, you may be merging alignment (BAM/SAM) files that originated from the same individual, but we sequenced on different lanes or machines. In this case, each batch of reads from a sample would have different Read Group **ID**s, but the same **SM** value. We will discuss how to merge these alignments with different read groups from the same sample later in a dropdown menu within the [alignment processing lesson](06_alignment_file_processing.md).
-
-    - More information about read groups and some fields we didn't discuss can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035890671-Read-groups).
-  
-- Finally, we also provide required inputs which include FASTQ files, reference sequence, and output file/path information
-
-
-> **A note on paired-end reads:** In this case you can see that the reads are paired-end reads because we have provided two FASTQ files as input and they have `_1`/`_2` right before the `.fq`/`.fastq` extension. 
-> 
-> This is a very common annotation for paired-end reads. Alternatively, sometimes they might also be annotated as `_R1`/`_R2`, but once again, they will almost always be placed right before the `.fq`/`.fastq` extension. You will need to edit the script if you are working with the files that have this syntax.
->
-
-Now you have written your command to run `bwa` you are ready to run alignment. 
 
 ## Exercises
 
@@ -242,7 +230,7 @@ If so, go ahead and submit the our `sbatch` script to the cluster:
 $ sbatch bwa_alignment_normal.sbatch
 ```
 
-## Creating Tumor `sbatch` script
+## Creating Tumor `sbatch` script (this should be an exercise with answer key linked using content below)
 
 W are going to replace all of the instances of "normal" with "tumor" using a `sed` command just like we did in the previous `FastQC` exercise. Therefore, we can call `sed` and redirect the output to a file called `bwa_alignment_tumor.sbatch` using:
 
