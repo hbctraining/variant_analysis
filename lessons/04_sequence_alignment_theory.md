@@ -20,11 +20,13 @@ Read alignment is an essential first step in the characterization of DNA sequenc
 <img src="../img/Alignment_errors.png" width="800">
 </p>
 
-The largest and most difficult part of this task is creating an alignment algorithm that can account for these factors and still provide alignment for ***millions*** of reads within a reasonable time frame. There are a multitude of alignment tools availible today, including [bwa](https://bio-bwa.sourceforge.net), [HISAT2](http://daehwankimlab.github.io/hisat2/) and [STAR](https://github.com/alexdobin/STAR). Many of them has strengths and weakness and are more appropriate for a certain type of analysis. In this course, we will be using `bwa`. 
+The largest and most difficult part of this task is creating an alignment algorithm that can account for these factors and still provide alignment for ***millions*** of reads within a reasonable time frame. There are a multitude of alignment tools availible today; each has strengths and weakness and some are more appropriate for particular types of analysis. In this course, we will be using BWA. 
 
-## bwa
+## BWA
 
-Many modern alignment tools rely on the Burrows-Wheeler Transform as part of their alignment algorithm; `bwa` is one of those tools. **There are two parts to runnning `bwa`**:
+Many modern alignment tools rely on the Burrows-Wheeler Transform as part of their alignment algorithm; BWA is one of those tools. BWA is a software package for mapping low-divergent sequences against a large reference genome, such as the human genome. It consists of three algorithms: BWA-backtrack, BWA-SW and BWA-MEM. In this workshop we will demonstrate BWA-MEM.
+
+ No matter which algorith you choose, **there are two steps to runnning `bwa`**:
 
 1. Create an index of the reference sequence (done once)
     1. Create a Suffix Array Index
@@ -55,7 +57,46 @@ This process may take up to 30+ minutes to run depending on the reference sequen
 <hr />
 </details>
 
-### Setting up our `sbatch` Submission Script for alignment
+### Aligning reads with `bwa-mem`
+
+BWA-MEM is the latest algorithm of thee three available, and is generally recommended for high-quality queries as it is faster and more accurate. Other features include:
+
+* Performs local alignment (rather than end-over-end)
+* Can clip ends of reads, if they do not match
+* Can split a read into pieces, mapping each separately (the best aligned piece is then the primary alignment)
+* Performs gapped alignment 
+* Moderate memory requirement (few GB of RAM to hold reference genome)
+
+Let's begin by looking at the command used to run the alignment, and describing each of the parameters. _Do not run the code below_, as this just **example code**.
+
+```bash
+# Align reads with bwa-mem
+bwa mem \
+-M \
+-t 8 \
+-R "@RG\tID:$SAMPLE\tPL:illumina\tPU:$SAMPLE\tSM:$SAMPLE" \
+/path/to/reference.fa \
+left_read_1.fq \
+right_read_2.fq \
+-o /path/and/name/of/outputfile.sam
+```
+
+Let's breakdown this `bwa` command.
+
+* `mem` This is the **specific algorithm** we want to use within `bwa`
+* `-M` This will mark shorter split hits as secondary
+* `-t 8` We are going to take advantage of **multithreading**. In order to do this, we need to specifiy the number of threads that we are going to use as 8.
+* `-R` This adds what is called **read group information**. Some software packages, such as `GATK`, require read groups, while others are agnostic towards them. However, they can provide important metadata about your reads and thus it is considered best practice to include read group information at the alignment step. This read group information consists of several fields separated by tab-characters (\t), which will be described a little bit later in this lesson.
+* Reference sequence (indexed)
+* Input FASTQ files
+* Output file name and path (if different from working directory)
+  
+> **A note on paired-end reads:** In this case you can see that the reads are paired-end reads because we have provided two FASTQ files as input and they have `_1`/`_2` right before the `.fq`/`.fastq` extension. 
+> 
+> This is a very common annotation for paired-end reads. Alternatively, sometimes they might also be annotated as `_R1`/`_R2`, but once again, they will almost always be placed right before the `.fq`/`.fastq` extension. 
+>
+
+
 
 To align reads to the reference sequence, we will need to create an `sbatch` job submission script in `vim`.
 
