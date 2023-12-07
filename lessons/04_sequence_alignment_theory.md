@@ -74,11 +74,11 @@ Let's begin by looking at the command used to run the alignment, and describing 
 bwa mem \
 -M \
 -t 8 \
--R "@RG\tID:$SAMPLE\tPL:illumina\tPU:$SAMPLE\tSM:$SAMPLE" \
+-R "@RG\tID:C6C0TANXX_2\tSM:ZW177\tLB:ZW177lib\tPL:ILLUMINA" \
 /path/to/reference.fa \
-left_read_1.fq \
-right_read_2.fq \
--o /path/and/name/of/outputfile.sam
+LEFT_read_1.fq \
+RIGHT_read_2.fq \
+-o /path/to/outputfile.sam
 ```
 
 Let's breakdown this `bwa` command.
@@ -98,18 +98,27 @@ Let's breakdown this `bwa` command.
 
 ### Read groups
 
-Let's talk a bit more about read groups
+The term Read Group refers to **a set of reads that were generated from a single run of a sequencing instrument**.
 
+* **Simple case**: A single library preparation derived from a single biological sample was run on a single lane of a flowcell. All the reads from that lane run belong to the same read group.
+* **Complex case**: When samples are barcoded and pooled, and run across multiple lanes in a flowcell. In this case, each subset of reads originating from a separate library run on that lane will constitute a separate read group.
 
-    - **ID**: This is the identification for a given batch of reads. This ***MUST*** be unique to your experiment. 
+**Read groups are identified in the SAM/BAM file by a number of tags** that are defined in the official SAM specification. These tags, when assigned appropriately, allow us to differentiate not only samples, but also various technical features that are associated with artifacts. Having this information allows to take steps towards mitigating the effects of artifacts in downstream analyses [1](https://sites.google.com/a/broadinstitute.org/legacy-gatk-documentation/dictionary/6472-Read-groups).
 
-    - **PL**: This is the platform that the sequencing was run on. For aligning Illumina reads, you should use "illumina" here.
+Let's use the read group from our example `bwa` command above to demonstrate the use of tags:
 
-    - **PU**: This is the platform unit and it is ideally supposed to hold `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`, where `<FLOWCELL_BARCODE>` is the barcode of the flowcell, `<LANE>` is the lane the data was run on and `<SAMPLE_BARCODE>` is supposed to be a library/sample specific identifer. In some software packages **PU** can take precedence over the **ID** field. If you don't happen to have the `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`, just make this field something useful that will help identify the sample. In this case, we didn't have that information so we are re-using the **ID** field here. 
+**Add a figure of read group with labels here, pointing out each of the tags described below**
 
-    - **SM**: This is to mark which *sample* your reads are coming from. Note, this does not need to be unique like the **ID** field, since you may have multiple Read Group **ID**s coming from a single sample. For example, you may be merging alignment (BAM/SAM) files that originated from the same individual, but we sequenced on different lanes or machines. In this case, each batch of reads from a sample would have different Read Group **ID**s, but the same **SM** value. We will discuss how to merge these alignments with different read groups from the same sample later in a dropdown menu within the [alignment processing lesson](06_alignment_file_processing.md).
+```
+-R "@RG\tID:C6C0TANXX_2\tSM:ZW177\tPL:ILLUMINA\tPU:ZW177" \
+```
 
-    - More information about read groups and some fields we didn't discuss can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035890671-Read-groups).
+* **ID**: This is the **identification for a given batch of reads**. This MUST be unique to your experiment.
+* **SM**: This is to mark which **sample** your reads are coming from. Note, this does not need to be unique like the **ID** field, since you may have multiple Read Group IDs coming from a single sample. 
+* **PL**: This is the **platform** that the sequencing was run on. For aligning Illumina reads, you should use "illumina" here.
+* **PU**: This is the platform unit and it is **ideally supposed to hold `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`**, where `<FLOWCELL_BARCODE>` is the barcode of the flowcell, `<LANE>` is the lane the data was run on and `<SAMPLE_BARCODE>` is supposed to be a library/sample specific identifer. In some software packages PU can take precedence over the ID field. **If you don't happen to have the `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`, just make this field something useful that will help identify the sample**. In this case, we didn't have that information so we are re-using the **ID** field here. 
+
+> More information about read groups and some fields we didn't discuss can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035890671-Read-groups).
 
 ### Creating a script for alignment
 
