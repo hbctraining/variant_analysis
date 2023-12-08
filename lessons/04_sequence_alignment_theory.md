@@ -6,7 +6,9 @@
 - Describe the advanatgaes of using the bwa aligner
 - Create an `sbatch` script to align reads
 
-**< ADD A WORKFLOW IMAGE HERE TO SHOW WHERE WE ARE IN THE WORKFLOW >**
+<p align="center">
+<img src="../img/alignment_workflow.png" width="600">
+</p>
 
 ## The importance of alignment for variant calling
 
@@ -18,7 +20,7 @@ Read alignment is an essential first step in the characterization of DNA sequenc
 - Variants in the sample
 
 <p align="center">
-<img src="../img/Alignment_errors.png" width="800">
+<img src="../img/Alignment_errors.png" width="600">
 </p>
 
 The largest and most difficult part of this task is creating an alignment algorithm that can account for these factors and still provide alignment for ***millions*** of reads within a reasonable time frame. There are a multitude of alignment tools availible today; each has strengths and weakness and some are more appropriate for particular types of analysis. In this course, we will be using BWA. 
@@ -231,19 +233,17 @@ $ sbatch bwa_alignment_normal.sbatch
 
 **Excercise: Creating Tumor `sbatch` script**
 
-W are going to replace all of the instances of "normal" with "tumor" using a `sed` command just like we did in the previous `FastQC` exercise. Therefore, we can call `sed` and redirect the output to a file called `bwa_alignment_tumor.sbatch` using:
+We are going to **replace all of the instances of "normal" with "tumor" using a `sed` command** just like we did in the previous `FastQC` exercise. Therefore, we can call `sed` and redirect the output to a file called `bwa_alignment_tumor.sbatch` using:
 
-```
+```bash
 $ sed 's/normal/tumor/g' bwa_alignment_normal.sbatch >  bwa_alignment_tumor.sbatch
 ```
 
-If we look at the output with:
+If we look at the output with `cat` we will see the following scripts:
 
 ```
 $ cat bwa_alignment_tumor.sbatch 
 ```
-
-Then it should look like this:
 
 ```
 #!/bin/bash
