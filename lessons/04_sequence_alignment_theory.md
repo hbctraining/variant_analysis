@@ -114,11 +114,9 @@ The term Read Group refers to **a set of reads that were generated from a single
 
 Let's use the read group from our example `bwa` command above to demonstrate the use of tags:
 
-**< ADD A FIGURE of read group with labels here, pointing out each of the tags described below >**
-
-```
--R "@RG\tID:C6C0TANXX_2\tSM:ZW177\tPL:ILLUMINA\tPU:ZW177" \
-```
+<p align="center">
+<img src="../img/read_groups.png" width="650">
+</p>
 
 * **ID**: This is the **identification for a given batch of reads**. This MUST be unique to your experiment.
 * **SM**: This is to mark which **sample** your reads are coming from. Note, this does not need to be unique like the **ID** field, since you may have multiple Read Group IDs coming from a single sample. 
