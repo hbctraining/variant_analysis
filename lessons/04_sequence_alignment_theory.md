@@ -121,7 +121,11 @@ Let's use the read group from our example `bwa` command above to demonstrate the
 * **ID**: This is the **identification for a given batch of reads**. This MUST be unique to your experiment.
 * **SM**: This is to mark which **sample** your reads are coming from. Note, this does not need to be unique like the **ID** field, since you may have multiple Read Group IDs coming from a single sample. 
 * **PL**: This is the **platform** that the sequencing was run on. For aligning Illumina reads, you should use "illumina" here.
-* **PU**: This is the platform unit and it is **ideally supposed to hold `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`**, where `<FLOWCELL_BARCODE>` is the barcode of the flowcell, `<LANE>` is the lane the data was run on and `<SAMPLE_BARCODE>` is supposed to be a library/sample specific identifer. In some software packages PU can take precedence over the ID field. **If you don't happen to have the `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`, just make this field something useful that will help identify the sample**. In this case, we didn't have that information so we are re-using the **ID** field here. 
+* **PU**: This is the platform unit and it is **ideally supposed to hold `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`**
+  * `<FLOWCELL_BARCODE>` is the barcode of the flowcell
+  * `<LANE>` is the lane the data was run on and
+  * `<SAMPLE_BARCODE>` is supposed to be a library/sample specific identifer. In some software packages PU can take precedence over the ID field. *
+  * *If you don't happen to have the `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`, just make this field something useful that will help identify the sample**. In this case, we didn't have that information so we are re-using the **ID** field here. 
 
  **More information about read groups and some fields we didn't discuss can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035890671-Read-groups).**
 
