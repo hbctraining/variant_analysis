@@ -7,7 +7,7 @@
 - Create an `sbatch` script to align reads
 
 <p align="center">
-<img src="../img/alignment_workflow.png" width="600">
+<img src="../img/alignment_workflow.png" width="500">
 </p>
 
 ## The importance of alignment for variant calling
