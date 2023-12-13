@@ -66,11 +66,11 @@ Given the costs associated with whole genome sequencing (WGS) of each individual
 
 **Exercise**
 
-Use the figure below to try to make inferences answer the following questions:
-
 <p align="center">
 <img src="../img/Difficulty_of_assignment.png" width="400">
 </p>
+
+Use the figure above to try to make inferences answer the following questions:
 
 **1.** If we assume there are no sequencing errors, are you more inclined to speculate that Locus 1 is a germline or somatic variant? Why?
 
