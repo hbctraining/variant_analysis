@@ -1,5 +1,5 @@
 ---
-title: "Set up and overview for gene-level differential expression analysis"
+title: "Introduction into Variant Analysis"
 author: "Will Gammerdinger, Meeta Mistry"
 date: "December 9, 2023"
 ---
