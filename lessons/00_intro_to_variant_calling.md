@@ -78,8 +78,31 @@ Use the figure below to try to make inferences answer the following questions:
 4. How confident are you that Locus 2 is homozygous?
 5. What additional information might you want in order to better assess these loci?
 
+## Variant Calling Workflow
 
+The workflow for variant analysis that many researchers follow looks like:
 
+<p align="center">
+<img src="../img/Full_variant calling_pipeline.png" width="600">
+</p>
+
+**Sequence Samples** - This is the work of your sequencing facility and they should provide you with FASTQ files. 
+**Read Quality Control** - It is important to assess the quality of your reads before you further analysis them. In this step we are looking to ensure that there aren't major errors that occurred in the sequencing and that the quality of the reads is high. 
+**Align Reads** - We need to match our raw FASTQ reads to the place in the genome where they most likely originiated from. 
+**Processing Alignment Files** - While our reads have now been asssigned to a place in the genome, the files holding this information are not in the format that we need in order to call variants. We will be reformatting the alignment files in order to be useable for variant calling.
+**Alignment Quality Control** - This is a second opportunity to evaluate the quality of our data. Here we are ensuring that the data aligns well with our genome.
+**Call Variants** - Now we are able to call the raw variants from our data. 
+**Filter Variants** - Our raw variants may have some artifacts in them and need to be processed to remove them.
+**Annotate Variants** - We would be interested to know where our variants fall within the context of current gene models. Here we will be using existing gene models to predict the impact of a variant. Here we will be asking questions such as, is this a variant that creates a premature stop codon or is it in a intergenic region?
+**Prioritize Variants** - Assess the annotated variants based upon their predicted functional impacts and narrow the search for important genes that may be causing a disease or trait.
+
+[Next Lesson >>]()
+
+[Back to Schedule](../schedule/README.md)
+  
+***
+
+*This lesson has been developed by members of the teaching team at the [Harvard Chan Bioinformatics Core (HBC)](http://bioinformatics.sph.harvard.edu/). These are open access materials distributed under the terms of the [Creative Commons Attribution license](https://creativecommons.org/licenses/by/4.0/) (CC BY 4.0), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.*
 
 
 
