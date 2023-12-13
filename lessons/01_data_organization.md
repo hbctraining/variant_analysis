@@ -55,7 +55,7 @@ Once logged in, you should see the O2 icon, some news, and the command prompt, e
 
 > Note 1: ssh stands for secure shell. All of the information (like your password) going between your computer and the O2 login computer is encrypted when using ssh.
 
-## `/home` or `/n/scratch3`?
+## `/home` or `/n/scratch`?
 
 Within the [Introduction to the Command-line course](https://hbctraining.github.io/Intro-to-shell-flipped/schedule/), we introduced your home directory (`/home/user_name`) and scratch `/n/scratch/3` workspace, but let's give a brief recap of each and their purpose:
 
@@ -65,11 +65,13 @@ Within the [Introduction to the Command-line course](https://hbctraining.github.
  - Can you found at `/home/$USER/`
  - Great place for storing valuable file/scripts
 
-### `/n/scratch3`
- - Up to 10TiB or 1 million files/directories per user
+### `/n/scratch`
+ - Up to 25TiB or 2.5 million files/directories per user
  - No back-ups
- - Purged from the system if not accessed for 30 days
+ - Purged from the system if not accessed for 45 days
  - Great for storing reproducible, intermediate files
+
+> **NOTE:** You may recall from previous trainings that the `scratch` space was called `scratch3` and not `scratch`. During December 2023/January 2024, HMS-RC migrate to a new scratch system with more storage and longer times between purges.
 
 Due to the limited storage space on `/home`, we are going to take advantage of scratch to hold some of our intermediate files for this workshop. This is a very common use of the scratch space as many analyses will have large intermediate files, which would otherwise fill up our home directories.
 
@@ -78,7 +80,7 @@ Due to the limited storage space on `/home`, we are going to take advantage of s
 While on the login node, we will create our space on `/n/scratch3`. In order to do so, we will need to run a script provided by the HMS Research Computing team:
 
 ```
-$ sh /n/cluster/bin/scratch3_create.sh
+$ sh /n/cluster/bin/scratch_create_directory.sh 
 ```
 
 > Note: You *MUST* be on a login node in order to create a space on `/n/scratch3`.
@@ -176,7 +178,7 @@ $ cp /n/groups/hbctraining/variant_calling/raw_data/*.fq.gz .
 This may take up to a minute as there is a lot of data to copy. Now that we have created the directories that we are going to use in our `home` space. Let's move to our `/n/scratch3` space so that we can set up the directories that we are going to there to hold our intermediate files:
 
 ```
-$ cd /n/scratch3/users/${USER:0:1}/$USER
+$ cd /n/scratch/users/${USER:0:1}/$USER
 ```
 
 A few quick notes about this previous `cd` command:
