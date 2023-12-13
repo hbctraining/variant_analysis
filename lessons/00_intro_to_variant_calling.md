@@ -71,7 +71,6 @@ Use the figure below to try to make inferences answer the following questions:
 <p align="center">
 <img src="../img/Difficulty_of_assignment.png" width="600">
 </p>
-
 1. If we assume there are no sequencing errors, are you more inclined to speculate that Locus 1 is a germline or somatic variant? Why?
 2. Given the existence of sequencing errors, how confident are you that Locus 1 represents a heterozygous locus in the germline?
 3. Given the existence of sequencing errors, how confident are you that Locus 1 represents a polymorphic locus in a somatic tissue?
@@ -83,7 +82,7 @@ Use the figure below to try to make inferences answer the following questions:
 The workflow for variant analysis that many researchers follow looks like:
 
 <p align="center">
-<img src="../img/Full_variant calling_pipeline.png" width="600">
+<img src="../img/Full_variant calling_pipeline.png" width="400">
 </p>
 
 **Sequence Samples** - This is the work of your sequencing facility and they should provide you with FASTQ files. 
