@@ -91,13 +91,21 @@ The workflow for variant analysis that many researchers follow looks like:
 </p>
 
 **Sequence Samples** - This is the work of your sequencing facility and they should provide you with FASTQ files. 
+
 **Read Quality Control** - It is important to assess the quality of your reads before you further analysis them. In this step we are looking to ensure that there aren't major errors that occurred in the sequencing and that the quality of the reads is high. 
+
 **Align Reads** - We need to match our raw FASTQ reads to the place in the genome where they most likely originiated from. 
+
 **Processing Alignment Files** - While our reads have now been asssigned to a place in the genome, the files holding this information are not in the format that we need in order to call variants. We will be reformatting the alignment files in order to be useable for variant calling.
+
 **Alignment Quality Control** - This is a second opportunity to evaluate the quality of our data. Here we are ensuring that the data aligns well with our genome.
+
 **Call Variants** - Now we are able to call the raw variants from our data. 
+
 **Filter Variants** - Our raw variants may have some artifacts in them and need to be processed to remove them.
+
 **Annotate Variants** - We would be interested to know where our variants fall within the context of current gene models. Here we will be using existing gene models to predict the impact of a variant. Here we will be asking questions such as, is this a variant that creates a premature stop codon or is it in a intergenic region?
+
 **Prioritize Variants** - Assess the annotated variants based upon their predicted functional impacts and narrow the search for important genes that may be causing a disease or trait.
 
 [Next Lesson >>]()
