@@ -227,9 +227,55 @@ Some notes for the above script:
 
 ## Review QC metrics from FastQC
 
+The FastQC reports are not viewable on the O2 Cluster, so we will need connect our local computers to the O2 Computing Cluster with a file transfer program in order to help us download the FastQC reports from O2. We will be using [FileZilla](https://filezilla-project.org/) in order to do this, but other file transfer software exists and can also be down through the command-line [`scp`](https://linux.die.net/man/1/scp) command.
+
+> ### **What is FileZilla?**
+>
+>FileZilla is a file transfer (FTP) client with lots of useful features and an intuitive graphical user interface. It basically allows you to reliably move files securely between two computers using a point and click environment. It has cross-platform compatability so you can install it on any operating system.
+
+### Filezilla - Step 1
+
+Open up _FileZilla_, and click on the File tab. Choose 'Site Manager'.
+
+<p align="center">
+<img src="../img/FileZilla_click.gif" width="800">
+</p>
+
+### Filezilla - Step 2
+
+Within the 'Site Manager' window, do the following:
+
+1. Click on 'New Site', and name it something intuitive (e.g. O2)
+2. Host: transfer.rc.hms.harvard.edu
+3. Protocol: SFTP - SSH File Transfer Protocol
+4. Logon Type: Normal
+5. User: Username (i.e rc_trainingXX)
+6. Password: O2 password
+7. Click 'Connect'
+
+> NOTE: While using the temporary training accounts on the O2 cluster, two-factor authentication **IS NOT** required. However, if you explore this lesson when using your personal account, two-factor authentication **IS** required.
+>
+>In order to connect your laptop using _FileZilla_ to the O2 cluster for your personal account (non-training account), follow steps 1-7 as outlined above. Once you have clicked 'Connect', you will receive a Duo push notification (but no indication in _Filezilla_) which you must approve within the short time window. Following Duo approval, _FileZilla_ will connect to the O2 cluster.
+
+<p align="center">
+<img src="../img/FileZilla_information.gif" width="800">
+</p>
+
+### Filezilla Interface
+
+You will see messages printed in the message window in the top window pane, giving a you an indication of whether or not you have successfully connected to O2. Next, if this if your first time using Filezilla we recommend that you take some time to get familiar withe the basics of the interface. This [tutorial](https://wiki.filezilla-project.org/FileZilla_Client_Tutorial_(en)) is a helpful resource.
+
+You will see two panels in the interface. On the left hand side you will see your the files in your laptop and on the right hand side you have your home directory on O2. Both panels have a directory tree at the top and a detailed listing of the selected directory's contents underneath. In the right hand panel, navigate to where the HTML files are located on O2 `~/variant_calling/results/fastqc/`. Then decide where you would like to copy those files to on your computer and move to that directory on the left hand panel.
+
+Once you have found the html output for `**GET FILE NAME**` **copy it over** by double clicking it or drag it over to right hand side panel. Once you have the HTML file copied over to your laptop, you can leave the Filezilla interface. You can then locate the HTML file on your computer and open it up in a browser. 
+
+## Interpreting the HTML report
+
+Now we can take a look at the metrics and assess the quality of our sequencing data!
+
+FastQC has a really well documented [manual page](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) with [detailed explanations](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/) about every plot in the report. 
+
 [NEEDS WORK] 
-* Connect to local computer using filezilla
-* download 1 html file
 * go through QC metrics
 
 [NEEDS WORK]
