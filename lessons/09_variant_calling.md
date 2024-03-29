@@ -45,7 +45,19 @@ This course is going to focus on analyzing somatic SNPs, so we are going to use 
 
 ### Basic workflow
 
-When using `MuTect2`, we will first re-evaluate the alignments of the normal and tumor samples and create "active regions" that appear to need a local re-assembly. During this process of local re-assembly the tumor sample's reads are interrogated to a higher degree for their quality than the normal samples and a *de Bruijn* graph of the region is created with an assembler. From here, most likely haplotypes are assembled and variants are called from these haplotypes. Let's start writing out a new `sbatch` submission script for `MuTect2`:
+BREAK THIS UP
+When using `MuTect2`, we will first re-evaluate the alignments of the normal and tumor samples and create "active regions" that appear to need a local re-assembly. During this process of local re-assembly the tumor sample's reads are interrogated to a higher degree for their quality than the normal samples and a *de Bruijn* graph of the region is created with an assembler. From here, most likely haplotypes are assembled and variants are called from these haplotypes. 
+
+The alogrithm used for somatic variant discovery with Mutect2 is broken up into three major components:
+- **Local Assembly** - The initial step is for Mutect2 to evaluates regions for somatic variations. Regions that surpass a log odds threshold for somatic variation comparing the existance and non-existance of a potential alternate allele are flagged as "active" regions and are slated for local reassembly and realignment. The local reassembly is done by creating a *de Bruijn* graph of the active region.
+- **Haplotype Assembly** - From this *de Bruijn* graph, each haplotype is assembled and the haplotype spans the variant in question and connects two points in the reference genome.
+- **Somatic Genotyping** - 
+
+<p align="center">
+<img src="../img/Mutect2_pipeline.png" width="500">
+</p>
+
+Let's start writing out a new `sbatch` submission script for `MuTect2`:
 
 ```
 cd ~/variant_calling/scripts/
