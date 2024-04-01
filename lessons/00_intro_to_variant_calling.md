@@ -87,7 +87,13 @@ Use the figure above to try to make inferences answer the following questions:
 
 ## Variant Calling Workflow
 
-The workflow for variant analysis that many researchers follow looks like:
+Analyzing variants takes the form of three main steps: 
+
+1. **Data preparation**
+2. **Variant calling** 
+3. **Variant evaluation** 
+
+The detailed workflow for variant analysis that many researchers follow looks like:
 
 <p align="center">
 <img src="../img/Full_variant calling_pipeline.png" width="400">
