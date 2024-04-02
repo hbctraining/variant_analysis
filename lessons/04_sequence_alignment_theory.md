@@ -6,13 +6,15 @@
 - Describe the advanatgaes of using the bwa aligner
 - Create an `sbatch` script to align reads
 
-<p align="center">
-<img src="../img/alignment_workflow.png" width="500">
-</p>
-
 ## The importance of alignment for variant calling
 
-Read alignment is an essential first step in the characterization of DNA sequence variation. The accuracy of variant-calling results can be highly impacted by a low quality of read alignment. In theory, aligning reads sounds like a simple case of string matching to identify where in the genome each read originated from. However, this task is complicated by a multitude of factors including:
+Read alignment is an essential first step in the characterization of DNA sequence variation. This step takes our reads and tries to find the place in the genome where they best fit.
+
+<p align="center">
+<img src="../img/Align_reads_workflow.png" width="500">
+</p>
+
+Importantly, the accuracy of variant-calling results can be highly impacted by a low quality of read alignment. In theory, aligning reads sounds like a simple case of string matching to identify where in the genome each read originated from. However, this task is complicated by a multitude of factors including:
 
 - Errors in the sequencing reads
 - Errors in the reference genome
