@@ -13,6 +13,10 @@ The output from `MuTect2` is a raw variant calling output and the calls need to 
 - Non-somatic mutations
 - Sequencing Errors
 
+<p align="center">
+<img src="../img/Filter_variants.png" width="400">
+</p>
+
 `FilterMutectCalls` evaluates the raw variant calls for each of these types of errors using a probabilistic model for errors. It then uses this model to determine the probability of an error and applies this filter across all of the variants. There are also "hard filters" that immediately flag a variant call for filtering.  `FilterMutectCalls` will annotate the FILTER field in the VCF file with whether the variant is passing with `PASS` or the reasons why it failed filtering. These include:
 
 - Too many alternate alleles
