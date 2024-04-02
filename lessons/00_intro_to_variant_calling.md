@@ -95,9 +95,7 @@ Analyzing variants takes the form of three main steps:
 
 The detailed workflow for variant analysis that many researchers follow looks like:
 
-<p align="center">
-<img src="../img/Full_variant calling_pipeline.png" width="400">
-</p>
+
 
 **Sequence Samples** - This is the work of your sequencing facility and they should provide you with FASTQ files. 
 
