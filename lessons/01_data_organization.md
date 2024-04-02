@@ -13,11 +13,12 @@ Approximate time: 45 minutes
 - Organize dataset for analysis
 - Differentiate between using `/home` and `/n/scratch3` drives
 
-## The ICGC-TCGA DREAM Mutation Calling Challenge
+## Cancer genomics and the application of variant calling
+A blurb just briefly introduce cancer medicine and what variant calling provides for us. Some examples 
+
+### The ICGC-TCGA DREAM Mutation Calling Challenge
 
 While it may not be obvious at this point, calling variants is not a simple task. As a result, International Cancer Genome Consortium (ICGC) and The Cancer Genome Atlas (TCGA) co-sponsered the [DREAM Mutation Calling Challenge](https://www.synapse.org/#!Synapse:syn312572/wiki/) in order to help develop methods to more accuarately predict cancer-associated mutations from whole genome resequencing data. The idea was to allow software designers to compete to see who could most accuarately identify cancer-associateed mutations in real normal/tumor datasets.
-
-## The Dataset
 
 There are a few datasets that the ICGC-TCGA DREAM Mutation Calling Challenge made availible:
 
@@ -27,7 +28,12 @@ There are a few datasets that the ICGC-TCGA DREAM Mutation Calling Challenge mad
 
 As would be expected, due to ethical standards, using the real data requires approval from ICGC and would be difficult to use in a workshop like this where we need to able to distribute the datasets to participants. Fortunately, the synthetic datasets are freely availble for use and do not require ICGC approval, so this workshop will be using a single synthetic normal/tumor sample (synthetic dataset 3) which has multiple subclones, enabling detection of lower frequency variants. 
 
-In order to expedite our methodologies and minimize resource usage in the O2 computing cluster, we will just be using the whole exome sequencing (WES) dataset rather than a whole genome sequencing (WGS) dataset, but all of the methods that we will be using will be applicable to both WES and WGS datasets. 
+In order to expedite our methodologies and minimize resource usage in the O2 computing cluster, **we will just be using the whole exome sequencing (WES) dataset rather than a whole genome sequencing (WGS) dataset**, but all of the methods that we will be using will be applicable to both WES and WGS datasets. 
+
+## Dataset overview 
+
+Describe the samples, provide a schematic of how many samples we have in each group etc 
+Any metadata that we have about these samples would be good to list
 
 ## Logging into O2
 
@@ -55,27 +61,11 @@ Once logged in, you should see the O2 icon, some news, and the command prompt, e
 
 > Note 1: ssh stands for secure shell. All of the information (like your password) going between your computer and the O2 login computer is encrypted when using ssh.
 
-## `/home` or `/n/scratch`?
-
-Within the [Introduction to the Command-line course](https://hbctraining.github.io/Intro-to-shell-flipped/schedule/), we introduced your home directory (`/home/user_name`) and scratch `/n/scratch/3` workspace, but let's give a brief recap of each and their purpose:
-
-### `/home`
- - Limited to 100GiB of storage per user
- - Backed-up daily up to 14 days, weekly up to 60 days
- - Can you found at `/home/$USER/`
- - Great place for storing valuable file/scripts
-
-### `/n/scratch`
- - Up to 25TiB or 2.5 million files/directories per user
- - No back-ups
- - Purged from the system if not accessed for 45 days
- - Great for storing reproducible, intermediate files
-
-> **NOTE:** You may recall from previous trainings that the `scratch` space was called `scratch3` and not `scratch`. During December 2023/January 2024, HMS-RC migrate to a new scratch system with more storage and longer times between purges.
-
-Due to the limited storage space on `/home`, we are going to take advantage of scratch to hold some of our intermediate files for this workshop. This is a very common use of the scratch space as many analyses will have large intermediate files, which would otherwise fill up our home directories.
+ay recall from previous trainings that the `scratch` space was called `scratch3` and not `scratch`. During December 2023/January 2024, HMS-RC migrate to a new scratch system with more storage and longer times between purges.
 
 ### Creating a scratch space
+
+> Due to the limited storage space on `/home`, we are going to take advantage of scratch to hold some of our intermediate files for this workshop. This is a very common use of the scratch space as many analyses will have large intermediate files, which would otherwise fill up our home directories.
 
 While on the login node, we will create our space on `/n/scratch3`. In order to do so, we will need to run a script provided by the HMS Research Computing team:
 
