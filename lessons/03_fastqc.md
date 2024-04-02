@@ -9,7 +9,7 @@
 Before engaging in any high-throughput sequencing project is it best practice to **inspect your sequence reads to ensure that they are of high-quality**. 
 
 <p align="center">
-<img src="../img/Read_QC_Pipeline.png" width="800">
+<img src="../img/Read_QC_workflow.png" width="800">
 </p>
 
 Sources of error include problems with library construction (most likely), a bad run on the sequencer or even a malfunctioning sequencer (very rare). Therefore, it is critically important that you analyze your sequenced reads to ensure that they are high-quality before you devote time and resources to any downstream analyses.
