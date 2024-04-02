@@ -56,7 +56,7 @@ I. Please **study the contents** and **work through all the code** within the fo
              <hr />
         </details>
 
-  4. [Alignment File Processing ](../lessons/05_alignment_file_processing.md)
+  4. [Alignment File Processing ](../lessons/06_alignment_file_processing.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>Before we can call variants from our alignment files, we need to do some processing to clean up the alignment files. The two major concerns here are organizing (sorting) our alignment files for our analyses and removing duplicates.
