@@ -9,6 +9,10 @@
 
 Now that we have a filtered VCF file for our samples, we want to annotate those variants to figure out what impacts they could have on our samples. For example, we could be interested to know if a given mutation is in the 5' UTR or alters a stop codon for a given gene model. In order to do these types of analyses, we have to merge our variants with annotated transcript information and we will use `SnpEff` to do this. `SnpEff` is extremely fast and also is bundled with `SnpSift`, which we will use downstream to prioritize our variants. 
 
+<p align="center">
+<img src="../img/Annotate_variants_workflow.png" width="400">
+</p>
+
 ## SnpEff
 
 [SnpEff](http://pcingola.github.io/SnpEff/) uses transcriptome annotations to predict the functional impacts of mutations in a VCF file and will modify the INFO file of the VCF file to carry the predicted functional impacts.
