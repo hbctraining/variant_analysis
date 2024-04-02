@@ -24,7 +24,13 @@ The alignment files that come from `bwa` are raw alignment and need some process
 
 ## Pipeline for processing alignment file with Picard
 
-Before we start processing our alignment SAM file provided by `bwa`, let's briefly discuss the steps that we will be doing in this pipeline. Several goals need to be accomplished:
+Before we start processing our alignment SAM file provided by `bwa`, let's briefly discuss the steps that we will be doing in this pipeline. 
+
+<p align="center">
+<img src="../img/Process_alignment_workflow_zoom_in.png" width="600">
+</p>
+
+Several goals need to be accomplished:
 
 1. **Compress SAM file to BAM file.** The output of `bwa` is a SAM file and it is human readbale. However, it is quite large and we need to compress it to a binary version (BAM) which is much smaller.
 2. **Query-sort our alignment file.** Alignment file are initally ordered by the order of the reads in the FASTQ file, which is not particularly useful. `Picard` can more exhaustively look for duplicates if the file is sorted by read-name (query-sorted). We will discuss **query**-sorted and **coordinate**-sorted alignment files soon.
@@ -32,11 +38,8 @@ Before we start processing our alignment SAM file provided by `bwa`, let's brief
 4. **Coordinate-sort our alignment file.** Most downstream software packages require that alignment files be **coordinate**-sorted, so we will need to re-sort our alignment file by **coordinates** now that we have removed the duplicates.
 5. **Index the alignment file.** Like the index for a book, indicies for alignment files help direct downstream software packages to where to they can find specific reads. Many software packages require the alignment file that you are analyzing to have an index file, usually with the same name as your alignment file, with the additional `.bai` (BAM-index) extension or a `.bai` extension instead of `.bam`. Both `Picard` and `samtools` have a way of integrating this indexing as part of their sorting protocols and that is what we will be using. However, both packages have commands for indexing a BAM file independent of their sorting protocol ([BuildBamIndex](https://gatk.broadinstitute.org/hc/en-us/articles/360037057932-BuildBamIndex-Picard-) for `Picard` and [index](http://www.htslib.org/doc/samtools-index.html) for `samtools`).
 
-Below is a flow chart of the `Picard` pipeline that we will be using:
 
-<p align="center">
-<img src="../img/Process_alignment_workflow_zoom_in.png" width="600">
-</p>
+
 
 > #### Do I need to add read groups?
 > Some pipelines will have you add read groups while procressing your alignment files. It is usually not necessary because the alignmnet tool typically does for you. If you are needing to add read groups, we recommend doing it first (before all the processing steps outlined above ). You can use Picard `AddOrReplaceReadGroups`, which has the added benefit of allowing you to also sort your alignment file (our first step anyways) in the same step as adding the read group information. The dropdown below discusses how to add or replace read groups within `Picard`.
