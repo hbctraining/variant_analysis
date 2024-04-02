@@ -237,7 +237,7 @@ $ sbatch bwa_alignment_normal.sbatch
 
 **Excercise: Creating Tumor `sbatch` script**
 
-We are going to **replace all of the instances of "normal" with "tumor" using a `sed` command** just like we did in the previous `FastQC` exercise. Therefore, we can call `sed` and redirect the output to a file called `bwa_alignment_tumor.sbatch` using:
+We are going to **replace all of the instances of "normal" with "tumor" using a `sed` command**, and redirect the output to a file called `bwa_alignment_tumor.sbatch`:
 
 ```bash
 $ sed 's/normal/tumor/g' bwa_alignment_normal.sbatch >  bwa_alignment_tumor.sbatch
