@@ -5,6 +5,14 @@
 - Differentiate between germline and somatic variant calling
 - Call somatics variants from `bam` files using `MutTect2`
 
+## Variant Calling Background
+
+Now that we have inspected our reads and alignments for high-quality QC and also formatted our alignments for variant calling, we are now ready to begin using GATK to call our variants. **ADD MORE FLAVOR HERE**
+
+<p align="center">
+<img src="../img/Call_variants_workflow.png" width="600">
+</p>
+
 ## Germline versus Somatic Variant Calling
 
 Variant calling can be broadly broken up into two groups, germline and somatic. Germline variant calling refers to the process of calling variants that are ubiquitous across the organism (i.e. almost all cells carry these variants) and these are the types of variants that can be passed through the germline. Studies that evaluate population genetics are often concerned with germline variant calling. Somatic variant calling refers to the process of calling variants that differ between cells within a single organism and these variants are not passed through the germline. Somatic variant calling is often used when studying the progression of various cancers. These two types of variant calling methods have different assumptions regarding in the input data and thus are handled differently. 
