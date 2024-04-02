@@ -26,6 +26,10 @@ There are a few datasets that the ICGC-TCGA DREAM Mutation Calling Challenge mad
 
 2) 5 Synthetic Normal/Tumor datasets developed *in silico*
 
+<p align="center">
+<img src="../img/ICGC_TCGA_dataset.png" width="800">
+</p>
+
 As would be expected, due to ethical standards, using the real data requires approval from ICGC and would be difficult to use in a workshop like this where we need to able to distribute the datasets to participants. Fortunately, the synthetic datasets are freely availble for use and do not require ICGC approval, so this workshop will be using a single synthetic normal/tumor sample (synthetic dataset 3) which has multiple subclones, enabling detection of lower frequency variants. 
 
 In order to expedite our methodologies and minimize resource usage in the O2 computing cluster, **we will just be using the whole exome sequencing (WES) dataset rather than a whole genome sequencing (WGS) dataset**, but all of the methods that we will be using will be applicable to both WES and WGS datasets. 
