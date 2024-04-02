@@ -6,10 +6,15 @@
 - Describe and remove duplicate reads
 - Process a raw SAM file for input into a BAM for GATK
 
-## Alignment file processing with Picard Tools
+## Alignment file processing
 
-[Picard](https://broadinstitute.github.io/picard/) is a set of command line tools for manipulating high-throughput sequencing (HTS) data and formats such as SAM/BAM/CRAM and VCF. It is maintained by the Broad Institute, and is open-source under the MIT license and free for all uses. Picard is written in Java and does not have functionality for multi-threading.
+The alignment files that come from `bwa` are raw alignment and need some processing before they can be used for variant calling. While all of the data is present, we need to format it in a way that helps the variant calling algorithm process it. This process is very similar to flipping all of the pieces of a puzzle over to the correct side and group edge pieces or pieces by a similar color or pattern when starting a jigsaw puzzle. 
 
+<p align="center">
+<img src="../img/Process_alignment_workflow.png" width="800">
+</p>
+
+[Picard](https://broadinstitute.github.io/picard/) is a set of command line tools for processing high-throughput sequencing (HTS) data and formats such as SAM/BAM/CRAM and VCF. It is maintained by the Broad Institute, and is open-source under the MIT license and free for all uses. Picard is written in Java and does not have functionality for multi-threading.
 
 > ### Why not use `samtools`?
 > The processing of the alignment files (SAM/BAM files) can also be done with [`samtools`](https://github.com/samtools/samtools). While there are some advantages to using samtools (i.e. more user-friendly, multi-threading capability), there are slight formatting differences which can cause errors downstream. Since we will be using GATK later in this workshop (also from the Broad Institute), Picard seemed like a more suitable fit.
@@ -30,7 +35,7 @@ Before we start processing our alignment SAM file provided by `bwa`, let's brief
 Below is a flow chart of the `Picard` pipeline that we will be using:
 
 <p align="center">
-<img src="../img/Picard_pipeline.png" width="800">
+<img src="../img/Process_alignment_workflow_zoom_in.png" width="600">
 </p>
 
 > #### Do I need to add read groups?
