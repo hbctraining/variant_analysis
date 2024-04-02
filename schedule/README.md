@@ -16,7 +16,7 @@
 |:-----------:|:----------:|:--------:|
 | 9:30 - 10:10 | [Workshop Introduction](../lectures/Variant_calling_Intro_to_workshop_all.pdf) | Will |
 | 10:00 - 11:30 | [Introduction to Variant Calling]() | Sergey |
-| 11:30 - 11:50 | [Project Organization](../lessons/02_project_organization.md) | Will |
+| 11:30 - 11:50 | [Project Organization](../lessons/01_data_organization.md) | Will |
 | 11:50 - 12:00 | Overview of self-learning materials and homework submission | Will |
 
 ### Before the next class:
