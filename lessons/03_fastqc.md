@@ -282,7 +282,7 @@ FastQC has a really well documented [manual page](http://www.bioinformatics.babr
 
 ***
 
-[Next Lesson >>](05_sequence_alignment_theory.md)
+[Next Lesson >>](04_sequence_alignment_theory.md)
 
 [Back to Schedule](../schedule/README.md)
 
