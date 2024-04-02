@@ -22,7 +22,7 @@
 
 I. Please **study the contents** and **work through all the code** within the following lessons:
 
-  1. [File Formats](../lessons/03_file_formats.md)
+  1. [File Formats](../lessons/00_file_formats.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>Before we dive too deeply into calling variants, there are a few file formats that we will see during our analysis. Understanding how these files are formatted will allow you to inspect them to ensure that the software programs that we are employing are working correctly.
@@ -35,7 +35,7 @@ I. Please **study the contents** and **work through all the code** within the fo
              <hr />
         </details>
         
-  2. [Evaluating Read Quality with `FastQC`](../lessons/04_fastqc.md)
+  2. [Evaluating Read Quality with `FastQC`](../lessons/03_fastqc.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>The first step in many NGS studies is first to evaluate the read qualites that you received from the sequencing facility. A common tool used for handling this analysis is <code>FastQC</code>. 
@@ -46,7 +46,7 @@ I. Please **study the contents** and **work through all the code** within the fo
           <hr />
         </details>
 
-  3. [Sequence Read Alignment](../lessons/05_sequence_alignment_theory.md)
+  3. [Sequence Read Alignment](../lessons/04_sequence_alignment_theory.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>Once we have completed our QC on sequence reads we will be aligning the reads to a reference sequence. This alignment step places each read in genomic space and creates the bedrock for calling variants.
@@ -56,7 +56,7 @@ I. Please **study the contents** and **work through all the code** within the fo
              <hr />
         </details>
 
-  4. [Alignment File Processing ](../lessons/06_alignment_file_processing.md)
+  4. [Alignment File Processing ](../lessons/05_alignment_file_processing.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>Before we can call variants from our alignment files, we need to do some processing to clean up the alignment files. The two major concerns here are organizing (sorting) our alignment files for our analyses and removing duplicates.
