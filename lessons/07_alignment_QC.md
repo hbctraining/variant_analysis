@@ -5,6 +5,14 @@
 - Verify alignment rates using `Picard`
 - Merge `Picard` QC metrics with `FastQC` metrics using `MultiQC`
 
+## Importance of Alignment QC
+
+The next step of QC is where we need to evaluate the quality of the alignments. In order to check that we have enough sequencing depth and that reads are aligning without substantial contamination we can run some basic QC steps on our alignments. 
+
+<p align="center">
+<img src="../img/Alignment_QC.png" width="800">
+</p>
+
 ## Factors Impacting Alignment
 
 One of the most important metrics for your alignment file is the alignment rate. Alignment rates can vary based upon many factors, including:
