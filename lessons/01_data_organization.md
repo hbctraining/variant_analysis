@@ -14,11 +14,17 @@ Approximate time: 45 minutes
 - Differentiate between using `/home` and `/n/scratch3` drives
 
 ## Cancer genomics and the application of variant calling
-A blurb just briefly introduce cancer medicine and what variant calling provides for us. Some examples 
+A blurb just briefly introducing cancer medicine and what variant calling provides for us. .. 
+
+### Cancer genomic data Resources
+
+* https://portal.gdc.cancer.gov/
+* https://www.cancer.gov/ccg/research/genome-sequencing/tcga
+* https://www.cbioportal.org/
 
 ### The ICGC-TCGA DREAM Mutation Calling Challenge
 
-While it may not be obvious at this point, calling variants is not a simple task. As a result, International Cancer Genome Consortium (ICGC) and The Cancer Genome Atlas (TCGA) co-sponsered the [DREAM Mutation Calling Challenge](https://www.synapse.org/#!Synapse:syn312572/wiki/) in order to help develop methods to more accuarately predict cancer-associated mutations from whole genome resequencing data. The idea was to allow software designers to compete to see who could most accuarately identify cancer-associateed mutations in real normal/tumor datasets.
+While it may not be obvious at this point, calling variants is not a simple task. As a result, International Cancer Genome Consortium (ICGC) and The Cancer Genome Atlas (TCGA) co-sponsered the [DREAM Mutation Calling Challenge](https://www.synapse.org/#!Synapse:syn312572/wiki/) in order **to help develop methods to more accuarately predict cancer-associated mutations from whole genome resequencing data**. The idea was to allow software designers to compete to see who could most accuarately identify cancer-associated mutations in real normal/tumor datasets.
 
 There are a few datasets that the ICGC-TCGA DREAM Mutation Calling Challenge made availible:
 
@@ -30,14 +36,10 @@ There are a few datasets that the ICGC-TCGA DREAM Mutation Calling Challenge mad
 <img src="../img/ICGC_TCGA_dataset.png" width="800">
 </p>
 
-As would be expected, due to ethical standards, using the real data requires approval from ICGC and would be difficult to use in a workshop like this where we need to able to distribute the datasets to participants. Fortunately, the synthetic datasets are freely availble for use and do not require ICGC approval, so this workshop will be using a single synthetic normal/tumor sample (synthetic dataset 3) which has multiple subclones, enabling detection of lower frequency variants. 
+As would be expected, due to ethical standards, using the real data requires approval from ICGC and would be difficult to use in a workshop like this where we need to able to distribute the datasets to participants. Fortunately, **the synthetic datasets are freely availble for use and do not require ICGC approval**, so this workshop will be using a single synthetic normal/tumor sample (synthetic dataset 3) which has multiple subclones, enabling detection of lower frequency variants. 
 
 In order to expedite our methodologies and minimize resource usage in the O2 computing cluster, **we will just be using the whole exome sequencing (WES) dataset rather than a whole genome sequencing (WGS) dataset**, but all of the methods that we will be using will be applicable to both WES and WGS datasets. 
 
-## Dataset overview 
-
-Describe the samples, provide a schematic of how many samples we have in each group etc 
-Any metadata that we have about these samples would be good to list
 
 ## Logging into O2
 
@@ -65,11 +67,10 @@ Once logged in, you should see the O2 icon, some news, and the command prompt, e
 
 > Note 1: ssh stands for secure shell. All of the information (like your password) going between your computer and the O2 login computer is encrypted when using ssh.
 
-ay recall from previous trainings that the `scratch` space was called `scratch3` and not `scratch`. During December 2023/January 2024, HMS-RC migrate to a new scratch system with more storage and longer times between purges.
 
 ### Creating a scratch space
 
-> Due to the limited storage space on `/home`, we are going to take advantage of scratch to hold some of our intermediate files for this workshop. This is a very common use of the scratch space as many analyses will have large intermediate files, which would otherwise fill up our home directories.
+> Due to the limited storage space on `/home`, we are going to take advantage of `scratch` to hold some of our intermediate files for this workshop. This is a very common use of the scratch space as many analyses will have large intermediate files, which would otherwise fill up our home directories.
 
 While on the login node, we will create our space on `/n/scratch3`. In order to do so, we will need to run a script provided by the HMS Research Computing team:
 
@@ -175,34 +176,15 @@ This may take up to a minute as there is a lot of data to copy. Now that we have
 $ cd /n/scratch/users/${USER:0:1}/$USER
 ```
 
-A few quick notes about this previous `cd` command:
+> #### A quick explanation on the use of `${USER:0:1}`
+> The `users` on the scratch space are organized into subdirectories starting with the first letter of their username. `${USER:0:1}` will return the first letter of the username. test this using `echo` ${USER:0:1} at the command line.
+>
+> This is syntax for creating substrings in `bash`. The syntax is: 
+>  - `USER` is the variable that you would like to create a substring of
+>  - `START` is the 0-based indexing of the position to start the substring
+ > - `LENGTH` is the number of characters following the starting position to include in the substring
 
-1. You can see that we use the `$USER` variable twice in this `cd` command. `$USER` is an environment variable that is your username. You could check it by using `echo`:
-
-```
-$ echo $USER
-```
-
-2. Perhaps the more puzzling part of the command is the use of `${USER:0:1}` in the path. The `users` on the scratch space are organized into subdirectories starting with the first letter of their username. `${USER:0:1}` will return the first letter of the username. You can test it using `echo` as well:
-
-```
-$ echo ${USER:0:1}
-```
-
-By using `${USER:0:1}`, we can see how you can produce substrings in `bash`. The syntax is:
-
-```
-${VARIABLE:START:LENGTH}
-```
-
-Where, 
-  - `VARIABLE` is the variable that you would like to create a substring of
-  - `START` is the 0-based indexing of the position to start the substring
-  - `LENGTH` is the number of characters following the starting position to include in the substring
-
-Of course, it you knew the first letter of your username you could use that instead of `${USER:0:1}`. We choose to use `${USER:0:1}` here and throughout the rest of the lesson in order to hopefully make this code more easily reuseable for your own research.
-
-Now that we are located in our `scratch` space, let's go ahead and create a directory for our analysis:
+Now that we have navigated to our `scratch` space, let's go ahead and create a directory for our analysis:
 
 ```
 $ mkdir variant_calling
