@@ -1,13 +1,19 @@
-# Variant Priorization
+# Variant Prioritization
 
 ## Learning Objectives
 
 - Filter records in a VCF file various effects/impacts
 - Extract fields of interest from VCF file
 
+## Prioritizing Variants
+
 Now that we have annotated and filtered our variants, we are likely interested in subsetting our variants to find those of most interest to our study. Perhaps we are interested in finding variants that substantially disrupt a transcript, such as a variant causing a premature stop codon, or just find all of the missense mutations in the sample. `SnpSift` is part of the `SnpEff` suite and it is built explicitly for this purpose.
 
-Let's start by discussing some of the ways you can filter your data with SnpSift.
+<p align="center">
+<img src="../img/Prioritize_variants_workflow.png" width="400">
+</p>
+
+Let's start by discussing some of the ways you can filter your data with `SnpSift`.
 
 ## Filter
 
