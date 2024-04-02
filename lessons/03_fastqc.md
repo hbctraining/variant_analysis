@@ -135,26 +135,15 @@ This command is pretty strightforward, but we will explain each part:
 - `--outdir` or `-o`: This is the directory for the output files to be written to
 - `--threads` This specifies the number of threads that `FastQC` can use. *NOTE: FastQC cannot split up a single file to run on multiple threads, so providing it with more threads than files will be moot.*
 
+**We are going to run FastQC on all 4 of our raw data samples using 4 cores**. To do this we need to request 4 cores for our interactive session so that FastQC is able to process all 4 files in parallel.
 
-### Confirm that we have 4 cores available to us
+**If you are already on a compute node, please `exit` first.**
 
-We are going to run FastQC on all 4 of our raw data samples using 4 cores. To do this we need to request 4 cores for our interactive session so that FastQC is able to process all 4 files in parallel.
-
-Check whether you are in an interactive session or not by checking your command prompt for the word `compute` or `login`:
-1. Does your command prompt have the word `login`?
-	```bash
+```bash
 	$ srun --pty -p interactive -t 0-3:00 --mem 1G -c 4 /bin/bash
-	```
-3. Does your command prompt have the word `compute`?
-	```bash
-	$ exit
-	```
-	Now your command prompt should have the word `login` in it
-	```bash
-	$ srun --pty -p interactive -t 0-3:00 --mem 1G -c 4 /bin/bash
-	```
+```
 
-Check that you have an interactive session with 4 cores:
+Now, check that you have an interactive session with 4 cores:
 
 ```bash
 $ O2squeue
@@ -176,58 +165,11 @@ Once it has finished running, we can take a look at the output files generated:
 $ ls -l ~/variant_calling/results/fastqc/
 ```
 
-The FastQC output that we are most interested in is the `html` file for each sample. These reports should be inspected carefully as part of the analysis pipeline, and we are going to review one file to give you an idea of the QC metrics collected by FastQC. However, it is valuable to compare the outputs for all files together and we will show you how to do that using another tool called MultiQC after a few more steps in the analysis pipeline.
+The FastQC output that we are most interested in is the `html` file for each sample. These reports should be inspected carefully as part of the analysis pipeline.
 
-### Batch script for FastQC
+## Evaluate QC metrics from FastQC
 
-We ran the analysis in an interactive session above, but what if we had many more samples? It is common for variant analysis projects, especially exome-seq projects to have 100s of samples. 
-
-In that case, best practice is to set up one, or several, batch jobs on the cluster. *More information about batch jobs can be [found in this lesson](https://hbctraining.github.io/Intro-to-rnaseq-hpc-salmon-flipped/lessons/03_working_on_HPC.html).*
-
-Below is an example of the script you could set up.
-
-```bash
-#!/bin/bash
-## This sbatch script is for running FastQC to evaluate read qualities
-## This script will used 4 cores to perform the QC analysis for all files in the raw_data/ folder within the folder specified with $folder
-
-## Assign sbatch directives
-#SBATCH -p priority
-#SBATCH -t 0-00:30:00
-#SBATCH -c 4
-#SBATCH --mem 8G
-#SBATCH -o fastqc_normal_%j.out
-#SBATCH -e fastqc_normal_%j.err
-
-## set variable(s) and 
-folder=~/variant_calling/
-
-## create output folder using the -p parameter
-mkdir -p ${folder}/reports/fastqc/
-
-## Load module
-module load fastqc/0.11.9
-
-## Run FastQC
-fastqc -o ${folder}/results/fastqc/ -t 4 ${folder}/raw_data/*.gz 
-```
-
-Some notes for the above script:
-* If you wanted to run more than 4 samples, you should change the number of cores you are requesting `#SBATCH -c` AND the `-t` parameter for the `fastqc` command. 
-* Keep in mind the limit of [how many cores can be requested](https://harvardmed.atlassian.net/wiki/spaces/O2/pages/1586793632/Using+Slurm+Basic#Time-limits) for a given partition (`-p`).
-* FastQC does not need 4 threads for 4 files, but it is utilized to speed things up. So, if you have 50 files, you can still get the FastQC run done successfully with 20 cores.
-
-***
-
-**Exercise**
-
-1. What would you call the above script?
-2. Where would you save the above script?
-3. What command will you use to run the script?
-
-## Review QC metrics from FastQC
-
-The FastQC reports are not viewable on the O2 Cluster, so we will need connect our local computers to the O2 Computing Cluster with a file transfer program in order to help us download the FastQC reports from O2. We will be using [FileZilla](https://filezilla-project.org/) in order to do this, but other file transfer software exists and can also be down through the command-line [`scp`](https://linux.die.net/man/1/scp) command.
+The FastQC html reports are not viewable on the O2 Cluster, so we will need connect our local computers to the O2 Computing Cluster with a file transfer program in order to help us download the FastQC reports from O2. We will be using [FileZilla](https://filezilla-project.org/) in order to do this, but other file transfer software exists and can also be down through the command-line [`scp`](https://linux.die.net/man/1/scp) command.
 
 > ### **What is FileZilla?**
 >
@@ -273,12 +215,12 @@ Once you have found the html output for `**GET FILE NAME**` **copy it over** by 
 
 Now we can take a look at the metrics and assess the quality of our sequencing data!
 
+[NEEDS WORK] 
+* go through QC metrics and display a few of the important plots and what to expect here
+
 FastQC has a really well documented [manual page](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) with [detailed explanations](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/) about every plot in the report. 
 
-[NEEDS WORK] 
-* go through QC metrics
 
-[NEEDS WORK]
 
 ***
 
