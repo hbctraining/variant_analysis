@@ -7,6 +7,7 @@
 
 * Please **study the contents** within the following lessons:
   * [Best Practices in Research Data Management (RDM)](https://hbctraining.github.io/Intro-to-rnaseq-hpc-salmon-flipped/lessons/04a_data_organization.html)
+  * [Introduction to Variant Calling](../lessons/00_intro_to_variant_calling.md) 
 
 
 ## Day 1
@@ -14,7 +15,7 @@
 | Time |  Topic  | Instructor |
 |:-----------:|:----------:|:--------:|
 | 9:30 - 10:10 | [Workshop Introduction](../lectures/Variant_calling_Intro_to_workshop_all.pdf) | Will |
-| 10:00 - 11:30 | [Introduction to Variant Calling]() | Sergey |
+| 10:00 - 11:30 | [Introduction to Variant Calling]() | TBD |
 | 11:30 - 11:50 | [Project Organization](../lessons/01_data_organization.md) | Will |
 | 11:50 - 12:00 | Overview of self-learning materials and homework submission | Will |
 
@@ -22,7 +23,7 @@
 
 I. Please **study the contents** and **work through all the code** within the following lessons:
 
-  1. [Evaluating Read Quality with `FastQC`](../lessons/03_fastqc.md)
+  1. [Evaluating Read Quality with `FastQC`](../lessons/02_fastqc.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>The first step in many NGS studies is first to evaluate the read qualites that you received from the sequencing facility. A common tool used for handling this analysis is <code>FastQC</code>. 
@@ -33,7 +34,7 @@ I. Please **study the contents** and **work through all the code** within the fo
           <hr />
         </details>
 
-  2. [Sequence Read Alignment](../lessons/04_sequence_alignment_theory.md)
+  2. [Sequence Read Alignment](../lessons/03_sequence_alignment_theory.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>Once we have completed our QC on sequence reads we will be aligning the reads to a reference sequence. This alignment step places each read in genomic space and creates the bedrock for calling variants.
@@ -43,7 +44,7 @@ I. Please **study the contents** and **work through all the code** within the fo
              <hr />
         </details>
 
-  3. [Alignment File Processing ](../lessons/06_alignment_file_processing.md)
+  3. [Alignment File Processing ](../lessons/04_alignment_file_processing.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>Before we can call variants from our alignment files, we need to do some processing to clean up the alignment files. The two major concerns here are organizing (sorting) our alignment files for our analyses and removing duplicates.
@@ -75,16 +76,16 @@ II. **Complete the exercises**:
 | Time |  Topic  | Instructor |
 |:-----------:|:----------:|:--------:|
 | 9:30 - 10:00 | Self-learning lessons review | All |
-| 10:00 - 10:30 | [Alignment File Quality Control](../lessons/07_alignment_QC.md) | Will |
-| 10:30 - 11:15 | [Evaluating Quality Control Metrics](../lessons/08_evaluate_QC.md) | Will |
-| 11:15 - 12:00 | [Variant Calling](../lessons/09_variant_calling.md) | Will |
+| 10:00 - 10:30 | [Alignment File Quality Control](../lessons/05_alignment_QC.md) | Will |
+| 10:30 - 11:15 | [Evaluating Quality Control Metrics](../lessons/06_evaluate_QC.md) | Will |
+| 11:15 - 12:00 | [Variant Calling](../lessons/07_variant_calling.md) | Will |
 
 
 ### Before the next class:
 
 I. Please **study the contents** and **work through all the code** within the following lessons:
 
-1. [Variant Filtering](../lessons/10_variant_filtering.md) 
+1. [Variant Filtering](../lessons/08_variant_filtering.md) 
 
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
@@ -95,7 +96,7 @@ I. Please **study the contents** and **work through all the code** within the fo
 </li></ul>
         </details>
 
-2. [Variant Annotation with SnpEff](../lessons/11_variant_annotation.md) 
+2. [Variant Annotation with SnpEff](../lessons/09_variant_annotation.md) 
 
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
@@ -122,9 +123,12 @@ II. **Complete the exercises**:
 | Time |  Topic  | Instructor |
 |:-----------:|:----------:|:--------:|
 | 9:30 - 10:00 | Self-learning lessons review | All |
-| 10:00 - 11:00 | [Variant Prioritization with SnpSift](../lessons/13_variant_prioritization.md) | Will |
-| 11:00 - 11:30 | [Visualization in IGV](../lessons/14_IGV.md) | Will |
+| 10:00 - 11:00 | [Variant Prioritization with SnpSift](../lessons/10_variant_prioritization.md) | Will |
+| 11:00 - 11:30 | [Visualization in IGV](../lessons/11_IGV.md) | Will |
 | 11:30 - 12:00 | Q & A | All |
+
+### Questions?
+* ***If you get stuck due to an error*** while runnning code in the lesson, [email us](mailto:hbctraining@hsph.harvard.edu) 
 
 ***
 
@@ -137,14 +141,14 @@ II. **Complete the exercises**:
 | 11:30 - 11:45 | Oncoprint Integration | Will |
 | 11:45 - 12:00 | [Wrap up](../lectures/Variant_calling_wrapup_all.pdf) | Will |
 
-## Answer key
-* [Exercises Answer Key](../answer_key/Answer_key.md)
-
 ## File Format Reference
-* [File Formats](../lessons/00_file_formats.md)
+* [File Formats](../lessons/file_formats_reference.md)
 
 ## Automation Reference
-* [Automation of Variant Calling Pipeline](../lessons/12_automation_of_variant_calling.md)
+* [Automation of Variant Calling Pipeline](../lessons/automation_of_variant_calling.md)
+
+## Answer key
+* [Exercises Answer Key](../answer_key/Answer_key.md)
 
 ***
 
