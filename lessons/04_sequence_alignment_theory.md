@@ -62,6 +62,111 @@ This process may take up to 30+ minutes to run depending on the reference sequen
 <hr />
 </details>
 
+### SAM (Sequence Alignment Map)
+
+Alignment information is stored within SAM files. There are two main parts of components to a SAM file are:
+
+- Header section
+- Alignment section
+
+#### Header section
+
+The header section of a SAM file has several parts.
+
+- **Metadata `@HD`** - This is the first line of the SAM file and begins with `@HD`. It is optional, but it will usually have information about format version of the SAM file and the way the alignments are organized (the sort order). We will discuss sort order more when we discuss [processing alignment files](06_alignment_file_processing.md#sorting-and-removing-duplicates).
+
+- **Sequence `@SQ`** - This section of the header enumerates the sequence names (`SN`) included in the reference used for the alignment and their lengths (`LN`). One nice use of these fields, is if you ever have to evaluate the reference sequence used in an alignment, you can see which sequences were included in the alignment. This is particularly relevant if you make a custom reference.
+
+- **Read Group `@RG`** - This section of the header provides the read group metadata. This can include information on the sample, platform used for sequencing, platform unit, etc. We will discuss read groups more below and briefly when during [alignment processing](06_alignment_file_processing.md#pipeline-for-processing-alignment-file-with-picard) in case you need to add or alter a read group.
+
+- **Program `@PG`** - This section will give you a history of the program names (`PN`) used to make the SAM file, the commands used (`CL`) and the version number (`VN`) of the programs used. This can be helpful when trying to recreate an alignment file if the alignment command isn't availible to you.
+
+- **Comments `@CO`** - This section is rarely used and just contains comments regarding the alignment file. We will not be adding comments to our alignments, but once the SAM file has been converted to its binary equivalent (BAM), you can use `Picard` (a tool developed by the Broad Institute that we will use extensively in this workshop) to add comments using the [`AddCommentsToBam`](https://broadinstitute.github.io/picard/command-line-overview.html#AddCommentsToBam) package.
+
+#### Alignment Section
+
+The alignment section of a SAM file stores alignment data for reads that have attempted to be aligned (sometimes also referred to as mapped) to a reference sequence, such as a reference genome or transcriptome. They also store information on reads that were unable to be aligned to the reference sequence. Each line in this section corresponds to a single read. Each line has 11 mandatory fields (columns) with additional optional fields. The fields are:
+
+|  Field Name  | Description |
+|--------------|-------------|
+| QNAME | Read Identifier | 
+| FLAG | Bit-wise flag (see below for more information) |
+| RNAME | Reference sequence name, such as the chromosome or contig of an alignment | 
+| POS | 1-based position of the leftmost alignment |
+| MAPQ | Mapping quality |
+| CIGAR | CIGAR String (see below for more information) | 
+| RNEXT | Reference sequence name for the mate pair or next read |
+| PNEXT | Position for the mate pair or next read | 
+| TLEN | The observed distance of the alignment |
+| SEQ | The nucleotide sequence. If '\*', then the sequence is not stored. If '=', the seqeunce matches the reference. |
+| QUAL | The base quality in Phred +33 standard. If '\*', then the base quality is not stored.
+
+Information on the additional optional fields can be found [here](https://samtools.github.io/hts-specs/SAMv1.pdf).
+
+##### FLAG
+
+The bit-wise flags that SAM files use are very helpful for giving the user a rough understanding of the read. Details such as whether the read is paired, has an alignment to the provided reference sequence or is a PCR duplicate can all be encoded into the FLAG. 
+
+The simplest way to consider a unique flag is that it is the sum of many bit-wise toggles. The table below tries to illustrate this concept.
+
+|  Value   | Interpretation |  Value  | Interpretation |
+|----------|----------------|---------|----------------|
+| 0 | Unpaired read | 1 | Paired read |
+| 0 | Reads were not properly paired | 2 | Paired-end reads both mapped and were near each other |
+| 0 | Read is unmapped | 4 | Read is mapped |
+| 0 | Mate-pair read is unmapped | 8 | Mate-pair read is mapped  |
+| 0 | Read is on the forward strand | 16 | Read is on the reverse strand |
+| 0 | Mate-pair read is on the forward strand | 32 | Mate-pair read is on the reverse strand |
+| 0 | Read is not the first read in a pair | 64 | Read is the first read in a pair |
+| 0 | Read is not the second read in a pair | 128 | Read is the second read in a pair |
+| 0 | This is the primary alignment | 256 | This is not the primary alignment |
+| 0 | Read passing QC checks | 512 | Read not passing QC checks |
+| 0 | Read is not a PCR or optical duplicate | 1028 | Read is a PCR or optical duplicate |
+| 0 | This is not a supplementary alignment | 2056 | This is a supplementary alignment |
+
+For each alignment, an aligner goes through this table and assigns the alignment a score for each row. The scores are summed up and that produces the flag. This [tool on the Broad's Website](https://broadinstitute.github.io/picard/explain-flags.html) can be very helpful for decoding the SAM FLAGs that you can encounter.
+
+---
+
+**Exercise**
+
+Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on the Broad's Website](https://broadinstitute.github.io/picard/explain-flags.html). 
+
+**1.** An alignment has a FLAG of 115. What do we know about this read?
+
+**2.** What would be the FLAG for a read alignment for the first read in a pair-end read, where the first read was unmapped while the second read was mapped to the reverse strand?
+
+---
+
+##### CIGAR
+
+The CIGAR string is an alphanumeric string to help give the user a better understanding of the alignment. There are several categories used in the CIGAR string, but the four most common ones that we are likely to encounter are:
+
+| Abbreviation | Explanation |
+|----------|----------------|
+| M | Match |
+| X | Mismatch |
+| I | Insertion |
+| D | Deletion |
+
+A CIGAR string is expressed from the left of the read and going to the right. It will describe the bases observed or not observed in the read. Each base is categorized and then the categorizations are notated by a value representing the number of consecutive bases with a given categorization followed by the abbreviation for that categorization. This is continued until the end of the read. An example alignment and resulting CIGAR string can be found below: 
+
+<p align="center">
+<img src="../img/CIGAR_string.png" width="600">
+</p>
+
+---
+
+**Exercise**
+
+**3.** Below is an alignment, what would be the CIGAR string for this alignment?
+
+<p align="center">
+<img src="../img/CIGAR_exercise.png" width="600">
+</p>
+
+---
+
 ### Aligning reads with `bwa-mem`
 
 <p align="center">
