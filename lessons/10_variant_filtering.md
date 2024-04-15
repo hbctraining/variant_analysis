@@ -117,7 +117,29 @@ Low-complexity regions of the genome represent regions that have simple sequence
 
 > "low-complexity regions (LCRs), 2% of the human genome, harbor 80–90% of heterozygous INDEL calls and up to 60% of heterozygous SNPs" with false positive rates ranging from "10% to as high as 40%".
 
-As a result of the high error rates in these low-complexity regions, it is recommended to remove of these regions until better methods for variant calling in low-complexity regions can become established.
+As a result of the high error rates in these low-complexity regions, it is recommended to remove of these regions until better methods for variant calling in low-complexity regions can become established. The file that holds out LCR regions is in BED format, so we need to breifly discuss this file format.
+
+## BED Files
+
+**B**rowser **E**xtensible **D**ata (BED) is a tab-delimited file format that contains information on genomic features. A BED file's first three columns (Chromosome, Starting Position and Ending Position) are required fields. Some BED files have additional columns but these are not required.
+
+<p align="center">
+<img src="../img/bed.png" width="600">
+</p>
+
+It is important to note that BED files positioning have ***zero-based indexing***. 
+
+### Exercise
+
+**7.** Create a BED file within `~/variant_calling/` called `my_file.bed` and have it contain these three ranges:
+
+Chromosome 1 from 84573 to 94573
+
+Chromosome 2 from 465352 to 466352
+
+Chromosome 19 from 111237 to 111238
+
+***
 
 ### Using SnpSift to remove LCRs
 
