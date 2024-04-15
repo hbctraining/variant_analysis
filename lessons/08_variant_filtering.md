@@ -351,7 +351,7 @@ The first five lines have been added to our VCF file by `GATK`. They give inform
 
 Now, we have successfuly filtered our raw VCF file to only include high-qulaity variant calls, we are ready to begin annotating our variants.
 
-[Next lesson >>](11_variant_annotation.md)
+[Next lesson >>](09_variant_annotation.md)
 
 [Back to Schedule](../schedule/README.md)
 
