@@ -421,7 +421,7 @@ You can see that the only difference between these files is that we have appende
 Now that we have successfully annotated our variants, let's talk about automating this whole process in the next lesson!
 
 
-[Next lesson >>](12_automation_of_variant_calling.md)
+[Next lesson >>](10_variant_prioritization.md)
 
 [Back to Schedule](../schedule/README.md)
 
