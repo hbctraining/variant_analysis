@@ -14,7 +14,14 @@ Approximate time: 45 minutes
 - Differentiate between using `/home` and `/n/scratch3` drives
 
 ## Cancer genomics and the application of variant calling
-A blurb just briefly introducing cancer medicine and what variant calling provides for us. .. 
+
+Cancer is the [second leading cause of death globally](https://www.who.int/health-topics/cancer#tab=tab_1), so understandably there have been strong efforts put forth to study and treat cancer. Cancer is unregulated cell growth stemming from alterations in an individual's DNA sequence. Thus, understanding the variants observed in a given cancer can provide insight in the potential treatment options a person may undergo. However, as we discussed in the pre-reading introduction, calling somatic variants (those found in cancers) are much more difficult than germline variants (those found in the natural variation between individuals).
+
+<p align="center">
+<img src="../img/Germline_Somatic_Variants.png" width="600">
+</p>
+
+In this workshop, we plan to use a synthetic dataset to explore variant calling for cancer applications. 
 
 ### Cancer genomic data Resources
 
