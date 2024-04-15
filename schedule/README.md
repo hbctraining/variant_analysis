@@ -22,20 +22,7 @@
 
 I. Please **study the contents** and **work through all the code** within the following lessons:
 
-  1. [File Formats](../lessons/00_file_formats.md)
-      <details>
-       <summary><i>Click here for a preview of this lesson</i></summary>
-         <br>Before we dive too deeply into calling variants, there are a few file formats that we will see during our analysis. Understanding how these files are formatted will allow you to inspect them to ensure that the software programs that we are employing are working correctly.
-         <br><br>This lesson will:<br>
-             <ul><li>Describe the difference between 0-based and 1-based indexing</li>
-             <li>Decode a FLAG in a SAM file in order to reveal information about the nature of the read's alignment</li>
-             <li>Create a CIGAR string for an alignment</li>
-             <li>Parse out variant information from a VCF file</li>
-             <li>Create a BED file</li></ul>
-             <hr />
-        </details>
-        
-  2. [Evaluating Read Quality with `FastQC`](../lessons/03_fastqc.md)
+  1. [Evaluating Read Quality with `FastQC`](../lessons/03_fastqc.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>The first step in many NGS studies is first to evaluate the read qualites that you received from the sequencing facility. A common tool used for handling this analysis is <code>FastQC</code>. 
@@ -46,7 +33,7 @@ I. Please **study the contents** and **work through all the code** within the fo
           <hr />
         </details>
 
-  3. [Sequence Read Alignment](../lessons/04_sequence_alignment_theory.md)
+  2. [Sequence Read Alignment](../lessons/04_sequence_alignment_theory.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>Once we have completed our QC on sequence reads we will be aligning the reads to a reference sequence. This alignment step places each read in genomic space and creates the bedrock for calling variants.
@@ -56,7 +43,7 @@ I. Please **study the contents** and **work through all the code** within the fo
              <hr />
         </details>
 
-  4. [Alignment File Processing ](../lessons/06_alignment_file_processing.md)
+  3. [Alignment File Processing ](../lessons/06_alignment_file_processing.md)
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
          <br>Before we can call variants from our alignment files, we need to do some processing to clean up the alignment files. The two major concerns here are organizing (sorting) our alignment files for our analyses and removing duplicates.
@@ -66,27 +53,6 @@ I. Please **study the contents** and **work through all the code** within the fo
              <li>Process a raw SAM file for input into a BAM for <code>GATK</code></li></ul>
              <hr />
         </details>
-
-  5. [Alignment File Quality Control](../lessons/07_alignment_QC.md)
-      <details>
-       <summary><i>Click here for a preview of this lesson</i></summary>
-         <br>Once we have our alignment files processed, we want to evaluate them to ensure that the data is of high-quality before proceeding into variant calling. We also need to merge our read quality QC from <code>FastQC</code> into a report with these alignment QC metrics using <code>MultiQC</code>.
-         <br><br>This lesson will:<br>
-             <ul><li>Estimate alignment rates using <code>Picard</code></li>
-             <li>Merge <code>Picard</code> QC metrics with <code>FastQC</code> metrics using <code>MultiQC</code></li></ul>
-             <hr />
-        </details>
-        
-  6. [Evaluating Quality Control Metrics](../lessons/08_evaluate_QC.md)
-      <details>
-       <summary><i>Click here for a preview of this lesson</i></summary>
-         <br>Many high-performance computing clusters are not designed to render the HTML reports produced by <code>MultiQC</code>. Thus, we will use <code>FileZilla</code> to dowload our <code>MultiQC</code> HTML report and interpret the results within it.
-         <br><br>This lesson will:<br>
-             <ul><li>Evaluate alignment rates</li>
-             <li>Intepret read QC metrics within <code>MultiQC</code> HTML report</li></ul>
-             <hr />
-        </details>
-        
 
 
 > **NOTE:** To run through the code above, you will need to be **logged into O2** and **working on a compute node** (i.e. your command prompt should have the word `compute` in it).
@@ -101,7 +67,6 @@ II. **Complete the exercises**:
 
 ### Questions?
 * ***If you get stuck due to an error*** while runnning code in the lesson, [email us](mailto:hbctraining@hsph.harvard.edu) 
-* Post any **conceptual questions** that you would like to have **reviewed in class** [here](https://PollEv.com/hbctraining945).
 
 ***
 
@@ -109,24 +74,35 @@ II. **Complete the exercises**:
 
 | Time |  Topic  | Instructor |
 |:-----------:|:----------:|:--------:|
-| 9:30 - 10:15 | Self-learning lessons review | All |
-| 10:15 - 11:00 | [Variant Calling](../lessons/09_variant_calling.md) | Will |
-| 11:00 - 11:30 | [Variant Filtering](../lessons/10_variant_filtering.md) | Will |
-| 11:30 - 12:00 | [Variant Annotation with SnpEff](../lessons/11_variant_annotation.md) | Will |
+| 9:30 - 10:00 | Self-learning lessons review | All |
+| 10:00 - 10:30 | [Alignment File Quality Control](../lessons/07_alignment_QC.md) | Will |
+| 10:30 - 11:15 | [Evaluating Quality Control Metrics](../lessons/08_evaluate_QC.md) | Will |
+| 11:15 - 12:00 | [Variant Calling](../lessons/09_variant_calling.md) | Will |
 
 
 ### Before the next class:
 
 I. Please **study the contents** and **work through all the code** within the following lessons:
 
-1. [Automation of Variant Calling Pipeline](../lessons/12_automation_of_variant_calling.md)
+1. [Variant Filtering](../lessons/10_variant_filtering.md) 
 
       <details>
        <summary><i>Click here for a preview of this lesson</i></summary>
-         <br>Now that we have executed much of the standard workflow for variant calling, we might want to automate our workflow to make future analyses more streamlined and reproducible with a consistent workflow. We will need to adapt our current scripts to allow for a more streamlined workflow and also discuss some intricacies <code>bash</code> and <code>SLURM</code> that will help us create this automated workflow.
+         <br>Now that we have called our raw variants, we will need to filter our data for only high-quality variant calls. Low-quality variant calls can occur for a variety of reasons that we will explore and we will implement steps to exclude them.
          <br><br>This lesson will:<br>
-          <ul><li>Construct a flexible pipeline for automating variant calling</li>
-          <li>Integrate the <code>--dependency</code> option for <code>sbatch</code> into workflows</li></ul>
+          <ul><li>Filter raw variant calls using <code>FilterMutectCells</code> to reduce errors</li>
+          <li>Remove Low-Complexity Regions from the called variants using <code>SnpSift</code> to further reduce errors
+</li></ul>
+        </details>
+
+2. [Variant Annotation with SnpEff](../lessons/11_variant_annotation.md) 
+
+      <details>
+       <summary><i>Click here for a preview of this lesson</i></summary>
+         <br>With our high-quality variant calls, we would like to know more information about these variants. For example, we might like to know which genes our they are in or how they alter the protein-coding sequence for the genes they are in. In order to do this, we will need to provide annotations for our genes.
+         <br><br>This lesson will:<br>
+          <ul><li>Annotate a VCF file for functional impacts with `SnpEff`</li>
+          <li>Differentiate between an unannotated and annotated VCF file</li></ul>
           <hr />
         </details>
 
@@ -138,7 +114,6 @@ II. **Complete the exercises**:
    
 ### Questions?
 * ***If you get stuck due to an error*** while runnning code in the lesson, [email us](mailto:hbctraining@hsph.harvard.edu) 
-* Post any **conceptual questions** that you would like to have **reviewed in class** [here](https://PollEv.com/hbctraining945).
 
 ***
 
@@ -147,15 +122,29 @@ II. **Complete the exercises**:
 | Time |  Topic  | Instructor |
 |:-----------:|:----------:|:--------:|
 | 9:30 - 10:00 | Self-learning lessons review | All |
-| 10:00 - 10:45 | [Variant Prioritization with SnpSift](../lessons/13_variant_prioritization.md) | Will |
-| 10:45 - 11:25 | [Visualization in IGV](../lessons/14_IGV.md) | Will |
-| 11:25 - 11:45 | Q & A | Will |
-| 11:45 - 12:00 | [Wrap up](../lectures/Variant_calling_wrapup_all.pdf) | Will |
+| 10:00 - 11:00 | [Variant Prioritization with SnpSift](../lessons/13_variant_prioritization.md) | Will |
+| 11:00 - 11:30 | [Visualization in IGV](../lessons/14_IGV.md) | Will |
+| 11:30 - 12:00 | Q & A | All |
 
 ***
 
+## Day 4
+
+| Time |  Topic  | Instructor |
+|:-----------:|:----------:|:--------:|
+| 9:30 - 10:30 | Introduction to cBioPortal | Dr. Tali Mazor |
+| 10:30 - 11:30 | cBioPortal Practical | Dr. Tali Mazor |
+| 11:30 - 11:45 | Oncoprint Integration | Will |
+| 11:45 - 12:00 | [Wrap up](../lectures/Variant_calling_wrapup_all.pdf) | Will |
+
 ## Answer key
 * [Exercises Answer Key](../answer_key/Answer_key.md)
+
+## File Format Reference
+* [File Formats](../lessons/00_file_formats.md)
+
+## Automation Reference
+* [Automation of Variant Calling Pipeline](../lessons/12_automation_of_variant_calling.md)
 
 ***
 
