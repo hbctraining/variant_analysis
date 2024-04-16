@@ -140,7 +140,7 @@ This command is pretty strightforward, but we will explain each part:
 **If you are already on a compute node, please `exit` first.**
 
 ```bash
-	$ srun --pty -p interactive -t 0-3:00 --mem 1G -c 4 /bin/bash
+$ srun --pty -p interactive -t 0-3:00 --mem 1G -c 4 /bin/bash
 ```
 
 Now, check that you have an interactive session with 4 cores:
