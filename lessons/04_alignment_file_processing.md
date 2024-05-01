@@ -174,7 +174,7 @@ The components of this command are:
 Now this script is all set to run! Go ahead and save and quit.
 
 <details>
-  <summary><b>Click here to see what our final `sbatch` script for <code>Picard</code> should look like</b></summary> 
+  <summary><b>Click here to see what our final `sbatch` script for the normal sample should look like</b></summary> 
   <pre>
 
 ```
@@ -544,11 +544,11 @@ Similar to the `bwa` script, we will now need use `sed` to create a `sbatch` scr
 sed 's/normal/tumor/g' picard_alignment_processing_normal.sbatch > picard_alignment_processing_tumor.sbatch  
 ```
 
-As a result your tumor `Picard` alignment processing script should look almost identical but `normal` has been replaced by `tumor`.
+_As a result your tumor `Picard` alignment processing script should look almost identical but `normal` has been replaced by `tumor`._
 
 
 <details>
-  <summary><b>Click here to see what our final `sbatch` scriptshould look like for teh tumor sample</b></summary> 
+  <summary><b>Click here to see what our final `sbatch` script for the tumor sample should look like </b></summary> 
   <pre>
  
 ```
@@ -612,9 +612,9 @@ First, we need to check the status of our `bwa` scripts and we can do this with 
 squeue -u $USER
 ```
   
-**If you have `bwa` jobs still running,** then wait for them to complete (less than 2 hours) before continuing. There are ways to queue jobs together in SLURM using the `--dependency` option in `sbatch`. This is outside the scope of this workshop, but we cover this in the [automation lesson], if you are interested in learning more. For now, just hang tight until the alignmengt is complete.
+* **If you have `bwa` jobs still running,** then wait for them to complete (less than 2 hours) before continuing. There are ways to queue jobs together in SLURM using the `--dependency` option in `sbatch`. This is outside the scope of this workshop, but we cover this in the [automation lesson](), if you are interested in learning more. For now, just hang tight until the alignmengt is complete.
   
-**If the only job running is your interactive job,** then it should be time to start your `Picard` processing scripts. You can go ahead and submit your `sbatch` scripts for `Picard` processing with:
+* **If the only job running is your interactive job,** then it should be time to start your `Picard` processing scripts. You can go ahead and submit your `sbatch` scripts for `Picard` processing with:
   
 ```
 sbatch picard_alignment_processing_normal.sbatch
