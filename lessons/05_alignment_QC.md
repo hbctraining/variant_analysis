@@ -16,7 +16,9 @@ The next step of QC is where we need to evaluate the quality of the alignments. 
 
 ## Collecting Alignment Statistics
 
-We are going to use `Picard` once again in order to collect our alignment statistics. `Picard` has many packages for collecting different types of data, but the one we will be using is [`CollectAlignmentSummaryMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360040507751-CollectAlignmentSummaryMetrics-Picard). This tool takes a **SAM/BAM file input** and **produces metrics** (in a tabe delimited `.txt` file) detailing the quality of the read alignments. _Note that these quality filters are specific to Illumina data._  Some exampled of metrics reported include (but, is not limited to):
+We are going to use `Picard` once again in order to collect our alignment statistics. `Picard` has many packages for collecting different types of data, but the one we will be using is [`CollectAlignmentSummaryMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360040507751-CollectAlignmentSummaryMetrics-Picard). This tool takes a **SAM/BAM file input** and **produces metrics** (in a tab delimited `.txt` file) detailing the quality of the read alignments. _Note that these quality filters are specific to Illumina data._  
+
+Some examples of metrics reported include (but, are not limited to):
 
 * Total number of reads 
 * Total number of PF (pass-filter) reads (reads that pass an internal qualty fitering on the Illumina sequencer)
