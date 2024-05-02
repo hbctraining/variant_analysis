@@ -5,16 +5,13 @@
 - Verify alignment rates using `Picard`
 - Merge `Picard` QC metrics with `FastQC` metrics using `MultiQC`
 
-## Importance of Alignment QC
+## Collecting Alignment Statistics
 
-The next step of QC is where we need to evaluate the quality of the alignments. We will start by running the code required compute metrics, then we will discuss the metrics and evaluate our values along with general expecations.
+The next step of QC is where we need to evaluate the quality of the alignments. We will start by running the code required compute metrics, then we will discuss the metrics and evaluate our results against the general expecations.
 
 <p align="center">
 <img src="../img/Alignment_QC.png" width="800">
 </p>
-
-
-## Collecting Alignment Statistics
 
 We are going to use `Picard` once again in order to collect our alignment statistics. `Picard` has many packages for collecting different types of data, but the one we will be using is [`CollectAlignmentSummaryMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360040507751-CollectAlignmentSummaryMetrics-Picard). This tool takes a **SAM/BAM file input** and **produces metrics** (in a tab delimited `.txt` file) detailing the quality of the read alignments. _Note that these quality filters are specific to Illumina data._  
 
