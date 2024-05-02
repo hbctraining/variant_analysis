@@ -140,7 +140,7 @@ sbatch picard_metrics_tumor.sbatch
 
 ## Collecting Coverage Metrics
 
-Coverage is the average level of alignment for any random locus in the genome.  `Picard` also has a package called [`CollectWgsMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360037269351-CollectWgsMetrics-Picard) which is also very nice for collecting data about coverage for alignments. However, **since our data set is whole exome sequencing rather than whole genome sequencing** and thus only compromises about 1-2% of the human genome, average **coverage across the whole genome is not a very useful metric**. However, if one did have whole genome data, then running `CollectWgsMetrics` would be useful and even could be incorporated easily into the downstream <code>MultiQC</code> HTML report. In the dropdown box below we provide the code that you could use to collect this information.
+Coverage is the average level of alignment for any random locus in the genome.  `Picard` also has a package called [`CollectWgsMetrics`](https://gatk.broadinstitute.org/hc/en-us/articles/360037269351-CollectWgsMetrics-Picard) which is also very nice for collecting data about coverage for alignments. However, **since our data set is whole exome sequencing rather than whole genome sequencing** and thus only compromises about 1-2% of the human genome, average **coverage across the whole genome is not a very useful metric**. However, if one did have whole genome data, then running `CollectWgsMetrics` would be useful. As such, in the dropdown box below we provide the code that you could use to collect this information.
 
 <p align="center">
 <img src="../img/coverge.png" width="800">
