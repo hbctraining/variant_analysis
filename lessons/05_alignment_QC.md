@@ -169,7 +169,9 @@ _Image source: [Coverage analysis from the command line](https://medium.com/ngs-
 
 ## Factors Impacting Alignment
 
-While we listed various metrics above, one of the **most important metrics for your alignment file is the alignment rate**. Alignment rates can vary based upon many factors, including:
+While we listed various metrics above, one of the **most important metrics for your alignment file is the alignment rate**. When aligning high-quality reads to a high quality reference genome, **one should expect to see alignment rates at 90% or better**. If alignment rates dipped below 80-85%, then there could be reason for further inspection. 
+
+Alignment rates can vary based upon many factors, including:
 
 - **Quality of reference assembly** - A high-quality assembly like GRCh38.p7 will provide a an excellent reference genome for alignment. However, if you were studying a organism with a poorly assembled genome, parts of the reference genome could be missing from the assembly. Therefore, high-quality reads might not align because they there is missing reference sequence to align to that corresponds to their sequence.
 - **Quality of libraries** - If the library generation was poor and there wasn't enough input DNA, then your sequencing could be filled with low-quality reads
@@ -177,8 +179,6 @@ While we listed various metrics above, one of the **most important metrics for y
 - **Contamination** - If your samples are contaminated, then it can also skew your alignment. For example, if your samples were heavily contaminated with some bacteria, then much of what you will sequence will be bacteria DNA and not your sample DNA. As a result, most of the sequence reads will not align to your target sequence. If you suspect contamination might be the source of a poor alignment, you could consider running [Kraken](https://ccb.jhu.edu/software/kraken/) to evaluate the levels of contamination in your samples.
 - **Evolutionary distance between the sampled organism and reference genome** If a reference genome doesn't exist for your species of interest, you are able to align reads to a closely-related organism. However, it does come at the cost of lowering the alignment rate. 
 - **Aligner and alignment parameters** Different aligners work differently and are specialized for different types of data. Additionally, many aligners have a variety of parameters that are able to be adjusted. As a result, different aligners or different parameters for the same aligner will give different alignment rates, but they usually should be within the same approximate alignment rate. Generally speaking, the default parameters for most alignment tools are usually fine and they shouldn't need to be manually adjusted/optimized unless there is a specific reason to do so.
-
-When aligning high-quality reads to a high quality reference genome, **one should expect to see alignment rates at 90% or better**. If alignment rates dipped below 80-85%, then there could be reason for further inspection. 
 
 
 ## Aggregating QC metrics using MultiQC
