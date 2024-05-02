@@ -183,6 +183,21 @@ Alignment rates can vary based upon many factors, including:
 
 ## Aggregating QC metrics using MultiQC
 
+Let's take a quick look at the output from `CollectAlignmentSummaryMetrics` for the normal sample.
+
+**ADD SCREENSHOT OF TAB-DELIM FILE HERE**
+
+
+
+TALK A LITTE ABOUT MULTIQC
+
+
+<p align="center">
+<img src="../img/multiqc_screenshot.png" width="800">
+</p>
+
+
+
 One nice feature of `MultiQC` is that it accepts many different file formats. It figures out which format was submitted and tailors the report to that type of analysis. Collating our `MultiQC` results would be relatively quick to just run from the command-line, but it's best practice to write our steps to scripts so that we always have a record of what we did and how we created our reports. We will start by making sure we are in our scripts directory and writing a `sbatch` script in `vim` for submission:
 
 ```
