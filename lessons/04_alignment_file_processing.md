@@ -67,9 +67,9 @@ Next, let's define some variables that we will be using:
 
 ```
 # Assign file paths to variables
-SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.sam
-REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/picard/syn3_normal/
 SAMPLE_NAME=syn3_normal
+SAM_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMPLE_NAME}_GRCh38.p7.sam
+REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/picard/${SAMPLE_NAME}/
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
 REMOVE_DUPLICATES_BAM_FILE=`echo ${SAM_FILE%sam}remove_duplicates.bam`
 METRICS_FILE=${REPORTS_DIRECTORY}/${SAMPLE_NAME}.remove_duplicates_metrics.txt
@@ -193,9 +193,9 @@ Now this script is all set to run! Go ahead and save and quit.
 module load picard/2.27.5
 
 # Assign file paths to variables
-SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.sam
-REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/picard/syn3_normal/
 SAMPLE_NAME=syn3_normal
+SAM_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMPLE_NAME}_GRCh38.p7.sam
+REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/picard/${SAMPLE_NAME}/
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
 REMOVE_DUPLICATES_BAM_FILE=`echo ${SAM_FILE%sam}remove_duplicates.bam`
 METRICS_FILE=${REPORTS_DIRECTORY}/${SAMPLE_NAME}.remove_duplicates_metrics.txt
@@ -303,7 +303,7 @@ Next, we are going to need to set-up our <code>sbatch</code> submission script w
 module load gcc/6.2.0
 module load samtools/1.15.1<br>
 # Assign file paths to variables
-SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.sam
+SAM_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.sam
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
 FIXMATE_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}fixmates.bam`
 COORDINATE_SORTED_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}coordinate_sorted.bam`
@@ -435,7 +435,7 @@ The final script should look like:
 module load gcc/6.2.0
 module load samtools/1.15.1<br>
 # Assign file paths to variables
-SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.sam
+SAM_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.sam
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
 FIXMATE_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}fixmates.bam`
 COORDINATE_SORTED_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}coordinate_sorted.bam`
@@ -488,7 +488,7 @@ The final <code>sbatch</code> submission script for the tumor sample should look
 module load gcc/6.2.0
 module load samtools/1.15.1<br>
 # Assign file paths to variables
-SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_tumor_GRCh38.p7.sam
+SAM_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_tumor_GRCh38.p7.sam
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
 FIXMATE_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}fixmates.bam`
 COORDINATE_SORTED_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}coordinate_sorted.bam`
@@ -567,9 +567,9 @@ _As a result your tumor `Picard` alignment processing script should look almost 
 module load picard/2.27.5
 
 # Assign file paths to variables
-SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_tumor_GRCh38.p7.sam
-REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/picard/syn3_tumor/
 SAMPLE_NAME=syn3_tumor
+SAM_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMPLE_NAME}_GRCh38.p7.sam
+REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/picard/${SAMPLE_NAME}/
 QUERY_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}query_sorted.bam`
 REMOVE_DUPLICATES_BAM_FILE=`echo ${SAM_FILE%sam}remove_duplicates.bam`
 METRICS_FILE=${REPORTS_DIRECTORY}/${SAMPLE_NAME}.remove_duplicates_metrics.txt
