@@ -121,7 +121,8 @@ The components of this command are:
 * `--OUTPUT $QUERY_SORTED_BAM_FILE` This is the BAM output file. 
 * `--SORT_ORDER queryname` The options here are either `queryname` or `coordinate`.
 
-
+> #### Why does this command look different from the Picard documentation?
+> The **syntax that Picard uses** is quite particular and the syntax shown in the documentation is **not always consistent**. There are two main ways for providing input for Picard: Traditional and New (Barcalay) Syntax. Commands written in either syntax are **equally valid and produce the same output**. To better understand the different syntax, we recommend you take a look [at this short lesson](picard_syntax.md).
 
 ### 3. Mark and Remove Duplicates
 
