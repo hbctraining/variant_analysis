@@ -90,7 +90,7 @@ $ module avail fastqc
 We can decide on the version we would like to use and go ahead and load the FastQC module to use:
 
 ```bash
-$ module load fastqc/0.11.9
+$ module load fastqc/0.12.1
 ```
 
 You should now see that the module is loaded when you run:
@@ -154,7 +154,7 @@ $ O2squeue
 Before we do anything else, we need to reload the module since we exited out of our single core interactive session.
 
 ```bash
-$ module load fastqc/0.11.9
+$ module load fastqc/0.12.1
 
 $ fastqc -o ~/variant_calling/results/fastqc/ -t 4 ~/variant_calling/raw_data/*.gz 
 ```
