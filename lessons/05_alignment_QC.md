@@ -73,9 +73,9 @@ Lastly, we can add the `Picard` command to gather the alignment metrics. We can 
 ```
 # Run Picard CollectAlignmentSummaryMetrics
 java -jar $PICARD/picard.jar CollectAlignmentSummaryMetrics \
---INPUT $INPUT_BAM \
---REFERENCE_SEQUENCE $REFERENCE \
---OUTPUT $OUTPUT_METRICS_FILE
+  --INPUT $INPUT_BAM \
+  --REFERENCE_SEQUENCE $REFERENCE \
+  --OUTPUT $OUTPUT_METRICS_FILE
 ```
 
 Now this script is all set to run! Go ahead and save and quit.
@@ -106,9 +106,9 @@ OUTPUT_METRICS_FILE=/home/${USER}/variant_calling/reports/picard/syn3_normal/syn
 
 # Run Picard CollectAlignmentSummaryMetrics
 java -jar $PICARD/picard.jar CollectAlignmentSummaryMetrics \
---INPUT $INPUT_BAM \
---REFERENCE_SEQUENCE $REFERENCE \
---OUTPUT $OUTPUT_METRICS_FILE
+  --INPUT $INPUT_BAM \
+  --REFERENCE_SEQUENCE $REFERENCE \
+  --OUTPUT $OUTPUT_METRICS_FILE
 ```
 
 </pre>
@@ -155,9 +155,9 @@ _Image source: [Coverage analysis from the command line](https://medium.com/ngs-
   $REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa<br>
   # Run Picard CollectWgsMetrics \
   java -jar $PICARD/picard.jar CollectWgsMetrics \
-  --INPUT $COORDINATE_SORTED_BAM_FILE \
-  --OUTPUT $METRICS_OUTPUT_FILE \
-  --REFERENCE_SEQUENCE $REFERENCE
+    --INPUT $COORDINATE_SORTED_BAM_FILE \
+    --OUTPUT $METRICS_OUTPUT_FILE \
+    --REFERENCE_SEQUENCE $REFERENCE
   </pre>
         
   <ul><li><code>java -jar $PICARD/picard.jar CollectWgsMetrics</code> This calls the <code>CollectWgsMetrics</code> package within <code>Picard</code></li>
@@ -303,13 +303,13 @@ mkdir -p $OUTPUT_DIRECTORY
 
 # Run MultiQC
 multiqc \
-$NORMAL_PICARD_METRICS \
-$TUMOR_PICARD_METRICS \
-$NORMAL_FASTQC_1 \
-$NORMAL_FASTQC_2 \
-$TUMOR_FASTQC_1 \
-$TUMOR_FASTQC_2 \
---outdir $OUTPUT_DIRECTORY
+  $NORMAL_PICARD_METRICS \
+  $TUMOR_PICARD_METRICS \
+  $NORMAL_FASTQC_1 \
+  $NORMAL_FASTQC_2 \
+  $TUMOR_FASTQC_1 \
+  $TUMOR_FASTQC_2 \
+  --outdir $OUTPUT_DIRECTORY
 ```
 
 Like the previous step, we will need to check to ensure that the previous `Picard` step for collecting metrics for each sample is down before we can submit this script. To do this, we will check out `squeue`:
