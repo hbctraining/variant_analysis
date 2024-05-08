@@ -118,6 +118,12 @@ To run FastQC we need to specify two arguments:
 1. the file name(s) of our FASTQ input (can be a single or multiple files separated by spaces)
 2. the directory where the results (ouput) will be stored, which is indicated after the -o flag
 
+Since we have the FASTQ input, we just need to make the directory to hold the output:
+
+```bash
+mkdir ~/variant_calling/results/fastqc/
+```
+
 **Example code is provided below. DO NOT RUN!**
 
 ```bash
