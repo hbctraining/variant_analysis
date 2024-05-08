@@ -81,7 +81,7 @@ java -jar $PICARD/picard.jar CollectAlignmentSummaryMetrics \
 Now this script is all set to run! Go ahead and save and quit.
 
 <details>
-  <summary><b>Click here to see what our final <code>sbatch</code>code script for the collecting alignment metrics should look like</b></summary> 
+  <summary><b>Click here to see what our final <code>sbatch</code>code script for collecting the normal sample alignment metrics should look like</b></summary> 
   <pre>
     
 ```
@@ -112,13 +112,47 @@ java -jar $PICARD/picard.jar CollectAlignmentSummaryMetrics \
 ```
 
 </pre>
-  </details>
+</details>
 
 Now we will want to **create the tumor version of this submission script using `sed`** (as we have done previously):
 
 ```
 sed 's/normal/tumor/g' picard_metrics_normal.sbatch > picard_metrics_tumor.sbatch
 ```
+
+<details>
+  <summary><b>Click here to see what our final <code>sbatch</code>code script for collecting the tumor sample alignment metrics should look like</b></summary> 
+  <pre>
+    
+```
+#!/bin/bash
+# This sbatch script is for collecting alignment metrics using Picard 
+
+# Assign sbatch directives
+#SBATCH -p priority
+#SBATCH -t 0-00:30:00
+#SBATCH -c 1
+#SBATCH --mem 16G
+#SBATCH -o picard_metrics_tumor_%j.out
+#SBATCH -e picard_metrics_tumor_%j.err
+
+# Load picard
+module load picard/2.27.5
+
+# Assign variables
+INPUT_BAM=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_tumor_GRCh38.p7.coordinate_sorted.bam
+REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
+OUTPUT_METRICS_FILE=/home/${USER}/variant_calling/reports/picard/syn3_tumor/syn3_tumor_GRCh38.p7.CollectAlignmentSummaryMetrics.txt
+
+# Run Picard CollectAlignmentSummaryMetrics
+java -jar $PICARD/picard.jar CollectAlignmentSummaryMetrics \
+  --INPUT $INPUT_BAM \
+  --REFERENCE_SEQUENCE $REFERENCE \
+  --OUTPUT $OUTPUT_METRICS_FILE
+```
+
+</pre>
+</details>
 
 Before we submit our jobs, let's **check the status of our previous `Picard` alignment processing steps**:
 
