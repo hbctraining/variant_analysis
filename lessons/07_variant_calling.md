@@ -84,8 +84,8 @@ A sample VCF can be found below:
 ##FORMAT=<ID=AF,Number=A,Type=Float,Description="Allele fractions of alternate alleles in the tumor">
 ##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth (reads with MQ=255 or with bad mates are filtered)">
 ...
-##GATKCommandLine=<ID=FilterMutectCalls,CommandLine="FilterMutectCalls --output /n/scratch3/users/w/wig051/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-filt.vcf --variant /n/scratch3/users/w/wig051/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf --reference /n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa ... Version="4.1.9.0",Date="February 15, 2023 10:32:47 PM EST">
-##GATKCommandLine=<ID=Mutect2,CommandLine="Mutect2 --tumor-sample syn3_tumor --normal-sample syn3_normal --output /n/scratch3/users/w/wig051/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf --input /n/scratch3/users/w/wig051/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam --input /n/scratch3/users/w/wig051/variant_calling/alignments/syn3_tumor_GRCh38.p7.coordinate_sorted.bam --reference /n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa --sequence-dictionary /n/groups/hbctraining/variant_calling/reference/GRCh38.p7.dict --annotation ClippingRankSumTest --annotation DepthPerSampleHC --annotation MappingQualityRankSumTest --annotation MappingQualityZero --annotation QualByDepth --annotation ReadPosRankSumTest --annotation RMSMappingQuality --annotation FisherStrand --annotation MappingQuality --annotation DepthPerAlleleBySample --annotation Coverage ... Version="4.1.9.0",Date="February 15, 2023 7:55:01 PM EST">
+##GATKCommandLine=<ID=FilterMutectCalls,CommandLine="FilterMutectCalls --output /n/scratch/users/<first_letter_of_user>/<user>/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-filt.vcf --variant /n/scratch/users/<first_letter_of_user>/<user>/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf --reference /n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa ... Version="4.1.9.0",Date="February 15, 2023 10:32:47 PM EST">
+##GATKCommandLine=<ID=Mutect2,CommandLine="Mutect2 --tumor-sample syn3_tumor --normal-sample syn3_normal --output /n/scratch/users/<first_letter_of_user>/<user>/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf --input /n/scratch/users/<first_letter_of_user>/<user>/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam --input /n/scratch/users/<first_letter_of_user>/<user>/variant_calling/alignments/syn3_tumor_GRCh38.p7.coordinate_sorted.bam --reference /n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa --sequence-dictionary /n/groups/hbctraining/variant_calling/reference/GRCh38.p7.dict --annotation ClippingRankSumTest --annotation DepthPerSampleHC --annotation MappingQualityRankSumTest --annotation MappingQualityZero --annotation QualByDepth --annotation ReadPosRankSumTest --annotation RMSMappingQuality --annotation FisherStrand --annotation MappingQuality --annotation DepthPerAlleleBySample --annotation Coverage ... Version="4.1.9.0",Date="February 15, 2023 7:55:01 PM EST">
 ##INFO=<ID=AS_FilterStatus,Number=A,Type=String,Description="Filter status for each allele, as assessed by ApplyRecalibration. Note that the VCF filter field will reflect the most lenient/sensitive status across all alleles.">
 ##INFO=<ID=AS_SB_TABLE,Number=1,Type=String,Description="Allele-specific forward/reverse read counts for strand bias tests. Includes the reference and alleles separated by |.">
 ##INFO=<ID=AS_UNIQ_ALT_READ_COUNT,Number=A,Type=Integer,Description="Number of reads with unique start and mate end positions for each alt at a variant site">
@@ -120,8 +120,8 @@ The first lines in a VCF file are called the ***meta-information lines*** and th
 ##FORMAT=<ID=AF,Number=A,Type=Float,Description="Allele fractions of alternate alleles in the tumor">
 ##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth (reads with MQ=255 or with bad mates are filtered)">
 ...
-##GATKCommandLine=<ID=FilterMutectCalls,CommandLine="FilterMutectCalls --output /n/scratch3/users/w/wig051/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-filt.vcf --variant /n/scratch3/users/w/wig051/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf --reference /n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa ... Version="4.1.9.0",Date="February 15, 2023 10:32:47 PM EST">
-##GATKCommandLine=<ID=Mutect2,CommandLine="Mutect2 --tumor-sample syn3_tumor --normal-sample syn3_normal --output /n/scratch3/users/w/wig051/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf --input /n/scratch3/users/w/wig051/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam --input /n/scratch3/users/w/wig051/variant_calling/alignments/syn3_tumor_GRCh38.p7.coordinate_sorted.bam --reference /n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa --sequence-dictionary /n/groups/hbctraining/variant_calling/reference/GRCh38.p7.dict --annotation ClippingRankSumTest --annotation DepthPerSampleHC --annotation MappingQualityRankSumTest --annotation MappingQualityZero --annotation QualByDepth --annotation ReadPosRankSumTest --annotation RMSMappingQuality --annotation FisherStrand --annotation MappingQuality --annotation DepthPerAlleleBySample --annotation Coverage ... Version="4.1.9.0",Date="February 15, 2023 7:55:01 PM EST">
+##GATKCommandLine=<ID=FilterMutectCalls,CommandLine="FilterMutectCalls --output /n/scratch3/users/<first_letter_of_user>/<user>/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-filt.vcf --variant /n/scratch3/users/<first_letter_of_user>/<user>/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf --reference /n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa ... Version="4.1.9.0",Date="February 15, 2023 10:32:47 PM EST">
+##GATKCommandLine=<ID=Mutect2,CommandLine="Mutect2 --tumor-sample syn3_tumor --normal-sample syn3_normal --output /n/scratch3/users/<first_letter_of_user>/<user>/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf --input /n/scratch3/users/<first_letter_of_user>/<user>/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam --input /n/scratch3/users/<first_letter_of_user>/<user>/variant_calling/alignments/syn3_tumor_GRCh38.p7.coordinate_sorted.bam --reference /n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa --sequence-dictionary /n/groups/hbctraining/variant_calling/reference/GRCh38.p7.dict --annotation ClippingRankSumTest --annotation DepthPerSampleHC --annotation MappingQualityRankSumTest --annotation MappingQualityZero --annotation QualByDepth --annotation ReadPosRankSumTest --annotation RMSMappingQuality --annotation FisherStrand --annotation MappingQuality --annotation DepthPerAlleleBySample --annotation Coverage ... Version="4.1.9.0",Date="February 15, 2023 7:55:01 PM EST">
 ##INFO=<ID=AS_FilterStatus,Number=A,Type=String,Description="Filter status for each allele, as assessed by ApplyRecalibration. Note that the VCF filter field will reflect the most lenient/sensitive status across all alleles.">
 ##INFO=<ID=AS_SB_TABLE,Number=1,Type=String,Description="Allele-specific forward/reverse read counts for strand bias tests. Includes the reference and alleles separated by |.">
 ##INFO=<ID=AS_UNIQ_ALT_READ_COUNT,Number=A,Type=Integer,Description="Number of reads with unique start and mate end positions for each alt at a variant site">
@@ -287,16 +287,16 @@ VCF_OUTPUT_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/
   <summary><b>Click here if you used <code>samtools</code> instead of <code>Picard</code> to process the alignment files</b></summary>
   Very little needs to be edited to these variables to adapt them for the <code>samtools</code> output. However, the end of the file that was created in <code>samtools</code> was <code>.removed_duplicates.bam</code> rather than <code>.coordinate_sorted.bam</code>. As a result we need to edit the variables a bit. Change:<br>
   <pre>
-  NORMAL_BAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${NORMAL_SAMPLE_NAME}_GRCh38.p7.coordinate_sorted.bam</pre>
+  NORMAL_BAM_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/${NORMAL_SAMPLE_NAME}_GRCh38.p7.coordinate_sorted.bam</pre>
   To:
   <pre>
-  NORMAL_BAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${NORMAL_SAMPLE_NAME}_GRCh38.p7.removed_duplicates.bam</pre>
+  NORMAL_BAM_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/${NORMAL_SAMPLE_NAME}_GRCh38.p7.removed_duplicates.bam</pre>
   And also change:
   <pre>
-  TUMOR_BAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${TUMOR_SAMPLE_NAME}_GRCh38.p7.coordinate_sorted.bam</pre>
+  TUMOR_BAM_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/${TUMOR_SAMPLE_NAME}_GRCh38.p7.coordinate_sorted.bam</pre>
   To:
   <pre>
-  TUMOR_BAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${TUMOR_SAMPLE_NAME}_GRCh38.p7.removed_duplicates.bam</pre>
+  TUMOR_BAM_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/${TUMOR_SAMPLE_NAME}_GRCh38.p7.removed_duplicates.bam</pre>
   After those changeed have been made, the rest of the script should be the same.
 <hr />
 </details>
@@ -308,14 +308,14 @@ Lastly, we need to add the `MuTect2` command:
 ```
 # Run MuTect2
 gatk Mutect2 \
---sequence-dictionary $REFERENCE_DICTIONARY \
---reference $REFERENCE_SEQUENCE \
---input $NORMAL_BAM_FILE \
---normal-sample $NORMAL_SAMPLE_NAME \
---input $TUMOR_BAM_FILE \
---tumor-sample $TUMOR_SAMPLE_NAME \
---annotation ClippingRankSumTest --annotation DepthPerSampleHC --annotation MappingQualityRankSumTest --annotation MappingQualityZero --annotation QualByDepth --annotation ReadPosRankSumTest --annotation RMSMappingQuality --annotation FisherStrand --annotation MappingQuality --annotation DepthPerAlleleBySample --annotation Coverage \
---output $VCF_OUTPUT_FILE
+  --sequence-dictionary $REFERENCE_DICTIONARY \
+  --reference $REFERENCE_SEQUENCE \
+  --input $NORMAL_BAM_FILE \
+  --normal-sample $NORMAL_SAMPLE_NAME \
+  --input $TUMOR_BAM_FILE \
+  --tumor-sample $TUMOR_SAMPLE_NAME \
+  --annotation ClippingRankSumTest --annotation DepthPerSampleHC --annotation MappingQualityRankSumTest --annotation MappingQualityZero --annotation QualByDepth --annotation ReadPosRankSumTest --annotation RMSMappingQuality --annotation FisherStrand --annotation MappingQuality --annotation DepthPerAlleleBySample --annotation Coverage \
+  --output $VCF_OUTPUT_FILE
 ```
 
 Let's breakdown this command:
@@ -415,14 +415,14 @@ VCF_OUTPUT_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/
 
 # Run MuTect2
 gatk Mutect2 \
---sequence-dictionary $REFERENCE_DICTIONARY \
---reference $REFERENCE_SEQUENCE \
---input $NORMAL_BAM_FILE \
---normal-sample $NORMAL_SAMPLE_NAME \
---input $TUMOR_BAM_FILE \
---tumor-sample $TUMOR_SAMPLE_NAME \
---annotation ClippingRankSumTest --annotation DepthPerSampleHC --annotation MappingQualityRankSumTest --annotation MappingQualityZero --annotation QualByDepth --annotation ReadPosRankSumTest --annotation RMSMappingQuality --annotation FisherStrand --annotation MappingQuality --annotation DepthPerAlleleBySample --annotation Coverage \
---output $VCF_OUTPUT_FILE
+  --sequence-dictionary $REFERENCE_DICTIONARY \
+  --reference $REFERENCE_SEQUENCE \
+  --input $NORMAL_BAM_FILE \
+  --normal-sample $NORMAL_SAMPLE_NAME \
+  --input $TUMOR_BAM_FILE \
+  --tumor-sample $TUMOR_SAMPLE_NAME \
+  --annotation ClippingRankSumTest --annotation DepthPerSampleHC --annotation MappingQualityRankSumTest --annotation MappingQualityZero --annotation QualByDepth --annotation ReadPosRankSumTest --annotation RMSMappingQuality --annotation FisherStrand --annotation MappingQuality --annotation DepthPerAlleleBySample --annotation Coverage \
+  --output $VCF_OUTPUT_FILE
 ```
 
 ## Tumor-only Mode
