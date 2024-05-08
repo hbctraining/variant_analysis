@@ -58,7 +58,7 @@ Next, let's assign our files to variables:
 
 ```
 # Assign variables
-INPUT_BAM=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam
+INPUT_BAM=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam
 REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
 OUTPUT_METRICS_FILE=/home/${USER}/variant_calling/reports/picard/syn3_normal/syn3_normal_GRCh38.p7.CollectAlignmentSummaryMetrics.txt
 ```
@@ -81,7 +81,7 @@ java -jar $PICARD/picard.jar CollectAlignmentSummaryMetrics \
 Now this script is all set to run! Go ahead and save and quit.
 
 <details>
-  <summary><b>Click here to see what our final `sbatch` script for the collecting alignment metrics should look like</b></summary> 
+  <summary><b>Click here to see what our final <code>sbatch</code>code script for the collecting alignment metrics should look like</b></summary> 
   <pre>
     
 ```
@@ -100,7 +100,7 @@ Now this script is all set to run! Go ahead and save and quit.
 module load picard/2.27.5
 
 # Assign variables
-INPUT_BAM=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam
+INPUT_BAM=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam
 REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
 OUTPUT_METRICS_FILE=/home/${USER}/variant_calling/reports/picard/syn3_normal/syn3_normal_GRCh38.p7.CollectAlignmentSummaryMetrics.txt
 
