@@ -292,13 +292,13 @@ Then, we will add the command to run `MultiQC`:
 ```
 # Run MultiQC
 multiqc \
-$NORMAL_PICARD_METRICS \
-$TUMOR_PICARD_METRICS \
-$NORMAL_FASTQC_1 \
-$NORMAL_FASTQC_2 \
-$TUMOR_FASTQC_1 \
-$TUMOR_FASTQC_2 \
---outdir $OUTPUT_DIRECTORY
+  $NORMAL_PICARD_METRICS \
+  $TUMOR_PICARD_METRICS \
+  $NORMAL_FASTQC_1 \
+  $NORMAL_FASTQC_2 \
+  $TUMOR_FASTQC_1 \
+  $TUMOR_FASTQC_2 \
+  --outdir $OUTPUT_DIRECTORY
 ```
 
 So our final `sbatch` script should look like:
