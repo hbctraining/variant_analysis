@@ -80,7 +80,7 @@ java -jar $PICARD/picard.jar CollectAlignmentSummaryMetrics \
 
 Now this script is all set to run! **Go ahead and save and quit.**
 
-### Normal samples script
+**Normal sample script**
 
 <details>
   <summary><b>Click here</b> to see what our final <code>sbatch</code>code script for collecting the normal sample alignment metrics should look like</summary> 
@@ -108,7 +108,7 @@ java -jar $PICARD/picard.jar CollectAlignmentSummaryMetrics \
 </pre>
 </details>
 
-### Tumor sample script
+**Tumor sample script**
 
 Now we will want to **create the tumor version of this submission script using `sed`** (as we have done previously):
 
@@ -142,7 +142,7 @@ java -jar $PICARD/picard.jar CollectAlignmentSummaryMetrics \
 </pre>
 </details>
 
-### Submitting scripts for Picard processing
+### Submitting scripts for Picard alignment processing
 
 Before we submit our jobs, let's **check the status of our previous `Picard` alignment processing steps**:
 
@@ -193,7 +193,11 @@ _Image source: [Coverage analysis from the command line](https://medium.com/ngs-
 
 ## Factors Impacting Alignment
 
-While we listed various metrics above, one of the **most important metrics for your alignment file is the alignment rate**. When aligning high-quality reads to a high quality reference genome, **one should expect to see alignment rates at 90% or better**. If alignment rates dipped below 80-85%, then there could be reason for further inspection. 
+**EDIT** Once your script has finished running, we can take a look to see what kind of output was generated. In your __ directory.. you should see `tab_file`. Let's use  `less` to view it:
+
+**ADD SCREENSHOT OF OUTPUT TEXT FILE**
+
+While we observe various metrics above, one of the **most important metrics for your alignment file is the alignment rate**. When aligning high-quality reads to a high quality reference genome, **one should expect to see alignment rates at 90% or better**. If alignment rates dipped below 80-85%, then there could be reason for further inspection. 
 
 Alignment rates can vary based upon many factors, including:
 
@@ -207,22 +211,18 @@ Alignment rates can vary based upon many factors, including:
 
 ## Aggregating QC metrics using MultiQC
 
-Let's take a quick look at the output from `CollectAlignmentSummaryMetrics` for the normal sample.
-
-**ADD SCREENSHOT OF TAB-DELIM FILE HERE**
-
-
-
-TALK A LITTE ABOUT MULTIQC
-
+The goal of this section is to show you how to **combine numerical stats from multiple QC runs into a single HTML report**. To do this aggregation, we will introduce you to [MultiQC](https://multiqc.info/) -  a general use tool, perfect for summarising the output from numerous bioinformatics tools. Rather than having to sift through multiple reports from individual samples and different tools, we can use MultiQC to evaluate quality metrics conveniently within a single file!
 
 <p align="center">
 <img src="../img/multiqc_screenshot.png" width="800">
 </p>
 
+One nice feature of `MultiQC` is that it accepts many different file formats. It figures out which format was submitted and tailors the report to that type of analysis. For this workflow we will combine the following QC stats:
 
+* FastQC
+* Alignment QC from Picard
 
-One nice feature of `MultiQC` is that it accepts many different file formats. It figures out which format was submitted and tailors the report to that type of analysis. Collating our `MultiQC` results would be relatively quick to just run from the command-line, but it's best practice to write our steps to scripts so that we always have a record of what we did and how we created our reports. We will start by making sure we are in our scripts directory and writing a `sbatch` script in `vim` for submission:
+Collating our `MultiQC` results would be relatively quick to just run from the command-line, but it's best practice to write our steps to scripts so that we always have a record of what we did and how we created our reports. We will start by making sure we are in our scripts directory and writing a `sbatch` script in `vim` for submission:
 
 ```
 cd ~/variant_calling/scripts/
@@ -270,14 +270,14 @@ TUMOR_FASTQC_2=${REPORTS_DIRECTORY}fastqc/${TUMOR_SAMPLE_NAME}/${TUMOR_SAMPLE_NA
 OUTPUT_DIRECTORY=${REPORTS_DIRECTORY}/multiqc/
 ```
 
-Next, we need to add the output directory:
+We also need to add the output directory:
 
 ```
 # Create directory for output
 mkdir -p $OUTPUT_DIRECTORY
 ```
 
-Then, we will add the command to run `MultiQC`:
+Then, we will add **the command to run `MultiQC`**:
 
 ```
 # Run MultiQC
@@ -332,21 +332,21 @@ multiqc \
 </pre>
 </details>
 
+### Submitting scripts for MultiQC
 Like the previous step, we will need to check to ensure that the previous `Picard` step for collecting metrics for each sample is down before we can submit this script. To do this, we will check out `squeue`:
 
 ```
 squeue -u $USER
 ```
 
-**If your `Picard` collect alignment metric steps are not completed yet**, wait until they have finished before submitting these jobs to `MultiQC`.
-
-**If your `Picard` collect alignment metric steps are completed and the only job you have running is your interactive job**, then submit this `MultiQC` job to collate the alignment metrics:
+* **If your `Picard` collect alignment metric steps are not completed** yet, **WAIT** until they have finished before submitting these jobs to `MultiQC`.
+* **If your `Picard` collect alignment metric steps are completed and the only job you have running is your interactive job**, then submit this `MultiQC` job to collate the alignment metrics:
 
 ```
 sbatch multiqc_alignment_metrics.sbatch
 ```
 
-This job should finish fairly quickly and then we can proceed to downloading it with `FileZilla` in the next lesson.
+This job should finish fairly quickly and then we can proceed to copying it over to our local computers so we can evaluate the alignment QC of our samples.
 
 [Next Lesson >>](06_evaluate_QC.md)
 
