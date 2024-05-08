@@ -83,34 +83,26 @@ Now this script is all set to run! Go ahead and save and quit.
 <details>
   <summary><b>Click here to see what our final <code>sbatch</code>code script for collecting the normal sample alignment metrics should look like</b></summary> 
   <pre>
-    
-```
 #!/bin/bash
-# This sbatch script is for collecting alignment metrics using Picard 
-
+# This sbatch script is for collecting alignment metrics using Picard<br>
 # Assign sbatch directives
 #SBATCH -p priority
 #SBATCH -t 0-00:30:00
 #SBATCH -c 1
 #SBATCH --mem 16G
 #SBATCH -o picard_metrics_normal_%j.out
-#SBATCH -e picard_metrics_normal_%j.err
-
+#SBATCH -e picard_metrics_normal_%j.err<br>
 # Load picard
-module load picard/2.27.5
-
+module load picard/2.27.5<br>
 # Assign variables
 INPUT_BAM=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam
 REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
-OUTPUT_METRICS_FILE=/home/${USER}/variant_calling/reports/picard/syn3_normal/syn3_normal_GRCh38.p7.CollectAlignmentSummaryMetrics.txt
-
+OUTPUT_METRICS_FILE=/home/${USER}/variant_calling/reports/picard/syn3_normal/syn3_normal_GRCh38.p7.CollectAlignmentSummaryMetrics.txt<br>
 # Run Picard CollectAlignmentSummaryMetrics
 java -jar $PICARD/picard.jar CollectAlignmentSummaryMetrics \
   --INPUT $INPUT_BAM \
   --REFERENCE_SEQUENCE $REFERENCE \
   --OUTPUT $OUTPUT_METRICS_FILE
-```
-
 </pre>
 </details>
 
@@ -123,34 +115,26 @@ sed 's/normal/tumor/g' picard_metrics_normal.sbatch > picard_metrics_tumor.sbatc
 <details>
   <summary><b>Click here to see what our final <code>sbatch</code>code script for collecting the tumor sample alignment metrics should look like</b></summary> 
   <pre>
-    
-```
 #!/bin/bash
-# This sbatch script is for collecting alignment metrics using Picard 
-
+# This sbatch script is for collecting alignment metrics using Picard<br>
 # Assign sbatch directives
 #SBATCH -p priority
 #SBATCH -t 0-00:30:00
 #SBATCH -c 1
 #SBATCH --mem 16G
 #SBATCH -o picard_metrics_tumor_%j.out
-#SBATCH -e picard_metrics_tumor_%j.err
-
+#SBATCH -e picard_metrics_tumor_%j.err<br>
 # Load picard
-module load picard/2.27.5
-
+module load picard/2.27.5<br>
 # Assign variables
 INPUT_BAM=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_tumor_GRCh38.p7.coordinate_sorted.bam
 REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
-OUTPUT_METRICS_FILE=/home/${USER}/variant_calling/reports/picard/syn3_tumor/syn3_tumor_GRCh38.p7.CollectAlignmentSummaryMetrics.txt
-
+OUTPUT_METRICS_FILE=/home/${USER}/variant_calling/reports/picard/syn3_tumor/syn3_tumor_GRCh38.p7.CollectAlignmentSummaryMetrics.txt<br>
 # Run Picard CollectAlignmentSummaryMetrics
 java -jar $PICARD/picard.jar CollectAlignmentSummaryMetrics \
   --INPUT $INPUT_BAM \
   --REFERENCE_SEQUENCE $REFERENCE \
   --OUTPUT $OUTPUT_METRICS_FILE
-```
-
 </pre>
 </details>
 
