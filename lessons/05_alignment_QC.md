@@ -78,10 +78,12 @@ java -jar $PICARD/picard.jar CollectAlignmentSummaryMetrics \
   --OUTPUT $OUTPUT_METRICS_FILE
 ```
 
-Now this script is all set to run! Go ahead and save and quit.
+Now this script is all set to run! **Go ahead and save and quit.**
+
+### Normal samples script
 
 <details>
-  <summary><b>Click here to see what our final <code>sbatch</code>code script for collecting the normal sample alignment metrics should look like</b></summary> 
+  <summary><b>Click here</b> to see what our final <code>sbatch</code>code script for collecting the normal sample alignment metrics should look like</summary> 
   <pre>
 #!/bin/bash
 # This sbatch script is for collecting alignment metrics using Picard<br>
@@ -105,6 +107,8 @@ java -jar $PICARD/picard.jar CollectAlignmentSummaryMetrics \
   --OUTPUT $OUTPUT_METRICS_FILE
 </pre>
 </details>
+
+### Tumor sample script
 
 Now we will want to **create the tumor version of this submission script using `sed`** (as we have done previously):
 
