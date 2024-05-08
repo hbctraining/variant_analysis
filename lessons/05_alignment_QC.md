@@ -301,24 +301,21 @@ multiqc \
   --outdir $OUTPUT_DIRECTORY
 ```
 
-So our final `sbatch` script should look like:
-
-```
+<details>
+  <summary><b>Click here to see what our final <code>sbatch</code>code script for running <code>multiqc</code> should look like</b></summary> 
+  <pre>
 #!/bin/bash
-# This sbatch script is for collating alignment metrics from Picard using MultiQC
-
+# This sbatch script is for collating alignment metrics from Picard using MultiQC<br>
 # Assign sbatch directives
 #SBATCH -p priority
 #SBATCH -t 0-00:10:00
 #SBATCH -c 1
 #SBATCH --mem 1G
 #SBATCH -o multiqc_alignment_metrics_%j.out
-#SBATCH -e multiqc_alignment_metrics_%j.err
-
+#SBATCH -e multiqc_alignment_metrics_%j.err<br>
 # Load modules
 module load gcc/9.2.0
-module load multiqc/1.21
-
+module load multiqc/1.21<br>
 # Assign variables
 REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/
 NORMAL_SAMPLE_NAME=syn3_normal
@@ -330,11 +327,9 @@ NORMAL_FASTQC_1=${REPORTS_DIRECTORY}fastqc/${NORMAL_SAMPLE_NAME}/${NORMAL_SAMPLE
 NORMAL_FASTQC_2=${REPORTS_DIRECTORY}fastqc/${NORMAL_SAMPLE_NAME}/${NORMAL_SAMPLE_NAME}_2_fastqc.zip
 TUMOR_FASTQC_1=${REPORTS_DIRECTORY}fastqc/${TUMOR_SAMPLE_NAME}/${TUMOR_SAMPLE_NAME}_1_fastqc.zip
 TUMOR_FASTQC_2=${REPORTS_DIRECTORY}fastqc/${TUMOR_SAMPLE_NAME}/${TUMOR_SAMPLE_NAME}_2_fastqc.zip
-OUTPUT_DIRECTORY=${REPORTS_DIRECTORY}/multiqc/
-
+OUTPUT_DIRECTORY=${REPORTS_DIRECTORY}/multiqc/<br>
 # Create directory for output
-mkdir -p $OUTPUT_DIRECTORY
-
+mkdir -p $OUTPUT_DIRECTORY<br>
 # Run MultiQC
 multiqc \
   $NORMAL_PICARD_METRICS \
@@ -344,7 +339,8 @@ multiqc \
   $TUMOR_FASTQC_1 \
   $TUMOR_FASTQC_2 \
   --outdir $OUTPUT_DIRECTORY
-```
+</pre>
+</details>
 
 Like the previous step, we will need to check to ensure that the previous `Picard` step for collecting metrics for each sample is down before we can submit this script. To do this, we will check out `squeue`:
 
