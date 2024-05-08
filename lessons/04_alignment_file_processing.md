@@ -109,9 +109,9 @@ Add the following command to our script:
 ```
 # Query-sort alginment file and convert to BAM
 java -jar $PICARD/picard.jar SortSam \
---INPUT $SAM_FILE \
---OUTPUT $QUERY_SORTED_BAM_FILE \
---SORT_ORDER queryname
+  --INPUT $SAM_FILE \
+  --OUTPUT $QUERY_SORTED_BAM_FILE \
+  --SORT_ORDER queryname
 ```
 
 The components of this command are:
@@ -136,10 +136,10 @@ Now we will add the command to our script that allows us to mark and remove dupl
 ```
 # Mark and remove duplicates
 java -jar $PICARD/picard.jar MarkDuplicates \
---INPUT $QUERY_SORTED_BAM_FILE \
---OUTPUT $REMOVE_DUPLICATES_BAM_FILE \
---METRICS_FILE $METRICS_FILE \
---REMOVE_DUPLICATES true
+  --INPUT $QUERY_SORTED_BAM_FILE \
+  --OUTPUT $REMOVE_DUPLICATES_BAM_FILE \
+  --METRICS_FILE $METRICS_FILE \
+  --REMOVE_DUPLICATES true
 ```
 
 The components of this command are:
@@ -157,10 +157,10 @@ For most downstream processes, coordinate-sorted alignment files are required. A
 ```
 # Coordinate-sort BAM file and create BAM index file
 java -jar $PICARD/picard.jar SortSam \
---INPUT $REMOVE_DUPLICATES_BAM_FILE \
---OUTPUT $COORDINATE_SORTED_BAM_FILE \
---SORT_ORDER coordinate \
---CREATE_INDEX true
+  --INPUT $REMOVE_DUPLICATES_BAM_FILE \
+  --OUTPUT $COORDINATE_SORTED_BAM_FILE \
+  --SORT_ORDER coordinate \
+  --CREATE_INDEX true
 ```
 
 The components of this command are:
@@ -206,26 +206,26 @@ mkdir -p $REPORTS_DIRECTORY
 
 # Query-sort alginment file and convert to BAM
 java -jar $PICARD/picard.jar SortSam \
---INPUT $SAM_FILE \
---OUTPUT $QUERY_SORTED_BAM_FILE \
---SORT_ORDER queryname
+  --INPUT $SAM_FILE \
+  --OUTPUT $QUERY_SORTED_BAM_FILE \
+  --SORT_ORDER queryname
 
 # Mark and remove duplicates
 java -jar $PICARD/picard.jar MarkDuplicates \
---INPUT $QUERY_SORTED_BAM_FILE \
---OUTPUT $REMOVE_DUPLICATES_BAM_FILE \
---METRICS_FILE $METRICS_FILE \
---REMOVE_DUPLICATES true
+  --INPUT $QUERY_SORTED_BAM_FILE \
+  --OUTPUT $REMOVE_DUPLICATES_BAM_FILE \
+  --METRICS_FILE $METRICS_FILE \
+  --REMOVE_DUPLICATES true
 
 # Coordinate-sort BAM file and create BAM index file
 java -jar $PICARD/picard.jar SortSam \
---INPUT $REMOVE_DUPLICATES_BAM_FILE \
---OUTPUT $COORDINATE_SORTED_BAM_FILE \
---SORT_ORDER coordinate \
---CREATE_INDEX true
+  --INPUT $REMOVE_DUPLICATES_BAM_FILE \
+  --OUTPUT $COORDINATE_SORTED_BAM_FILE \
+  --SORT_ORDER coordinate \
+  --CREATE_INDEX true
 ```
 </pre>
-  </details>
+</details>
 
 
 > #### Do I need to add read groups?
@@ -242,13 +242,13 @@ java -jar $PICARD/picard.jar SortSam \
 >  <pre>
 >  # Add or replace read group information
 >  java -jar $PICARD/picard.jar AddOrReplaceReadGroups \
->  --INPUT $SAM_FILE \
->  --OUTPUT $BAM_FILE \
->  --RGID $READ_GROUP_ID \
->  --RGLB $READ_GROUP_LIBRARY \
->  --RGPL $READ_GROUP_PLATFORM \
->  --RGPU $READ_GROUP_PLATFORM_UNIT \
->  --RGSM $READ_GROUP_SAMPLE</pre>
+>    --INPUT $SAM_FILE \
+>    --OUTPUT $BAM_FILE \
+>    --RGID $READ_GROUP_ID \
+>    --RGLB $READ_GROUP_LIBRARY \
+>    --RGPL $READ_GROUP_PLATFORM \
+>    --RGPU $READ_GROUP_PLATFORM_UNIT \
+>    --RGSM $READ_GROUP_SAMPLE</pre>
 >  
 >  <ul><li><code>java -jar $PICARD/picard.jar AddOrReplaceReadGroups</code> This calls the <code>AddOrReplaceReadGroups</code> package within <code>Picard</code></li>
 >    <li><code>--INPUT $SAM_FILE</code>This is your input file. It could be a BAM/SAM alignment file, but because we recommend doing this first if you need to do it, this would be a SAM file. You don't need to specifiy that it is a BAM/SAM file, <code>Picard</code> with figure that out from the provided extension.</li>
@@ -317,10 +317,10 @@ Similarly to <code>Picard</code>, we are going to need to initally <b>query</b>-
 <pre>
 # Sort SAM file and convert it to a query name sorted BAM file
 samtools sort \
--@ 8 \
--n \
--o $QUERY_SORTED_BAM_FILE \
-$SAM_FILE
+  -@ 8 \
+  -n \
+  -o $QUERY_SORTED_BAM_FILE \
+  $SAM_FILE
 </pre>
     
 The components of this line of code are:
@@ -346,10 +346,10 @@ Next, we are going to add more mate-pair information to the alignments including
 <pre>
 # Score mates
 samtools fixmate \
--@ 8 \
--m \
-$QUERY_SORTED_BAM_FILE \
-$FIXMATE_BAM_FILE
+  -@ 8 \
+  -m \
+  $QUERY_SORTED_BAM_FILE \
+  $FIXMATE_BAM_FILE
 </pre>
 
 The parts of this command are:
@@ -374,9 +374,9 @@ Now that we have added the <code>fixmate</code> information, we need to <b>coord
 <pre>
 # Sort BAM file by coordinate   
 samtools sort \
--@ 8 \
--o $COORDINATE_SORTED_BAM_FILE \
-$FIXMATE_BAM_FILE
+  -@ 8 \
+  -o $COORDINATE_SORTED_BAM_FILE \
+  $FIXMATE_BAM_FILE
 </pre>
 
 We have gone through all of the these paramters already in the previous <code>samtools sort</code> command. The only difference in this command is that we are not using the <code>-n</code> option, which tells <code>samtools</code> to sort by read name. Now, we are excluding this and thus sorting by coordinates, the default setting.
@@ -391,11 +391,11 @@ Now we are going to mark and remove the duplicate reads:
 <pre>
 # Mark and remove duplicates and then index the output file
 samtools markdup \
--r \
---write-index \
--@ 8 \
-$COORDINATE_SORTED_BAM_FILE \
-${REMOVED_DUPLICATES_BAM_FILE}##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai
+  -r \
+  --write-index \
+  -@ 8 \
+  $COORDINATE_SORTED_BAM_FILE \
+  ${REMOVED_DUPLICATES_BAM_FILE}##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai
 </pre> 
 
 The components of this command are:    
@@ -442,28 +442,28 @@ COORDINATE_SORTED_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}coordi
 REMOVED_DUPLICATES_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}removed_duplicates.bam`<br>
 # Sort SAM file and convert it to a query name sorted BAM file
 samtools sort \
--@ 8 \
--n \
--o $QUERY_SORTED_BAM_FILE \
-$SAM_FILE<br>
+  -@ 8 \
+  -n \
+  -o $QUERY_SORTED_BAM_FILE \
+  $SAM_FILE<br>
 # Score mates
 samtools fixmate \
--@ 8 \
--m \
-$QUERY_SORTED_BAM_FILE \
-$FIXMATE_BAM_FILE<br>
+  -@ 8 \
+  -m \
+  $QUERY_SORTED_BAM_FILE \
+  $FIXMATE_BAM_FILE<br>
 # Sort BAM file by coordinate   
 samtools sort \
--@ 8 \
--o $COORDINATE_SORTED_BAM_FILE \
-$FIXMATE_BAM_FILE<br>
+  -@ 8 \
+  -o $COORDINATE_SORTED_BAM_FILE \
+  $FIXMATE_BAM_FILE<br>
 # Mark and remove duplicates and then index the output file
 samtools markdup \
--r \
---write-index \
--@ 8 \
-$COORDINATE_SORTED_BAM_FILE \
-${REMOVED_DUPLICATES_BAM_FILE}##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai<br>
+  -r \
+  --write-index \
+  -@ 8 \
+  $COORDINATE_SORTED_BAM_FILE \
+  ${REMOVED_DUPLICATES_BAM_FILE}##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai<br>
 </pre>
 <hr />
 </details></li>
@@ -495,28 +495,28 @@ COORDINATE_SORTED_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}coordi
 REMOVED_DUPLICATES_BAM_FILE=`echo ${QUERY_SORTED_BAM_FILE%query_sorted.bam}removed_duplicates.bam`<br>
 # Sort SAM file and convert it to a query name sorted BAM file
 samtools sort \
--@ 8 \
--n \
--o $QUERY_SORTED_BAM_FILE \
-$SAM_FILE<br>
+  -@ 8 \
+  -n \
+  -o $QUERY_SORTED_BAM_FILE \
+  $SAM_FILE<br>
 # Score mates
 samtools fixmate \
--@ 8 \
--m \
-$QUERY_SORTED_BAM_FILE \
-$FIXMATE_BAM_FILE<br>
+  -@ 8 \
+  -m \
+  $QUERY_SORTED_BAM_FILE \
+  $FIXMATE_BAM_FILE<br>
 # Sort BAM file by coordinate   
 samtools sort \
--@ 8 \
--o $COORDINATE_SORTED_BAM_FILE \
-$FIXMATE_BAM_FILE<br>
+  -@ 8 \
+  -o $COORDINATE_SORTED_BAM_FILE \
+  $FIXMATE_BAM_FILE<br>
 # Mark and remove duplicates and then index the output file
 samtools markdup \
--r \
---write-index \
--@ 8 \
-$COORDINATE_SORTED_BAM_FILE \
-${REMOVED_DUPLICATES_BAM_FILE}##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai<br>
+  -r \
+  --write-index \
+  -@ 8 \
+  $COORDINATE_SORTED_BAM_FILE \
+  ${REMOVED_DUPLICATES_BAM_FILE}##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai<br>
 </pre>
 </details></li></ol>
 <hr />
@@ -580,23 +580,23 @@ mkdir -p $REPORTS_DIRECTORY
 
 # Query-sort alginment file and convert to BAM
 java -jar $PICARD/picard.jar SortSam \
---INPUT $SAM_FILE \
---OUTPUT $QUERY_SORTED_BAM_FILE \
---SORT_ORDER queryname
+  --INPUT $SAM_FILE \
+  --OUTPUT $QUERY_SORTED_BAM_FILE \
+  --SORT_ORDER queryname
 
 # Mark and remove duplicates
 java -jar $PICARD/picard.jar MarkDuplicates \
---INPUT $QUERY_SORTED_BAM_FILE \
---OUTPUT $REMOVE_DUPLICATES_BAM_FILE \
---METRICS_FILE $METRICS_FILE \
---REMOVE_DUPLICATES true
+  --INPUT $QUERY_SORTED_BAM_FILE \
+  --OUTPUT $REMOVE_DUPLICATES_BAM_FILE \
+  --METRICS_FILE $METRICS_FILE \
+  --REMOVE_DUPLICATES true
 
 # Coordinate-sort BAM file and create BAM index file
 java -jar $PICARD/picard.jar SortSam \
---INPUT $REMOVE_DUPLICATES_BAM_FILE \
---OUTPUT $COORDINATE_SORTED_BAM_FILE \
---SORT_ORDER coordinate \
---CREATE_INDEX true
+  --INPUT $REMOVE_DUPLICATES_BAM_FILE \
+  --OUTPUT $COORDINATE_SORTED_BAM_FILE \
+  --SORT_ORDER coordinate \
+  --CREATE_INDEX true
 ```
 
 </pre>
