@@ -233,7 +233,7 @@ Let's use the read group from our example `bwa` command above to demonstrate the
   * `<FLOWCELL_BARCODE>` is the barcode of the flowcell
   * `<LANE>` is the lane the data was run on and
   * `<SAMPLE_BARCODE>` is supposed to be a library/sample specific identifer. In some software packages PU can take precedence over the ID field. *
-  * *If you don't happen to have the `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`, just make this field something useful that will help identify the sample**. In this case, we didn't have that information so we are re-using the **ID** field here. 
+  * *If you don't happen to have the `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`, just make this field something useful that will help identify the sample*. In this case, we didn't have that information so we are re-using the **SM** field here. 
 
  **More information about read groups and some fields we didn't discuss can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035890671-Read-groups).**
 
@@ -290,14 +290,14 @@ Finally, we need the `bwa` command we are going to run. Displayed below is the c
 bwa mem \
     -M \
     -t 8 \
-    -R "@RG\tID:$SAMPLE\tPL:illumina\tPU:$SAMPLE\tSM:$SAMPLE" \
+    -R "@RG\tID:syn3_normal\tPL:illumina\tPU:$SAMPLE\tSM:syn3_normal" \
     /n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa \
     ~/variant_calling/raw_data/syn3_normal_1.fq.gz \
     ~/variant_calling/raw_data/syn3_normal_2.fq.gz \
-    -o /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.sam
+    -o /n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.sam
 ```
 
-**Instead we will introduce bash variables** in our script which will allow us to quickly adapt this for use on all other samples we have in our dataset. The varaibles are described in more detail below:
+**Instead we will introduce bash variables** in our script which will allow us to quickly adapt this for use on all other samples we have in our dataset. The variables are described in more detail below:
 
 * `REFERENCE_SEQUENCE`: the path to the bwa index
 * `LEFT_READS`: path to the left read FASTQ file (R1 or 1)
@@ -311,10 +311,10 @@ REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
 LEFT_READS=/home/$USER/variant_calling/raw_data/syn3_normal_1.fq.gz
 RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
 SAMPLE=`basename $LEFT_READS _1.fq.gz`
-SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMPLE}_GRCh38.p7.sam
+SAM_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMPLE}_GRCh38.p7.sam
 ```
 
-> **NOTE:** `$RIGHT_READS` uses the string manipulation we discussed in the `FastQC` lesson in order to swap the last parts of their filename. We also use `basename` to parse out the path from a file and when coupled with an argument after the filename, it will trim the end of the file as well as we can see with the `$SAMPLE` variable.
+> **NOTE:** `$RIGHT_READS` uses the string manipulation in order to swap the last parts of their filename. We also use `basename` to parse out the path from a file and when coupled with an argument after the filename, it will trim the end of the file as well as we can see with the `$SAMPLE` variable.
   
 
 We can **now add our command for running `bwa`** and utilize the variables we created above:
@@ -376,7 +376,7 @@ REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
 LEFT_READS=/home/$USER/variant_calling/raw_data/syn3_tumor_1.fq.gz
 RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
 SAMPLE=`basename $LEFT_READS _1.fq.gz`
-SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMPLE}_GRCh38.p7.sam
+SAM_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMPLE}_GRCh38.p7.sam
 
 # Align reads with bwa
 bwa mem \
