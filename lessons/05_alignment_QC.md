@@ -259,7 +259,7 @@ Next, we will load our modules:
 ```
 # Load modules
 module load gcc/9.2.0
-module load multiqc/1.12
+module load multiqc/1.21
 ```
 > NOTE: `MultiQC` version 1.12 requires `gcc/9.2.0` on the O2 cluster.
 
@@ -317,7 +317,7 @@ So our final `sbatch` script should look like:
 
 # Load modules
 module load gcc/9.2.0
-module load multiqc/1.12
+module load multiqc/1.21
 
 # Assign variables
 REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/
