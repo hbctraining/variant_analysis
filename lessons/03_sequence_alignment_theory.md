@@ -64,39 +64,24 @@ This process may take up to 30+ minutes to run depending on the reference sequen
 
 ### SAM (Sequence Alignment Map) file format
 
-Alignment information is stored within SAM files. Here, we briefly describe the SAM file, but encourage you to explore [this lesson](file_formats_reference.md) for more in depth detail. 
+> Alignment information is stored within SAM files. Here, we briefly describe the SAM file, but encourage you to **explore [this lesson](file_formats_reference.md) for more in depth detail**. 
 
 There are **two main components** to a SAM file are:
 
-* Header section
+* **Header** section
   * This section contains various bits of information pertinent to the file. Some examples include: sequence information (`@SQ`), read groups (`@RG`), history of programs/tools (`@PG`) used to make the SAM file.
-* Alignment section
+* **Alignment** section
   * Stores alignment data for reads that have attempted to be aligned.
   * Each row correponds to a single read
-  * Columns/fields are separated by the tab delimiter of information are briefly described in the lesson below.
+  * Columns/fields are separated by the tab delimiter of information are briefly described in the image below.
 
+<p align="center">
+<img src="../img/sam_format_annotated.jpg" width="700">
+</p>
 
-#### Alignment section
+_Image source: https://www.samformat.info/sam-format-flag_
 
-Each line in this section corresponds to a single read. Each line has 11 mandatory fields (columns) with additional optional fields. The fields are:
-
-|  Field Name  | Description |
-|--------------|-------------|
-| QNAME | Read Identifier | 
-| FLAG | Bit-wise flag (see below for more information) |
-| RNAME | Reference sequence name, such as the chromosome or contig of an alignment | 
-| POS | 1-based position of the leftmost alignment |
-| MAPQ | Mapping quality |
-| CIGAR | CIGAR String (see below for more information) | 
-| RNEXT | Reference sequence name for the mate pair or next read |
-| PNEXT | Position for the mate pair or next read | 
-| TLEN | The observed distance of the alignment |
-| SEQ | The nucleotide sequence. If '\*', then the sequence is not stored. If '=', the seqeunce matches the reference. |
-| QUAL | The base quality in Phred +33 standard. If '\*', then the base quality is not stored.
-
-Information on the additional optional fields can be found [here](https://samtools.github.io/hts-specs/SAMv1.pdf).
-
-The **bit-wise flags** are worth noting here, as they are very helpful for giving the user a **rough understanding of the read**. Details such as whether the read is paired, has an alignment to the provided reference sequence or is a PCR duplicate can all be encoded into the FLAG. This [tool on the Broad's Website](https://broadinstitute.github.io/picard/explain-flags.html) can be very helpful for decoding the SAM FLAGs that you can encounter.
+The **bit-wise flags are worth noting** here, as they are very helpful for giving the user a **rough understanding of the read**. Details such as whether the read is paired, has an alignment to the provided reference sequence or is a PCR duplicate can all be encoded into the FLAG. This [tool on the Broad's Website](https://broadinstitute.github.io/picard/explain-flags.html) can be very helpful for decoding the SAM FLAGs that you can encounter.
 
 
 ### Aligning reads with `bwa-mem`
