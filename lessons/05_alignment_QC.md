@@ -138,17 +138,19 @@ java -jar $PICARD/picard.jar CollectAlignmentSummaryMetrics \
 </pre>
 </details>
 
+### Submitting scripts for Picard processing
+
 Before we submit our jobs, let's **check the status of our previous `Picard` alignment processing steps**:
 
 ```
 squeue -u $USER
 ```
 
-**If your `Picard` alignment processing steps are not completed yet**, wait until they have finished before submitting these jobs to collect alignment metrics.
+* **If your `Picard` alignment processing steps are not completed** yet, **WAIT** until they have finished before submitting these jobs to collect alignment metrics.
 
-**If your `Picard` alignment processing steps are completed**, then submit these jobs to collect alignment metrics:
+* **If your `Picard` alignment processing steps are completed**, then submit these jobs to collect alignment metrics:
 
-```
+```bash
 sbatch picard_metrics_normal.sbatch
 sbatch picard_metrics_tumor.sbatch
 ```
