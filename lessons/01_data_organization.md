@@ -182,10 +182,11 @@ $ cd /n/scratch/users/${USER:0:1}/$USER
 ```
 
 > #### A quick explanation on the use of `${USER:0:1}`
-> The `users` on the scratch space are organized into subdirectories starting with the first letter of their username. `${USER:0:1}` will return the first letter of the username. test this using `echo` ${USER:0:1} at the command line.
+> The `users` on the scratch space are organized into subdirectories starting with the first letter of their username. `${USER:0:1}` will return the first letter of the username. Test this using `echo ${USER:0:1}` at the command line.
 >
-> This is syntax for creating substrings in `bash`. The syntax is: 
->  - `USER` is the variable that you would like to create a substring of
+> This is syntax for creating substrings in `bash`:
+>`{VARIABLE:START:LENGTH}`
+>  - `VARIABLE` is the variable that you would like to create a substring of
 >  - `START` is the 0-based indexing of the position to start the substring
  > - `LENGTH` is the number of characters following the starting position to include in the substring
 
