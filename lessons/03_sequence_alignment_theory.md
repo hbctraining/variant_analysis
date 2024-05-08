@@ -289,9 +289,7 @@ Now your `sbatch` script for `bwa` is ready to submit:
 $ sbatch bwa_alignment_normal.sbatch
 ```
 
-***
-
-**Excercise: Creating Tumor `sbatch` script**
+### Creating Tumor `sbatch` script**
 
 Because our files will stay mostly the same and we are just swapping the word "normal" for "tumor", this is an excellent place where we can implement the `sed` command. The `sed` command can be used to carry out a variety of tasks, but one of the more popular uses is to use it as a "search-and-replace" tool. A more thorough discussion of `sed` can be found [here](https://hbctraining.github.io/Training-modules/Finding_and_summarizing_colossal_files/lessons/03_sed.html). We are going to **replace all of the instances of "normal" with "tumor" using a `sed` command**, and redirect the output to a file called `bwa_alignment_tumor.sbatch`:
 
