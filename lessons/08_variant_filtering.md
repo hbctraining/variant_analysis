@@ -36,7 +36,7 @@ The first step is to add our shebang line, description and `sbatch` directives:
 
 ```
 #!/bin/bash
-# This sbatch script is for variant filtering 
+# This sbatch script is for variant filtering
 
 # Assign sbatch directives
 #SBATCH -p priority
@@ -278,7 +278,7 @@ module load gatk/4.1.9.0
 module load snpEff/4.3g<br>
 # Assign variables
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
-RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf
+RAW_VCF_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf
 LCR_FILE=/n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed
 MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}filt.vcf
 PASSING_FILTER_VCF=${RAW_VCF_FILE%raw.vcf}pass-filt.vcf
