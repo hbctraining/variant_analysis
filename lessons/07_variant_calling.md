@@ -386,24 +386,20 @@ Let's breakdown this command:
 > <hr />
 ></details>
 
-
-The final `sbatch` submission script for `MuTect2` should look like:
-
-```
+<details>
+  <summary><b>Click here to see what our final <code>sbatch</code>code script for calling variants with <code>MuTect2</code> should look like</b></summary> 
+  <pre>
 #!/bin/bash
-# This sbatch script is for variant calling with GATK's MuTect2
-
+# This sbatch script is for variant calling with GATK's MuTect2<br>
 # Assign sbatch directives
 #SBATCH -p priority
 #SBATCH -t 1-00:00:00
 #SBATCH -c 1
 #SBATCH --mem 16G
 #SBATCH -o mutect2_variant_calling_normal_tumor_%j.out
-#SBATCH -e mutect2_variant_calling_normal_tumor_%j.err
-
+#SBATCH -e mutect2_variant_calling_normal_tumor_%j.err<br>
 # Load the GATK module
-module load gatk/4.1.9.0
-
+module load gatk/4.1.9.0<br>
 # Assign variables
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
 REFERENCE_DICTIONARY=`echo ${REFERENCE_SEQUENCE%fa}dict`
@@ -411,8 +407,7 @@ NORMAL_SAMPLE_NAME=syn3_normal
 NORMAL_BAM_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/${NORMAL_SAMPLE_NAME}_GRCh38.p7.coordinate_sorted.bam
 TUMOR_SAMPLE_NAME=syn3_tumor
 TUMOR_BAM_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/${TUMOR_SAMPLE_NAME}_GRCh38.p7.coordinate_sorted.bam
-VCF_OUTPUT_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_${NORMAL_SAMPLE_NAME}_${TUMOR_SAMPLE_NAME}_GRCh38.p7-raw.vcf
-
+VCF_OUTPUT_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_${NORMAL_SAMPLE_NAME}_${TUMOR_SAMPLE_NAME}_GRCh38.p7-raw.vcf<br>
 # Run MuTect2
 gatk Mutect2 \
   --sequence-dictionary $REFERENCE_DICTIONARY \
@@ -423,7 +418,9 @@ gatk Mutect2 \
   --tumor-sample $TUMOR_SAMPLE_NAME \
   --annotation ClippingRankSumTest --annotation DepthPerSampleHC --annotation MappingQualityRankSumTest --annotation MappingQualityZero --annotation QualByDepth --annotation ReadPosRankSumTest --annotation RMSMappingQuality --annotation FisherStrand --annotation MappingQuality --annotation DepthPerAlleleBySample --annotation Coverage \
   --output $VCF_OUTPUT_FILE
-```
+</pre>
+</details>
+
 
 ## Tumor-only Mode
 
