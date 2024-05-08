@@ -174,7 +174,7 @@ The components of this command are:
 Now this script is all set to run! Go ahead and save and quit.
 
 <details>
-  <summary><b>Click here to see what our final `sbatch` script for the normal sample should look like</b></summary> 
+  <summary><b>Click here to see what our final <code>sbatch</code>code script for the normal sample should look like</b></summary> 
   <pre>
 
 ```
@@ -548,7 +548,7 @@ _As a result your tumor `Picard` alignment processing script should look almost 
 
 
 <details>
-  <summary><b>Click here to see what our final `sbatch` script for the tumor sample should look like </b></summary> 
+  <summary><b>Click here to see what our final <code>sbatch</code>code script for the tumor sample should look like </b></summary> 
   <pre>
  
 ```
