@@ -343,7 +343,7 @@ squeue -u $USER
 * **If your `Picard` collect alignment metric steps are completed and the only job you have running is your interactive job**, then submit this `MultiQC` job to collate the alignment metrics:
 
 ```
-sbatch multiqc_alignment_metrics.sbatch
+sbatch multiqc_alignment_metrics_normal_tumor.sbatch
 ```
 
 This job should finish fairly quickly and then we can proceed to copying it over to our local computers so we can evaluate the alignment QC of our samples.
