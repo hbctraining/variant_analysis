@@ -380,13 +380,13 @@ SAM_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMPL
 
 # Align reads with bwa
 bwa mem \
--M \
--t 8 \
--R "@RG\tID:$SAMPLE\tPL:illumina\tPU:$SAMPLE\tSM:$SAMPLE" \
-$REFERENCE_SEQUENCE \
-$LEFT_READS \
-$RIGHT_READS \
--o $SAM_FILE
+    -M \
+    -t 8 \
+    -R "@RG\tID:$SAMPLE\tPL:illumina\tPU:$SAMPLE\tSM:$SAMPLE" \
+    $REFERENCE_SEQUENCE \
+    $LEFT_READS \
+    $RIGHT_READS \
+    -o $SAM_FILE
 ```
 
 Once we have created this script we can go ahead and submit it for processing:
