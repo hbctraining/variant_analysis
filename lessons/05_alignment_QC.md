@@ -177,7 +177,7 @@ Coverage is the average level of alignment for any random locus in the genome.  
 <img src="../img/coverge.png" width="800">
 </p>
 
-_Image source: [Coverage analysis from the command line](https://medium.com/ngs-sh/coverage-analysis-from-the-command-line-542ef3545e2c)
+_Image source: [Coverage analysis from the command line](https://medium.com/ngs-sh/coverage-analysis-from-the-command-line-542ef3545e2c)_
 
 <details>
 <summary><b>Click here to find out more on collecting coverage metrics for WGS datasets in <code>Picard</code></b></summary>
