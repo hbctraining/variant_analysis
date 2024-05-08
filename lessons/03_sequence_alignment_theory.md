@@ -184,6 +184,7 @@ BWA-MEM is the latest algorithm of thee three available, and is generally recomm
 Let's begin by looking at the command used to run the alignment, and describing each of the parameters. _Do not run the code below_, as this just **example code**.
 
 ```bash
+# DO NOT RUN
 # Align reads with bwa-mem
 bwa mem \
 -M \
