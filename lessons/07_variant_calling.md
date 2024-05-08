@@ -421,6 +421,11 @@ gatk Mutect2 \
 </pre>
 </details>
 
+You can submit your variant calling script to the cluster:
+
+```bash
+sbatch mutect2_normal_tumor.sbatch
+```
 
 ## Tumor-only Mode
 
