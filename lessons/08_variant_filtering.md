@@ -60,7 +60,7 @@ Next, we will add our variables:
 ```
 # Assign variables
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
-RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf
+RAW_VCF_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf
 LCR_FILE=/n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed
 MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}filt.vcf
 PASSING_FILTER_VCF=${RAW_VCF_FILE%raw.vcf}pass-filt.vcf
@@ -72,9 +72,9 @@ Next, we can add the `FilterMutectCells` command:
 ```
 # Filter Mutect Calls
 gatk FilterMutectCalls \
---reference $REFERENCE_SEQUENCE \
---variant $RAW_VCF_FILE \
---output $MUTECT_FILTERED_VCF
+  --reference $REFERENCE_SEQUENCE \
+  --variant $RAW_VCF_FILE \
+  --output $MUTECT_FILTERED_VCF
 ```
 
 Let's breakdown this command:
@@ -96,9 +96,9 @@ Now, we are going to filter for only variants that had a FILTER result of `PASS`
 ```
 # Filter for only SNPs with PASS in the FILTER field
 java -jar $SNPEFF/SnpSift.jar filter \
--noLog \
-"( FILTER = 'PASS' )" \
-$MUTECT_FILTERED_VCF > $PASSING_FILTER_VCF
+  -noLog \
+  "( FILTER = 'PASS' )" \
+  $MUTECT_FILTERED_VCF > $PASSING_FILTER_VCF
 ```
 
   - `java -jar $SNPEFF/SnpSift.jar filter` is a `java` packaged program, so it needs to be called with `java -jar` followed by the path where the JAR file is located on the cluster. `$SNPEFF` is just a bash variable that contains the path to JAR file. This calls the `filter` function within the `SnpSift` package
@@ -205,10 +205,10 @@ Add the `filter` command from `SnpSift` to our `sbatch` script in order remove a
 ```
 # Filter LCR
 java -jar $SNPEFF/SnpSift.jar intervals \
--noLog \
--x \
--i $PASSING_FILTER_VCF \
-$LCR_FILE > $LCR_FILTERED_VCF
+  -noLog \
+  -x \
+  -i $PASSING_FILTER_VCF \
+  $LCR_FILE > $LCR_FILTERED_VCF
 ```
 
 - `java -jar $SNPEFF/SnpSift.jar intervals` This calls the `intervals` package within `SnpSift`
@@ -239,10 +239,10 @@ The command for running <code>bedtools</code> to filter out low-complexity regio
 
 <pre>
 bedtools intersect \
--header \
--v \
--a $PASSING_FILTER_VCF \
--b $LCR_FILE > $LCR_FILTERED_VCF
+  -header \
+  -v \
+  -a $PASSING_FILTER_VCF \
+  -b $LCR_FILE > $LCR_FILTERED_VCF
 </pre>
   
 We can breakdown this command:
@@ -261,53 +261,48 @@ Both <code>bedtools</code> and <code>SnpSift</code> should result in the same va
 <hr />
 </details>
 
-Our final `sbatch` script should look like:
-
-```
+<details>
+  <summary><b>Click here to see what our final <code>sbatch</code>code script for filtering our called variants should look like</b></summary> 
+  <pre>
 #!/bin/bash
-# This sbatch script is for variant filtering 
-
+# This sbatch script is for variant filtering<br>
 # Assign sbatch directives
 #SBATCH -p priority
 #SBATCH -t 0-00:10:00
 #SBATCH -c 1
 #SBATCH --mem 8G
 #SBATCH -o variant_filtering_normal_tumor_%j.out
-#SBATCH -e variant_filtering_normal_tumor_%j.err
-
+#SBATCH -e variant_filtering_normal_tumor_%j.err<br>
 # Load modules
 module load gatk/4.1.9.0
-module load snpEff/4.3g
-
+module load snpEff/4.3g<br>
 # Assign variables
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
 RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf
 LCR_FILE=/n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed
 MUTECT_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}filt.vcf
 PASSING_FILTER_VCF=${RAW_VCF_FILE%raw.vcf}pass-filt.vcf
-LCR_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}pass-filt-LCR.vcf
-
+LCR_FILTERED_VCF=${RAW_VCF_FILE%raw.vcf}pass-filt-LCR.vcf<br>
 # Filter Mutect Calls
 gatk FilterMutectCalls \
---reference $REFERENCE_SEQUENCE \
---variant $RAW_VCF_FILE \
---output $MUTECT_FILTERED_VCF
-
+  --reference $REFERENCE_SEQUENCE \
+  --variant $RAW_VCF_FILE \
+  --output $MUTECT_FILTERED_VCF<br>
 # Filter for only SNPs with PASS in the FILTER field
 java -jar $SNPEFF/SnpSift.jar filter \
--noLog \
-"( FILTER = 'PASS' )" \
-$MUTECT_FILTERED_VCF > $PASSING_FILTER_VCF
-
+  -noLog \
+  "( FILTER = 'PASS' )" \
+  $MUTECT_FILTERED_VCF > $PASSING_FILTER_VCF<br>
 # Filter LCR
 java -jar $SNPEFF/SnpSift.jar intervals \
--noLog \
--x \
--i $PASSING_FILTER_VCF \
-$LCR_FILE > $LCR_FILTERED_VCF
-```
+  -noLog \
+  -x \
+  -i $PASSING_FILTER_VCF \
+  $LCR_FILE > $LCR_FILTERED_VCF
+</pre>
+</details>
 
-We can now save and exit `vim`, then submit our `sbatch` script.
+We can now submit our `sbatch` script:
 
 ```
 sbatch variant_filtering_normal_tumor.sbatch
@@ -318,7 +313,7 @@ sbatch variant_filtering_normal_tumor.sbatch
 Once it has completed, which should be quick, we can look at the output VCF file and note a few items that have been added to the meta-information lines:
 
 ```
-less /n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-LCR-filt.vcf
+less /n/scratch/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-LCR-filt.vcf
 ```
 
 Scroll down the VCF file past all of the contigs and you should see a line starting with:
@@ -338,7 +333,7 @@ Let's inspect these lines a little:
 ##SnpSiftVersion="SnpSift 4.3g (build 2016-11-28 08:32), by Pablo Cingolani"
 ##SnpSiftCmd="SnpSift filter '( FILTER = 'PASS' )' /n/scratch3/users/${USER:0:1}/$USER/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-filt.vcf"
 ##SnpSiftVersion="SnpSift 4.3g (build 2016-11-28 08:32), by Pablo Cingolani"
-##SnpSiftCmd="SnpSift int -x -i /n/scratch3/users/${USER:0:1}/$USER/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt.vcf /n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed"
+##SnpSiftCmd="SnpSift int -x -i /n/scratch/users/${USER:0:1}/$USER/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt.vcf /n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed"
 ```
 
 The first five lines have been added to our VCF file by `GATK`. They give information on the programs that have been run on the data, which is listed on the `##source=` lines. These lines also define the column header in the VCF file that corresponds to the normal (`##normal_sample=`) and tumor sample (`##tumor_sample=`). The next four lines tell us about our `SnpSift` commands:
