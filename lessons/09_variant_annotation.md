@@ -314,7 +314,7 @@ Let's explain each part of this command:
 </details>
 
 <details>
-  <summary><b>Click here to see what our final <code>sbatch</code>code script for filtering variants called with <code>MuTect2</code> should look like</b></summary> 
+  <summary><b>Click here to see what our final <code>sbatch</code>code script for annotating our variants called with <code>MuTect2</code> should look like</b></summary> 
   <pre>
 #!/bin/bash
 # Using SnpEff to annotate our variants<br>
