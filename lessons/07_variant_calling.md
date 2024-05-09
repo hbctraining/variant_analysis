@@ -3,7 +3,7 @@
 ## Learning Objectives
 
 - Differentiate between germline and somatic variant calling
-- Call somatics variants from `bam` files using `MutTect2`
+- Call somatics variants from `bam` files using `MuTect2`
 
 ## Variant Calling Background
 
