@@ -263,13 +263,71 @@ java -jar $PICARD/picard.jar SortSam \
 >  <hr />
 ></details>
 
+> **NOTE:** You may encounter a situation where your reads from a single sample were sequenced across different lanes/machines. As a result, each alignment will have different read group IDs, but the same sample ID (the SM tag in your SAM/BAM file). You will need to merge these files here before continuing. The dropdown menu below will detail how to do this.
+>
+><details>
+> <summary><b>Click here if you need to merge alignment files from the same sample</b></summary>
+>   You can merge alignment files with different read group IDs from the same sample in both <code>Picard</code> and <code>samtools</code>. In the dropdowns below we will outline each method:
+> <details>
+>   <summary><b>Click to see how to merge SAM/BAM files in <code>Picard</code></b></summary>
+>   First, we need to load the <code>Picard</code> module:
+>   <pre>
+>   module load picard/2.27.5</pre>
+>   We can define our variables as:
+>   <pre>
+>   INPUT_BAM_1=Read_group_1.bam
+>   INPUT_BAM_2=Read_group_2.bam
+>   MERGED_OUTPUT=Merged_output.bam</pre>
+>   Here is the command we would need to run to merge the SAM/BAM files:
+>   <pre>
+>   java -jar $PICARD/picard.jar MergeSamFiles \
+>     --INPUT $INPUT_BAM_1 \
+>     --INPUT $INPUT_BAM_2 \
+>     --OUTPUT $MERGED_OUTPUT</pre>
+>   We can breakdown this command:
+>   <ul><li><code>java -jar $PICARD/picard.jar MergeSamFiles</code> This calls the <code>MergeSamFiles</code> from within <code>Picard</code></li>
+>   <li><code>--INPUT $INPUT_BAM_1</code> This is the first SAM/BAM file that we would like to merge.</li>
+>   <li><code>--INPUT $INPUT_BAM_2</code> This is the second SAM/BAM file that we would like to merge. We can continue to add <code>--INPUT</code> lines as needed.</li>
+>   <li><code>--OUTPUT $MERGED_OUTPUT</code> This is the output merged SAM/BAM file</li></ul>
+>   <hr />
+> </details>
+> <details>
+>   <summary><b>Click to see how to merge SAM/BAM files in <code>samtools</code></b></summary>
+>   First, we need to load the <code>samtools</code> module, which also requires <code>gcc</code> to be loaded:
+>   <pre>
+>   module load gcc/6.2.0
+>   module load samtools/1.15.1</pre>
+>   We can define our variables as:
+>   <pre>
+>   INPUT_BAM_1=Read_group_1.bam
+>   INPUT_BAM_2=Read_group_2.bam
+>   MERGED_OUTPUT=Merged_output.bam
+>   THREADS=8</pre>
+>   Here is the command we would need to run to merge the SAM/BAM files:
+>   <pre>
+>   samtools merge \
+>     -o $MERGED_OUTPUT \
+>     $INPUT_BAM_1 \
+>     $INPUT_BAM_2 \
+>     --output-fmt BAM \
+>     -@ $THREADS</pre>
+>   We can break down this command:
+>   <ul><li><code>samtools merge</code> This calls the <code>merge</code> package within <code>samtools</code>.</li>
+>   <li><code>-o $MERGED_OUTPUT</code> This is the merged output file.</li>
+>   <li><code>$INPUT_BAM_1</code> This is the first SAM/BAM file that we would like to merge.</li>
+>   <li><code>$INPUT_BAM_2</code> This is the second SAM/BAM file that we would like to merge. We can continue to add addiitonal input SAM/BAM files to this list as needed.</li>
+>   <li><code>--output-fmt BAM</code> This specifies the output format as <code>BAM</code>. If for some reason you wanted a <code>SAM</code> output file then you would use <code>--output-fmt SAM</code> instead.</li>
+>   <li><code>-@ $THREADS</code> This specifies the number of threads we want to use for this process. We are using 8 threads in this example, but this could be different depending on the parameters that you would like to use.</li></ul>
+> </details>
+><hr />
+></details>
 ---
 
 <details>
   <summary><b>Click here for alignment file processing using <code>Samtools</code></b></summary>
 <br><code>Samtools</code> is another popular tool used for processing BAM/SAM files. The output from <code>Samtools</code> compared to <code>Picard</code> is largely the same. Below is the pipeline and explanation for how you would carry out the similar SAM/BAM processing steps within <code>Samtools</code>.<br>
 <p align="center">
-<img src="../img/Samtools_pipeline.png" width="800">
+<img src="../img/Process_alignment_workflow_zoom_in_samtools.png" width="800">
 </p><br>
 <ol><li><details>
     <summary><b>Click here for setting up a <code>sbatch</code> script BAM/SAM Processing for the <code>Samtools</code> pipeline</b></summary>
