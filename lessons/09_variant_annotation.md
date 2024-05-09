@@ -235,7 +235,7 @@ Let's go ahead and add the `SnpSift` line that we are going to use to annotate o
 ```
 # Use dbSNP VCF to annotate our VCF
 java -jar $SNPEFF/SnpSift.jar annotate \
-$DBSNP_DATABASE \
+  $DBSNP_DATABASE \
   -tabix \
   -noLog \
   $SNPEFF_ANNOTATED_VCF_FILE \
