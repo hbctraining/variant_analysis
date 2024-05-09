@@ -313,25 +313,22 @@ Let's explain each part of this command:
 <hr />
 </details>
 
-This final script should look like:
-
-```
+<details>
+  <summary><b>Click here to see what our final <code>sbatch</code>code script for filtering variants called with <code>MuTect2</code> should look like</b></summary> 
+  <pre>
 #!/bin/bash
-# Using SnpEff to annotate our variants
-
+# Using SnpEff to annotate our variants<br>
 # Assign sbatch directives
 #SBATCH -p priority
 #SBATCH -t 0-02:00:00
 #SBATCH -c 1
 #SBATCH --mem 8G
 #SBATCH -o variant_annotation_syn3_normal_syn3_tumor_%j.out
-#SBATCH -e variant_annotation_syn3_normal_syn3_tumor_%j.err
-
+#SBATCH -e variant_annotation_syn3_normal_syn3_tumor_%j.err<br>
 # Load modules
 module load gcc/9.2.0
 module load bcftools/1.14
-module load snpEff/4.3g
-
+module load snpEff/4.3g<br>
 # Assign variables
 REPORTS_DIRECTORY=/home/$USER/variant_calling/reports/snpeff/
 SAMPLE_NAME=mutect2_syn3_normal_syn3_tumor
@@ -345,36 +342,34 @@ PEDIGREE_HEADER_FILE=/home/$USER/variant_calling/scripts/syn3_normal_syn3_tumor_
 FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER=${FILTERED_VCF_FILE%.vcf}.pedigree_header.vcf
 SNPEFF_ANNOTATED_VCF_FILE=${FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER%.vcf}.snpeff.vcf
 DBSNP_DATABASE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.dbSNP.vcf.gz
-DBSNP_ANNOTATED_VCF_FILE=${SNPEFF_ANNOTATED_VCF_FILE%.vcf}.dbSNP.vcf
-
+DBSNP_ANNOTATED_VCF_FILE=${SNPEFF_ANNOTATED_VCF_FILE%.vcf}.dbSNP.vcf<br>
 # Create reports directory
-mkdir -p $REPORTS_DIRECTORY
-
+mkdir -p $REPORTS_DIRECTORY<br>
 # Append Header
 bcftools annotate \
---header-lines $PEDIGREE_HEADER_FILE \
-$FILTERED_VCF_FILE \
-> $FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER
-
+  --header-lines $PEDIGREE_HEADER_FILE \
+  $FILTERED_VCF_FILE \
+  > $FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER<br>
 # Run SnpEff
 java -jar -Xmx4g $SNPEFF/snpEff.jar  eff \
--dataDir $DATADIR \
--cancer \
--noLog \
--csvStats $CSV_STATS \
--s $HTML_REPORT \
-$REFERENCE_DATABASE \
-$FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER \
-> $SNPEFF_ANNOTATED_VCF_FILE
-
+  -dataDir $DATADIR \
+  -cancer \
+  -noLog \
+  -csvStats $CSV_STATS \
+  -s $HTML_REPORT \
+  $REFERENCE_DATABASE \
+  $FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER \
+  > $SNPEFF_ANNOTATED_VCF_FILE<br>
 # Use dbSNP VCF to annotate our VCF
 java -jar $SNPEFF/SnpSift.jar annotate \
-$DBSNP_DATABASE \
--tabix \
--noLog \
-$SNPEFF_ANNOTATED_VCF_FILE \
-> $DBSNP_ANNOTATED_VCF_FILE
-```
+  $DBSNP_DATABASE \
+  -tabix \
+  -noLog \
+  $SNPEFF_ANNOTATED_VCF_FILE \
+  > $DBSNP_ANNOTATED_VCF_FILE
+</pre>
+<hr />
+</details>
 
 Submit this script using:
 
