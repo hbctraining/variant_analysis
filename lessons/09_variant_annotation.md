@@ -129,9 +129,9 @@ Next, we can add our `bcftools` command to append the header line required for c
 ```
 # Append Header
 bcftools annotate \
---header-lines $PEDIGREE_HEADER_FILE \
-$FILTERED_VCF_FILE \
-> $FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER
+  --header-lines $PEDIGREE_HEADER_FILE \
+  $FILTERED_VCF_FILE \
+  > $FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER
 ```
 
 Here is what each part of that command does:
@@ -141,19 +141,19 @@ Here is what each part of that command does:
   - `$FILTERED_VCF_FILE` This is our input VCF file without the appended header
   - `> $FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER` This is the output file with the appended header
 
-Next, we need to add out `SnpEff` command:
+Next, we need to add our `SnpEff` command:
 
 ```
 # Run SnpEff
 java -jar -Xmx4g $SNPEFF/snpEff.jar  eff \
--dataDir $DATADIR \
--cancer \
--noLog \
--csvStats $CSV_STATS \
--s $HTML_REPORT \
-$REFERENCE_DATABASE \
-$FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER \
-> $SNPEFF_ANNOTATED_VCF_FILE
+  -dataDir $DATADIR \
+  -cancer \
+  -noLog \
+  -csvStats $CSV_STATS \
+  -s $HTML_REPORT \
+  $REFERENCE_DATABASE \
+  $FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER \
+  > $SNPEFF_ANNOTATED_VCF_FILE
 ```
 
 Let's breakdown this command and discuss each argument:
@@ -236,10 +236,10 @@ Let's go ahead and add the `SnpSift` line that we are going to use to annotate o
 # Use dbSNP VCF to annotate our VCF
 java -jar $SNPEFF/SnpSift.jar annotate \
 $DBSNP_DATABASE \
--tabix \
--noLog \
-$SNPEFF_ANNOTATED_VCF_FILE \
-> $DBSNP_ANNOTATED_VCF_FILE
+  -tabix \
+  -noLog \
+  $SNPEFF_ANNOTATED_VCF_FILE \
+  > $DBSNP_ANNOTATED_VCF_FILE
 ```
 
 Let's discuss each part of this command:
@@ -275,11 +275,11 @@ Let's talk about this command:<br>
 Now we are ready to annotate the VCF file with the dbSNP annotations. The command to do so is:
 <pre>
 bcftools annotate \
--a $DBSNP_DATABASE \
--c ID,INFO \
--O v \
--o $DBSNP_ANNOTATED_VCF_FILE \
-${SNPEFF_ANNOTATED_VCF_FILE}.gz
+  -a $DBSNP_DATABASE \
+  -c ID,INFO \
+  -O v \
+  -o $DBSNP_ANNOTATED_VCF_FILE \
+  ${SNPEFF_ANNOTATED_VCF_FILE}.gz
 </pre>
 Let's explain each part of this command:
   <ul><li><code>bcftools annotate</code> This calls the <code>annotate</code> function within <code>bcftools</code></li>
