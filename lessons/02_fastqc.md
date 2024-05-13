@@ -121,7 +121,7 @@ To run FastQC we need to specify two arguments:
 Since we have the FASTQ input, we just need to make the directory to hold the output:
 
 ```bash
-mkdir ~/variant_calling/results/fastqc/
+mkdir ~/variant_calling/reports/fastqc/
 ```
 
 **Example code is provided below. DO NOT RUN!**
@@ -129,7 +129,7 @@ mkdir ~/variant_calling/results/fastqc/
 ```bash
 ## DO NOT RUN!
 
-$ fastqc -o ~/variant_calling/results/fastqc/ \
+$ fastqc -o ~/variant_calling/reports/fastqc/ \
       --threads 2 \
      ~/variant_calling/raw_data/file1.fq.gz \
      ~/variant_calling/raw_data/file2.fq.gz 
@@ -162,13 +162,13 @@ Before we do anything else, we need to reload the module since we exited out of 
 ```bash
 $ module load fastqc/0.12.1
 
-$ fastqc -o ~/variant_calling/results/fastqc/ -t 4 ~/variant_calling/raw_data/*.gz 
+$ fastqc -o ~/variant_calling/reports/fastqc/ -t 4 ~/variant_calling/raw_data/*.gz 
 ```
 
 Once it has finished running, we can take a look at the output files generated:
 
 ```bash
-$ ls -l ~/variant_calling/results/fastqc/
+$ ls -l ~/variant_calling/reports/fastqc/
 ```
 
 The FastQC output that we are most interested in is the `html` file for each sample. These reports should be inspected carefully as part of the analysis pipeline.
