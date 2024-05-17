@@ -144,7 +144,7 @@ $ pwd
 
 This should let us know that we are located at: `/home/rc_trainingXX`
 
-Once we have established our location, let's begin by making the directory for our project (i.e. the analysis in this workshop):
+Once we have established our location, let's begin by making the directory for our project (i.e., the analysis in this workshop):
 
 ```
 $ mkdir variant_calling
@@ -175,7 +175,7 @@ $ cd raw_data
 $ cp /n/groups/hbctraining/variant_calling/raw_data/*.fq.gz .
 ```
 
-This may take up to a minute as there is a lot of data to copy. Now that we have created the directories that we are going to use in our `home` space. Let's move to our `/n/scratch3` space so that we can set up the directories that we are going to there to hold our intermediate files:
+This may take up to a minute as there is a lot of data to copy. Now that we have created the directories that we are going to use in our `home` space, let's move to our `/n/scratch3` space so that we can set up the directories that we are going to use there to hold our intermediate files:
 
 ```
 $ cd /n/scratch/users/${USER:0:1}/$USER
