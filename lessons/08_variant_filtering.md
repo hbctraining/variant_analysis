@@ -11,7 +11,7 @@ The output from `MuTect2` is a raw variant calling output and the calls need to 
 
 - Technical artifacts
 - Non-somatic mutations
-- Sequencing Errors
+- Sequencing errors
 
 <p align="center">
 <img src="../img/Filter_variants.png" width="400">
@@ -77,7 +77,7 @@ gatk FilterMutectCalls \
   --output $MUTECT_FILTERED_VCF
 ```
 
-Let's breakdown this command:
+Let's break down this command:
 
 - `gatk FilterMutectCalls` Calls the `FilterMutectCalls` package within `GATK`
 
@@ -103,7 +103,7 @@ java -jar $SNPEFF/SnpSift.jar filter \
 
   - `java -jar $SNPEFF/SnpSift.jar filter` is a `java` packaged program, so it needs to be called with `java -jar` followed by the path where the JAR file is located on the cluster. `$SNPEFF` is just a bash variable that contains the path to JAR file. This calls the `filter` function within the `SnpSift` package
   
-  - `-noLog` Does not report usage statistics to `SnpEff`'s servers. According to their [documentation](https://pcingola.github.io/SnpEff/se_commandline/#logging), it is so that they can monitor which features people are and aren't using. 
+  - `-noLog` Does not report usage statistics to `SnpEff`'s servers. According to their [documentation](https://pcingola.github.io/SnpEff/se_commandline/#logging), it is so that they can monitor which features people are and aren't using
  
   - `"( FILTER = 'PASS' )"` This is the syntax that `SnpSift` uses to only retain variant calls with `PASS` in the `FILTER` field of the VCF file
  
@@ -113,11 +113,11 @@ java -jar $SNPEFF/SnpSift.jar filter \
 
 ## Low-Complexity Regions
 
-Low-complexity regions of the genome represent regions that have simple sequence repeats and variant callers are prone to make errors within these regions (see [Li, 2014](https://academic.oup.com/bioinformatics/article/30/20/2843/2422145)). Some insertions and deletions (Indels) are erroreously called within these low-complexity regions by various variant callers. They found:
+Low-complexity regions of the genome represent regions that have simple sequence repeats; variant callers are prone to make errors within these regions (see [Li, 2014](https://academic.oup.com/bioinformatics/article/30/20/2843/2422145)). Some insertions and deletions (Indels) are erroreously called within these low-complexity regions by various variant callers. They found:
 
 > "low-complexity regions (LCRs), 2% of the human genome, harbor 80–90% of heterozygous INDEL calls and up to 60% of heterozygous SNPs" with false positive rates ranging from "10% to as high as 40%".
 
-As a result of the high error rates in these low-complexity regions, it is recommended to remove of these regions until better methods for variant calling in low-complexity regions can become established. The file that holds out LCR regions is in BED format, so we need to breifly discuss this file format.
+As a result of the high error rates in these low-complexity regions, it is recommended to remove of these regions until better methods for variant calling in low-complexity regions can become established. The file that holds our LCR regions is in BED format, so we need to breifly discuss this file format.
 
 ## BED Files
 
@@ -171,7 +171,6 @@ curl -o LCR-hs38_with_chr.bed.gz -L https://github.com/lh3/varcmp/blob/master/sc
  <pre>
  # YOU DON'T NEED TO DO THIS
  gunzip -c LCR-hs38_with_chr.bed.gz > LCR-hs38_with_chr.bed</pre>
-
  
 When we inspect our BED file we can see that it simply has the required 3 columns denoting the positioning of low-complexitiy regions in GRCh38.
  
@@ -186,7 +185,7 @@ Unfortunately, this file is formatted with the chromosome names starting with <c
 sed 's/^chr//g' LCR-hs38_with_chr.bed &gt; LCR-hs38.bed
 </pre>
 
-We can break with command down:
+We can break this command down:
 
 <ul><li><code>sed</code> Calls the <code>sed</code> command</li>
 
@@ -215,14 +214,13 @@ java -jar $SNPEFF/SnpSift.jar intervals \
 
 - `-noLog` This does not report command usage to <code>SnpEff</code>'s server
 
-- `-x` This option tells `SnpSift` to *exclude* sites found in the BED file. The default behavior of `SnpSift filter` is to only *include* sites found in the BED file.
+- `-x` This option tells `SnpSift` to *exclude* sites found in the BED file. The default behavior of `SnpSift filter` is to only *include* sites found in the BED file
 
-- `-i $PASSING_FILTER_VCF` This is the VCF file that we would like to be filtered. It can either be `.gz` compressed or not. 
+- `-i $PASSING_FILTER_VCF` This is the VCF file that we would like to be filtered. It can either be `.gz` compressed or not
 
-- `$LCR_FILE` This represents the BED file you want to use to filter your VCF file with. While in this case we only have one BED file, you can use multiple BED files if you have several filters that you wanted to apply. 
+- `$LCR_FILE` This represents the BED file you want to use to filter your VCF file with. While in this case we only have one BED file, you can use multiple BED files if you have several filters that you wanted to apply
 
-- `> $LCR_FILTERED_VCF` Lastly, this is just redirecting the output into a new, filtered VCF file.
-
+- `> $LCR_FILTERED_VCF` Lastly, this is just redirecting the output into a new, filtered VCF file
 
 [`bedtools`](https://bedtools.readthedocs.io/en/latest/index.html) is an useful suite of tools to use when handling BED files. It also has functionality for handling VCF files. A similar approach for filtering out low-complexity regions can also be done within the tool `bedtools` and is shown in a dropdown box below.
 
@@ -245,19 +243,19 @@ bedtools intersect \
   -b $LCR_FILE > $LCR_FILTERED_VCF
 </pre>
   
-We can breakdown this command:
+We can break down this command:
   
-<ul><li><code>-header</code> This will maintain the header information from the <code>-a</code> file. However, it will not add the <code>bedtools</code> command to the header line like <code>SnpSift</code> does.</li>
+<ul><li><code>-header</code> This will maintain the header information from the <code>-a</code> file. However, it will not add the <code>bedtools</code> command to the header line like <code>SnpSift</code> does</li>
   
-<li><code>-v</code> Traditionally, <code>bedtools intersect</code> will report the intersection of the file following <code>-a</code> and the file following <code>-b</code>. However, the <code>-v</code> option alters this behavior to find positions in the <code>-a</code> file not in <code>-b</code> file.</li>
+<li><code>-v</code> Traditionally, <code>bedtools intersect</code> will report the intersection of the file following <code>-a</code> and the file following <code>-b</code>. However, the <code>-v</code> option alters this behavior to find positions in the <code>-a</code> file not in <code>-b</code> file</li>
   
 <li><code>-a $PASSING_FILTER_VCF</code> This is the VCF file that we want filtered</li>
   
 <li><code>-b $LCR_FILE</code> This is the BED file containing genomic coordinates for sites in the VCF file to exclude</li>
   
-<li><code>&gt; $LCR_FILTERED_VCF</code> Redirecting the output of this filtering command to a new file.</li></ul>
+<li><code>&gt; $LCR_FILTERED_VCF</code> Redirecting the output of this filtering command to a new file</li></ul>
 
-Both <code>bedtools</code> and <code>SnpSift</code> should result in the same variants passing filtering and the only difference is in the amount of metadata provided in the header lines where <code>SnpSift</code> provides the command that was used to produce that file, while <code>bedtools</code> does not. Because of this, one could argue that <code>SnpSift</code> is <i>slightly</i> better for this purpose than <code>bedtools</code>. However, much like the <code>samtools</code> versus <code>Picard</code> discussion we had in the BAM alignment procressing lesson, it is mostly up to personal preference.
+Both <code>bedtools</code> and <code>SnpSift</code> should result in the same variants passing filtering. The only difference is in the amount of metadata provided in the header lines: <code>SnpSift</code> provides the command that was used to produce that file, while <code>bedtools</code> does not. Because of this, one could argue that <code>SnpSift</code> is <i>slightly</i> better for this purpose than <code>bedtools</code>. However, much like the <code>samtools</code> versus <code>Picard</code> discussion we had in the BAM alignment procressing lesson, it is mostly up to personal preference.
 <hr />
 </details>
 
@@ -344,7 +342,7 @@ The first five lines have been added to our VCF file by `GATK`. They give inform
 
 ---
 
-Now, we have successfuly filtered our raw VCF file to only include high-qulaity variant calls, we are ready to begin annotating our variants.
+Now that we have successfuly filtered our raw VCF file to only include high-quality variant calls, we are ready to begin annotating our variants.
 
 [Next lesson >>](09_variant_annotation.md)
 
