@@ -4,8 +4,8 @@
 
 - Open VCF files in IGV
 - Load additional tracks in IGV
-- Perform basic tasks in IGV, such as renaming tracks, resizing tracks and navigating to different regions
-- Saving an IGV session and opening a saved IGV session
+- Perform basic tasks in IGV, such as renaming tracks, resizing tracks, and navigating to different regions
+- Save an IGV session and open a saved IGV session
 
 
 ## Downloading our VCF file with FileZilla
@@ -48,13 +48,13 @@ Once you are connected to O2, navigate the O2 window to where your VCF files are
 /n/scratch3/users/r/rctrainingXX/variant_calling/vcf_files
 ```
 
-From here you should see you your annotated VCF file:
+From here you should see your annotated VCF file:
 
 ```
 mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf
 ```
 
-Drag this file over to your your computer and places it in the appropriate directory. We are going to place ours in Desktop.
+Drag this file over to your your computer and place it in the appropriate directory. We are going to place ours in Desktop.
 
 <p align="center">
 <img src="../img/Move_VCF_file.png" width="1000">
@@ -102,7 +102,7 @@ Now our IGV window should display the loaded file:
 <img src="../img/Loaded_file_IGV.png" width="600">
 </p>
 
-This loaded file is referred to as a *track* in IGV. We can have multiple tracks loaded as once and in the next section we will demonstrate how to load tracks provided by IGV.
+This loaded file is referred to as a *track* in IGV. We can have multiple tracks loaded at once. In the next section we will demonstrate how to load tracks provided by IGV.
 
 ### Load IGV Provided Tracks
 
@@ -182,7 +182,6 @@ If we zoom in enough we can get down to seeing individual variants. Underneath t
 <img src="../img/Zoomed_variant_IGV.png" width="800">
 </p>
 
-
 ### Modifying Tracks
 
 Now that we have an idea of how we can navigate in the IGV window, we want to learn how to modify the tracks. IGV provides lots of ways in which you can modify the tracks.
@@ -195,13 +194,13 @@ First, we might want to be interested in resizing the tracks. Currently, we have
 <img src="../img/Resize_button_IGV.png" width="400">
 </p>
 
-Now the tracks should fit into the window space a but better and look like:
+Now the tracks should fit into the window space a bit better and look like:
 
 <p align="center">
 <img src="../img/Resized_to_window_IGV.png" width="800">
 </p>
 
-> **NOTE:** If you have too few tracks, like we have here, they likely won't encompass all of the white space or if you have too many tracks, IGV might not be able to cram them all into the window and you will have a scroll bar on the side.
+> **NOTE:** If you have too few tracks, like we have here, they likely won't encompass all of the white space or, if you have too many tracks, IGV might not be able to cram them all into the window and you will have a scroll bar on the side.
 
 We can also manually adjust the track height by right-clicking on the track that we want to alter in size and the left-clicking "Change Track Height.."
 
@@ -209,7 +208,7 @@ We can also manually adjust the track height by right-clicking on the track that
 <img src="../img/Change_height_IGV.png" width="600">
 </p>
 
-A window should pop-up and allow you to modify the height. Once you have selected a height you can left-click <kbd>OK</kbd> and the track will be resized.
+A window should pop up and allow you to modify the height. Once you have selected a height you can left-click <kbd>OK</kbd> and the track will be resized.
 
 <p align="center">
 <img src="../img/Adjust_track_height_manual_IGV.png" width="400">
@@ -224,7 +223,7 @@ We can also adjust the data range that we want displayed in the track. Similarly
 <img src="../img/Set_data_range_IGV.png" width="400">
 </p>
 
-A window should pop-up and allow you to select the minimum, maximum and whether you would like the data to be log-scaled. Once you have selected the parameters you want, you can left-click <kbd>OK</kbd>:
+A window should pop up and allow you to select the minimum, maximum, and whether you would like the data to be log-scaled. Once you have selected the parameters you want, you can left-click <kbd>OK</kbd>:
 
 <p align="center">
 <img src="../img/Set_data_range_manual_IGV.png" width="400">
@@ -238,7 +237,7 @@ When tracks are loaded from files, they are named by the filename and sometimes 
 <img src="../img/Rename_track_IGV.png" width="600">
 </p>
 
-A window should pop-up and allow you to type the desired name of the track. Once you have typed the desired name, left-click <kbd>OK</kbd>:
+A window should pop up and allow you to type the desired name of the track. Once you have typed the desired name, left-click <kbd>OK</kbd>:
 
 <p align="center">
 <img src="../img/Rename_track_manual_IGV.png" width="400">
@@ -252,7 +251,7 @@ Many tracks load into IGV as blue by default, but you do have options for which 
 <img src="../img/Change_track_color_IGV.png" width="400">
 </p>
 
-A window will pop-up on the default "Swatches" tab on the top. You can pick from a wide array for pre-selected colors here. If you find one you like, left-click the color then click <kbd>OK</kbd>:
+A window will pop up on the default "Swatches" tab on the top. You can pick from a wide array for pre-selected colors here. If you find one you like, left-click the color then click <kbd>OK</kbd>:
 
 <p align="center">
 <img src="../img/Swatches_color_IGV.png" width="600">
@@ -310,19 +309,19 @@ Let's go ahead and close our IGV session now.
 
 #### Loading an IGV Session
 
-If we now open IGV back up, we will notice that it provides a fresh session. If we want to load a previous IGV session we will need to load it. To load an IGV session, go to the top bar and left-click <kbd>File</kbd> &#8594; <kbd>Open Session...</kbd>:
+If we now open IGV back up, we will notice that it provides a fresh session. If we want to see a previous IGV session, we will need to load it. To load an IGV session, go to the top bar and left-click <kbd>File</kbd> &#8594; <kbd>Open Session...</kbd>:
 
 <p align="center">
 <img src="../img/Load_session_IGV.png" width="400">
 </p>
 
-A window should pop-up and let you select the file you would like to load. Left-click the file you would like to load and then left-click <kbd>Open</kbd>:
+A window should pop up and let you select the file you would like to load. Left-click the file you would like to load and then left-click <kbd>Open</kbd>:
 
 <p align="center">
 <img src="../img/Loading_session_IGV.png" width="400">
 </p>
 
-We can now see that we have loaded our previous IGV session! ***It is VERY IMPORTANT that if you move files that were loaded into IGV into a different location on your computer, IGV will not be able to find them and therefore not load your saved session!***
+We can now see that we have loaded our previous IGV session! ***It is VERY IMPORTANT to note that if you move files that were loaded into IGV into a different location on your computer, IGV will not be able to find them and therefore will not load your saved session!***
 
 ## Exercises
 
