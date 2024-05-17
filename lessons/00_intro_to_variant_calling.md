@@ -35,7 +35,7 @@ These two types of variant calling methods have different assumptions regarding 
 
 ## Types of variants 
 
-There are several different types variants that require their own consideration. These include:
+There are several different types of variants that require their own consideration. These include:
 
 - **Single Nucleotide Polymorphisms (SNPs)** - These are positions in the genome where a single base has been mutated. For example, perhaps most individuals in a population have a Thymine in a given position, while an individual of interest has a Adenine in this position.
 - **Small Insertions/Deletions (Indels)** - Small indels are loci where a few bases have been added or removed relative to the larger population. For example, if an individual has an extra `GA` at a location relative to the rest of the population, then this would be considered a small insertion.
