@@ -15,9 +15,9 @@ Now that we have inspected our reads and alignments for high-quality QC and also
 
 ## Germline versus Somatic Variant Calling
 
-Variant calling can be broadly broken up into two groups, germline and somatic. Germline variant calling refers to the process of calling variants that are ubiquitous across the organism (i.e. almost all cells carry these variants) and these are the types of variants that can be passed through the germline. Studies that evaluate population genetics are often concerned with germline variant calling. Somatic variant calling refers to the process of calling variants that differ between cells within a single organism and these variants are not passed through the germline. Somatic variant calling is often used when studying the progression of various cancers. These two types of variant calling methods have different assumptions regarding in the input data and thus are handled differently. 
+Variant calling can be broadly broken up into two groups, germline and somatic. Germline variant calling refers to the process of calling variants that are ubiquitous across the organism (i.e., almost all cells carry these variants); these are the types of variants that can be passed through the germline. Studies that evaluate population genetics are often concerned with germline variant calling. Somatic variant calling refers to the process of calling variants that differ between cells within a single organism; these variants are not passed through the germline. Somatic variant calling is often used when studying the progression of various cancers. These two types of variant calling methods have different assumptions regarding in the input data and thus are handled differently. 
 
-For example, germline variant calling for the most part expects at most two alleles in relatively equal frequencies, while a single tumor sample could have various cancer lineages with various allele frequencies. This makes somatic variant calling more difficult than germline variant calling because low frequency variants and sequencing artifacts are difficult to distinguish from sequencing errors. Additionally, oftentimes within somatic variant calling, you are also trying to avoid calling the germline variants. The image below should help distinguish between germline and somatic variants:
+For example, germline variant calling for the most part expects at most two alleles in relatively equal frequencies, while a single tumor sample could have various cancer lineages with various allele frequencies. This makes somatic variant calling more difficult than germline variant calling because low frequency variants are difficult to distinguish from sequencing errors and artifacts. Additionally, oftentimes with somatic variant calling you are also trying to avoid calling the germline variants. The image below should help distinguish between germline and somatic variants:
 
 <p align="center">
 <img src="../img/Germline_Somatic_Variants.png" width="600">
@@ -54,11 +54,11 @@ This course is going to focus on analyzing somatic SNPs, so we are going to use 
 ### Basic workflow
 
 BREAK THIS UP
-When using `MuTect2`, we will first re-evaluate the alignments of the normal and tumor samples and create "active regions" that appear to need a local re-assembly. During this process of local re-assembly the tumor sample's reads are interrogated to a higher degree for their quality than the normal samples and a *de Bruijn* graph of the region is created with an assembler. From here, most likely haplotypes are assembled and variants are called from these haplotypes. 
+When using `MuTect2`, we will first re-evaluate the alignments of the normal and tumor samples and create "active regions" that appear to need a local re-assembly. During this process of local re-assembly, the tumor sample's reads are interrogated to a higher degree for their quality than the normal samples and a *de Bruijn* graph of the region is created with an assembler. From here, most likely haplotypes are assembled and variants are called from these haplotypes. 
 
 The alogrithm used for somatic variant discovery with Mutect2 is broken up into three major components:
-- **Local Assembly** - The initial step is for Mutect2 to evaluates regions for somatic variations. Regions that surpass a log odds threshold for somatic variation comparing the existance and non-existance of a potential alternate allele are flagged as "active" regions and are slated for local reassembly and realignment. The local reassembly is done by creating a *de Bruijn* graph of the active region.
-- **Haplotype Assembly** - From this *de Bruijn* graph, each haplotype is assembled and the haplotype spans the variant in question and connects two points in the reference genome.
+- **Local Assembly** - The initial step is for Mutect2 to evaluate regions for somatic variations. Regions that surpass a log-odds threshold for somatic variation comparing the existance and non-existance of a potential alternate allele are flagged as "active" regions and are slated for local reassembly and realignment. The local reassembly is done by creating a *de Bruijn* graph of the active region.
+- **Haplotype Assembly** - From this *de Bruijn* graph, each haplotype is assembled; the haplotype spans the variant in question and connects two points in the reference genome.
 - **Somatic Genotyping** - 
 
 <p align="center">
@@ -67,7 +67,7 @@ The alogrithm used for somatic variant discovery with Mutect2 is broken up into 
 
 ## Variant Call Format
 
-The [Variant Call Format (VCF)](https://samtools.github.io/hts-specs/VCFv4.2.pdf) is a standardized, text-file format for describing variants identifed from a sequencing experiment. This allows for downstream processes to be streamlined and also allows for researchers to easily collaborate and manipulate a shared set of variant calls. A VCF file is composed of three main parts:
+The [Variant Call Format (VCF)](https://samtools.github.io/hts-specs/VCFv4.2.pdf) is a standardized text file format for describing variants identifed from a sequencing experiment. This allows for downstream processes to be streamlined and also allows for researchers to easily collaborate and manipulate a shared set of variant calls. A VCF file is composed of three main parts:
 - Meta-information Lines
 - Header Line
 - Data Lines
@@ -164,10 +164,9 @@ Let's analyze a few of the meta-information lines to understand what they are de
 
 - The `##source=FilterMutectCalls` and `##source=Mutect2` lines give us a brief idea of the two software packages that have been run to create our VCF file, but these are not as in-depth as the `##GATKCommandLine` lines.
 
-
 ### Header Line
 
-The header line is a single line between the meta-information lines and the data lines that provies a brief desciption of each field in the following data lines. The example header line looked like:
+The header line is a single line between the meta-information lines and the data lines that provides a brief desciption of each field in the following data lines. The example header line looked like:
 
 ```
 #CHROM  POS ID  REF ALT QUAL  FILTER  INFO  FORMAT  syn3_normal     syn3_tumor
@@ -176,12 +175,12 @@ The header line is a single line between the meta-information lines and the data
 The header line always starts with just a single `#` followed by eight mandatory fields:
 
 - **CHROM** - Chromosome where the variant was found
-- **POS** - A 1-based index for the position on the chromosome where the variant was found. For multibase variants, this corresponds to the first base's position.
-- **ID** - If a SNP has an identifier (i.e. such as an rs number(s) from dbSNP), then it is put here. Otherwise, it will be a `.`.
+- **POS** - A 1-based index for the position on the chromosome where the variant was found. For multibase variants, this corresponds to the first base's position
+- **ID** - If a SNP has an identifier (e.g., rs number(s) from dbSNP), then it is put here. Otherwise, it will be a `.`.
 - **REF** - The reference base(s) for the given position
-- **ALT** - The variant base(s) for the given position. In the case of multiple variants present, they will be comma separated.
+- **ALT** - The variant base(s) for the given position. In the case of multiple variants present, they will be comma separated
 - **QUAL** - A PHRED-scaled quality score for the variant
-- **FILTER** - A status of 'PASS' is given for any variant passing all filters. If a variant fails, then a semi-colon separated list will enumerate the filter(s) that the variant failed.
+- **FILTER** - A status of 'PASS' is given for any variant passing all filters. If a variant fails, then a semi-colon separated list will enumerate the filter(s) that the variant failed
 - **INFO** -  Additional information about the variant. Common catergories can be found in the table below:
 
 | Abbreviation | Data Type |
@@ -200,6 +199,7 @@ The header line always starts with just a single `#` followed by eight mandatory
 | HQ | Commma-separated list of Haplotype Qualities |
 
 \* The genotype field will have two integers for a diploid sample separated by either a `/` or a `|`. The integers correspond to the alleles with 0 being the reference allele, 1 being the first allele listed in the ALT field, 2 being the second allele listed in the ALT field, etc. A `/` denotes an unphased genotype, while `|` denotes a phased genotype.
+
 - **Genotype Fields** - A colon-separated list of genotype information about a given sample that corresponds to the categories outlined in the FORMAT field. The fields will be equal to the number of samples investigated. In the case of the sample VCF, these are the fields titled `syn3_normal` and `syn3_tumor`.
 
 The abbreviations for the INFO and FORMAT fields given in the aforementioned tables is not exhaustive. Generally, these abbreviations with be outlined in the meta-information lines at the top of the file or can be found on pages 5 and 6 of the [VCF manual](https://samtools.github.io/hts-specs/VCFv4.2.pdf).
@@ -226,7 +226,7 @@ This variant is on chromosome `1` at position `1324300`. It has a `.` in the thi
 
 ### Exercises
 
-Let's analzye this sample VCF file found here `/n/groups/hbctraining/variant_calling/sample_data/sample.vcf`. First let's move into out `variant_calling` directory and copy over the file:
+Let's analzye this sample VCF file found here `/n/groups/hbctraining/variant_calling/sample_data/sample.vcf`. First let's move into our `variant_calling` directory and copy over the file:
 
 ```
 cd ~/variant_calling/
@@ -235,7 +235,7 @@ cp /n/groups/hbctraining/variant_calling/sample_data/sample.vcf .
 
 **4.** Using `grep`, extract only the meta-information lines from the VCF file. 
 
-**5.** Using `grep`, extract the lines containing the names of all of the software packages that were used in the creation of this VCF file?
+**5.** Using `grep`, extract the lines containing the names of all of the software packages that were used in the creation of this VCF file.
 
 **Bonus Challenge:** **6.** For the variant at position 806262 on chromosome 19, what is the reference allele?
 
@@ -263,7 +263,7 @@ First, let's add our shebang line, script description and `sbatch` directive:
 #SBATCH -e mutect2_variant_calling_normal_tumor_%j.err
 ```
 
-Next add the `GATK` module we are going to load:
+Next, add the `GATK` module we are going to load:
 
 ```
 # Load the GATK module
@@ -301,7 +301,7 @@ VCF_OUTPUT_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/vcf_files/m
 <hr />
 </details>
 
-> NOTE: Sometimes when there are many input variables that re-use many of the same textual elements (i.e. paths, sample names and reference genome names), like we have above, it is sometimes cleaner, less typo-prone and more reproducible to assign those repeated items to variables and then use text manipulation tools and variable subsitution in `bash` to create the rest of the variables. In the above example, some of the lines of variable assignment (`REFERENCE_SEQUENCE`, `NORMAL_SAMPLE_NAME` and `TUMOR_SAMPLE_NAME`) are likely lines you might edit from run-to-run, but the other lines (`REFERENCE_DICTIONARY`, `NORMAL_BAM_FILE`, `TUMOR_BAM_FILE` and `VCF_OUTPUT_FILE`) will likely stay the same or similiar. Standardizing your paths and nomenclature will help you keep track of your files much easier.
+> NOTE: Sometimes when there are many input variables that re-use many of the same textual elements (i.e. paths, sample names and reference genome names), like we have above, it is sometimes cleaner, less typo-prone, and more reproducible to assign those repeated items to variables and then use text manipulation tools and variable subsitution in `bash` to create the rest of the variables. In the above example, some of the lines of variable assignment (`REFERENCE_SEQUENCE`, `NORMAL_SAMPLE_NAME` and `TUMOR_SAMPLE_NAME`) are likely lines you might edit from run-to-run, but the other lines (`REFERENCE_DICTIONARY`, `NORMAL_BAM_FILE`, `TUMOR_BAM_FILE` and `VCF_OUTPUT_FILE`) will likely stay the same or similiar. Standardizing your paths and nomenclature will help you keep track of your files much easier.
 
 Lastly, we need to add the `MuTect2` command:
 
@@ -318,7 +318,7 @@ gatk Mutect2 \
   --output $VCF_OUTPUT_FILE
 ```
 
-Let's breakdown this command:
+Let's break down this command:
 
 - `gatk Mutect2` Calls the `Mutect2` package from `GATK`
 
@@ -339,8 +339,8 @@ Let's breakdown this command:
   
   The components of this command are:
   <ul><li><code>java -jar $PICARD/picard.jar CreateSequenceDictionary</code> This calls the <code>CreateSequenceDictionary</code> command within <code>Picard</code></li>
-  <li><code>--REFERENCE /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa</code> This is the reference sequence to create the sequence dictionary from.</li>
-  <li><code>--OUTPUT /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.dict</code> This is the output sequence dictionary.</li></ul>
+  <li><code>--REFERENCE /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa</code> This is the reference sequence to create the sequence dictionary from</li>
+  <li><code>--OUTPUT /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.dict</code> This is the output sequence dictionary</li></ul>
   
   Like indexing, once you have created the sequence dictionary for a reference genome, you won't need to do it again.
 <hr />
@@ -429,11 +429,11 @@ sbatch mutect2_normal_tumor.sbatch
 
 ## Tumor-only Mode
 
-MuTect2 is capable of running without a matched normal sample, otherwise called "Tumor-only mode". However, it's ability to reliably call somatic variants is greatly diminished as it has difficulty distinguishing between high frequency variants and germline variants. 
+MuTect2 is capable of running without a matched normal sample, otherwise called "Tumor-only mode". However, its ability to reliably call somatic variants is greatly diminished as it has difficulty distinguishing between high frequency variants and germline variants. 
 
 ## Discuss PoNs?
 
-Panel of Normals are is a VCF of normal samples run through "tumor-only mode". If the variant is seen in multiple samples then this variant is included in the Panel of Normals. If these variants are then found in the tumor-sample then the variant is ignored. If panels of normal are used, then they should be gathered using a similiar sequencing design as the tumor samples.
+Panel of Normals is a VCF of normal samples run through "tumor-only mode". If the variant is seen in multiple samples, then this variant is included in the Panel of Normals. If these variants are also found in the tumor sample, then the variant is ignored. If panels of normal are used, then they should be gathered using a similiar sequencing design as the tumor samples.
 
 ## Discuss Common General Population Allele Frequencies?
 
