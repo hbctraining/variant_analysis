@@ -66,14 +66,14 @@ This process may take up to 30+ minutes to run depending on the reference sequen
 
 > Alignment information is stored within SAM files. Here, we briefly describe the SAM file, but encourage you to **explore [this lesson](file_formats_reference.md) for more in depth detail**. 
 
-There are **two main components** to a SAM file are:
+The **two main components** to a SAM file are:
 
 * **Header** section
-  * This section contains various bits of information pertinent to the file. Some examples include: sequence information (`@SQ`), read groups (`@RG`), history of programs/tools (`@PG`) used to make the SAM file.
+  * This section contains various bits of information pertinent to the file. Some examples include: sequence information (`@SQ`), read groups (`@RG`), and history of programs/tools (`@PG`) used to make the SAM file.
 * **Alignment** section
   * Stores alignment data for reads that have attempted to be aligned.
-  * Each row correponds to a single read
-  * Columns/fields are separated by the tab delimiter of information are briefly described in the image below.
+  * Each row corresponds to a single read
+  * Columns/fields are separated by the tab delimiter of information and are briefly described in the image below.
 
 <p align="center">
 <img src="../img/sam_format_annotated.jpg" width="700">
@@ -81,8 +81,7 @@ There are **two main components** to a SAM file are:
 
 _Image source: https://www.samformat.info/sam-format-flag_
 
-The **bit-wise flags are worth noting** here, as they are very helpful for giving the user a **rough understanding of the read**. Details such as whether the read is paired, has an alignment to the provided reference sequence or is a PCR duplicate can all be encoded into the FLAG. This [tool on the Broad's Website](https://broadinstitute.github.io/picard/explain-flags.html) can be very helpful for decoding the SAM FLAGs that you can encounter.
-
+The **bit-wise flags are worth noting** here, as they are very helpful for giving the user a **rough understanding of the read**. Details such as whether the read is paired, has an alignment to the provided reference sequence, or is a PCR duplicate can all be encoded into the FLAG. This [tool on the Broad's Website](https://broadinstitute.github.io/picard/explain-flags.html) can be very helpful for decoding the SAM FLAGs that you can encounter.
 
 ### Aligning reads with `bwa-mem`
 
@@ -90,11 +89,11 @@ The **bit-wise flags are worth noting** here, as they are very helpful for givin
 <img src="../img/bwa.png" width="800">
 </p>
 
-BWA-MEM is the latest algorithm of thee three available, and is generally recommended for high-quality queries as it is faster and more accurate. Other features include:
+BWA-MEM is the latest algorithm of the three available, and is generally recommended for high-quality queries as it is faster and more accurate. Other features include:
 
 * Performs local alignment (rather than end-over-end)
 * Can clip ends of reads, if they do not match
-* Can split a read into pieces, mapping each separately (the best aligned piece is then the primary alignment)
+* Can split a read into pieces, mapping each separately (the best-aligned piece is then the primary alignment)
 * Performs gapped alignment 
 * Moderate memory requirement (few GB of RAM to hold reference genome)
 
@@ -125,8 +124,7 @@ Let's breakdown this `bwa` command.
   
 > **A note on paired-end reads:** In this case you can see that the reads are paired-end reads because we have provided two FASTQ files as input and they have `_1`/`_2` right before the `.fq`/`.fastq` extension. 
 > 
-> This is a very common annotation for paired-end reads. Alternatively, sometimes they might also be annotated as `_R1`/`_R2`, but once again, they will almost always be placed right before the `.fq`/`.fastq` extension. 
-
+> This is a very common annotation for paired-end reads. Alternatively, sometimes they might also be annotated as `_R1`/`_R2` but, once again, they will almost always be placed right before the `.fq`/`.fastq` extension. 
 
 ### Read groups
 
@@ -135,7 +133,7 @@ The term Read Group refers to **a set of reads that were generated from a single
 * **Simple case**: A single library preparation derived from a single biological sample was run on a single lane of a flowcell. All the reads from that lane run belong to the same read group.
 * **Complex case**: When samples are barcoded and pooled, and run across multiple lanes in a flowcell. In this case, each subset of reads originating from a separate library run on that lane will constitute a separate read group.
 
-**Read groups are identified in the SAM/BAM file by a number of tags** that are defined in the official SAM specification. These tags, when assigned appropriately, allow us to differentiate not only samples, but also various technical features that are associated with artifacts. Having this information allows to take steps towards mitigating the effects of artifacts in downstream analyses [[1]](https://sites.google.com/a/broadinstitute.org/legacy-gatk-documentation/dictionary/6472-Read-groups).
+**Read groups are identified in the SAM/BAM file by a number of tags** that are defined in the official SAM specification. These tags, when assigned appropriately, allow us to differentiate not only samples but also various technical features that are associated with artifacts. Having this information allows us to take steps towards mitigating the effects of artifacts in downstream analyses [[1]](https://sites.google.com/a/broadinstitute.org/legacy-gatk-documentation/dictionary/6472-Read-groups).
 
 Let's use the read group from our example `bwa` command above to demonstrate the use of tags:
 
@@ -147,13 +145,12 @@ Let's use the read group from our example `bwa` command above to demonstrate the
 * **SM**: This is to mark which **sample** your reads are coming from. Note, this does not need to be unique like the **ID** field, since you may have multiple Read Group IDs coming from a single sample. 
 * **PL**: This is the **platform** that the sequencing was run on. For aligning Illumina reads, you should use "illumina" here.
 * **PU**: This is the platform unit and it is **ideally supposed to hold `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`**
-  * `<FLOWCELL_BARCODE>` is the barcode of the flowcell
-  * `<LANE>` is the lane the data was run on and
-  * `<SAMPLE_BARCODE>` is supposed to be a library/sample specific identifer. In some software packages PU can take precedence over the ID field. *
-  * *If you don't happen to have the `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`, just make this field something useful that will help identify the sample*. In this case, we didn't have that information so we are re-using the **SM** field here. 
+  * `<FLOWCELL_BARCODE>` is the barcode of the flowcell,
+  * `<LANE>` is the lane the data was run on, and
+  * `<SAMPLE_BARCODE>` is supposed to be a library/sample specific identifer. In some software packages, PU can take precedence over the ID field. *
+  * *If you don't happen to have the `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`, just make this field something useful that will help identify the sample*. In this case, we didn't have that information, so we are re-using the **SM** field here. 
 
  **More information about read groups and some fields we didn't discuss can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035890671-Read-groups).**
-
 
 ***
 
@@ -161,7 +158,7 @@ Let's use the read group from our example `bwa` command above to demonstrate the
 
 **1.** The read group field LB (Library) is a required field to when adding read groups using `Picard`'s `AddOrReplaceReadGroups`, but we don't currently have this field in our read group information. How would we alter out the `bwa` command to include `LB` as well?
 
-**2.** If we wanted to increase the number of threads used by `bwa` for processing our alignment to 12, where  would we need to modify our `bwa` command to accommodate this?
+**2.** If we wanted to increase the number of threads used by `bwa` for processing our alignment to 12, where would we need to modify our `bwa` command to accommodate this?
 
 ***
 
@@ -201,7 +198,6 @@ module load bwa/0.7.17
 
 Finally, we need the `bwa` command we are going to run. Displayed below is the code we would use specifically for the `syn3_normal_1`. **DO NOT paste this code in your script!** 
 
-
 ```bash
 ## DO NOT PASTE THIS CODE: EXAMPLE ONLY
 bwa mem \
@@ -216,11 +212,11 @@ bwa mem \
 
 **Instead we will introduce bash variables** in our script which will allow us to quickly adapt this for use on all other samples we have in our dataset. The variables are described in more detail below:
 
-* `REFERENCE_SEQUENCE`: the path to the bwa index
+* `REFERENCE_SEQUENCE`: path to the bwa index
 * `LEFT_READS`: path to the left read FASTQ file (R1 or 1)
-* `RIGHT_READS`:  path to the left read FASTQ file (R1 or 1)
+* `RIGHT_READS`: path to the left read FASTQ file (R1 or 1)
 * `SAMPLE`: sample prefix (for naming output file and providing read group information)
-* `SAM_FILE`: Path and filename for the output alignment file
+* `SAM_FILE`: path and filename for the output alignment file
 
 ```
 # Assign files to bash variables
@@ -231,8 +227,7 @@ SAMPLE=`basename $LEFT_READS _1.fq.gz`
 SAM_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMPLE}_GRCh38.p7.sam
 ```
 
-> **NOTE:** `$RIGHT_READS` uses the string manipulation in order to swap the last parts of their filename. We also use `basename` to parse out the path from a file and when coupled with an argument after the filename, it will trim the end of the file as well as we can see with the `$SAMPLE` variable.
-  
+> **NOTE:** `$RIGHT_READS` uses the string manipulation in order to swap the last parts of their filename. We also use `basename` to parse out the path from a file and, when coupled with an argument after the filename, it will trim the end of the file as well as we can see with the `$SAMPLE` variable.
 
 We can **now add our command for running `bwa`** and utilize the variables we created above:
 
