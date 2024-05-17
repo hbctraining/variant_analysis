@@ -7,7 +7,7 @@
 
 ## Introduction
 
-Now that we have a filtered VCF file for our samples, we want to annotate those variants to figure out what impacts they could have on our samples. For example, we could be interested to know if a given mutation is in the 5' UTR or alters a stop codon for a given gene model. In order to do these types of analyses, we have to merge our variants with annotated transcript information and we will use `SnpEff` to do this. `SnpEff` is extremely fast and also is bundled with `SnpSift`, which we will use downstream to prioritize our variants. 
+Now that we have a filtered VCF file for our samples, we want to annotate those variants to figure out what impacts they could have on our samples. For example, we could be interested to know if a given mutation is in the 5' UTR or alters a stop codon for a given gene model. In order to do these types of analyses, we have to merge our variants with annotated transcript information, and we will use `SnpEff` to do this. `SnpEff` is extremely fast and also is bundled with `SnpSift`, which we will use downstream to prioritize our variants. 
 
 <p align="center">
 <img src="../img/Annotate_variants_workflow.png" width="400">
@@ -25,13 +25,13 @@ Thie first step in annotating your VCF file is finding the appropriate SnpEff da
 module load snpEff/4.3g
 ```
 
-Now that you had loaded the `SnpEff` module, you can use the following command to display all of the currently availible genomes and pipe them into a `less` buffer page:
+Now that you have loaded the `SnpEff` module, you can use the following command to display all of the currently available genomes and pipe them into a `less` buffer page:
 
 ```
 java -jar $SNPEFF/snpEff.jar databases | less
 ```
 
-The first column is the database name and the second column in the `Genus_species` for the organism. There is also a link to where the database can be downloaded at but it can mostly be ignored as SnpEff will download it if it needs it automatically. As you can see there are tens of thousands of these pre-built genomes. So let's exit the `less` buffer page and see which GRCh databases are availible:
+The first column is the database name and the second column is the `Genus_species` for the organism. There is also a link to where the database can be downloaded, but it can mostly be ignored as SnpEff will automatically download it if needed. As you can see, there are tens of thousands of these pre-built genomes. So let's exit the `less` buffer page and see which GRCh databases are availible:
 
 ```
 java -jar $SNPEFF/snpEff.jar databases | grep "GRCh" 
@@ -49,11 +49,11 @@ Before we get into `SnpEff` we need to discuss cancer-mode in `SnpEff`. In order
 
 #### Understanding Cancer-mode
 
-Let's assume a given position in the reference genome has a Thymine. However, since their is variation amongst humans, the individual sampled actually has a variant, Adenine, in this position. Complicating matters even more, a tumor sample from this individual could have a Guanine in this position. In this case, the VCF record for this position would have the REF field as T, and the ALT field as A,G. It is important to note that the REF field ***ALWAYS*** stays as the base found in the reference genome. The REF field should not be changed to A! However, when `SnpEff` comes along to annotate it, it is going to think there has been a T -> A transversion and also a T -> G transversion, when in reality it has been a A -> G transition. Thus, we would like `SnpEff` to appropiately annotate this and to do so, we need to use cancer-mode. A more detailed explaination of `SnpEff`'s cancer-mode can be found on their [website](http://pcingola.github.io/SnpEff/se_cansersamples/).
+Let's assume a given position in the reference genome has a Thymine. However, since there is variation amongst humans, the individual sampled actually has a variant, Adenine, in this position. Complicating matters even more, a tumor sample from this individual could have a Guanine in this position. In this case, the VCF record for this position would have the REF field as T, and the ALT field as A,G. It is important to note that the REF field ***ALWAYS*** stays as the base found in the reference genome. The REF field should not be changed to A! However, when `SnpEff` comes along to annotate it, it is going to think there has been a T -> A transversion and also a T -> G transversion, when in reality it has been a A -> G transition. Thus, we would like `SnpEff` to appropiately annotate this and, to do so, we need to use cancer-mode. A more detailed explaination of `SnpEff`'s cancer-mode can be found on their [website](http://pcingola.github.io/SnpEff/se_cansersamples/).
 
 #### Setting up Cancer-mode
 
-In order to run cancer-mode, we will need to append our VCF file with an additional header line that contains information that `SnpEff` can use when determining, which sample is the normal sample and which sample is the tumor sample. We are going to do this by appending the header lines with a package within `bcftools`, which was created by the same person who created `samtools`. First, move to your `scripts` directory and create a new file named `syn3_normal_syn3_tumor_pedigree_header.txt` using `vim`:
+In order to run cancer-mode, we will need to append our VCF file with an additional header line that contains information that `SnpEff` can use when determining which sample is the normal sample and which sample is the tumor sample. We are going to do this by appending the header lines with a package within `bcftools`, which was created by the same person who created `samtools`. First, move to your `scripts` directory and create a new file named `syn3_normal_syn3_tumor_pedigree_header.txt` using `vim`:
 
 ```
 cd ~/variant_calling/scripts/
@@ -74,7 +74,7 @@ Next, we can start writing our `sbatch` submission script named `variant_annotat
 vim variant_annotation_normal_tumor.sbatch
 ```
 
-Once inside insert mode, can can enter the shebang line, description and `SBATCH` directives:
+Once inside insert mode, we can can enter the shebang line, description, and `SBATCH` directives:
 
 ```
 #!/bin/bash
@@ -89,7 +89,7 @@ Once inside insert mode, can can enter the shebang line, description and `SBATCH
 #SBATCH -e variant_annotation_syn3_normal_syn3_tumor_%j.err
 ```
 
-Next, we will add the line to load the modules that we will need: 
+Next, we will add the lines to load the modules that we will need: 
 
 ```
 # Load modules
@@ -156,9 +156,9 @@ java -jar -Xmx4g $SNPEFF/snpEff.jar  eff \
   > $SNPEFF_ANNOTATED_VCF_FILE
 ```
 
-Let's breakdown this command and discuss each argument:
+Let's break down this command and discuss each argument:
 
-- `java -jar $SNPEFF/snpEff.jar  eff` `Snpeff` This calls the `eff` package within `SnpEff` to annotate variants.
+- `java -jar $SNPEFF/snpEff.jar  eff` `Snpeff` This calls the `eff` package within `SnpEff` to annotate variants
 
 - `-dataDir $DATADIR` This is the path to the data directory that holds the `SnpEff` annotations
 
@@ -166,15 +166,15 @@ Let's breakdown this command and discuss each argument:
 
 - `-noLog` This does not report command usage to <code>SnpEff</code>'s server
 
-- `-csvStats $CSV_STATS` This produces a flat-text file with summary statistics regarding the variants annotated. (Optional)
+- `-csvStats $CSV_STATS` This produces a flat-text file with summary statistics regarding the variants annotated (Optional)
 
-- `-s $HTML_REPORT` This creates an HTML file with summary statistics regarding the variants annotated. This HTML file is mostly just an HTML stylized version of the CSV file above. (Optional)
+- `-s $HTML_REPORT` This creates an HTML file with summary statistics regarding the variants annotated. This HTML file is mostly just an HTML stylized version of the CSV file above (Optional)
 
-- `$REFERENCE_DATABASE` This is the `SnpEff` database we are going to use for the annotation.
+- `$REFERENCE_DATABASE` This is the `SnpEff` database we are going to use for the annotation
 
 - `$FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER` This is the input VCF file to be annotated
 
-- `> $SNPEFF_ANNOTATED_VCF_FILE` The output of `SnpEff` will be redirected into this VCF file.
+- `> $SNPEFF_ANNOTATED_VCF_FILE` The output of `SnpEff` will be redirected into this VCF file
 
 ### Annotate SNPs with dbSNP
 
@@ -190,25 +190,25 @@ Similarly to indexing a BAM file to provide faster look-up speeds, VCF files als
 
 <details>
   <summary><b>Click here to see how to obtain the dbSNP VCF file and how to index it with <code>tabix</code></b></summary>
-  The first step is that we need to download out dbSNP VCF file from the NCBI FTP site. We can do this with a <code>curl</code> command like: 
+  The first step is that we need to download our dbSNP VCF file from the NCBI FTP site. We can do this with a <code>curl</code> command like: 
 
 <pre>
 # YOU DO NOT NEED TO DO THIS
 curl -o GRCh38.p7.dbSNP.vcf.gz -L https://ftp.ncbi.nih.gov/snp/organisms/human_9606_b151_GRCh38p7/VCF/00-All.vcf.gz
 </pre>
 
-We used the <code>curl</code> command earlier when demonstrating how you could download the LCR BED file. But as a refresher, we can breakdown this command:
+We used the <code>curl</code> command earlier when demonstrating how you could download the LCR BED file. But as a refresher, we can break down this command:
     
 <ul><li><code>curl</code> This calls the <code>curl</code> option</li>
   <li><code>-o GRCh38.p7.dbSNP.vcf.gz</code> This tells <code>curl</code> what we want the downloaded file to be named</li>
   <li><code>-L https://ftp.ncbi.nih.gov/snp/organisms/human_9606_b151_GRCh38p7/VCF/00-All.vcf.gz</code> This is the linked file we want to download</li></ul>
     
-Next, we are going to index this file. While it is not necesscary for us to index this VCF file when using <code>SnpSift</code>, it does speed up the annotation. Importantly, <code>bcftools</code> <b><i>DOES REQUIRE</i></b> this index file and it also will require files that are indexed to also be compressed in <code>.gz</code> format. As a result we are going to leave, our file <code>GRCh38.p7.dbSNP.vcf.gz</code> compressed because:
+Next, we are going to index this file. While it is not necesscary for us to index this VCF file when using <code>SnpSift</code>, it does speed up the annotation. Importantly, <code>bcftools</code> <b><i>DOES REQUIRE</i></b> this index file and it also will require files that are indexed to also be compressed in <code>.gz</code> format. As a result we are going to leave our file <code>GRCh38.p7.dbSNP.vcf.gz</code> compressed because:
     <ol><li>There is no need to uncompress it</li>
       <li>It will take up more space on the cluster if we do uncompress it</li>
       <li>Both <code>SnpSift</code> and <code>bcftools</code> can work from the compressed version</li></ol>
 
-We are going to be using <code>tabix</code>, which is part of the <code>HTSlib</code> module. First, we will need to load the <code>HTSlib</code> module, which also requires us to load the <code>gcc</code> module as well:
+We are going to be using <code>tabix</code>, which is part of the <code>HTSlib</code> module. First, we will need to load the <code>HTSlib</code> module, which requires us to load the <code>gcc</code> module as well:
     
 <pre>
 module load gcc/9.2.0
@@ -224,7 +224,7 @@ tabix GRCh38.p7.dbSNP.vcf.gz
 
 We can break down this command as:
     <ul><li><code>tabix</code> This is the command we use to call <code>tabix</code></li>
-     <li><code>GRCh38.p7.dbSNP.vcf.gz</code> This is the VCF file we want to index.</li></ul>
+     <li><code>GRCh38.p7.dbSNP.vcf.gz</code> This is the VCF file we want to index</li></ul>
     
 After this finishes, we can see that we now have a <code>GRCh38.p7.dbSNP.vcf.gz.tbi</code> file in addition to our <code>GRCh38.p7.dbSNP.vcf.gz</code> file.
 <hr />
@@ -411,7 +411,7 @@ Let's go ahead and compare the first entry of the filtered VCF file with the ann
 1       1324300 .       G       A       .       PASS    AS_FilterStatus=SITE;AS_SB_TABLE=47,6|11,0;ClippingRankSum=0.39;DP=68;ECNT=1;FS=2.373;GERMQ=93;MBQ=27,27;MFRL=337,338;MMQ=60,60;MPOS=27;MQ=60;MQ0=0;MQRankSum=0;NALOD=1.54;NLOD=9.88;POPAF=6;ReadPosRankSum=-0.125;TLOD=24.65;ANN=A|upstream_gene_variant|MODIFIER|CPTP|CPTP|transcript|NM_001029885.1|protein_coding||c.-2611G>A|||||463|,A|upstream_gene_variant|MODIFIER|CPTP|CPTP|transcript|XM_005244802.1|protein_coding||c.-3008G>A|||||456|,A|upstream_gene_variant|MODIFIER|CPTP|CPTP|transcript|XM_005244801.3|protein_coding||c.-2611G>A|||||843|,A|upstream_gene_variant|MODIFIER|CPTP|CPTP|transcript|XM_011542200.2|protein_coding||c.-2611G>A|||||1315|,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|XM_011541647.1|protein_coding|1/18|c.28+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|NM_001256456.1|protein_coding|1/18|c.-428+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|NM_001256460.1|protein_coding|1/17|c.-167+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|NM_001256462.1|protein_coding|1/14|c.28+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|NM_001256463.1|protein_coding|1/14|c.28+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|NM_017871.5|protein_coding|1/16|c.28+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|XM_017001558.1|protein_coding|1/18|c.-438+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|XM_017001557.1|protein_coding|1/17|c.-361+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|XM_011541648.1|protein_coding|1/18|c.-91+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|XM_011541650.1|protein_coding|1/16|c.-254+281C>T||||||  GT:AD:AF:DP:F1R2:F2R1:SB        0/0:33,0:0.028:33:12,0:20,0:32,1,0,0    0/1:20,11:0.367:31:6,6:12,5:15,5,11,0
 ```
 
-You can see that the only difference between these files is that we have appended onto the `INFO` field. This appendage contains lots of information such as the type of modification it is, the gene symbol of the gene modified and the accession number of the transcript modified. Because gene models overlap, you may have a single variant that alters multiple transcript models. In this case, each alteration will be separated by a `,`. We can also see that this SNP was not part of the dbSNP database that we had and thus it didn't have its `ID` field annotated with its dbSNP ID.
+You can see that the only difference between these files is that we have appended onto the `INFO` field. This appendage contains lots of information such as the type of modification, the gene symbol of the gene modified, and the accession number of the transcript modified. Because gene models overlap, you may have a single variant that alters multiple transcript models. In this case, each alteration will be separated by a `,`. We can also see that this SNP was not part of the dbSNP database that we had and thus it didn't have its `ID` field annotated with its dbSNP ID.
 
 Now that we have successfully annotated our variants, let's talk about automating this whole process in the next lesson!
 
