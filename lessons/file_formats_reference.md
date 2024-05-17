@@ -41,19 +41,19 @@ This is the first line of the SAM file and begins with `@HD`. It is optional, bu
 
 ##### Sequence `@SQ`
 
-This section of the header enumerates the sequence names (`SN`) included in the reference used for the alignment and their lengths (`LN`). One nice use of these fields, is if you ever have to evaluate the reference sequence used in an alignment, you can see which sequences were included in the alignment. This is particularly relevant if you make a custom reference.
+This section of the header enumerates the sequence names (`SN`) included in the reference used for the alignment and their lengths (`LN`). One nice use of these fields is, if you ever have to evaluate the reference sequence used in an alignment, you can see which sequences were included in the alignment. This is particularly relevant if you make a custom reference.
 
 ##### Read Group `@RG`
 
-This section of the header provides the read group metadata. This can include information on the sample, platform used for sequencing, platform unit, etc. We will discuss read groups more when we discuss [read alignment](05_sequence_alignment_theory.md#short-read-alignment) and briefly when during [alignment processing](06_alignment_file_processing.md#pipeline-for-processing-alignment-file-with-picard) in case you need to add or alter a read group.
+This section of the header provides the read group metadata. This can include information on the sample, platform used for sequencing, platform unit, etc. We will discuss read groups more when we discuss [read alignment](05_sequence_alignment_theory.md#short-read-alignment) and briefly during [alignment processing](06_alignment_file_processing.md#pipeline-for-processing-alignment-file-with-picard) in case you need to add or alter a read group.
 
 ##### Program `@PG`
 
-This section will give you a history of the program names (`PN`) used to make the SAM file, the commands used (`CL`) and the version number (`VN`) of the programs used. This can be helpful when trying to recreate an alignment file if the alignment command isn't availible to you.
+This section will give you a history of the program names (`PN`) used to make the SAM file, the commands used (`CL`), and the version number (`VN`) of the programs used. This can be helpful when trying to recreate an alignment file if the alignment command isn't availible to you.
 
 ##### Comments `@CO`
 
-This section is rarely used and just contains comments regarding the alignment file. We will not be adding comments to our alignments, but once the SAM file has been converted to its binary equivalent (BAM), you can use `Picard` (a tool developed by the Broad Institute that we will use extensively in this workshop) to add comments using the [`AddCommentsToBam`](https://broadinstitute.github.io/picard/command-line-overview.html#AddCommentsToBam) package.
+This section is rarely used and just contains comments regarding the alignment file. We will not be adding comments to our alignments but, once the SAM file has been converted to its binary equivalent (BAM), you can use `Picard` (a tool developed by the Broad Institute that we will use extensively in this workshop) to add comments using the [`AddCommentsToBam`](https://broadinstitute.github.io/picard/command-line-overview.html#AddCommentsToBam) package.
 
 #### Alignment Section
 
@@ -77,7 +77,7 @@ Information on the additional optional fields can be found [here](https://samtoo
 
 ##### FLAG
 
-The bit-wise flags that SAM files use are very helpful for giving the user a rough understanding of the read. Details such as whether the read is paired, has an alignment to the provided reference sequence or is a PCR duplicate can all be encoded into the FLAG. 
+The bit-wise flags that SAM files use are very helpful for giving the user a rough understanding of the read. Details such as whether the read is paired, has an alignment to the provided reference sequence, or is a PCR duplicate can all be encoded into the FLAG. 
 
 The simplest way to consider a unique flag is that it is the sum of many bit-wise toggles. The table below tries to illustrate this concept.
 
@@ -102,11 +102,11 @@ For each alignment, an aligner goes through this table and assigns the alignment
 
 **Exercise**
 
-Using our knowledge of FLAGs in SAM files let's decode a few using the [tool on the Broad's Website](https://broadinstitute.github.io/picard/explain-flags.html). 
+Using our knowledge of FLAGs in SAM files, let's decode a few using the [tool on the Broad's Website](https://broadinstitute.github.io/picard/explain-flags.html). 
 
 **1.** An alignment has a FLAG of 115. What do we know about this read?
 
-**2.** What would be the FLAG for a read alignment for the first read in a pair-end read, where the first read was unmapped while the second read was mapped to the reverse strand?
+**2.** What would be the FLAG for a read alignment for the first read in a paired-end read, where the first read was unmapped, while the second read was mapped to the reverse strand?
 
 ---
 
@@ -131,7 +131,7 @@ A CIGAR string is expressed from the left of the read and going to the right. It
 
 **Exercise**
 
-**3.** Below is an alignment, what would be the CIGAR string for this alignment?
+**3.** Below is an alignment. What would be the CIGAR string for this alignment?
 
 <p align="center">
 <img src="../img/CIGAR_exercise.png" width="600">
@@ -141,7 +141,7 @@ A CIGAR string is expressed from the left of the read and going to the right. It
 
 ### BAM
 
-As you might suspect, because SAM files hold alignment information for all of the reads in an sequencing run and there are oftentimes millions of sequence reads, SAM files are very large and cumbersome to store. As a result, **SAM files are often stored in a binary compressed version called a BAM file**. Most software packages are agnostic to this difference and will accept both SAM and BAM files, despite BAM files not being human readable. It is generally considered best practice to your data in BAM format for long periods of time, unless you specifically need the SAM version of the alignment, in order to reduce unnecessary storage on a shared computing cluster.
+As you might suspect, because SAM files hold alignment information for all of the reads in an sequencing run and there are oftentimes millions of sequence reads, SAM files are very large and cumbersome to store. As a result, **SAM files are often stored in a binary compressed version called a BAM file**. Most software packages are agnostic to this difference and will accept both SAM and BAM files, despite BAM files not being human-readable. It is generally considered best practice to your data in BAM format for long periods of time, unless you specifically need the SAM version of the alignment, in order to reduce unnecessary storage on a shared computing cluster.
 
 ## Variant calling file formats
 
@@ -220,7 +220,7 @@ Let's analyze a few of the meta-information lines to understand what they are de
 
 - The first line `##fileformat=VCFv4.2` is telling us the version of the VCF file. 
 
-- The next sets of lines  starting with `##FILTER` can tell us about filters that we have applied and these can be seen in the `FILTER` field in the data lines (see below). The `ID` is what will appear in the `FILTER` field and the `Description` is a bit deeper description of what this filter tag means.
+- The next sets of lines  starting with `##FILTER` can tell us about filters that we have applied; these can be seen in the `FILTER` field in the data lines (see below). The `ID` is what will appear in the `FILTER` field and the `Description` is a bit deeper description of what this filter tag means.
 
 - Similiarly to our `##FILTER` lines, the `##FORMAT` lines can tell us about the format used in the `FORMAT` field. The `ID` is the abbreviation that will be seen in the `FORMAT` field and the `Description` is a bit deeper explaination of what the formatting is.
 
@@ -232,7 +232,7 @@ Let's analyze a few of the meta-information lines to understand what they are de
 
 - The `##contig` lines outline the name (`ID`) and length (`length`) of each contig in the reference sequence.
 
-- The `##filtering_status` is a bit unique to `MuTect2`. We will discuss this process a bit more when we discuss [variant filtering](10_variant_filtering.md). In short, `MuTect2` has a "call everything, filter later" approach and this is signifying that the filtering step to add the FILTER tags to the FILTER fields has been done. Prior to this step this field read:
+- The `##filtering_status` is a bit unique to `MuTect2`. We will discuss this process a bit more when we discuss [variant filtering](10_variant_filtering.md). In short, `MuTect2` has a "call everything, filter later" approach and this is signifying that the filtering step to add the FILTER tags to the FILTER fields has been done. Prior to this step, this field read:
 
 ```
 ##filtering_status=Warning: unfiltered Mutect 2 calls.  Please run FilterMutectCalls to remove false positives.
@@ -241,7 +241,6 @@ Let's analyze a few of the meta-information lines to understand what they are de
 - The `##normal_sample=syn3_normal` and `##tumor_sample=syn3_tumor` sample lines are defining which samples are our normal and tumor samples.
 
 - The `##source=FilterMutectCalls` and `##source=Mutect2` lines give us a brief idea of the two software packages that have been run to create our VCF file, but these are not as in-depth as the `##GATKCommandLine` lines.
-
 
 ### Header Line
 
@@ -255,7 +254,7 @@ The header line always starts with just a single `#` followed by eight mandatory
 
 - **CHROM** - Chromosome where the variant was found
 - **POS** - A 1-based index for the position on the chromosome where the variant was found. For multibase variants, this corresponds to the first base's position.
-- **ID** - If a SNP has an identifier (i.e. such as an rs number(s) from dbSNP), then it is put here. Otherwise, it will be a `.`.
+- **ID** - If a SNP has an identifier (e.g., rs number(s) from dbSNP), then it is put here. Otherwise, it will be a `.`.
 - **REF** - The reference base(s) for the given position
 - **ALT** - The variant base(s) for the given position. In the case of multiple variants present, they will be comma separated.
 - **QUAL** - A PHRED-scaled quality score for the variant
@@ -268,7 +267,7 @@ The header line always starts with just a single `#` followed by eight mandatory
 | DP | Combined Depth across all samples |
 | NS | Number of samples with data |
 
-- **FORMAT** - A colon-separated list of abbreviated catergories corresponding to the colon-separated genotype fields. For example, this colon-separated list generally begins with `GT`, which stands for genotype. Thus, the first element in the subsequent genotype field(s) for each sample will be the inferred genotype. If the second element in the colon-sperated list is `GQ`, then the second element in each of the colon-separated genotype fieds will be a genotype quality score. Common catergories include:
+- **FORMAT** - A colon-separated list of abbreviated catergories corresponding to the colon-separated genotype fields. For example, this colon-separated list generally begins with `GT`, which stands for genotype. Thus, the first element in the subsequent genotype field(s) for each sample will be the inferred genotype. If the second element in the colon-sperated list is `GQ`, then the second element in each of the colon-separated genotype fields will be a genotype quality score. Common catergories include:
 
 | Abbreviation | Data Type |
 |--------------|-----------|
@@ -278,6 +277,7 @@ The header line always starts with just a single `#` followed by eight mandatory
 | HQ | Commma-separated list of Haplotype Qualities |
 
 \* The genotype field will have two integers for a diploid sample separated by either a `/` or a `|`. The integers correspond to the alleles with 0 being the reference allele, 1 being the first allele listed in the ALT field, 2 being the second allele listed in the ALT field, etc. A `/` denotes an unphased genotype, while `|` denotes a phased genotype.
+
 - **Genotype Fields** - A colon-separated list of genotype information about a given sample that corresponds to the categories outlined in the FORMAT field. The fields will be equal to the number of samples investigated. In the case of the sample VCF, these are the fields titled `syn3_normal` and `syn3_tumor`.
 
 The abbreviations for the INFO and FORMAT fields given in the aforementioned tables is not exhaustive. Generally, these abbreviations with be outlined in the meta-information lines at the top of the file or can be found on pages 5 and 6 of the [VCF manual](https://samtools.github.io/hts-specs/VCFv4.2.pdf).
@@ -300,11 +300,11 @@ Let's analyze this last line more closely:
 1       1324300 .       G       A       .       PASS    AS_FilterStatus=SITE;AS_SB_TABLE=47,6|11,0;ClippingRankSum=0.390;DP=68;ECNT=1;FS=2.373;GERMQ=93;MBQ=27,27;MFRL=337,338;MMQ=60,60;MPOS=27;MQ=60.00;MQ0=0;MQRankSum=0.000;NALOD=1.54;NLOD=9.88;POPAF=6.00;ReadPosRankSum=-0.125;TLOD=24.65        GT:AD:AF:DP:F1R2:F2R1:SB        0/0:33,0:0.028:33:12,0:20,0:32,1,0,0    0/1:20,11:0.367:31:6,6:12,5:15,5,11,0
 ```
 
-This variant is on chromosome `1` at position `1324300`. It has a `.` in the third field because it hasn't been annotated with dbSNP yet, but that may change if we annotate this file. The reference allele in the position was a `G` and a variant allele, `A`, was found. The sixth field `.` signifies that it doesn't have a PHRED quality score associated with this variant. This variant passed all of the filters. For each sample we will have information on the genotype, allele depths listed in order, the alternate allele frequency, depth at this site, counts of reads in F1R2 pair orientation supporting each allele, counts of reads in F2R1 pair orientation supporting each allele and some statistics on strand bias. 
+This variant is on chromosome `1` at position `1324300`. It has a `.` in the third field because it hasn't been annotated with dbSNP yet, but that may change if we annotate this file. The reference allele in the position was a `G` and a variant allele, `A`, was found. The sixth field `.` signifies that it doesn't have a PHRED quality score associated with this variant. This variant passed all of the filters. For each sample we will have information on the genotype, allele depths listed in order, the alternate allele frequency, depth at this site, counts of reads in F1R2 pair orientation supporting each allele, counts of reads in F2R1 pair orientation supporting each allele, and some statistics on strand bias. 
 
 ### Exercises
 
-Let's analzye this sample VCF file found here `/n/groups/hbctraining/variant_calling/sample_data/sample.vcf`. First let's move into out `variant_calling` directory and copy over the file:
+Let's analyze this sample VCF file found here `/n/groups/hbctraining/variant_calling/sample_data/sample.vcf`. First let's move into our `variant_calling` directory and copy over the file:
 
 ```
 cd ~/variant_calling/
@@ -313,13 +313,13 @@ cp /n/groups/hbctraining/variant_calling/sample_data/sample.vcf .
 
 **4.** Using `grep`, extract only the meta-information lines from the VCF file. 
 
-**5.** Using `grep`, extract the lines containing the names of all of the software packages that were used in the creation of this VCF file?
+**5.** Using `grep`, extract the lines containing the names of all of the software packages that were used in the creation of this VCF file.
 
 **Bonus Challenge:** **6.** For the variant at position 806262 on chromosome 19, what is the reference allele?
 
 ## BED Files
 
-**B**rowser **E**xtensible **D**ata (BED) is a tab-delimited file format that contains information on genomic features. A BED file's first three columns (Chromosome, Starting Position and Ending Position) are required fields. Some BED files have additional columns but these are not required.
+**B**rowser **E**xtensible **D**ata (BED) is a tab-delimited file format that contains information on genomic features. A BED file's first three columns (Chromosome, Starting Position, and Ending Position) are required fields. Some BED files have additional columns but these are not required.
 
 <p align="center">
 <img src="../img/bed.png" width="600">
