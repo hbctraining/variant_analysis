@@ -14,7 +14,59 @@ Approximate time: 45 minutes
 
 ## What is genomic variation?
 
-Genomic variants are the basis for many diseases and are the raw material for evolutionary processes. Analyzing genomic variants can help inform clinicians and also help discover novel variants responsible for disease. Evolutionary biologists interpret genomic variants to quantify the evolutionary relationships between species. Conservation biologists use genetic variants to measure diversity amongst endangered populations. As such, there is broad interest in analyzing genomic variants to clinicians and biologists alike. 
+Genomic variation refers to differences in DNA sequences among individuals or species. Genomic variants hold significant information that can benefit many fields.
+
+* Evolutionary biologists leverage variant calling to further our understanding of how life has diversified over deep time. Comparing variant profiles across species aids in reconstructing phylogenetic relationships and tracing the branching paths of descent.
+
+<p align="center">
+<img src="../img/evo_bio.png" width="400">
+</p>
+
+* Conservation geneticists similarly analyze variant landscapes to gauge genetic diversity in populations. Whole-genome sequencing and identification of bacteria can be immensely useful in tracking the transmission and evolution of pathogens during outbreaks, as well as in predicting clinically relevant phenotypes such as antimicrobial resistance.
+
+<p align="center">
+<img src="../img/bacterial_varcall.png" width="300">
+</p>
+
+
+*  Variant calling also supports agricultural research aimed at developing resilient crop varieties well-suited for future conditions. By pinpointing variants that confer traits like drought tolerance or increased nutrient uptake, scientists can guide plant breeding efforts
+
+<p align="center">
+<img src="../img/agriculture.png" width="300">
+</p>
+
+* In medicine, precisely identifying variants through a process called variant calling allows clinicians to gain insights into disease. Variant calling can reveal pathogenic mutations underlying monogenic disorders or highlight risk factors for complex multi-factorial diseases. This genomic information empowers precision approaches to diagnosis and treatment. **This area of genomic variation is the focus of thsi workshop.**
+
+<p align="center">
+<img src="../img/snips.png" width="450">
+</p>
+
+## Types of variants 
+There are several different types variants that require their own consideration. These include:
+
+- **Single Nucleotide Polymorphisms (SNPs)** - These are positions in the genome where a single base has been mutated. For example, perhaps most individuals in a population have a Thymine in a given position, while an individual of interest has a Adenine in this position.
+- **Small Insertions/Deletions (Indels)** - Small indels are loci where a few bases have been added or removed relative to the larger population. For example, if an individual has an extra `GA` at a location relative to the rest of the population, then this would be considered a small insertion.
+- **Structural Variants (SVs)** - This class refers to a broad collection of variants, including inversions, translocations and large insertions or deletions. 
+- **Copy Number Variants (CNVs)** - These types of variants often occur in repetitive regions of the genome and involve having more of few copies of a given sequence. For example, the *AMY1* gene which encodes for an enzyme that is important in breaking down starches has been shown to have variable numbers of copies across human populations. Further work has shown that the number of copy numbers correlates with with the levels of starch in various cultures (Perry et al., 2007). Depending on the size, copy number variants are sometimes considered a subcategory of structural variants.
+
+## Sequencing strategies for variant calling
+
+* Whole Genome Sequencing (WGS) (for SNPs/Indels, CNVs and SVs)
+* Exome Sequencing (for SNPs/Indels)
+* Gene Panels (for SNPs/Indels)
+
+## The Importance of Coverage
+
+One of the **most important considerations of experimental design** when carrying out a study to identify variants is to sequence your samples to an adequate level of coverage. High coverage is helpful for two reasons:
+
+**1)** It helps distinguish sequencing errors and artifacts from true low frequency alleles in the tumor samples.
+
+**2)** It helps distinugish germline variants from somatic variants.
+
+Coverage simply means for a given position, what is the average number of sequencing reads that span (or "cover") that position and it is abbreviated as the integer value followed by "X". For example, if the average position in the genome was covered by 22 reads, this sample would be considered to have 22X. Generally speaking, it is often encouraged for researchers to **reach a minimum coverage of 30X for variant calling**. However, higher coverage levels can be useful for detecting rare variants, particularly in somatic variant calling.
+
+Given the costs associated with whole genome sequencing (WGS) of each individual to 30X or greater coverage, some researchers opt to simply carry our whole exome sequencing (WES) rather than whole genome sequencing. The Human exome is about ~1% of the human genome's size and many researchers are interested in focusing on transcripts to begin with. Therefore, it can greatly reduce the sequencing costs a researcher might incur if they are willing to forgo the regions not captured in the exome. It should be noted that **due to the uneveness of WES, a greater depth is often encouraged, 70-100X**.
+
 
 ## Germline versus Somatic Variant Calling
 
@@ -33,14 +85,7 @@ _Example of a germline variant on the left, and somatic variant on the right._
 These two types of variant calling methods have different assumptions regarding in the input data and thus are handled differently. For example, germline variant calling for the most part expects at most two alleles in relatively equal frequencies, while a single tumor sample could have various cancer lineages with various allele frequencies. This makes somatic variant calling more difficult than germline variant calling because low frequency variants and sequencing artifacts are difficult to distinguish from sequencing errors. Additionally, oftentimes within somatic variant calling, you are also trying to avoid calling the germline variants. 
 
 
-## Types of variants 
-
-There are several different types variants that require their own consideration. These include:
-
-- **Single Nucleotide Polymorphisms (SNPs)** - These are positions in the genome where a single base has been mutated. For example, perhaps most individuals in a population have a Thymine in a given position, while an individual of interest has a Adenine in this position.
-- **Small Insertions/Deletions (Indels)** - Small indels are loci where a few bases have been added or removed relative to the larger population. For example, if an individual has an extra `GA` at a location relative to the rest of the population, then this would be considered a small insertion.
-- **Structural Variants (SVs)** - This class refers to a broad collection of variants, including inversions, translocations and large insertions or deletions. 
-- **Copy Number Variants (CNVs)** - These types of variants often occur in repetitive regions of the genome and involve having more of few copies of a given sequence. For example, the *AMY1* gene which encodes for an enzyme that is important in breaking down starches has been shown to have variable numbers of copies across human populations. Further work has shown that the number of copy numbers correlates with with the levels of starch in various cultures (Perry et al., 2007). Depending on the size, copy number variants are sometimes considered a subcategory of structural variants.
+## Best practices for variant calling: GATK
 
 Similarly to the tools in a workshop, variant calling for each of these types of variants requires tools created for it. [`GATK`](https://gatk.broadinstitute.org/hc/en-us) is a popular tool for variant calling that was developed and is maintained by the Broad Institute. `GATK` has packages that can address the needs of several types of variant calling:
 
@@ -51,17 +96,6 @@ Similarly to the tools in a workshop, variant calling for each of these types of
 
 **This course is going to focus on analyzing somatic SNPs, so we are going to use `MuTect2`.**
 
-## The Importance of Coverage
-
-One of the **most important considerations of experimental design** when carrying out a study to identify variants is to sequence your samples to an adequate level of coverage. High coverage is helpful for two reasons:
-
-**1)** It helps distinguish sequencing errors and artifacts from true low frequency alleles in the tumor samples.
-
-**2)** It helps distinugish germline variants from somatic variants.
-
-Coverage simply means for a given position, what is the average number of sequencing reads that span (or "cover") that position and it is abbreviated as the integer value followed by "X". For example, if the average position in the genome was covered by 22 reads, this sample would be considered to have 22X. Generally speaking, it is often encouraged for researchers to **reach a minimum coverage of 30X for variant calling**. However, higher coverage levels can be useful for detecting rare variants, particularly in somatic variant calling.
-
-Given the costs associated with whole genome sequencing (WGS) of each individual to 30X or greater coverage, some researchers opt to simply carry our whole exome sequencing (WES) rather than whole genome sequencing. The Human exome is about ~1% of the human genome's size and many researchers are interested in focusing on transcripts to begin with. Therefore, it can greatly reduce the sequencing costs a researcher might incur if they are willing to forgo the regions not captured in the exome. It should be noted that **due to the uneveness of WES, a greater depth is often encouraged, 70-100X**.
 
 ***
 
