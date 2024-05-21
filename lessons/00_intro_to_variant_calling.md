@@ -72,6 +72,11 @@ Coverage simply means for a given position, what is the average number of sequen
 
 The choice of sequencing strategy for a clinical sample has important impact for variant calling, and your choice will tend to be guided based on your study design.
 
+<p align="center">
+<img src="../img/variant_seq_table.png" width="900"> <br>
+  Image source: Koboldt DC, Genome Medicine 2020
+</p>
+
 ### Whole Genome Sequencing (WGS) 
 Whole-genome sequencing offers the most comprehensive approach and typically yields ~ 30–60× average sequence depth across the entire genome. This is the most expensive approach.
  
