@@ -20,20 +20,22 @@ Genomic variation refers to differences in DNA sequences among individuals or sp
 
 <p align="center">
 <img src="../img/evo_bio.png" width="400"> <br>
-  The Amazon Rainforest contains a multitude of species
+  Image source: http://insects.eugenes.org/DroSpeGe/
 </p>
 
 * Conservation geneticists similarly analyze variant landscapes to gauge genetic diversity in populations. Whole-genome sequencing and identification of bacteria can be immensely useful in tracking the transmission and evolution of pathogens during outbreaks, as well as in predicting clinically relevant phenotypes such as antimicrobial resistance.
 
 <p align="center">
-<img src="../img/bacterial_varcall.png" width="300">
+<img src="../img/bacterial_varcall.png" width="300"> <br>
+  Image source: https://bacpathgenomics.wordpress.com/tag/snp/
 </p>
 
 
 *  Variant calling also supports agricultural research aimed at developing resilient crop varieties well-suited for future conditions. By pinpointing variants that confer traits like drought tolerance or increased nutrient uptake, scientists can guide plant breeding efforts
 
 <p align="center">
-<img src="../img/agriculture.png" width="300">
+<img src="../img/agriculture.png" width="300"> <br>
+  Image source: Wei X, et al, Nature Comm 2015
 </p>
 
 * In medicine, precisely identifying variants through a process called variant calling allows clinicians to gain insights into disease. Variant calling can reveal pathogenic mutations underlying monogenic disorders or highlight risk factors for complex multi-factorial diseases. This genomic information empowers precision approaches to diagnosis and treatment. **This area of genomic variation is the focus of thsi workshop.**
