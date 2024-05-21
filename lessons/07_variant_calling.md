@@ -4,8 +4,13 @@
 
 - Differentiate between germline and somatic variant calling
 - Call somatics variants from `bam` files using `MuTect2`
+- Individual vs joint calling
+- Allele frequency
 
 ## Variant Calling Background
+
+- how do you choose a variant caller? Talk about benchmarking resources (GIAB, Platinunm Genome, NA12878)
+- germline (consider trio seq) versus somatic - tools?
 
 Now that we have inspected our reads and alignments for high-quality QC and also formatted our alignments for variant calling, we are now ready to begin using GATK to call our variants. **ADD MORE FLAVOR HERE**
 
