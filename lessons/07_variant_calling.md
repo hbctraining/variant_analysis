@@ -9,6 +9,20 @@
 
 Now that we have inspected our reads and alignments for high-quality QC and also formatted our alignments for variant calling, we are now ready to begin using GATK to call our variants. **ADD MORE FLAVOR HERE**
 
+
+## Best practices for variant calling: GATK
+
+Similarly to the tools in a workshop, variant calling for each of these types of variants requires tools created for it. [`GATK`](https://gatk.broadinstitute.org/hc/en-us) is a popular tool for variant calling that was developed and is maintained by the Broad Institute. `GATK` has packages that can address the needs of several types of variant calling:
+
+- [`HaplotypeCaller`](https://gatk.broadinstitute.org/hc/en-us/articles/5358864757787-HaplotypeCaller) can be used for germline SNPs and Indels
+- [`MuTect2`](https://gatk.broadinstitute.org/hc/en-us/articles/5358911630107-Mutect2) can be used for somatic SNPs and Indels
+- [`GermlineCNVCaller`](https://gatk.broadinstitute.org/hc/en-us/articles/5358874158235-GermlineCNVCaller) can be used for germline Copy Number Variants
+- [Software for Structural Variants is currently in beta testing.](https://gatk.broadinstitute.org/hc/en-us/articles/5358824293659--Tool-Documentation-Index#StructuralVariantDiscovery)
+
+**This course is going to focus on analyzing somatic SNPs, so we are going to use `MuTect2`.**
+
+
+
 <p align="center">
 <img src="../img/Call_variants_workflow.png" width="600">
 </p>
