@@ -52,6 +52,22 @@ There are several different types variants that require their own consideration.
 - **Structural Variants (SVs)** - This class refers to a broad collection of variants, including inversions, translocations and large insertions or deletions. 
 - **Copy Number Variants (CNVs)** - These types of variants often occur in repetitive regions of the genome and involve having more of few copies of a given sequence. For example, the *AMY1* gene which encodes for an enzyme that is important in breaking down starches has been shown to have variable numbers of copies across human populations. Further work has shown that the number of copy numbers correlates with with the levels of starch in various cultures (Perry et al., 2007). Depending on the size, copy number variants are sometimes considered a subcategory of structural variants.
 
+<p align="center">
+<img src="../img/types_of_variants.png" width="600"> <br>
+  Image source: https://www.pacb.com/human-genetics-research/
+</p>
+
+
+## The Importance of Coverage
+
+One of the **most important considerations of experimental design** when carrying out a study to identify variants is to sequence your samples to an adequate level of coverage. High coverage is helpful for two reasons:
+
+**1)** It helps distinguish sequencing errors and artifacts from true low frequency alleles in the tumor samples.
+
+**2)** It helps distinugish germline variants from somatic variants.
+
+Coverage simply means for a given position, what is the average number of sequencing reads that span (or "cover") that position and it is abbreviated as the integer value followed by "X". For example, if the average position in the genome was covered by 22 reads, this sample would be considered to have 22X. **The coverage guidelines are based on whihc sequencing strategy you implement, as described below.**
+
 ## Sequencing strategies for variant calling
 
 The choice of sequencing strategy for a clinical sample has important impact for variant calling, and your choice will tend to be guided based on your study design.
@@ -82,18 +98,6 @@ Single- or multi-gene panels are increasingly cost-effective means of testing fo
 * Variant calling is done independently for each amplicon/target region due to low overlap.
 * Good for SNP and CNV detection
 
-
-## The Importance of Coverage
-
-One of the **most important considerations of experimental design** when carrying out a study to identify variants is to sequence your samples to an adequate level of coverage. High coverage is helpful for two reasons:
-
-**1)** It helps distinguish sequencing errors and artifacts from true low frequency alleles in the tumor samples.
-
-**2)** It helps distinugish germline variants from somatic variants.
-
-Coverage simply means for a given position, what is the average number of sequencing reads that span (or "cover") that position and it is abbreviated as the integer value followed by "X". For example, if the average position in the genome was covered by 22 reads, this sample would be considered to have 22X. Generally speaking, it is often encouraged for researchers to **reach a minimum coverage of 30X for variant calling**. However, higher coverage levels can be useful for detecting rare variants, particularly in somatic variant calling.
-
-Given the costs associated with whole genome sequencing (WGS) of each individual to 30X or greater coverage, some researchers opt to simply carry our whole exome sequencing (WES) rather than whole genome sequencing. The Human exome is about ~1% of the human genome's size and many researchers are interested in focusing on transcripts to begin with. Therefore, it can greatly reduce the sequencing costs a researcher might incur if they are willing to forgo the regions not captured in the exome. It should be noted that **due to the uneveness of WES, a greater depth is often encouraged, 70-100X**.
 
 
 ## Germline versus Somatic Variant Calling
