@@ -19,7 +19,8 @@ Genomic variation refers to differences in DNA sequences among individuals or sp
 * Evolutionary biologists leverage variant calling to further our understanding of how life has diversified over deep time. Comparing variant profiles across species aids in reconstructing phylogenetic relationships and tracing the branching paths of descent.
 
 <p align="center">
-<img src="../img/evo_bio.png" width="400">
+<img src="../img/evo_bio.png" width="400"> <br>
+  The Amazon Rainforest contains a multitude of species
 </p>
 
 * Conservation geneticists similarly analyze variant landscapes to gauge genetic diversity in populations. Whole-genome sequencing and identification of bacteria can be immensely useful in tracking the transmission and evolution of pathogens during outbreaks, as well as in predicting clinically relevant phenotypes such as antimicrobial resistance.
