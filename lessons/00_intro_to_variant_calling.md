@@ -114,44 +114,11 @@ Variant calling can be broadly **broken up into two groups, germline and somatic
 
 _Example of a germline variant on the left, and somatic variant on the right._ 
 
-These two types of variant calling methods have different assumptions regarding in the input data and thus are handled differently. For example, germline variant calling for the most part expects at most two alleles in relatively equal frequencies, while a single tumor sample could have various cancer lineages with various allele frequencies. This makes somatic variant calling more difficult than germline variant calling because low frequency variants and sequencing artifacts are difficult to distinguish from sequencing errors. Additionally, oftentimes within somatic variant calling, you are also trying to avoid calling the germline variants. 
+These two types of variant calling methods have different assumptions regarding in the input data and thus are handled differently. For example, germline variant calling for the most part expects at most two alleles in relatively equal frequencies, while a single tumor sample could have various cancer lineages with various allele frequencies. This makes **somatic variant calling more difficult than germline variant calling** because low frequency variants and sequencing artifacts are difficult to distinguish from sequencing errors. Additionally, oftentimes within somatic variant calling, you are also trying to avoid calling the germline variants. 
 
-
-## Best practices for variant calling: GATK
-
-Similarly to the tools in a workshop, variant calling for each of these types of variants requires tools created for it. [`GATK`](https://gatk.broadinstitute.org/hc/en-us) is a popular tool for variant calling that was developed and is maintained by the Broad Institute. `GATK` has packages that can address the needs of several types of variant calling:
-
-- [`HaplotypeCaller`](https://gatk.broadinstitute.org/hc/en-us/articles/5358864757787-HaplotypeCaller) can be used for germline SNPs and Indels
-- [`MuTect2`](https://gatk.broadinstitute.org/hc/en-us/articles/5358911630107-Mutect2) can be used for somatic SNPs and Indels
-- [`GermlineCNVCaller`](https://gatk.broadinstitute.org/hc/en-us/articles/5358874158235-GermlineCNVCaller) can be used for germline Copy Number Variants
-- [Software for Structural Variants is currently in beta testing.](https://gatk.broadinstitute.org/hc/en-us/articles/5358824293659--Tool-Documentation-Index#StructuralVariantDiscovery)
-
-**This course is going to focus on analyzing somatic SNPs, so we are going to use `MuTect2`.**
-
-
-***
-
-**Exercise**
-
-<p align="center">
-<img src="../img/Difficulty_of_assignment.png" width="400">
-</p>
-
-Use the figure above to try to make inferences answer the following questions:
-
-**1.** If we assume there are no sequencing errors, are you more inclined to speculate that Locus 1 is a germline or somatic variant? Why?
-
-**2.** Given the existence of sequencing errors, how confident are you that Locus 1 represents a heterozygous locus in the germline?
-
-**3.** Given the existence of sequencing errors, how confident are you that Locus 1 represents a polymorphic locus in a somatic tissue?
-
-**4.** How confident are you that Locus 2 is homozygous?
-
-**5.** What additional information might you want in order to better assess these loci?
-
-***
 
 ## Variant Calling Workflow
+Depending on the sequencing strategy and whether we are looking at germline or somatic variants, the workflow will need to be modified. Typically there will be some similarities in the processing of the raw FASTQ data through to aligned BAM files. The variant calling itself will vary based on study desig, and we can address that later in this workshop.
 
 Analyzing variants takes the form of three main steps: 
 
@@ -182,6 +149,24 @@ The detailed workflow for variant analysis that many researchers follow looks li
 **Annotate Variants** - We would be interested to know where our variants fall within the context of current gene models. Here we will be using existing gene models to predict the impact of a variant. Here we will be asking questions such as, is this a variant that creates a premature stop codon or is it in a intergenic region?
 
 **Prioritize Variants** - Assess the annotated variants based upon their predicted functional impacts and narrow the search for important genes that may be causing a disease or trait.
+
+***
+
+**Exercise**
+
+<p align="center">
+<img src="../img/Difficulty_of_assignment.png" width="400">
+</p>
+
+Use the figure above to try to make inferences answer the following questions:
+
+1. If we assume there are no sequencing errors, are you more inclined to speculate that Locus 1 is a germline or somatic variant? Why?
+2. Given the existence of sequencing errors, how confident are you that Locus 1 represents a heterozygous locus in the germline?
+3. Given the existence of sequencing errors, how confident are you that Locus 1 represents a polymorphic locus in a somatic tissue?
+4. How confident are you that Locus 2 is homozygous?
+5. What additional information might you want in order to better assess these loci?
+
+***
 
 [Next Lesson >>]()
 
