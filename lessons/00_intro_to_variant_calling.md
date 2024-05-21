@@ -38,7 +38,7 @@ Genomic variation refers to differences in DNA sequences among individuals or sp
   Image source: Wei X, et al, Nature Comm 2015
 </p>
 
-* In medicine, precisely identifying variants through a process called variant calling allows clinicians to gain insights into disease. Variant calling can reveal pathogenic mutations underlying monogenic disorders or highlight risk factors for complex multi-factorial diseases. This genomic information empowers precision approaches to diagnosis and treatment. **This area of genomic variation is the focus of thsi workshop.**
+* In medicine, precisely identifying variants through a process called variant calling allows clinicians to gain insights into disease. Variant calling can reveal pathogenic mutations underlying monogenic disorders or highlight risk factors for complex multi-factorial diseases. This genomic information empowers precision approaches to diagnosis and treatment. **This area of genomic variation is the focus of this workshop.**
 
 <p align="center">
 <img src="../img/snips.png" width="450">
@@ -54,9 +54,34 @@ There are several different types variants that require their own consideration.
 
 ## Sequencing strategies for variant calling
 
-* Whole Genome Sequencing (WGS) (for SNPs/Indels, CNVs and SVs)
-* Exome Sequencing (for SNPs/Indels)
-* Gene Panels (for SNPs/Indels)
+The choice of sequencing strategy for a clinical sample has important impact for variant calling, and your choice will tend to be guided based on your study design.
+
+### Whole Genome Sequencing (WGS) 
+Whole-genome sequencing offers the most comprehensive approach and typically yields ~ 30–60× average sequence depth across the entire genome. This is the most expensive approach.
+ 
+* Calls variants across the entire genome, including coding and non-coding regions.
+* Typically has the highest depth of coverage to reliably detect variants.
+* Variant calling considers all positions simultaneously genome-wide
+* Allows for structural variant detection 
+
+### Exome sequencing
+Exome sequencing, which targets virtually all ~ 20,000 protein-coding genes, typically achieves > 100× average depth across the target regions.
+
+* Targets the protein-coding regions of genes (exons). Covers ~1-2% of genome.
+* Lower coverage than WGS since focusing on smaller region.
+* Variant calling is performed separately for each exon/gene region
+* Good for SNP and CNV detection
+
+
+### Gene panels
+Single- or multi-gene panels are increasingly cost-effective means of testing for subsets of genes associated with specific clinical phenotypes. 
+
+* Targets specific genes/loci of interest, often for clinical diagnostic purposes.
+* Very focused, high coverage (1000X) of target regions
+   * Enables more sensitive detection of variants at low allele frequencies
+* Variant calling is done independently for each amplicon/target region due to low overlap.
+* Good for SNP and CNV detection
+
 
 ## The Importance of Coverage
 
