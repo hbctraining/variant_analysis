@@ -8,25 +8,30 @@ Approximate time: 45 minutes
 
 ## Learning Objectives
 - Describe the ICGC-TCGA DREAM Mutation Calling Challenge Dataset
-- Discuss limitations of our dataset
 - Configure a workspace on the `/n/scratch` drive
 - Organize dataset for analysis
 - Differentiate between using `/home` and `/n/scratch` drives
 
 ## Cancer genomics and the application of variant calling
 
-Cancer is the [second leading cause of death globally](https://www.who.int/health-topics/cancer#tab=tab_1), so understandably there have been considerable efforts put forth to study and treat cancer. Cancer is abnormal cell growth stemming from alterations in an individual's DNA sequence. Thus, understanding the variants observed in a given cancer can potentially provide insight into the potential treatment options a person may undergo. However, as we discussed in the pre-reading introduction, calling somatic variants (those found in cancers) are much more difficult than germline variants (those found in the natural variation between individuals).
+Cancer is the [second leading cause of death globally](https://www.who.int/health-topics/cancer#tab=tab_1), so understandably there have been considerable efforts put forth to study and treat cancer. Cancer is abnormal cell growth stemming from alterations in an individual's DNA sequence. Thus, understanding the variants observed in a given cancer can provide insight into the potential treatment options a person may undergo. 
 
 <p align="center">
 <img src="../img/cancer_genomics.jpg" width="600"> <br>
   Image source: Johannessen CM and Boehm JS. Curr, Current Opinions in Systems Biology 2017
 </p>
 
-In this workshop, we plan to use a synthetic dataset to explore variant calling for cancer applications. There currently exist many cancer genomic resources. Below, we have linked a few:
+There is a vast amount of genomic data deposited in public repositories which are available to researchers. These resources involve a range of large scale datasets and analysis tools, and require differing levels of computational expertise among users. Access to these resources allows us to:
 
-* https://portal.gdc.cancer.gov/
-* https://www.cancer.gov/ccg/research/genome-sequencing/tcga
-* https://www.cbioportal.org/
+* Obtain data to re-analyze and explore different questions posed from original studies
+* Compare our results to large cancer databases for variant annotation
+* Obtain reference datasets for benchmarking of variant calling algorithms
+
+### [Genomics Data Commons](https://portal.gdc.cancer.gov/)
+
+### [The Cancer Genome Atlas(TCGA)](https://www.cancer.gov/ccg/research/genome-sequencing/tcga)
+
+### [cBioPortal](https://www.cbioportal.org/)
 
 ### The ICGC-TCGA DREAM Mutation Calling Challenge
 
