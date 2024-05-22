@@ -230,7 +230,7 @@ The components of this command are:
 * `--SORT_ORDER coordinate` Sort the output file by **coordinates**
 * `--CREATE_INDEX true` Setting the `CREATE_INDEX` equal to `true` will create an index of the final BAM output. The index creation can also be accomplished by using the `BuildBamIndex` command within `Picard`, but this `CREATE_INDEX` functionality is built into many `Picard` functions, so you can often use it at the last stage of processing your BAM file to save having to run `BuildBamIndex` after.
 
-Now this script is all set to run! Go ahead and save and quit.
+Go ahead and save and quit. **Don't run it just yet!**
 
 <details>
   <summary><b>Click here to see what our final <code>sbatch</code>code script for the normal sample should look like</b></summary> 
@@ -658,6 +658,8 @@ squeue -u $USER
 sbatch picard_alignment_processing_normal.sbatch
 sbatch picard_alignment_processing_tumor.sbatch
 ```
+
+> **NOTE:** These scripts will take ~2 hours for each to run!
   
 [Next Lesson >>](05_alignment_QC.md)
 
