@@ -32,7 +32,7 @@ First, you can filter your SnpEff annotated VCF file based upon the first seven 
 Let's go ahead and do our first `SnpSift` command to extract variants, but before we do let's move to the directory with our VCF files and load the `SnpEff` module:
 
 ```
-cd /n/scratch3/users/${USER:0:1}/$USER/variant_calling/vcf_files/
+cd /n/scratch/users/${USER:0:1}/$USER/variant_calling/vcf_files/
 module load snpEff/4.3g
 ```
 
