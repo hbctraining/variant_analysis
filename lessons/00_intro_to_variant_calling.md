@@ -173,7 +173,7 @@ Use the figure above to try to make inferences answer the following questions:
 
 ***
 
-[Next Lesson >>]()
+[Next Lesson >>](01_data_organization.md)
 
 [Back to Schedule](../schedule/README.md)
   
