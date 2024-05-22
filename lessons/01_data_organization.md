@@ -9,9 +9,9 @@ Approximate time: 45 minutes
 ## Learning Objectives
 - Describe the ICGC-TCGA DREAM Mutation Calling Challenge Dataset
 - Discuss limitations of our dataset
-- Configure a workspace on the `/n/scratch3` drive
+- Configure a workspace on the `/n/scratch` drive
 - Organize dataset for analysis
-- Differentiate between using `/home` and `/n/scratch3` drives
+- Differentiate between using `/home` and `/n/scratch` drives
 
 ## Cancer genomics and the application of variant calling
 
@@ -78,18 +78,18 @@ Once logged in, you should see the O2 icon, some news, and the command prompt, e
 
 > Due to the limited storage space on `/home`, we are going to take advantage of `scratch` to hold some of our intermediate files for this workshop. This is a very common use of the scratch space as many analyses will have large intermediate files, which would otherwise fill up our home directories.
 
-While on the login node, we will create our space on `/n/scratch3`. In order to do so, we will need to run a script provided by the HMS Research Computing team:
+While on the login node, we will create our space on `/n/scratch`. In order to do so, we will need to run a script provided by the HMS Research Computing team:
 
 ```
 $ sh /n/cluster/bin/scratch_create_directory.sh 
 ```
 
-> Note: You *MUST* be on a login node in order to create a space on `/n/scratch3`.
+> Note: You *MUST* be on a login node in order to create a space on `/n/scratch`.
 
 It will prompt you with the following:
 
 ```
-Do you want to create a scratch3 directory under /n/scratch3/users? [y/N]> 
+Do you want to create a scratch directory under /n/scratch/users? [y/N]> 
 ```
 
 To this you will respond <kbd>y</kbd>, then hit <kbd>Enter/Return</kbd>.
@@ -98,12 +98,12 @@ To this you will respond <kbd>y</kbd>, then hit <kbd>Enter/Return</kbd>.
 Next, it will prompt you with:
 
 ```
-By typing 'YES' I will comply with HMS RC guidelines for using Scratch3.
+By typing 'YES' I will comply with HMS RC guidelines for using scratch.
 I also confirm that I understand that files in my scratch directory WILL NOT BE BACKED UP IN ANY WAY.
 I also understand that THIRTY DAYS after I last access a given file or directory in my scratch directory,
 it will be DELETED with NO POSSIBILITY of retrieval.
 
-I understand HMS RC guidelines for using Scratch3: 
+I understand HMS RC guidelines for using scratch: 
 ```
 
 Type <kbd>YES</kbd>, then hit <kbd>Enter/Return</kbd>.
@@ -111,9 +111,9 @@ Type <kbd>YES</kbd>, then hit <kbd>Enter/Return</kbd>.
 It should return:
 
 ```
-Your scratch3 directory was created at /n/scratch3/users/r/rc_trainingXX.
+Your scratch directory was created at /n/scratch/users/r/rc_trainingXX.
 This has a limit of 10TiB of storage and 1 million files.
-You can check your scratch3 quota using the scratch3_quota.sh command.
+You can check your scratch quota using the scratch_quota.sh command.
 ```
 
 Now that we have created our `scratch` space, you will need to start an interactive session. A login node's primary function is to enable users to log in to a cluster, it is not meant to be used for any actual work/computing. Since we will be doing some work, let's get on to a compute node:
@@ -176,7 +176,7 @@ $ cd raw_data
 $ cp /n/groups/hbctraining/variant_calling/raw_data/*.fq.gz .
 ```
 
-This may take up to a minute as there is a lot of data to copy. Now that we have created the directories that we are going to use in our `home` space. Let's move to our `/n/scratch3` space so that we can set up the directories that we are going to there to hold our intermediate files:
+This may take up to a minute as there is a lot of data to copy. Now that we have created the directories that we are going to use in our `home` space. Let's move to our `/n/scratch` space so that we can set up the directories that we are going to there to hold our intermediate files:
 
 ```
 $ cd /n/scratch/users/${USER:0:1}/$USER
