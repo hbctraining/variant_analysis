@@ -16,14 +16,14 @@ Approximate time: 45 minutes
 
 Genomic variation refers to differences in DNA sequences among individuals or species. Genomic variants hold significant information that can benefit many fields.
 
-* Evolutionary biologists leverage variant calling to further our understanding of how life has diversified over deep time. Comparing variant profiles across species aids in reconstructing phylogenetic relationships and tracing the branching paths of descent.
+* Evolutionary biologists leverage variant calling to further our understanding of how life has diversified over time. Comparing variant profiles across different species aids in reconstructing phylogenetic relationships.
 
 <p align="center">
 <img src="../img/evo_bio.png" width="400"> <br>
   Image source: http://insects.eugenes.org/DroSpeGe/
 </p>
 
-* Conservation geneticists similarly analyze variant landscapes to gauge genetic diversity in populations. Whole-genome sequencing and identification of bacteria can be immensely useful in tracking the transmission and evolution of pathogens during outbreaks, as well as in predicting clinically relevant phenotypes such as antimicrobial resistance.
+* Conservation geneticists similarly analyze variant landscapes to gauge genetic diversity in populations. Whole-genome sequencing and identification of bacteria can be useful in tracking the transmission and evolution of pathogens during outbreaks, as well as in predicting clinically relevant phenotypes such as antimicrobial resistance.
 
 <p align="center">
 <img src="../img/bacterial_varcall.png" width="300"> <br>
@@ -31,14 +31,14 @@ Genomic variation refers to differences in DNA sequences among individuals or sp
 </p>
 
 
-*  Variant calling also supports agricultural research aimed at developing resilient crop varieties well-suited for future conditions. By pinpointing variants that confer traits like drought tolerance or increased nutrient uptake, scientists can guide plant breeding efforts
+*  Variant calling also supports agricultural research aimed at developing resilient crop varieties which are well-suited for specific environmental conditions. By pinpointing variants that confer traits like drought tolerance or increased nutrient uptake, scientists can guide plant breeding efforts.
 
 <p align="center">
 <img src="../img/agriculture.png" width="300"> <br>
   Image source: Wei X, et al, Nature Comm 2015
 </p>
 
-* In medicine, precisely identifying variants through a process called variant calling allows clinicians to gain insights into disease. Variant calling can reveal pathogenic mutations underlying monogenic disorders or highlight risk factors for complex multi-factorial diseases. This genomic information empowers precision approaches to diagnosis and treatment. **This area of genomic variation is the focus of this workshop.**
+* In medicine, the ability to precisely identify variants allows clinicians to gain insights into disease. Variant calling can reveal pathogenic mutations underlying monogenic disorders or highlight risk factors for complex multi-factorial diseases. This genomic information empowers precision approaches to diagnosis and treatment. **This area of genomic variation is the focus of this workshop.**
 
 <p align="center">
 <img src="../img/snips.png" width="450">
