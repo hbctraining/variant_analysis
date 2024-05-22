@@ -6,6 +6,7 @@
 ## Pre-reading:
 
 * Please **study the contents** within the following lessons:
+  * [Shell basics review](https://hbctraining.github.io/Intro-to-rnaseq-hpc-salmon-flipped/lessons/shell_review.html)
   * [Best Practices in Research Data Management (RDM)](https://hbctraining.github.io/Intro-to-rnaseq-hpc-salmon-flipped/lessons/04a_data_organization.html)
   * [Introduction to Variant Calling](../lessons/00_intro_to_variant_calling.md) 
 
@@ -15,8 +16,8 @@
 | Time |  Topic  | Instructor |
 |:-----------:|:----------:|:--------:|
 | 9:30 - 10:10 | [Workshop Introduction](../lectures/Variant_calling_Intro_to_workshop_all.pdf) | Will |
-| 10:00 - 11:30 | [Introduction to Variant Calling]() | TBD |
-| 11:30 - 11:50 | [Project Organization](../lessons/01_data_organization.md) | Will |
+| 10:00 - 11:30 | [Introduction to Variant Calling]() | Dr. Elizabeth Partan |
+| 11:30 - 11:50 | [Project Organization](../lessons/01_data_organization.md) | Meeta |
 | 11:50 - 12:00 | Overview of self-learning materials and homework submission | Will |
 
 ### Before the next class:
@@ -29,8 +30,7 @@ I. Please **study the contents** and **work through all the code** within the fo
          <br>The first step in many NGS studies is first to evaluate the read qualites that you received from the sequencing facility. A common tool used for handling this analysis is <code>FastQC</code>. 
          <br><br>This lesson will:<br>
           <ul><li>Implement <code>FastQC</code> to evaluate read qualities</li>
-          <li>Manipulate strings of bash variable</li>
-          <li>Utilize sed to find-and-replace text</li></ul>
+          <li>Evaluate FASTQC quality metrics</li></ul>
           <hr />
         </details>
 
