@@ -18,7 +18,8 @@ Approximate time: 45 minutes
 Cancer is the [second leading cause of death globally](https://www.who.int/health-topics/cancer#tab=tab_1), so understandably there have been considerable efforts put forth to study and treat cancer. Cancer is abnormal cell growth stemming from alterations in an individual's DNA sequence. Thus, understanding the variants observed in a given cancer can potentially provide insight into the potential treatment options a person may undergo. However, as we discussed in the pre-reading introduction, calling somatic variants (those found in cancers) are much more difficult than germline variants (those found in the natural variation between individuals).
 
 <p align="center">
-<img src="../img/Germline_Somatic_Variants.png" width="600">
+<img src="../img/cancer_genomics.jpg" width="600"> <br>
+  Image source: Johannessen CM and Boehm JS. Curr, Current Opinions in Systems Biology 2017
 </p>
 
 In this workshop, we plan to use a synthetic dataset to explore variant calling for cancer applications. There currently exist many cancer genomic resources. Below, we have linked a few:
