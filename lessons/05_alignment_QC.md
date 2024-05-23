@@ -150,14 +150,22 @@ Before we submit our jobs, let's **check the status of our previous `Picard` ali
 squeue -u $USER
 ```
 
-* **If your `Picard` alignment processing steps are not completed** yet, **WAIT** until they have finished before submitting these jobs to collect alignment metrics.
+> **NOTE:** These scripts should have been run as part of self-learning/homework. If for some reason you **did not successfully run the Picard alignment prrocessing** steps scripts you will want to copy over the required files using the commands provided below:
+>
+> ```bash
+>  cp files/from/hbctraining
+>  cp if additional commands required
+> ```
+> 
 
-* **If your `Picard` alignment processing steps are completed**, then submit these jobs to collect alignment metrics:
+
+* **If your `Picard` alignment processing steps are completed**, and you have the following files **WHICH FILES DO WE NEED?** then you can submit these jobs to collect alignment metrics:
 
 ```bash
 sbatch picard_metrics_normal.sbatch
 sbatch picard_metrics_tumor.sbatch
 ```
+> **NOTE:** Each of these scripts should only take about 15 minutes to run.  
 
 ## Collecting Coverage Metrics
 
@@ -193,11 +201,7 @@ _Image source: [Coverage analysis from the command line](https://medium.com/ngs-
 
 ## Factors Impacting Alignment
 
-**EDIT** Once your script has finished running, we can take a look to see what kind of output was generated. In your __ directory.. you should see `tab_file`. Let's use  `less` to view it:
-
-**ADD SCREENSHOT OF OUTPUT TEXT FILE**
-
-While we observe various metrics above, one of the **most important metrics for your alignment file is the alignment rate**. When aligning high-quality reads to a high quality reference genome, **one should expect to see alignment rates at 90% or better**. If alignment rates dipped below 80-85%, then there could be reason for further inspection. 
+While we mentioned above the various metrics that are computed as pat of the Picard command, one of the **most important metrics for your alignment file is the alignment rate**. When aligning high-quality reads to a high quality reference genome, **one should expect to see alignment rates at 90% or better**. If alignment rates dipped below 80-85%, then there could be reason for further inspection. 
 
 Alignment rates can vary based upon many factors, including:
 
@@ -208,8 +212,6 @@ Alignment rates can vary based upon many factors, including:
 - **Evolutionary distance between the sampled organism and reference genome** If a reference genome doesn't exist for your species of interest, you are able to align reads to a closely-related organism. However, it does come at the cost of lowering the alignment rate. 
 - **Aligner and alignment parameters** Different aligners work differently and are specialized for different types of data. Additionally, many aligners have a variety of parameters that are able to be adjusted. As a result, different aligners or different parameters for the same aligner will give different alignment rates, but they usually should be within the same approximate alignment rate. Generally speaking, the default parameters for most alignment tools are usually fine and they shouldn't need to be manually adjusted/optimized unless there is a specific reason to do so.
 
-
-What would be helpful is if we could visualize the ouput of the alignment QC - and that's exactly what we plan to do next!
 
 [Next Lesson >>](06_aggregate_multiqc.md)
 
