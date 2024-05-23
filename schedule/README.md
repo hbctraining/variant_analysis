@@ -93,8 +93,7 @@ I. Please **study the contents** and **work through all the code** within the fo
          <br>Now that we have called our raw variants, we will need to filter our data for only high-quality variant calls. Low-quality variant calls can occur for a variety of reasons that we will explore and we will implement steps to exclude them.
          <br><br>This lesson will:<br>
           <ul><li>Filter raw variant calls using <code>FilterMutectCells</code> to reduce errors</li>
-          <li>Remove Low-Complexity Regions from the called variants using <code>SnpSift</code> to further reduce errors
-</li></ul>
+          <li>Remove Low-Complexity Regions from the called variants using <code>SnpSift</code> to further reduce errors</li></ul>
         </details>
 
 2. [Variant Annotation with SnpEff](../lessons/09_variant_annotation.md) 
