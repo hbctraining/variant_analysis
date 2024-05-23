@@ -238,7 +238,7 @@ As we continue down the report, we can skip a few figures until we get to the se
   3) The right read (or R2) often has low-quality than the left read (or R1) and this difference in quality if just an artifact of pair-end Illumina sequencing.
 
 <p align="center">
-<img src="../img/Base_quality_scores.png" width="800">
+<img src="../img/syn3_normal_per_base_sequence_quality.png" width="800">
 </p>
 
 The shape that we see is very typical of a good sequencing run. Imporantly, their aren't any sudden drops in read quality in these samples.
@@ -248,7 +248,7 @@ The shape that we see is very typical of a good sequencing run. Imporantly, thei
 The next plot is a distribution highlighting average sequence quality for a read. As opposed to the previous plot, the PHRED score is now on the x-axis and number of reads in on the y-axis.
 
 <p align="center">
-<img src="../img/Per_sequence_quality_scores.png" width="800">
+<img src="../img/syn3_normal_per_sequence_quality_score.png" width="800">
 </p>
 
 We can see that our average quality scores peak well-above 28 and they appear to be mostly unimodal. If the average PHRED score peak was lower or perhaps we saw a bimodal distribution for PHRED scores then we might have some concerns.
@@ -258,7 +258,7 @@ We can see that our average quality scores peak well-above 28 and they appear to
 The next plot is showing the sequence content across the reads. The x-axis is the position in the read and the y-axis is the percent of each base. The red line is percent Thymine, the blue line is percent cytosine, green is percent Adenine and yellow is percent guanine, Ideally, you should see pretty flat lines free from spikes, but the beginning (~10 bases) can often be a bit bumpy due to primer bias. We can see this primer bias in our samples and the effect appears quite small. If you know the expected GC content of your sample, this could also be a place that you could check that your smaple is in the range of what you would be expecting.
 
 <p align="center">
-<img src="../img/Overall_sequence_content.png" width="800">
+<img src="../img/syn3_normal_per_base_sequence_content.png" width="800">
 </p>
 
 As you look across out sample the lines have a bit of primer bias on the front and flatten out fairly quickly. 
@@ -268,7 +268,7 @@ As you look across out sample the lines have a bit of primer bias on the front a
 Similar to the previous plots on sequence content, we are mostly looking to make sure that there is a reasonably normally-shaped distribution around what the expected GC content is for a reference genome/exome. Strong skews, multi-modal shapes or aburpt spikes could indicate errors in sequencing or contamination. 
 
 <p align="center">
-<img src="../img/GC_content.png" width="800">
+<img src="../img/syn3_normal_per_sequence_GC_content.png" width="800">
 </p>
 
 In the above figure, we see the shape that we would expect to see. It is mostly smooth, normally-centered around a GC-percentage reasonable for the human exome. We don't see any abrupt peaks and the curve looks mostly unimodal.
@@ -278,7 +278,7 @@ In the above figure, we see the shape that we would expect to see. It is mostly 
 When a seqeuncer is unable to make a base call at a position, it assigns the base call of N. As a result, we would hope our sample would have very few N calls. The x-axis is the position in the read and the y-axis is the percent of reads with an N in that position. We are hoping to see a mostly flat line as close to 0 as we can get. Many N calls or abrupt spikes with an abundance of N calls would be concerning.
 
 <p align="center">
-<img src="../img/N_content.png" width="800">
+<img src="../img/syn3_normal_per_sequence_N_content.png" width="800">
 </p>
 
 In our data, we see that it is mostly a flat line close to 0, so we don't have any concerns.
@@ -288,7 +288,7 @@ In our data, we see that it is mostly a flat line close to 0, so we don't have a
 This next plot is going to help us visualize the amount of duplicate sequence we see in the reads. The x-axis is the number of times a sequence is duplicated and the y-axis is the percentage of reads that are duplicated. This figure would ideally be strongly left-ward shifted with a tail that quickly tapers down. This would indicate that much of the sequence in the reads in not duplicated and is present in single copy.   
 
 <p align="center">
-<img src="../img/Duplication_levels.png" width="800">
+<img src="../img/syn3_normal_sequence_duplication_levels.png" width="800">
 </p>
 
 This figure appears to be about what one would hope to see as most of the reads don't show high levels of duplication.
@@ -298,7 +298,7 @@ This figure appears to be about what one would hope to see as most of the reads 
 This table will display any overrepresented sequences and potential sources. It is not uncommon to get adaptor sequences in this table. In general, as long as their are only a handful or fewer overrepresented sequences with all of them being less than ~1%, then your sample should be fine. 
 
 <p align="center">
-<img src="../img/Overrepresented_sequences.png" width="800">
+<img src="../img/syn3_normal_overrepresented_sequences.png" width="400">
 </p>
 
 These samples don't show any overrepresented sequences, which is great.
@@ -310,14 +310,14 @@ FastQC has a really well documented [manual page](http://www.bioinformatics.babr
 One large source of overrepresented sequences can be the adapters used in library construction. On the x-axis we will plot the position in the read and on the y-axis it is th percent of adapter contamination for various adapter sets in that position, with each color line being a different potential adapter set. Since no adapters came up in our previous overrepresented sequences evaluation, we would not expect to see any sign of them in this plot. 
 
 <p align="center">
-<img src="../img/Adapter_content.png" width="800">
+<img src="../img/syn3_normal_adapter_content.png" width="800">
 </p>
 
 We don't see any signs of adapters in our data. 
 
 ### Overal conclusions
 
-It looks like our data looks good and there weren't any concerning issues that we need to address with the sequencing facility. 
+It looks like our data looks good and there weren't any concerning issues that we need to address with the sequencing facility! We can proceed with our analysis!
 
 ***
 
