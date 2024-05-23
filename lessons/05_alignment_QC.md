@@ -24,6 +24,14 @@ Some examples of metrics reported include (but, are not limited to):
 * Reads aligned in pairs (vs. reads aligned with mate unaligned/not present)
 * Read length (how to handle mixed lengths?)
 
+  
+> **NOTE:** This lesson assumes **you have successfuly completed the code for [alignment processing](04_alignment_file_processing.md).**  If for some reason you did not successfully run the Picard alignment processing steps scripts you will want to copy over the required files using the commands provided below:
+>
+> ```bash
+>  cp /n/groups/hbctraining/variant_calling/intermediate_files/alignments/syn3_*_GRCh38.p7.coordinate_sorted.bam /n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/
+> ```
+> 
+
 
 Let's start creating an `sbatch` script for collecting metrics:
 
@@ -150,16 +158,7 @@ Before we submit our jobs, let's **check the status of our previous `Picard` ali
 squeue -u $USER
 ```
 
-> **NOTE:** These scripts should have been run as part of self-learning/homework. If for some reason you **did not successfully run the Picard alignment prrocessing** steps scripts you will want to copy over the required files using the commands provided below:
->
-> ```bash
->  cp files/from/hbctraining
->  cp if additional commands required
-> ```
-> 
-
-
-* **If your `Picard` alignment processing steps are completed**, and you have the following files **WHICH FILES DO WE NEED?** then you can submit these jobs to collect alignment metrics:
+* **If your `Picard` alignment processing steps are completed**, and you have the required input files then you can submit these jobs to collect alignment metrics:
 
 ```bash
 sbatch picard_metrics_normal.sbatch
