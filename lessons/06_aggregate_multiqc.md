@@ -22,15 +22,22 @@ One nice feature of `MultiQC` is that it accepts many different file formats. It
 We have already discussed in great detail the FASTQC html report in a [previous lesson](02_fastqc.md). But we haven't yet looked at the output from Picard `CollectAlignmentSummaryMetrics`.
 
 ### Alignment QC Summary
-Once your scripts from the previous lesson have finished running, we can take a look to see what kind of output was generated. In your ____ directory.. you should see `tab_file`. Let's use `less` to view it:
+Once your scripts from the previous lesson have finished running, we can take a look to see what kind of output was generated. In your reports directory you should see files with the extension `.CollectAlignmentSummaryMetrics.txt`. 
+
+Let's use `less` to view it:
 
 ```bash
-
-less filename
-
+less ~/variant_calling/reports/picard/syn3_normal/syn3_normal_GRCh38.p7.CollectAlignmentSummaryMetrics.txt
 ```
 
-**ADD SCREENSHOT HERE** The output contains [alot of information](https://broadinstitute.github.io/picard/picard-metric-definitions.html#AlignmentSummaryMetrics) and in a format that is not easy to parse. We would benefit from visualizing the results rather than reading throug this line by line. 
+This is a **tab-delimited file** which contains a header component, followed by a table with many columns. Each column lists a different metric and the associated value for this syn3_normal sample. It is difficult to view this in the terminal and so you can use the screenshot below to see the contents:
+
+<p align="center">
+<img src="../img/align_metrics_screenshot.png" width="650">
+</p>
+
+To find out more about indidividual metrics we encourage you to peruse [the Picard documentation](https://broadinstitute.github.io/picard/picard-metric-definitions.html#AlignmentSummaryMetrics). This file format is not ideal for viewing and assessing manually. **We would benefit from visualizing the results rather than reading through this line by line.**
+ 
 
 ### Aggregating QC
 Now, we could use MultiQC to just visualize the data from Picard `AlignmentSummaryMetrics` but that wouldn't be a very good use of the tool. Ideally the more data we can aggregate, the easier it is to evaluate the quality of our samples with data collated across multiple results and multiple samples.
