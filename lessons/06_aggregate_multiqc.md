@@ -6,7 +6,7 @@
 - Evaluate read alignment
 - Intepret read QC metrics within `MultiQC` HTML report
 
-## MultiQC
+## Running MultiQC
 
 The goal of this lesson is to show you how to **combine numerical stats from multiple QC runs into a single HTML report**. To do this aggregation, we will introduce you to [MultiQC](https://multiqc.info/) -  a general use tool, perfect for summarising the output from numerous bioinformatics tools. Rather than having to sift through multiple reports from individual samples and different tools, we can use MultiQC to evaluate quality metrics conveniently within a single file!
 
@@ -19,14 +19,30 @@ One nice feature of `MultiQC` is that it accepts many different file formats. It
 * FastQC
 * Alignment QC from Picard
 
-Collating our `MultiQC` results would be relatively quick to just run from the command-line, but it's best practice to write our steps to scripts so that we always have a record of what we did and how we created our reports. We will start by making sure we are in our scripts directory and writing a `sbatch` script in `vim` for submission:
+We have already discussed in great detail the FASTQC html report in a [previous lesson](02_fastqc.md). But we haven't yet looked at the output from Picard `CollectAlignmentSummaryMetrics`.
+
+### Alignment QC Summary
+Once your scripts from the previous lesson have finished running, we can take a look to see what kind of output was generated. In your ____ directory.. you should see `tab_file`. Let's use `less` to view it:
+
+```bash
+
+less filename
+
+```
+
+**ADD SCREENSHOT HERE** The output contains [alot of information](https://broadinstitute.github.io/picard/picard-metric-definitions.html#AlignmentSummaryMetrics) and in a format that is not easy to parse. We would benefit from visualizing the results rather than reading throug this line by line. 
+
+### Aggregating QC
+Now, we could use MultiQC to just visualize the data from Picard `AlignmentSummaryMetrics` but that wouldn't be a very good use of the tool. Ideally the more data we can aggregate, the easier it is to evaluate the quality of our samples with data collated across multiple results and multiple samples.
+
+`MultiQC` would be relatively quick to just run from the command-line, but it's best practice to write our steps to scripts so that we always have a record of what we did and how we created our reports. We will start by making sure we are in our scripts directory and writing a `sbatch` script in `vim` for submission:
 
 ```
 cd ~/variant_calling/scripts/
 vim multiqc_alignment_metrics_normal_tumor.sbatch
 ```
 
-First, we will add our sheband line, description and `sbatch` directives
+First, we will add our shebang line, description and `sbatch` directives
 
 ```
 #!/bin/bash
@@ -132,33 +148,30 @@ multiqc \
 ### Submitting scripts for MultiQC
 Like the previous step, we will need to check to ensure that the previous `Picard` step for collecting metrics for each sample is down before we can submit this script. To do this, we will check out `squeue`:
 
-```
+```bash
 squeue -u $USER
 ```
 
-* **If your `Picard` collect alignment metric steps are not completed** yet, **WAIT** until they have finished before submitting these jobs to `MultiQC`.
-* **If your `Picard` collect alignment metric steps are completed and the only job you have running is your interactive job**, then submit this `MultiQC` job to collate the alignment metrics:
+If it is complete, we can go ahead and run our script.
 
-```
+```bash
 sbatch multiqc_alignment_metrics_normal_tumor.sbatch
 ```
 
-This job should finish fairly quickly and then we can proceed to copying it over to our local computers so we can evaluate the alignment QC of our samples.
+This job should finish fairly quickly. 
 
-
-## Downloading MultiQC HTML Report with FileZilla
-
-As we have [previous discussed with FASTQC](02_fastqc.md#evaluate-qc-metrics-from-fastqc), O2 is not designed to render HTML files. And like the FASTQC report, we will need a browser, such as Safari, Chrome, Firefox, etc., on our local computer to view the HTML report. Thus, we will need to download the HTML report from the cluster to our local computers and we are going to use `FileZilla` to help us download the report file.
+### Downloading MultiQC HTML Report with FileZilla
+As we have [previously discussed with FASTQC](02_fastqc.md#evaluate-qc-metrics-from-fastqc), O2 is not designed to render HTML files. And like the FASTQC report, we will need a browser, such as Safari, Chrome, Firefox, etc., on our local computer to view the HTML report. Thus, we will need to download the HTML report from the cluster to our local computers and we are going to use `FileZilla` to help us download the report file.
 
 In the right hand panel, navigate to where the HTML files are located on O2 `~/variant_calling/reports/multiqc/`. Then decide where you would like to copy those files to on your computer and move to that directory on the left hand panel.
 
 Once you have found the HTML output for `MultiQC` **copy it over** by double clicking it or drag it over to right hand side panel. Once you have the HTML file copied over to your computer, you can leave the `FileZilla` interface. You can then locate the HTML file on your computer and open the HTML report up in a browser (`Chrome`, `Firefox`, `Safari`, etc.). 
 
-## Inspect MultiQC HTML Report 
+## Evaluate MultiQC HTML Report 
 
 ### General Statistics
 
-Now we can evalute all of our `FastQC` and alignments metrics at once. The first table we are presented with gives us an overview of our sequencing and alignment.
+Now we can evalute all of our `FastQC` and alignments metrics at once. In the first table we are presented with gives us an overview of our sequencing and alignment.
 
 <p align="center">
 <img src="../img/General_statistics.png" width="800">
@@ -180,115 +193,26 @@ A few quick takeaways from this table is that it gives us an overview of our ali
 
 ### Aligned Reads
 
-The next figure in the report is a chart of the aligned reads. You can click on the "Percantages" tab if you'd rather see the alignments as a percentage. As we already covered in the General Statistics section, we are seeing an alignment rate of ~99%, which is very good.
+The next figure in the report is a chart of the aligned reads. You can click on the "Percentages" tab if you'd rather see the alignments as a percentage. As we already covered in the General Statistics section, we are seeing an alignment rate of ~99%, which is very good.
 
 <p align="center">
 <img src="../img/Percent_aligned.png" width="800">
 </p>
 
-### Sequence Quality
+### FASTQC plots
 
-As we continue down the report, we can skip a few figures until we get to the sequence quality figure. A few things we should know about this figure:
-  
-  1) The y-axis is PHRED score, which we discussed in the [`FastQC` lesson](04_fastqc.md) and the y-axis is position in the read. 
-  
-  2) Typically, the shape of these figures have a steep incline in the first few bases before plateauing and finally tapering off a bit. The shape should be mostly smooth. If we saw large, abrupt drops in quality this could be reason to contact your sequencing facility.
-  
-  3) The right read (or R2) often has low-quality than the left read (or R1) and this difference in quality if just an artifact of pair-end Illumina sequencing.
+As we continue down the report, we can see that the FastQC plots are present. We won't go in these in detail, as we have already explored them in a [previous lesson](02_fastqc.md#evaluate-qc-metrics-from-fastqc). What we will highlight is that all samples are aggregated in the plots. 
+
+Use the sequence quality figure below as an example. Rather than a single line, we now observe two colored lines; each line representing a different sample. If you hover over the line with your mouse, you will see a text box appear to with a sample name label and quality score at each base. The advanatge to having all samples in a single plot is that you can more easily spot trends across samples within a dataset.
 
 <p align="center">
 <img src="../img/Base_quality_scores.png" width="800">
 </p>
 
-The shape that we see is very typical of a good sequencing run. Imporantly. their aren't any sudden drops in read quality in these samples.
 
-### Average Sequence Quality
+## Overall QC Impressions
 
-The next plot highlights average sequence quality for a read. As opposed to the previous plot, the PHRED score is now on the x-axis.
-
-<p align="center">
-<img src="../img/Per_sequence_quality_scores.png" width="800">
-</p>
-
-We can see that our average quality scores peak well-above 28 and they appear to be mostly unimodal. If the average PHRED score peak was lower or perhaps we saw a bimodal distribution for PHRED scores then we might have some concerns.
-
-### Per Base Sequence Content
-
-The next plot is a bit difficult to understand because the quality of the data is good. But each sample is on the y-axis and the position in the read is on the x-axis. The color (which is mostly dark grey in the example below) indicates base composition bias (%A, %G, %T or %C). Ideally, color at each position should be constant throughout the read. If, for instance, we saw a bright green band in the 56th position for one of the samples, that would indicate that the the 56th position for some reason had an overabundance of Adenine. In fact, if you look *very* closely at the left side of the plots, you may be able to barely see a few faintly colored bands. This is actually the result of some primer bias in the beginning of the sequence, but it's effect is quite small.
-
-<p align="center">
-<img src="../img/Overall_sequence_content.png" width="800">
-</p>
-
-As you scroll over the dark grey rectangles, it will tell you what the base composition is for that position in a particular sample. These samples look pretty good, but we will dive a bit deeper into base composition by clicking on each sample. 
-
-#### Per Base Sequence Content
-
-Once we have clicked on the first sample, it will produce a new plot featuring the base composition. In an ideal world, you would likely see some small primer bias at the beginning and then relatively flat lines for the rest of the positions.
-
-<p align="center">
-<img src="../img/Sequence_content_1.png" width="800">
-</p>
-
-We can see the weak primer bias from the sequencing at the begining, but it base composition is relatively flat, which is exactly what we want to see in this plot. The next three samples look similar, but we have included included them in the dropdowns below.
-
-<details>
-  <summary><b>Click here to see the per base sequence content plot for the right reads of the normal sample</b></summary>
-  <p align="center">
-  <img src="../img/Sequence_content_2.png" width="800">
-  </p>
-<hr />
-</details>
-  
-<details>
-  <summary><b>Click here to see the per base sequence content plot for the left reads of the tumor sample</b></summary>
-  <p align="center">
-  <img src="../img/Sequence_content_3.png" width="800">
-  </p>
-<hr />
-</details>
-
-<details>
-  <summary><b>Click here to see the per base sequence content plot for the right reads of the tumor sample</b></summary>
-  <p align="center">
-  <img src="../img/Sequence_content_4.png" width="800">
-  </p>
-<hr />
-</details>
-
-### GC Content Distribution
-
-Similar to the previous plots on sequence content, we are mostly looking to make sure that there is a reasonably normally-shaped distribution around what the expected GC content is for a reference genome/exome. Strong skews, multi-modal shapes or aburpt spikes could indicate errors in sequencing or contamination. 
-
-<p align="center">
-<img src="../img/GC_content.png" width="800">
-</p>
-
-In the above figure, we see the shape that we would expect to see. It is smooth, normally-centered around a GC-percentage reasonable for the human exome. We don't see any abrupt peaks and the curve looks mostly unimodal.
-
-### Duplication Levels
-
-This next plot is going to help us visualize the amount of duplicate sequence we see in the reads. This figure would ideally be strongly left-ward shifted with a tail that quickly tapers down. This would indicate that much of the sequence in the reads in not duplicated and is present in single copy.   
-
-<p align="center">
-<img src="../img/Duplication_levels.png" width="800">
-</p>
-
-This figure appears to be about what one would hope to see as most of the reads don't show high levels of duplication.
-
-### Overrepresented Sequences
-
-This table will display any overrepresented sequences and potential sources. It is not uncommon to get adaptor sequences in this table. In general, as long as their are only a handful or fewer overrepresented sequences with all of them being less than ~1%, then your sample should be fine. 
-
-<p align="center">
-<img src="../img/Overrepresented_sequences.png" width="800">
-</p>
-
-These samples don't show any overrepresented sequences, which is great.
-
-### Overall QC Impressions
-
-The QC for this dataset looks pretty good. We have a high alignment to our reference genome. Our read qualities are good and the GC-content is within the range we would expect for our sample. There doesn't appear to be many duplicated or overpresented sequences. All of these signs point to having a high-quality dataset, which perhaps was expected from a *in silico* generated dataset.
+The QC for this dataset looks pretty good. We have a **high alignment to our reference genome. Our read qualities are good and the GC-content is within the range we would expect for our sample**. There doesn't appear to be many duplicated or overpresented sequences. All of these signs point to having a high-quality dataset, which perhaps was expected from a *in silico* generated dataset.
 
 ## Important Considerations on QC Metrics
 
