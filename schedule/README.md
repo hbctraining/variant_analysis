@@ -78,7 +78,7 @@ II. **Complete the exercises**:
 | 9:30 - 10:00 | Self-learning lessons review | All |
 | 10:00 - 10:30 | [Alignment File Quality Control](../lessons/05_alignment_QC.md) | Meeta |
 | 10:30 - 10:40 | Break |  |
-| 10:40 - 11:15 | [Evaluating Quality Control Metrics](../lessons/06_aggregate_multiqc.md) | Meeta |
+| 10:40 - 11:15 | [Aggregating QC metrics using MultiQC](../lessons/06_aggregate_multiqc.md) | Meeta |
 | 11:15 - 12:00 | [Variant Calling](../lessons/07_variant_calling.md) | Will |
 
 
