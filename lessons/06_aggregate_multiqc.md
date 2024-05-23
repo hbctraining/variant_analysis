@@ -206,7 +206,7 @@ The next figure in the report is a chart of the aligned reads. You can click on 
 <img src="../img/Percent_aligned.png" width="800">
 </p>
 
-### FASTQC plots
+### FastQC plots
 
 As we continue down the report, we can see that the FastQC plots are present. We won't go in these in detail, as we have already explored them in a [previous lesson](02_fastqc.md#evaluate-qc-metrics-from-fastqc). What we will highlight is that all samples are aggregated in the plots. 
 
