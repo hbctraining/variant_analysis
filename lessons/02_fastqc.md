@@ -12,9 +12,9 @@ Before engaging in any high-throughput sequencing project is it best practice to
 <img src="../img/Read_QC_workflow.png" width="800">
 </p>
 
-Sources of error include problems with library construction (most likely), a bad run on the sequencer or even a malfunctioning sequencer (very rare). Therefore, it is critically important that you analyze your sequenced reads to ensure that they are high-quality before you devote time and resources to any downstream analyses.
+Sources of error include problems with library construction (most likely), a bad run on the sequencer or even a malfunctioning sequencer (very rare). Therefore, it is critically important that you **evaluate your sequenced reads** to ensure that they are high-quality before you devote time and resources to any downstream analyses.
 
-This is **especially critical for variant calling**, since we are comparing base-by-base differences to the reference (i.e. variants). We want to be sure this is biologocally meaningfula nd not just an artifact of a sequencing issue! 
+This is **especially critical for variant calling**, since we are comparing base-by-base differences to the reference (i.e. variants). We want to be sure this is biologically meaningful and not just an artifact of a sequencing issue! 
 
 
 ## Unmapped read data (FASTQ)
@@ -115,8 +115,8 @@ It will give us an idea of the varous options we have available to modify the de
 
 
 To run FastQC we need to specify two arguments: 
-1. the file name(s) of our FASTQ input (can be a single or multiple files separated by spaces)
-2. the directory where the results (ouput) will be stored, which is indicated after the -o flag
+1. the file name(s) of our **FASTQ input** (can be a single or multiple files separated by spaces)
+2. the directory where the **results (output)** will be stored, which is indicated after the `-o` flag
 
 Since we have the FASTQ input, we just need to make the directory to hold the output:
 
@@ -219,11 +219,17 @@ Once you have found the html output for `syn3_normal_1_fastqc.html` **copy it ov
 
 ## Interpreting the HTML report
 
-Now we can take a look at the metrics and assess the quality of our sequencing data! `FastQC` provides a green checkmark if it thinks a plot looks good, a yellow exclamation mark if it thinks a plot has some concerns and a red X if it believes that the data has failed a test. It is exceedingly uncommon to have green checkmarks for everything and even data with a few red X's can still be good data. You should not consider FastQC's scoring very strongly, but rather interpret the data yourself and make your own judgement. This is for two reasons:
+Now we can take a look at the metrics and assess the quality of our sequencing data! `FastQC` provides a green checkmark if it thinks a plot looks good, a yellow exclamation mark if it thinks a plot has some concerns and a red X if it believes that the data has failed a test. 
+
+<p align="center">
+<img src="../img/fastqc_checks.png" width="200">
+</p>
+
+It is exceedingly **uncommon to have green checkmarks for everything** and even data with a **few red X's can still be good data**. You should not consider FastQC's scoring very strongly, but rather interpret the data yourself and make your own judgement. This is for two reasons:
 
 1) `FastQC` and the associated metrics are used as a first QC step for virtually all NGS analysis, but how RNA-seq, ChIP-seq, WGS sequencing look in these plots is going to vary widely. A "failure" in one or a handful of metrics could simply be the result of the type of experiement you are running.
 
-2) Similarly to the previous point, your experiment could have some peculiarities to it. While this doesn't apply as much to WGS and WES, you could imagine if you somehow biased your subset of reads sequenced that this could have biases in the QC of the reads. This is oftentimes more applicable to other types of NGS data analysis, but can also be true for WGS and WES as well. For example, the GC content of protein coding sequences is also generally higher than the GC content of the genome at large, so WES is introducing a GC bias that you might not see in WGS data.
+2) Similar to the previous point, your experiment could have some peculiarities to it. While this doesn't apply as much to WGS and WES data, you could imagine if you somehow biased your subset of reads sequenced that this could have biases in the QC of the reads. This is oftentimes more applicable to other types of NGS data analysis, but can also be true for WGS and WES as well. For example, the GC content of protein coding sequences is also generally higher than the GC content of the genome at large, so WES is introducing a GC bias that you might not see in WGS data.
 
 In general, when looking at at your data within `FastQC`, always keep your experimental design and dataset in consideration and don't read too much into the assessments that `FastQC` provides. 
 
@@ -255,7 +261,7 @@ We can see that our average quality scores peak well-above 28 and they appear to
 
 ### Per Base Sequence Content
 
-The next plot is showing the sequence content across the reads. The x-axis is the position in the read and the y-axis is the percent of each base. The red line is percent Thymine, the blue line is percent cytosine, green is percent Adenine and yellow is percent guanine, Ideally, you should see pretty flat lines free from spikes, but the beginning (~10 bases) can often be a bit bumpy due to primer bias. We can see this primer bias in our samples and the effect appears quite small. If you know the expected GC content of your sample, this could also be a place that you could check that your smaple is in the range of what you would be expecting.
+The next plot is showing the sequence content across the reads. The x-axis is the position in the read and the y-axis is the percent of each base. The red line is percent Thymine, the blue line is percent cytosine, green is percent Adenine and yellow is percent guanine, Ideally, you should see pretty flat lines free from spikes, but the beginning (~10 bases) can often be a bit bumpy due to primer bias. We can see this primer bias in our samples and the effect appears quite small. If you know the expected GC content of your sample, this could also be a place that you could check that your sample is in the range of what you would be expecting.
 
 <p align="center">
 <img src="../img/syn3_normal_per_base_sequence_content.png" width="800">
@@ -315,7 +321,7 @@ One large source of overrepresented sequences can be the adapters used in librar
 
 We don't see any signs of adapters in our data. 
 
-### Overal conclusions
+### Overall conclusions
 
 It looks like our data looks good and there weren't any concerning issues that we need to address with the sequencing facility! We can proceed with our analysis!
 
