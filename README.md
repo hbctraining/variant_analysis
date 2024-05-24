@@ -22,6 +22,7 @@ This workshop series is designed for users with a background in the fundamentals
 - Annotate variants using SnpEff and dbSNP
 - Prioritize variants by their impact
 - Visualize variants in IGV
+- Implement cBioPortal to analyze variants
 
 ### Lessons
 * [Workshop schedule (trainer-led learning)](schedule/README.md)
