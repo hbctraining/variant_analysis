@@ -413,6 +413,18 @@ Let's go ahead and compare the first entry of the filtered VCF file with the ann
 
 You can see that the only difference between these files is that we have appended onto the `INFO` field. This appendage contains lots of information such as the type of modification it is, the gene symbol of the gene modified and the accession number of the transcript modified. Because gene models overlap, you may have a single variant that alters multiple transcript models. In this case, each alteration will be separated by a `,`. We can also see that this SNP was not part of the dbSNP database that we had and thus it didn't have its `ID` field annotated with its dbSNP ID.
 
+## Exercise
+
+SnpEff generates an HTML report that gives a nice overview of the annotated variants. Use FileZilla to download the file  called `annotation_mutect2_syn3_normal_syn3_tumor_GRCh38.p7-effects-stats.html` from your reports directory. If you have trouble, the report can also be downloaded from [here](https://hbctraining.github.io/variant_analysis/html_reports/annotation_mutect2_syn3_normal_syn3_tumor_GRCh38.p7-effects-stats.html). Use this HTML report to answer the following questions:
+
+**1)** How many variants are in the VCF file?
+
+**2)** Which chromosome had the most variants?
+
+**3)** How many variants were missense variants?
+
+***
+
 Now that we have successfully annotated our variants, let's talk about automating this whole process in the next lesson!
 
 
