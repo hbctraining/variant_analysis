@@ -7,15 +7,27 @@
 - Individual vs joint calling
 - Allele frequency
 
-## Variant Calling Background
+## Best practices for variant calling
 
-- how do you choose a variant caller? Talk about benchmarking resources (GIAB, Platinunm Genome, NA12878)
-- germline (consider trio seq) versus somatic - tools?
+Now that we have inspected our reads and alignments for high-quality QC and also formatted our alignments for variant calling. Dozens of variant calling tools for NGS data have been published, and choosing which one to use can be a daunting task. Accurate variant detection in the the human genome is a key requirement for diagnostics in clinical sequencing, and so you want to make sure you are **using the caller which is appropriate for your data and study design**.
 
-Now that we have inspected our reads and alignments for high-quality QC and also formatted our alignments for variant calling, we are now ready to begin using GATK to call our variants. **ADD MORE FLAVOR HERE**
+### Germline versus Somatic Variant Calling
+
+Variant calling can be broadly broken up into two groups, germline and somatic. These two types of variant calling methods have different assumptions regarding in the input data and thus are handled differently.
+
+* **Germline** variant calling refers to the process of calling **variants that are ubiquitous across the organism** (i.e. almost all cells carry these variants) and these are the types of variants that can be passed through the germline. Germline variant calling for the most part expects at most two alleles in relatively equal frequencies. 
+
+* **Somatic** variant calling refers to the process of calling **variants that differ between cells within a single organism** and these variants are not passed through the germline. Somatic variant calling is often used when studying the progression of various cancers. Somatic variant calling is more difficult than germline variant calling because low frequency variants and sequencing artifacts are difficult to distinguish from sequencing errors.
+
+<p align="center">
+<img src="../img/Germline_Somatic_Variants.png" width="600">
+</p>
+
+In the above image we can see an example of a germline variant on the left. Approximately half of the reads support each allele in both the tumor and normal sample reads. When compared to the somatic variant on the right, where we observe no variants in the normal sample reads but there is a variant present in the tumor sample reads. 
 
 
-## Best practices for variant calling: GATK
+### GATK Toolkit
+
 
 Similarly to the tools in a workshop, variant calling for each of these types of variants requires tools created for it. [`GATK`](https://gatk.broadinstitute.org/hc/en-us) is a popular tool for variant calling that was developed and is maintained by the Broad Institute. `GATK` has packages that can address the needs of several types of variant calling:
 
@@ -31,24 +43,6 @@ Similarly to the tools in a workshop, variant calling for each of these types of
 <p align="center">
 <img src="../img/Call_variants_workflow.png" width="600">
 </p>
-
-## Germline versus Somatic Variant Calling
-
-Variant calling can be broadly broken up into two groups, germline and somatic. Germline variant calling refers to the process of calling variants that are ubiquitous across the organism (i.e. almost all cells carry these variants) and these are the types of variants that can be passed through the germline. Studies that evaluate population genetics are often concerned with germline variant calling. Somatic variant calling refers to the process of calling variants that differ between cells within a single organism and these variants are not passed through the germline. Somatic variant calling is often used when studying the progression of various cancers. These two types of variant calling methods have different assumptions regarding in the input data and thus are handled differently. 
-
-For example, germline variant calling for the most part expects at most two alleles in relatively equal frequencies, while a single tumor sample could have various cancer lineages with various allele frequencies. This makes somatic variant calling more difficult than germline variant calling because low frequency variants and sequencing artifacts are difficult to distinguish from sequencing errors. Additionally, oftentimes within somatic variant calling, you are also trying to avoid calling the germline variants. The image below should help distinguish between germline and somatic variants:
-
-<p align="center">
-<img src="../img/Germline_Somatic_Variants.png" width="600">
-</p>
-
-In the above image we can see an example of a germline variant on the left. Approximately half of the reads support each allele in both the tumor and normal sample reads. When compared to the somatic variant on the right, where we observe no variants in the normal sample reads but there is a variant present in the tumor sample reads. 
-
-As you can also presume, high coverage is helpful for two reasons:
-
-**1)** It helps distinguish sequencing errors and artifacts from true low frequency alleles in the tumor samples
-
-**2)** It helps distinugish germline variants from somatic variants
 
 ## Types of variants that can be called
 
