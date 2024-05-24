@@ -64,7 +64,7 @@ I. Please **study the contents** and **work through all the code** within the fo
 
 II. **Complete the exercises**:
    * Each lesson above contains exercises; please go through each of them.
-   * **Copy over** your solutions into the [Google Form]() the **day before the next class**.
+   * **Copy over** your solutions into the [Google Form](https://forms.gle/N6eRvvQYhGxLkU837) the **day before the next class**.
 
 ### Questions?
 * ***If you get stuck due to an error*** while runnning code in the lesson, [email us](mailto:hbctraining@hsph.harvard.edu) 
