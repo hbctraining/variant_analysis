@@ -3,7 +3,7 @@
 ## Learning Objectives
 
 - Enumerate difficulties with alignment
-- Describe the advanatgaes of using the bwa aligner
+- Describe the advantages of using the bwa aligner
 - Create an `sbatch` script to align reads
 
 ## The importance of alignment for variant calling
