@@ -67,7 +67,7 @@ Therefore, for the first nucleotide in the read (C), there is less than a 1 in 1
 
 **Exercise**
 
-**1.** If the probability of a incorrect base call is 1 in 3,981, what is the associated PHRED score?
+**1.** If the probability of an incorrect base call is 1 in 3,981, what is the associated PHRED score?
 
 ***
 
