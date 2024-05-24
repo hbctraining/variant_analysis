@@ -15,7 +15,7 @@
 
 | Time |  Topic  | Instructor |
 |:-----------:|:----------:|:--------:|
-| 9:30 - 10:10 | [Workshop Introduction](../lectures/Variant_calling_Intro_to_workshop_all.pdf) | Will |
+| 9:30 - 10:10 | [Workshop Introduction](../lectures/workshop_intro_slides.pdf) | Will |
 | 10:00 - 11:30 | [Introduction to Variant Calling]() | Dr. Elizabeth Partan |
 | 11:30 - 11:50 | [Project Organization](../lessons/01_data_organization.md) | Meeta |
 | 11:50 - 12:00 | Overview of self-learning materials and homework submission | Will |
