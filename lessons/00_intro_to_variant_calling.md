@@ -50,7 +50,7 @@ There are several different types variants that require their own consideration.
 - **Single Nucleotide Polymorphisms (SNPs)** - These are positions in the genome where a single base has been mutated. For example, perhaps most individuals in a population have a Thymine in a given position, while an individual of interest has a Adenine in this position.
 - **Small Insertions/Deletions (Indels)** - Small indels are loci where a few bases have been added or removed relative to the larger population. For example, if an individual has an extra `GA` at a location relative to the rest of the population, then this would be considered a small insertion.
 - **Structural Variants (SVs)** - This class refers to a broad collection of variants, including inversions, translocations and large insertions or deletions. 
-- **Copy Number Variants (CNVs)** - These types of variants often occur in repetitive regions of the genome and involve having more of few copies of a given sequence. For example, the *AMY1* gene which encodes for an enzyme that is important in breaking down starches has been shown to have variable numbers of copies across human populations. Further work has shown that the number of copy numbers correlates with with the levels of starch in various cultures (Perry et al., 2007). Depending on the size, copy number variants are sometimes considered a subcategory of structural variants.
+- **Copy Number Variants (CNVs)** - These types of variants often occur in repetitive regions of the genome and involve having more of few copies of a given sequence. For example, the *AMY1* gene which encodes for an enzyme that is important in breaking down starches has been shown to have variable numbers of copies across human populations. Further work has shown that the number of copy numbers correlates with the levels of starch in various cultures (Perry et al., 2007). Depending on the size, copy number variants are sometimes considered a subcategory of structural variants.
 
 <p align="center">
 <img src="../img/types_of_variants.png" width="600"> <br>
@@ -66,7 +66,7 @@ One of the **most important considerations of experimental design** when carryin
 
 **2)** It helps distinugish germline variants from somatic variants.
 
-Coverage simply means for a given position, what is the average number of sequencing reads that span (or "cover") that position and it is abbreviated as the integer value followed by "X". For example, if the average position in the genome was covered by 22 reads, this sample would be considered to have 22X. **The coverage guidelines are based on whihc sequencing strategy you implement, as described below.**
+Coverage simply means for a given position, what is the average number of sequencing reads that span (or "cover") that position and it is abbreviated as the integer value followed by "X". For example, if the average position in the genome was covered by 22 reads, this sample would be considered to have 22X. **The coverage guidelines are based on which sequencing strategy you implement, as described below.**
 
 ## Sequencing strategies for variant calling
 
@@ -123,7 +123,7 @@ These two types of variant calling methods have different assumptions regarding 
 
 
 ## Variant Calling Workflow
-Depending on the sequencing strategy and whether we are looking at germline or somatic variants, the workflow will need to be modified. Typically there will be some similarities in the processing of the raw FASTQ data through to aligned BAM files. The variant calling itself will vary based on study desig, and we can address that later in this workshop.
+Depending on the sequencing strategy and whether we are looking at germline or somatic variants, the workflow will need to be modified. Typically, there will be some similarities in the processing of the raw FASTQ data through to aligned BAM files. The variant calling itself will vary based on study design, and we can address that later in this workshop.
 
 Analyzing variants takes the form of three main steps: 
 
@@ -139,11 +139,11 @@ The detailed workflow for variant analysis that many researchers follow looks li
 
 **Sequence Samples** - This is the work of your sequencing facility and they should provide you with FASTQ files. 
 
-**Read Quality Control** - It is important to assess the quality of your reads before you further analysis them. In this step we are looking to ensure that there aren't major errors that occurred in the sequencing and that the quality of the reads is high. 
+**Read Quality Control** - It is important to assess the quality of your reads before you further analyze them. In this step, we are looking to ensure that there aren't major errors that occurred in the sequencing and that the quality of the reads is high. 
 
-**Align Reads** - We need to match our raw FASTQ reads to the place in the genome where they most likely originiated from. 
+**Align Reads** - We need to match our raw FASTQ reads to the place in the genome where they most likely originated from. 
 
-**Processing Alignment Files** - While our reads have now been asssigned to a place in the genome, the files holding this information are not in the format that we need in order to call variants. We will be reformatting the alignment files in order to be useable for variant calling.
+**Processing Alignment Files** - While our reads have now been assigned to a place in the genome, the files holding this information are not in the format that we need in order to call variants. We will be reformatting the alignment files in order to be useable for variant calling.
 
 **Alignment Quality Control** - This is a second opportunity to evaluate the quality of our data. Here we are ensuring that the data aligns well with our genome.
 
@@ -151,7 +151,7 @@ The detailed workflow for variant analysis that many researchers follow looks li
 
 **Filter Variants** - Our raw variants may have some artifacts in them and need to be processed to remove them.
 
-**Annotate Variants** - We would be interested to know where our variants fall within the context of current gene models. Here we will be using existing gene models to predict the impact of a variant. Here we will be asking questions such as, is this a variant that creates a premature stop codon or is it in a intergenic region?
+**Annotate Variants** - We would be interested to know where our variants fall within the context of current gene models. We will be using existing gene models to predict the impact of a variant. We will be asking questions such as, is this a variant that creates a premature stop codon or is it in a intergenic region?
 
 **Prioritize Variants** - Assess the annotated variants based upon their predicted functional impacts and narrow the search for important genes that may be causing a disease or trait.
 
