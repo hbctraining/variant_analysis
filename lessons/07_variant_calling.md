@@ -11,6 +11,11 @@
 
 Now that we have inspected our reads and alignments for high-quality QC and also formatted our alignments for variant calling. Dozens of variant calling tools for NGS data have been published, and choosing which one to use can be a daunting task. Accurate variant detection in the the human genome is a key requirement for diagnostics in clinical sequencing, and so you want to make sure you are **using the caller which is appropriate for your data and study design**.
 
+<p align="center">
+<img src="../img/variant_callers.png" width="500"> <br>
+  Image source: Zverinova S and Guryev V, 2021
+</p>
+
 ### Germline versus Somatic Variant Calling
 
 Variant calling can be broadly broken up into two groups, germline and somatic. These two types of variant calling methods have different assumptions regarding in the input data and thus are handled differently.
@@ -24,6 +29,8 @@ Variant calling can be broadly broken up into two groups, germline and somatic. 
 </p>
 
 In the above image we can see an example of a germline variant on the left. Approximately half of the reads support each allele in both the tumor and normal sample reads. When compared to the somatic variant on the right, where we observe no variants in the normal sample reads but there is a variant present in the tumor sample reads. 
+
+**For this workshop, we have tumor/normal samples and so we will be calling somatic variants.**
 
 
 ### GATK Toolkit
