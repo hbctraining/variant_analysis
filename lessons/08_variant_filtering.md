@@ -5,9 +5,9 @@
 - Filter raw variant calls using `FilterMutectCells` to reduce errors
 - Remove Low-Complexity Regions from the called variants using `SnpSift` to further reduce errors
 
-## FilterMutectCalls
+## `FilterMutectCalls`
 
-The output from `MuTect2` is a raw variant calling output and the calls need to be filtered to ensure against errors such as:
+The output from `MuTect2` is a raw variant calling output. Many potential variants that are called are actually errors. The **calls need to be filtered to ensure against errors** such as:
 
 - Technical artifacts
 - Non-somatic mutations
@@ -17,13 +17,33 @@ The output from `MuTect2` is a raw variant calling output and the calls need to 
 <img src="../img/Filter_variants.png" width="400">
 </p>
 
-`FilterMutectCalls` evaluates the raw variant calls for each of these types of errors using a probabilistic model for errors. It then uses this model to determine the probability of an error and applies this filter across all of the variants. There are also "hard filters" that immediately flag a variant call for filtering.  `FilterMutectCalls` will annotate the FILTER field in the VCF file with whether the variant is passing with `PASS` or the reasons why it failed filtering. These include:
+To perform the filtering, we will be using `FilterMutectCalls`, which utilizes both hard filtering thresholds and sophisticated machine learning models to comprehensively filter variants and reduce false positives.
 
-- Too many alternate alleles
-- Low median base quality scores 
-- Low median alignment quality scores
+* **Hard cut-offs**: MuTect2 applies hard filtering thresholds and variants must pass these thresholds. Some examples include:
+     * QUAL (Quality score)
+     * Depth of coverage
+     * Variant allele frequency
+     * Mapping quality
+     * Artifact loci - Known problematic loci are filtered based on high false positive rates.
+     * Clustered substitutions - Substitutions clustered together are more likely artifacts and are filtered.
+  
+
+* **Machine learning**: MuTect2 was trained on thousands of real and fake variants to learn patterns. It uses this knowledge to score each variant based on how likely it is to be real.
+    * Employs probabilistic error models to characterize the probability distributions of various sequencing and alignment artifacts. This includes things like base quality scores, mapping quality, strand bias, etc.
+    * For each raw variant call, MuTect2 calculates likelihoods of it being a real somatic mutation versus different error types based on the trained error models.
+    * The quality score (QUAL) reported for each variant is based on the log-likelihood ratio of being a true mutation versus being an error. Higher scores indicate a variant is more likely real.
+
+
 
 > NOTE: While we are not concerned with cross-sample contamination for this dataset, if you were concerned about cross-sample contamination, then you would need to run `CalculateContamination` program within `GATK` to obtain a contamination table. You can use this contamination table as input into `FilterMutectCells` with the `--contamination-table` option.
+>
+
+Once filtering is complete, **`FilterMutectCalls` will annotate the `FILTER` field** in the VCF file with whether the variant is passing with PASS or FAIL. 
+* Variants with "PASS" in FILTER passed all filters and are the ones MuTect2 deems most likely to be real somatic variants.
+* Variants with "FAIL" in the FILTER means that it did not pass MuTect2's internal filtering steps and quality checks.
+
+
+### Running `FilterMutectCalls` 
 
 Let's begin by navigating to our scripts directory and creating the `sbatch` submission script that we will be using for filtering our VCF file:
 
