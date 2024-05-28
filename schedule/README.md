@@ -16,7 +16,7 @@
 | Time |  Topic  | Instructor |
 |:-----------:|:----------:|:--------:|
 | 9:30 - 10:10 | [Workshop Introduction](../lectures/workshop_intro_slides.pdf) | Will |
-| 10:00 - 11:30 | [Introduction to Variant Calling]() | Elizabeth |
+| 10:00 - 11:30 | [Introduction to Variant Calling](../lectures/Variant_calling_intro.pdf) | Elizabeth |
 | 11:30 - 11:50 | [Project Organization](../lessons/01_data_organization.md) | Meeta |
 | 11:50 - 12:00 | Overview of self-learning materials and homework submission | Will |
 
