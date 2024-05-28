@@ -33,8 +33,9 @@ To perform the filtering, we will be using `FilterMutectCalls`, which utilizes b
 >
 
 Once filtering is complete, **`FilterMutectCalls` will annotate the `FILTER` field** in the VCF file with whether the variant is passing with PASS or FAIL. 
-    * Variants with **"PASS"** in FILTER passed all filters and are the ones MuTect2 deems most likely to be real somatic variants.
-    * Variants with **"FAIL"** in the FILTER means that it did not pass MuTect2's internal filtering steps and quality checks.
+
+* Variants with **"PASS"** in FILTER passed all filters and are the ones MuTect2 deems most likely to be real somatic variants.
+* Variants with **"FAIL"** in the FILTER means that it did not pass MuTect2's internal filtering steps and quality checks.
 
 
 ### Running `FilterMutectCalls` 
