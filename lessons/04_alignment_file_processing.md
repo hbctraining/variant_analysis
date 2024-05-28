@@ -1,4 +1,10 @@
-# Alignment File Processing
+---
+title: "Alignment File Processing"
+author: "Will Gammerdinger, Meeta Mistry"
+date: "December 11, 2023"
+---
+
+Approximate time: 45 minutes
 
 ## Learning objectives
 
@@ -8,21 +14,21 @@
 
 ## Alignment file processing
 
-The alignment files that come from `bwa` are raw alignment and need some processing before they can be used for variant calling. While all of the data is present, we need to format it in a way that helps the variant calling algorithm process it. This process is very similar to flipping all of the pieces of a puzzle over to the correct side and group edge pieces or pieces by a similar color or pattern when starting a jigsaw puzzle. 
+The alignment files that come from `bwa` are raw alignment and need some processing before they can be used for variant calling. While all of the data is present, we need to format it in a way that helps the variant calling algorithm process it. This process is very similar to flipping all of the pieces of a puzzle over to the correct side and grouping edge pieces or pieces by a similar color or pattern when starting a jigsaw puzzle. 
 
 <p align="center">
 <img src="../img/Process_alignment_workflow.png" width="800">
 </p>
 
 
-## Pipeline for processing alignment file with Picard
+## Pipeline for processing alignment files with Picard
 
 [Picard](https://broadinstitute.github.io/picard/) is a set of command line tools for **processing high-throughput sequencing (HTS) data and formats such as SAM/BAM/CRAM and VCF**. It is maintained by the Broad Institute, and is open-source under the MIT license and free for all uses. Picard is written in Java and does not have functionality for multi-threading.
 
 > ### Why not use `samtools`?
 > The processing of the alignment files (SAM/BAM files) can also be done with [`samtools`](https://github.com/samtools/samtools). While there are some advantages to using samtools (i.e. more user-friendly, multi-threading capability), there are slight formatting differences which can cause errors downstream. Since we will be using GATK later in this workshop (also from the Broad Institute), Picard seemed like a more suitable fit.
 >
-> **For each step the `samtools` code will be provided in a dropdown for each section if you would like to know how to do the step in `samtools`.**
+> **Near the end of the lesson, there will be a dropdown, if you would like to know how to do the processing steps in `samtools`.**
 
 > **NOTE:** You may encounter a situation where your reads from a single sample were sequenced across different lanes/machines. As a result, each alignment will have different read group IDs, but the same sample ID (the SM tag in your SAM/BAM file). You will need to merge these files here before continuing. The dropdown menu below will detail how to do this.
 >
@@ -76,7 +82,7 @@ The alignment files that come from `bwa` are raw alignment and need some process
 >   <ul><li><code>samtools merge</code> This calls the <code>merge</code> package within <code>samtools</code>.</li>
 >   <li><code>-o $MERGED_OUTPUT</code> This is the merged output file.</li>
 >   <li><code>$INPUT_BAM_1</code> This is the first SAM/BAM file that we would like to merge.</li>
->   <li><code>$INPUT_BAM_2</code> This is the second SAM/BAM file that we would like to merge. We can continue to add addiitonal input SAM/BAM files to this list as needed.</li>
+>   <li><code>$INPUT_BAM_2</code> This is the second SAM/BAM file that we would like to merge. We can continue to add additional input SAM/BAM files to this list as needed.</li>
 >   <li><code>--output-fmt BAM</code> This specifies the output format as <code>BAM</code>. If for some reason you wanted a <code>SAM</code> output file then you would use <code>--output-fmt SAM</code> instead.</li>
 >   <li><code>-@ $THREADS</code> This specifies the number of threads we want to use for this process. We are using 8 threads in this example, but this could be different depending on the parameters that you would like to use.</li></ul>
 > </details>
@@ -134,7 +140,7 @@ METRICS_FILE=${REPORTS_DIRECTORY}/${SAMPLE_NAME}.remove_duplicates_metrics.txt
 COORDINATE_SORTED_BAM_FILE=`echo ${SAM_FILE%sam}coordinate_sorted.bam`
 ```
 
-Finally, we also make a directory to hold the `Picard` reports:
+Finally, we can also make a directory to hold the `Picard` reports:
 
 ```
 # Make reports directory
@@ -143,7 +149,7 @@ mkdir -p $REPORTS_DIRECTORY
 
 ### 1. Compress SAM file to BAM file
 
-As you might suspect, because SAM files hold alignment information for all of the reads in a sequencing run and there are oftentimes millions of sequence reads, SAM files are very large and cumbersome to store. As a result, **SAM files are often stored in a binary compressed version called a BAM file**. Most software packages are agnostic to this difference and will accept both SAM and BAM files, despite BAM files not being human readable. It is generally considered best practice to your data in BAM format for long periods of time, unless you specifically need the SAM version of the alignment, in order to reduce unnecessary storage on a shared computing cluster.
+As you might suspect, because SAM files hold alignment information for all of the reads in a sequencing run and there are oftentimes millions of sequence reads, SAM files are very large and cumbersome to store. As a result, **SAM files are often stored in a binary compressed version called a BAM file**. Most software packages are agnostic to this difference and will accept both SAM and BAM files, despite BAM files not being human readable. It is generally considered best practice to keep your data in BAM format if it is being stored for long periods of time, unless you specifically need the SAM version of the alignment, in order to reduce unnecessary storage on a shared computing cluster.
 
 **This step will happen in the same line code used for query-sorting (below).**
 
@@ -151,16 +157,16 @@ As you might suspect, because SAM files hold alignment information for all of th
 
 Alignment files are initally ordered by the order of the reads in the FASTQ file, which is not particularly useful. `Picard` can more exhaustively look for duplicates if the file is sorted by read-name (**query-sorted**). Oftentimes, when people discuss sorted BAM/SAM files, they are refering to **coordinate-sorted** BAM/SAM files. 
 
-- **Query**-sorted BAM/SAM files are sorted based upon their read names and order lexiographically
-- **Coordinate**-sorted BAM/SAM files are sorted by their sequence name (chromosome/linkage group/scaffold) and position 
+- **Query**-sorted BAM/SAM files are sorted based upon their read names and ordered lexiographically
+- **Coordinate**-sorted BAM/SAM files are sorted by their aligned sequence name (chromosome/linkage group/scaffold) and position 
 
 <p align="center">
 <img src="../img/SAM_sorting.png" width="800">
 </p>
 
-Picard can mark and remove duplicates in either coordinate-sorted or query-sorted BAM/SAM files, however, if the alignments are query-sorted it can test secondary alignments for duplicates. A brief discussion of this nuance is discussed in the [`MarkDuplicates` manual of `Picard`](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-). As a result, we will first **query**-sort our SAM file and convert it to a BAM file:
+Picard can mark and remove duplicates in either coordinate-sorted or query-sorted BAM/SAM files, however, if the alignments are query-sorted it can test secondary alignments for duplicates. A brief discussion of this nuance is discussed in the [`MarkDuplicates` manual of `Picard`](https://gatk.broadinstitute.org/hc/en-us/articles/360037052812-MarkDuplicates-Picard-). As a result, we will first **query**-sort our SAM file and convert it to a BAM file.
 
-**While we query sort the reads, we are also going to convert our SAM file to a BAM file**. We don't need to specify this conversion explicitly, because `Picard` will make this change by interpreting the file extensions that we provide in the `INPUT` and `OUTPUT` file options.
+**While we query-sort the reads, we are also going to convert our SAM file to a BAM file**. We don't need to specify this conversion explicitly, because `Picard` will make this change by interpreting the file extensions that we provide in the `INPUT` and `OUTPUT` file options.
 
 Add the following command to our script:
 
@@ -205,9 +211,9 @@ The components of this command are:
 
 * `java -jar $PICARD/picard.jar MarkDuplicates` Calls `Picard`'s `MarkDuplicates` program
 * `--INPUT $QUERY_SORTED_BAM_FILE` Uses our query-sorted BAM file as input
-* `--OUTPUT $REMOVE_DUPLICATES_BAM_FILE` Write the output to a BAM file
+* `--OUTPUT $REMOVE_DUPLICATES_BAM_FILE` Writes the output to a BAM file
 * `--METRICS_FILE $METRICS_FILE` Creates a metrics file (required by `Picard MarkDuplicates`)
-* `--REMOVE_DUPLICATES true` Not only are we going to mark/flag our duplicates, we can also remove them. By setting the `REMOVE_DUPLICATES` parameter equal to `true` to can remove the duplicates.
+* `--REMOVE_DUPLICATES true` Not only are we going to mark/flag our duplicates, we can also remove them. By setting the `REMOVE_DUPLICATES` parameter equal to `true`, we can remove the duplicates.
 
 ### 4. Coordinate-sort the Alignment File
 
@@ -226,7 +232,7 @@ The components of this command are:
 
 * `java -jar $PICARD/picard.jar SortSam` Calls `Picard`'s `SortSam` program
 * `--INPUT $REMOVE_DUPLICATES_BAM_FILE` Our BAM file once we have removed the duplicate reads. **NOTE: Even though the software is called `SortSam`, it can use BAM or SAM files as input and also BAM or SAM files as output.**
-* `--OUTPUT COORDINATE_SORTED_BAM_FILE` Our BAM output file sorted by coordinates.
+* `--OUTPUT $COORDINATE_SORTED_BAM_FILE` Our BAM output file sorted by coordinates.
 * `--SORT_ORDER coordinate` Sort the output file by **coordinates**
 * `--CREATE_INDEX true` Setting the `CREATE_INDEX` equal to `true` will create an index of the final BAM output. The index creation can also be accomplished by using the `BuildBamIndex` command within `Picard`, but this `CREATE_INDEX` functionality is built into many `Picard` functions, so you can often use it at the last stage of processing your BAM file to save having to run `BuildBamIndex` after.
 
@@ -278,7 +284,7 @@ java -jar $PICARD/picard.jar SortSam \
 
 
 > #### Do I need to add read groups?
-> Some pipelines will have you add read groups while procressing your alignment files. It is usually not necessary because the alignmnet tool typically does for you. **If you are needing to add read groups, we recommend doing it first (before all the processing steps outlined above)**. You can use Picard `AddOrReplaceReadGroups`, which has the added benefit of allowing you to also sort your alignment file (our first step anyways) in the same step as adding the read group information. The dropdown below discusses how to add or replace read groups within `Picard`.
+> Some pipelines will have you add read groups while procressing your alignment files. It is usually not necessary because you can typically do it during alignment. **If you are needing to add read groups, we recommend doing it first (before all the processing steps outlined above)**. You can use Picard `AddOrReplaceReadGroups`, which has the added benefit of allowing you to also sort your alignment file (our first step anyways) in the same step as adding the read group information. The dropdown below discusses how to add or replace read groups within `Picard`.
 >
 ><details>
 >  <summary><b>Click here if you need to add or replace read groups using <code>Picard</code></b></summary>
@@ -311,7 +317,7 @@ java -jar $PICARD/picard.jar SortSam \
 >    We discussed the Read Group tags previously in the <a href="https://hbctraining.github.io/variant_analysis/lessons/03_sequence_alignment_theory.html#short-read-alignment">Sequence Alignment Theory</a> and more information on them can be found <a href="https://gatk.broadinstitute.org/hc/en-us/articles/360035890671-Read-groups">here</a>.
 >  
 >
->  If you would also sort your SAM/BAM file at the same time, you just need to add the <code>--SORT_ORDER</code> option to your command. If you don't add it, it will leave your reads in the same order as they were provided. The main two sort orders to be aware of are query-sorted and coordinate-sorted. A full discussion  of them can be found shortly below. If you wanted the output to be query-sorted, then you could use:
+>  If you would also sort your SAM/BAM file at the same time, you just need to add the <code>--SORT_ORDER</code> option to your command. If you don't add it, it will leave your reads in the same order as they were provided. The main two sort orders to be aware of are query-sorted and coordinate-sorted. A full discussion  of them can be found above. If you wanted the output to be query-sorted, then you could use:
 >    
 >  <pre>--SORT_ORDER queryname</pre>
 >  
@@ -378,7 +384,7 @@ The components of this line of code are:
 
 <li><code>-@ 8</code> This tells <code>samtools</code> to use 8 threads when it multithreads this task. Since we requested 8 cores for this <code>sbatch</code> submission, let's go ahead and use them all.</li>
 
-<li><code>-n</code> This argument tells <code>samtools sort</code> to sort by read name as opposed the the default sorting which is done by coordinate.</li>
+<li><code>-n</code> This argument tells <code>samtools sort</code> to sort by read name as opposed to the default sorting which is done by coordinate.</li>
 
 <li><code>-O bam</code> This is declaring the output format of <code>.bam</code>.</li>
 
@@ -409,14 +415,14 @@ The parts of this command are:
 
 <li><code>-m</code> This will add the mate score tag that will be critically important later for <code>samtools markdup</code></li>
 
-<li><code>$QUERY_SORTED_BAM_FILE</code> This is our input file</li>
+<li><code>$QUERY_SORTED_BAM_FILE</code> This is our input BAM file</li>
 
-<li><code>$FIXMATE_BAM_FILE</code> This is our output file</li></ul>
+<li><code>$FIXMATE_BAM_FILE</code> This is our output BAM file</li></ul>
 <hr />
 </details></li>
 
 <li><details>
-<summary>Click here for <b>coordinate</b>-sorting a BAM file for the <code>Samtools</code> pipeline</summary>
+<summary><b>Click here for coordinate-sorting a BAM file for the <code>Samtools</code> pipeline</b></summary>
     
 Now that we have added the <code>fixmate</code> information, we need to <b>coordinate</b>-sort the BAM file. We can do that by: 
 
@@ -453,11 +459,11 @@ The components of this command are:
     
 <li><code>-r</code> This removes the duplicate reads</li>
     
-<li><code>--write-index</code> This writes an index file of the output</li>
+<li><code>--write-index</code> This writes an index file of the output BAM file</li>
     
 <li><code>-@ 8</code> This sets that we will be using 8 threads</li>
     
-<li><code>$BAM_FILE</code> This is our BAM input file</li>
+<li><code>$BAM_FILE</code> This is our input BAM file</li>
     
 <li><code>${REMOVED_DUPLICATES_BAM_FILE}##idx##${REMOVED_DUPLICATES_BAM_FILE}.bai</code>This has two parts:
 <ol><li>The first part (<code>${REMOVED_DUPLICATES_BAM_FILE}</code>) is our BAM output file with the duplicates removed from it</li>
@@ -647,7 +653,7 @@ Now we are ready to submit our normal and tumor `Picard` processing scripts to t
 First, we need to check the status of our `bwa` scripts and we can do this with the command:
   
 ```
-squeue -u $USER
+squeue --me
 ```
   
 * **If you have `bwa` jobs still running,** then wait for them to complete (less than 2 hours) before continuing. There are ways to queue jobs together in SLURM using the `--dependency` option in `sbatch`. This is outside the scope of this workshop, but we cover this in the [automation lesson](automation_of_variant_calling.md), if you are interested in learning more. For now, just hang tight until the alignment is complete.
