@@ -266,7 +266,7 @@ You can submit your variant calling script to the cluster:
 sbatch mutect2_normal_tumor.sbatch
 ```
 
-### VCF (Variant Call Format)
+## VCF (Variant Call Format)
 The output from MuTect2 is a VCF file; the defacto file format for storing genetic variation. The Variant Call Format (VCF) is a standardized, **text-file format for describing variants identifed from a sequencing experiment**. This allows for downstream processes to be streamlined and also allows for researchers to easily collaborate and manipulate a shared set of variant calls. 
 
 Since it is a text file, we could easily take a quick peek at our VCF file using the `less` command. However, our script might still be runnning!
@@ -279,12 +279,12 @@ Instead we will use the figure below taken from the [TCGA VCF 1.1 Specification 
 
 A VCF file is composed of **three main parts**:
 
-#### 1. Header 
+### 1. Header 
 This contains Meta-information Lines that provide supplemental information and they always **start with `##`**
   * Lines can be applicable to all variant records in the file (e.g., date of creation of file) OR
   * Lines can be specific to individual variants (e.g. flag to indicate whether a given variant exists in dbSNP)
     
-#### 2. Fixed Fields 
+### 2. Fixed Fields 
 
 A line **starting with a single `#`** and contains headers for all columns in the Body of the file. The following **eight mandatory fields** will be found in every VCF file:
 
@@ -315,7 +315,7 @@ A line **starting with a single `#`** and contains headers for all columns in th
 | HQ | Commma-separated list of Haplotype Qualities |
 
 
-#### 3. Body 
+### 3. Body 
 These are the data lines where the variant calls will be found with each field corresponding to its column in the header line.
 
 > **NOTE**: For more detailed information on the VCF specification, **please see our file formats lesson** where the [VCF components are thoroughly described](file_formats_reference.md#variant-calling-file-formats).
