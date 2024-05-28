@@ -1,4 +1,10 @@
-# Sequence Alignment 
+---
+title: "Sequence Alignment"
+author: "Will Gammerdinger, Meeta Mistry"
+date: "December 11, 2023"
+---
+
+Approximate time: 45 minutes
 
 ## Learning Objectives
 
@@ -25,20 +31,20 @@ Importantly, the accuracy of variant-calling results can be highly impacted by a
 <img src="../img/Alignment_errors.png" width="600">
 </p>
 
-The largest and most difficult part of this task is creating an alignment algorithm that can account for these factors and still provide alignment for ***millions*** of reads within a reasonable time frame. There are a multitude of alignment tools availible today; each has strengths and weakness and some are more appropriate for particular types of analysis. In this course, we will be using BWA. 
+The largest and most difficult part of this task is creating an alignment algorithm that can account for these factors and still provide alignment for ***millions*** of reads within a reasonable time frame. There are a multitude of alignment tools availible today; each has strengths and weakness and some are more appropriate for particular types of analysis. In this course, we will be using [BWA](https://bio-bwa.sourceforge.net/). 
 
 ## BWA
 
 Many modern alignment tools rely on the Burrows-Wheeler Transform as part of their alignment algorithm; BWA is one of those tools. BWA is a software package for mapping low-divergent sequences against a large reference genome, such as the human genome. It consists of three algorithms: BWA-backtrack, BWA-SW and BWA-MEM. In this workshop we will demonstrate BWA-MEM.
 
-No matter which algorith you choose, **there are two steps to runnning `bwa`**:
+No matter which algorithm you choose, **there are two steps to running `bwa`**:
 
 1. Create an index of the reference sequence (done once)
     1. Create a Suffix Array Index
     2. Generate a Burrows-Wheeler Transform from the suffix array
 2. Query reads against the index to get alignments
 
-> The Burrows-Wheeler Transform and Suffix Arrays are outside of the scope of this course, but a great place to get information on these methods are on [Dr. Ben Langmead's YouTube Channel](https://www.youtube.com/user/BenLangmead/videos). Dr. Langmead developed the algorithm for a similar alignment tool, Bowtie, and he makes many useful videos explaining how the components of these alignment tools work. 
+> The Burrows-Wheeler Transform and Suffix Arrays are outside of the scope of this course, but a great place to get information on these methods are on [Dr. Ben Langmead's YouTube Channel](https://www.youtube.com/user/BenLangmead/videos). Dr. Langmead developed the algorithm for a similar alignment tool, Bowtie, and he has made many useful videos explaining how the components of these alignment tools work. 
 
 **We have already created an index for you.** So we will jump right into running the alignments.
 
@@ -71,9 +77,9 @@ There are **two main components** to a SAM file are:
 * **Header** section
   * This section contains various bits of information pertinent to the file. Some examples include: sequence information (`@SQ`), read groups (`@RG`), history of programs/tools (`@PG`) used to make the SAM file.
 * **Alignment** section
-  * Stores alignment data for reads that have attempted to be aligned.
+  * Stores alignment data for reads that have attempted to be aligned
   * Each row correponds to a single read
-  * Columns/fields are separated by the tab delimiter of information are briefly described in the image below.
+  * Columns/fields are separated by the tab-delimiter and information on each column/field is briefly described in the image below.
 
 <p align="center">
 <img src="../img/sam_format_annotated.jpg" width="700">
@@ -90,7 +96,7 @@ The **bit-wise flags are worth noting** here, as they are very helpful for givin
 <img src="../img/bwa.png" width="800">
 </p>
 
-BWA-MEM is the latest algorithm of thee three available, and is generally recommended for high-quality queries as it is faster and more accurate. Other features include:
+BWA-MEM is the latest algorithm of the three bwa algorithms available, and is generally recommended for high-quality queries as it is faster and more accurate. Other features include:
 
 * Performs local alignment (rather than end-over-end)
 * Can clip ends of reads, if they do not match
@@ -110,7 +116,7 @@ bwa mem \
 /path/to/reference.fa \
 LEFT_read_1.fq \
 RIGHT_read_2.fq \
--o /path/to/outputfile.sam
+-o /path/to/output_file.sam
 ```
 
 Let's breakdown this `bwa` command.
@@ -118,10 +124,10 @@ Let's breakdown this `bwa` command.
 * `mem` This is the **specific algorithm** we want to use within `bwa`
 * `-M` This will mark shorter split hits as secondary
 * `-t 8` We are going to take advantage of **multithreading**. In order to do this, we need to specifiy the number of threads that we are going to use as 8.
-* `-R` This adds what is called **read group information**. Some software packages, such as `GATK`, require read groups, while others are agnostic towards them. However, they can provide important metadata about your reads and thus it is considered best practice to include read group information at the alignment step. This read group information consists of several fields separated by tab-characters (\t), which will be described a little bit later in this lesson.
+* `-R` This adds what is called **read group information**. Some software packages, such as `GATK`, require read groups, while others are agnostic towards them. However, they can provide important metadata about your reads and thus it is considered best practice to include read group information at the alignment step. This read group information consists of several fields separated by tab-characters (`\t`), which will be described a little bit later in this lesson.
 * Reference sequence (indexed)
 * Input FASTQ files
-* Output file name and path (if different from working directory)
+* `-o` Output file name and path (if different from working directory)
   
 > **A note on paired-end reads:** In this case you can see that the reads are paired-end reads because we have provided two FASTQ files as input and they have `_1`/`_2` right before the `.fq`/`.fastq` extension. 
 > 
@@ -149,8 +155,9 @@ Let's use the read group from our example `bwa` command above to demonstrate the
 * **PU**: This is the platform unit and it is **ideally supposed to hold `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`**
   * `<FLOWCELL_BARCODE>` is the barcode of the flowcell
   * `<LANE>` is the lane the data was run on and
-  * `<SAMPLE_BARCODE>` is supposed to be a library/sample specific identifer. In some software packages PU can take precedence over the ID field. *
-  * *If you don't happen to have the `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`, just make this field something useful that will help identify the sample*. In this case, we didn't have that information so we are re-using the **SM** field here. 
+  * `<SAMPLE_BARCODE>` is supposed to be a library/sample specific identifer. In some software packages PU can take precedence over the ID field.\*
+    
+    *\* If you don't happen to have the `<FLOWCELL_BARCODE>.<LANE>.<SAMPLE_BARCODE>`, just make this field something useful that will help identify the sample*. In this case, we didn't have that information so we will re-use the **SM** field here. 
 
  **More information about read groups and some fields we didn't discuss can be found [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035890671-Read-groups).**
 
@@ -161,7 +168,7 @@ Let's use the read group from our example `bwa` command above to demonstrate the
 
 **1.** The read group field LB (Library) is a required field to when adding read groups using `Picard`'s `AddOrReplaceReadGroups`, but we don't currently have this field in our read group information. How would we alter out the `bwa` command to include `LB` as well?
 
-**2.** If we wanted to increase the number of threads used by `bwa` for processing our alignment to 12, where  would we need to modify our `bwa` command to accommodate this?
+**2.** If we wanted to increase the number of threads used by `bwa` for processing our alignment to 12, how  would we need to modify our `bwa` command to accommodate this?
 
 ***
 
@@ -216,11 +223,13 @@ bwa mem \
 
 **Instead we will introduce bash variables** in our script which will allow us to quickly adapt this for use on all other samples we have in our dataset. The variables are described in more detail below:
 
-* `REFERENCE_SEQUENCE`: the path to the bwa index
-* `LEFT_READS`: path to the left read FASTQ file (R1 or 1)
-* `RIGHT_READS`:  path to the left read FASTQ file (R1 or 1)
-* `SAMPLE`: sample prefix (for naming output file and providing read group information)
-* `SAM_FILE`: Path and filename for the output alignment file
+* `REFERENCE_SEQUENCE`: The path to the bwa index
+* `LEFT_READS`: The path to the left read FASTQ file (R1 or 1)
+* `RIGHT_READS`: The path to the right read FASTQ file (R2 or 2)
+* `SAMPLE`: The sample prefix (for naming the output file and providing read group information)
+* `SAM_FILE`: The path and filename for the output alignment file
+
+Another advantage of using `bash` variables in this way is that it can reduce typos. It can also help make your code more reproducible since you will not be altering the underlying `bwa` command, which you could inadvertantly do while trying to swap out parameters within your code between scripts if you didn't use `bash` variables. Lastly, it can also help make your code more readable to yourself and others.
 
 ```
 # Assign files to bash variables
@@ -231,7 +240,7 @@ SAMPLE=`basename $LEFT_READS _1.fq.gz`
 SAM_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMPLE}_GRCh38.p7.sam
 ```
 
-> **NOTE:** `$RIGHT_READS` uses the string manipulation in order to swap the last parts of their filename. We also use `basename` to parse out the path from a file and when coupled with an argument after the filename, it will trim the end of the file as well as we can see with the `$SAMPLE` variable.
+> **NOTE:** `$RIGHT_READS` uses some `bash` string manipulation in order to swap the last parts of their filename. We also use `basename` to parse out the path from a file and when coupled with an argument after the filename, it will trim the end of the filename as well as we can see with the `$SAMPLE` variable.
   
 
 We can **now add our command for running `bwa`** and utilize the variables we created above:
