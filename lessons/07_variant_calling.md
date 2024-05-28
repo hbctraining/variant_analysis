@@ -269,13 +269,9 @@ sbatch mutect2_normal_tumor.sbatch
 ### VCF (Variant Call Format)
 The output from MuTect2 is a VCF file; the defacto file format for storing genetic variation. The Variant Call Format (VCF) is a standardized, **text-file format for describing variants identifed from a sequencing experiment**. This allows for downstream processes to be streamlined and also allows for researchers to easily collaborate and manipulate a shared set of variant calls. 
 
-Since it is a text file, we can easily take a quick peek at our VCF file using the `less` command:
+Since it is a text file, we could easily take a quick peek at our VCF file using the `less` command. However, our script might still be runnning!
 
-```bash
-less /n/scratch/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf
-```
-
-It's a bit overwhelming with so many lines of information! The figure below taken from the [TCGA VCF 1.1 Specification pages](https://docs.gdc.cancer.gov/Encyclopedia/pages/TCGA_VCF_1.1v2/) is helpful in summarizing the components of a VCF.
+Instead we will use the figure below taken from the [TCGA VCF 1.1 Specification pages](https://docs.gdc.cancer.gov/Encyclopedia/pages/TCGA_VCF_1.1v2/) to summarize the components of a VCF.
 
 <p align="center">
 <img src="../img/vcfExample_VCF.png" width="900">
