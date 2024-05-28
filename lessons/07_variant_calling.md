@@ -278,7 +278,7 @@ less /n/scratch/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3
 It's a bit overwhelming with so many lines of information! The figure below taken from the [TCGA VCF 1.1 Specification pages](https://docs.gdc.cancer.gov/Encyclopedia/pages/TCGA_VCF_1.1v2/) is helpful in summarizing the components of a VCF.
 
 <p align="center">
-<img src="../img/vcfExample_VCF.png" width="700">
+<img src="../img/vcfExample_VCF.png" width="900">
 </p>
 
 A VCF file is composed of **three main parts**:
@@ -290,7 +290,7 @@ This contains Meta-information Lines that provide supplemental information and t
     
 #### 2. Fixed Fields 
 
-A line starting with **a single `#`** and contains headers for all columns in the Body of the file. The following **eight mandatory fields** will be found in every VCF file:
+A line **starting with a single `#`** and contains headers for all columns in the Body of the file. The following **eight mandatory fields** will be found in every VCF file:
 
 - **CHROM** - Chromosome where the variant was found
 - **POS** - A 1-based index for the position on the chromosome where the variant was found. For multibase variants, this corresponds to the first base's position.
@@ -308,9 +308,8 @@ A line starting with **a single `#`** and contains headers for all columns in th
 | NS | Number of samples with data |
 
 
-**"FORMAT" onwards are optional fields** and are included to encapsulate per-sample/genome genotype data.
-
-* A colon-separated list of abbreviated catergories corresponding to the colon-separated genotype fields. Common catergories include:
+- **"FORMAT" onwards are optional fields** and are included to encapsulate per-sample/genome genotype data.
+  * A colon-separated list of abbreviated catergories corresponding to the colon-separated genotype fields. Common catergories include:
 
 | Abbreviation | Data Type |
 |--------------|-----------|
@@ -320,23 +319,33 @@ A line starting with **a single `#`** and contains headers for all columns in th
 | HQ | Commma-separated list of Haplotype Qualities |
 
 
-#### Body 
+#### 3. Body 
 These are the data lines where the variant calls will be found with each field corresponding to its column in the header line.
 
-> **NOTE**: For more detailed information on the VCF specification, **please see out file formats lesson** where the [VCF compartments are thoroughly described](file_formats_reference.md#variant-calling-file-formats).
+> **NOTE**: For more detailed information on the VCF specification, **please see our file formats lesson** where the [VCF components are thoroughly described](file_formats_reference.md#variant-calling-file-formats).
 
 
+***
 
-## Discuss Common General Population Allele Frequencies?
+**Exercise**
 
-gnomAD
+**1.** First let's move into out `variant_calling` directory and copy over a sample VCF file:
 
+``` bash
+cd ~/variant_calling/
+cp /n/groups/hbctraining/variant_calling/sample_data/sample.vcf .
+```
+
+**2.** Using `grep`, extract only the meta-information lines from the VCF file. 
+
+**5.** Using `grep`, extract the lines containing the names of all of the software packages that were used in the creation of this VCF file?
+
+***
 
 ## Additional Resources
 
-[BroadE: GATK - Intro to Somatic Variant Discovery](https://www.youtube.com/watch?v=0q5_e2Nfph4)
-
-[BroadE: GATK - Somatic SNVs and Indels](https://www.youtube.com/watch?v=T5IqadGoxow)
+* [BroadE: GATK - Intro to Somatic Variant Discovery](https://www.youtube.com/watch?v=0q5_e2Nfph4)
+* [BroadE: GATK - Somatic SNVs and Indels](https://www.youtube.com/watch?v=T5IqadGoxow)
 
 ***
 
