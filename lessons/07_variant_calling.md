@@ -318,7 +318,7 @@ A line **starting with a single `#`** and contains headers for all columns in th
 ### 3. Body 
 These are the data lines where the variant calls will be found with each field corresponding to its column in the header line.
 
-> **NOTE**: For more detailed information on the VCF specification, **please see our file formats lesson** where the [VCF components are thoroughly described](file_formats_reference.md#variant-calling-file-formats).
+> **NOTE**: For more detailed information on the VCF specification, **please see our [File Formats lesson](file_formats_reference.md#variant-calling-file-formats)** where the VCF components are thoroughly described.
 
 
 ***
