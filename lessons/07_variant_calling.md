@@ -76,7 +76,15 @@ The alogrithm used for somatic variant discovery with Mutect2 is broken up into 
 <img src="../img/Mutect2_pipeline.png" width="500">
 </p>
 
+MuTect2 can be run in **three different modes**: 
 
+1. **Tumor-normal** mode: where a tumor sample is matched with a normal samples. **This is the mode we will be using.**
+2. **Tumor-only** mode: where a single sample is used as input.
+    * Note that it's ability to reliably call somatic variants is greatly diminished as it has difficulty distinguishing between high frequency variants and germline variants.
+3. **Mitochondrial mode**: where specific parameters are added for appropriately calling on mitochondria. 
+
+ 
+### Running MuTect2
 Let's start or variant calling analysis by writing out a new `sbatch` submission script for `MuTect2`:
 
 ```bash
@@ -258,13 +266,66 @@ You can submit your variant calling script to the cluster:
 sbatch mutect2_normal_tumor.sbatch
 ```
 
-## Tumor-only Mode
+### VCF (Variant Call Format)
+The output from MuTect2 is a VCF file; the defacto file format for storing genetic variation. The Variant Call Format (VCF) is a standardized, **text-file format for describing variants identifed from a sequencing experiment**. This allows for downstream processes to be streamlined and also allows for researchers to easily collaborate and manipulate a shared set of variant calls. 
 
-MuTect2 is capable of running without a matched normal sample, otherwise called "Tumor-only mode". However, it's ability to reliably call somatic variants is greatly diminished as it has difficulty distinguishing between high frequency variants and germline variants. 
+Since it is a text file, we can easily take a quick peek at our VCF file using the `less` command:
 
-## Discuss PoNs?
+```bash
+less /n/scratch/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf
+```
 
-Panel of Normals are is a VCF of normal samples run through "tumor-only mode". If the variant is seen in multiple samples then this variant is included in the Panel of Normals. If these variants are then found in the tumor-sample then the variant is ignored. If panels of normal are used, then they should be gathered using a similiar sequencing design as the tumor samples.
+It's a bit overwhelming with so many lines of information! The figure below taken from the [TCGA VCF 1.1 Specification pages](https://docs.gdc.cancer.gov/Encyclopedia/pages/TCGA_VCF_1.1v2/) is helpful in summarizing the components of a VCF.
+
+<p align="center">
+<img src="../img/vcfExample_VCF.png" width="700">
+</p>
+
+A VCF file is composed of **three main parts**:
+
+#### 1. Header 
+This contains Meta-information Lines that provide supplemental information and they always **start with `##`**
+  * Lines can be applicable to all variant records in the file (e.g., date of creation of file) OR
+  * Lines can be specific to individual variants (e.g. flag to indicate whether a given variant exists in dbSNP)
+    
+#### 2. Fixed Fields 
+
+A line starting with **a single `#`** and contains headers for all columns in the Body of the file. The following **eight mandatory fields** will be found in every VCF file:
+
+- **CHROM** - Chromosome where the variant was found
+- **POS** - A 1-based index for the position on the chromosome where the variant was found. For multibase variants, this corresponds to the first base's position.
+- **ID** - If a SNP has an identifier (i.e. such as an rs number(s) from dbSNP), then it is put here. Otherwise, it will be a `.`.
+- **REF** - The reference base(s) for the given position
+- **ALT** - The variant base(s) for the given position. In the case of multiple variants present, they will be comma separated.
+- **QUAL** - A PHRED-scaled quality score for the variant
+- **FILTER** - A status of 'PASS' is given for any variant passing all filters. If a variant fails, then a semi-colon separated list will enumerate the filter(s) that the variant failed.
+- **INFO** -  Additional information about the variant. Common catergories can be found in the table below:
+
+| Abbreviation | Data Type |
+|--------------|-----------|
+| AF | Allele Frequency for the ALT allele |
+| DP | Combined Depth across all samples |
+| NS | Number of samples with data |
+
+
+**"FORMAT" onwards are optional fields** and are included to encapsulate per-sample/genome genotype data.
+
+* A colon-separated list of abbreviated catergories corresponding to the colon-separated genotype fields. Common catergories include:
+
+| Abbreviation | Data Type |
+|--------------|-----------|
+| GT | Genotype |
+| DP | Depth of the sample |
+| GQ | Genotype Quality |
+| HQ | Commma-separated list of Haplotype Qualities |
+
+
+#### Body 
+These are the data lines where the variant calls will be found with each field corresponding to its column in the header line.
+
+> **NOTE**: For more detailed information on the VCF specification, **please see out file formats lesson** where the [VCF compartments are thoroughly described](file_formats_reference.md#variant-calling-file-formats).
+
+
 
 ## Discuss Common General Population Allele Frequencies?
 
