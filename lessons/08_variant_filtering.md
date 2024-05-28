@@ -7,11 +7,7 @@
 
 ## `FilterMutectCalls`
 
-The output from `MuTect2` is a raw variant calling output. Many potential variants that are called are actually errors. The **calls need to be filtered to ensure against errors** such as:
-
-- Technical artifacts
-- Non-somatic mutations
-- Sequencing Errors
+The output from `MuTect2` is a raw variant calling output. Many potential variants that are called are actually errors and so filtering needs to be performed. 
 
 <p align="center">
 <img src="../img/Filter_variants.png" width="400">
@@ -20,10 +16,9 @@ The output from `MuTect2` is a raw variant calling output. Many potential varian
 To perform the filtering, we will be using `FilterMutectCalls`, which utilizes both hard filtering thresholds and sophisticated machine learning models to comprehensively filter variants and reduce false positives.
 
 * **Hard cut-offs**: MuTect2 applies hard filtering thresholds and variants must pass these thresholds. Some examples include:
-     * QUAL (Quality score)
      * Depth of coverage
-     * Variant allele frequency
-     * Mapping quality
+     * Base quality: Low median base quality scores
+     * Mapping quality: Low median mapping quality of alt reads
      * Artifact loci - Known problematic loci are filtered based on high false positive rates.
      * Clustered substitutions - Substitutions clustered together are more likely artifacts and are filtered.
   
@@ -34,13 +29,12 @@ To perform the filtering, we will be using `FilterMutectCalls`, which utilizes b
     * The quality score (QUAL) reported for each variant is based on the log-likelihood ratio of being a true mutation versus being an error. Higher scores indicate a variant is more likely real.
 
 
-
 > NOTE: While we are not concerned with cross-sample contamination for this dataset, if you were concerned about cross-sample contamination, then you would need to run `CalculateContamination` program within `GATK` to obtain a contamination table. You can use this contamination table as input into `FilterMutectCells` with the `--contamination-table` option.
 >
 
 Once filtering is complete, **`FilterMutectCalls` will annotate the `FILTER` field** in the VCF file with whether the variant is passing with PASS or FAIL. 
-* Variants with "PASS" in FILTER passed all filters and are the ones MuTect2 deems most likely to be real somatic variants.
-* Variants with "FAIL" in the FILTER means that it did not pass MuTect2's internal filtering steps and quality checks.
+    * Variants with **"PASS"** in FILTER passed all filters and are the ones MuTect2 deems most likely to be real somatic variants.
+    * Variants with **"FAIL"** in the FILTER means that it did not pass MuTect2's internal filtering steps and quality checks.
 
 
 ### Running `FilterMutectCalls` 
