@@ -1,4 +1,10 @@
-# Aggregating QC metrics with MultiQC
+---
+title: "Aggregating QC metrics with MultiQC"
+author: "Will Gammerdinger, Meeta Mistry"
+date: "December 11, 2023"
+---
+
+Approximate time: 30 minutes
 
 ## Learning Objectives
 
@@ -8,7 +14,7 @@
 
 ## Running MultiQC
 
-The goal of this lesson is to show you how to **combine numerical stats from multiple QC runs into a single HTML report**. To do this aggregation, we will introduce you to [MultiQC](https://multiqc.info/) -  a general use tool, perfect for summarising the output from numerous bioinformatics tools. Rather than having to sift through multiple reports from individual samples and different tools, we can use MultiQC to evaluate quality metrics conveniently within a single file!
+The goal of this lesson is to show you how to **combine numerical stats from multiple QC runs into a single HTML report**. To do this aggregation, we will introduce you to [MultiQC](https://multiqc.info/) -  a general use tool, perfect for summarizing the output from numerous bioinformatics tools. Rather than having to sift through multiple reports from individual samples and different tools, we can use MultiQC to evaluate quality metrics conveniently within a single file!
 
 <p align="center">
 <img src="../img/multiqc_screenshot.png" width="800">
@@ -36,11 +42,11 @@ This is a **tab-delimited file** which contains a header component, followed by 
 <img src="../img/align_metrics_screenshot.png" width="650">
 </p>
 
-To find out more about indidividual metrics we encourage you to peruse [the Picard documentation](https://broadinstitute.github.io/picard/picard-metric-definitions.html#AlignmentSummaryMetrics). This file format is not ideal for viewing and assessing manually. **We would benefit from visualizing the results rather than reading through this line by line.**
+To find out more about individual metrics we encourage you to peruse [the Picard documentation](https://broadinstitute.github.io/picard/picard-metric-definitions.html#AlignmentSummaryMetrics). This file format is not ideal for viewing and assessing manually. **We would benefit from visualizing the results rather than reading through this line by line.**
  
 
 ### Aggregating QC
-Now, we could use MultiQC to just visualize the data from Picard `AlignmentSummaryMetrics` but that wouldn't be a very good use of the tool. Ideally the more data we can aggregate, the easier it is to evaluate the quality of our samples with data collated across multiple results and multiple samples.
+Now, we could use MultiQC to just visualize the data from Picard `AlignmentSummaryMetrics` but that wouldn't be a very good use of the tool. Ideally, the more data we can aggregate, the easier it is to evaluate the quality of our samples with data collated across multiple results and multiple samples.
 
 `MultiQC` would be relatively quick to just run from the command-line, but it's best practice to write our steps to scripts so that we always have a record of what we did and how we created our reports. We will start by making sure we are in our scripts directory and writing a `sbatch` script in `vim` for submission:
 
@@ -156,7 +162,7 @@ multiqc \
 Like the previous step, we will need to check to ensure that the previous `Picard` step for collecting metrics for each sample is down before we can submit this script. To do this, we will check out `squeue`:
 
 ```bash
-squeue -u $USER
+squeue --me
 ```
 
 If it is complete, we can go ahead and run our script.
@@ -172,13 +178,13 @@ As we have [previously discussed with FASTQC](02_fastqc.md#evaluate-qc-metrics-f
 
 In the right hand panel, navigate to where the HTML files are located on O2 `~/variant_calling/reports/multiqc/`. Then decide where you would like to copy those files to on your computer and move to that directory on the left hand panel.
 
-Once you have found the HTML output for `MultiQC` **copy it over** by double clicking it or drag it over to right hand side panel. Once you have the HTML file copied over to your computer, you can leave the `FileZilla` interface. You can then locate the HTML file on your computer and open the HTML report up in a browser (`Chrome`, `Firefox`, `Safari`, etc.). 
+Once you have found the HTML output (`multiqc_report.html`) for `MultiQC` **copy it over** by double clicking it or drag it over to right hand side panel. Once you have the HTML file copied over to your computer, you can leave the `FileZilla` interface. You can then locate the HTML file on your computer and open the HTML report up in a browser (Chrome, Firefox, Safari, etc.). 
 
 ## Evaluate MultiQC HTML Report 
 
 ### General Statistics
 
-Now we can evalute all of our `FastQC` and alignments metrics at once. In the first table we are presented with gives us an overview of our sequencing and alignment.
+Now we can evalute all of our `FastQC` and alignments metrics at once. The first table we are presented with gives us an overview of our sequencing and alignment.
 
 <p align="center">
 <img src="../img/General_statistics.png" width="800">
@@ -188,15 +194,11 @@ A few quick takeaways from this table is that it gives us an overview of our ali
 
   **1)** We had an alignment rate of 99% for both normal and tumor which is very good. 
 
-  **2)** The level of duplicates is not high (<10%).
-***Sergey* **
- Range of acceptable levels of duplicates if we are filtering them out?
+  **2)** The level of duplicates is low (<10%).
 
   **3)** The GC-content of our sequencing is 49%. The average GC content of the human genome is ~41%, but GC-content is higher in genic regions than intergenic regions. Given that our sequencing represents whole exome sequencing rather than whole genome sequencing, a moderately elevated GC-content compared to the genome average seems reasonable. If we see GC-content that drasatically differs (more than ~10%) from our expectation then that could be a reason to pause and look for reasons for this divergence. 
   
-  **4)** We can also see that we have ~49 million fragments for each sample, which should provide more than adequate depth for variant calling.
-  ***Sergey***
-  Recommendations on Depth for WES and WGS. My back of the envelope calculations for these 100-bp Paired end samples is that we have like 200X? Is that right
+  **4)** We can also see that we have ~49 million fragments for each sample, which should provide more than adequate depth for variant calling for human WES.
 
 ### Aligned Reads
 
@@ -208,9 +210,9 @@ The next figure in the report is a chart of the aligned reads. You can click on 
 
 ### FastQC plots
 
-As we continue down the report, we can see that the FastQC plots are present. We won't go in these in detail, as we have already explored them in a [previous lesson](02_fastqc.md#evaluate-qc-metrics-from-fastqc). What we will highlight is that all samples are aggregated in the plots. 
+As we continue down the report, we can see that the FastQC plots are present and aggregrated. We won't go in these in detail, as we have already explored them in a [previous lesson](02_fastqc.md#evaluate-qc-metrics-from-fastqc). What we will highlight is that all samples are aggregated in the plots. 
 
-Use the sequence quality figure below as an example. Rather than a single line, we now observe two colored lines; each line representing a different sample. If you hover over the line with your mouse, you will see a text box appear to with a sample name label and quality score at each base. The advanatge to having all samples in a single plot is that you can more easily spot trends across samples within a dataset.
+Use the sequence quality figure below as an example. Rather than a single line, we now observe lines representing each sample. If you hover over the line with your mouse, you will see a text box appear to with a sample name label and quality score at each base. The advantage to having all samples in a single plot is that you can more easily spot trends across samples within a dataset.
 
 <p align="center">
 <img src="../img/Base_quality_scores.png" width="800">
@@ -219,13 +221,13 @@ Use the sequence quality figure below as an example. Rather than a single line, 
 
 ## Overall QC Impressions
 
-The QC for this dataset looks pretty good. We have a **high alignment to our reference genome. Our read qualities are good and the GC-content is within the range we would expect for our sample**. There doesn't appear to be many duplicated or overpresented sequences. All of these signs point to having a high-quality dataset, which perhaps was expected from a *in silico* generated dataset.
+The QC for this dataset looks pretty good. We have a **high alignment rate to our reference genome. Our read qualities are good and the GC-content is within the range we would expect for our sample**. There doesn't appear to be many duplicated or overpresented sequences. All of these signs point to having a high-quality dataset, which perhaps was expected from a *in silico* generated dataset.
 
 ## Important Considerations on QC Metrics
 
-**1) Rarely will one single metric will tell you that there is something wrong about the data. Small deviations away from the "ideal" are normal and should mostly only be a concern if there are multiple deviations with moderate impact. Many of these metrics are somewhat redundant, so any problematic deviation should likely show up in multiple diagnostics.** For example, if you example the expected GC content for your sample is 41%, but your data comes back as 43%, that single metric on it's own is likely not too problematic. However, if the GC content comes back as 60%, there's only 40% alignment to the reference genome and there appears to be a multi-modal distribution in the GC content distribution, then you should definitely pause and evaluate sources of variation that could be creating this pattern.
+**1) Rarely will one single metric tell you that there is something wrong about the data. Small deviations away from the "ideal" are normal and should mostly only be a concern if there are multiple deviations with moderate impact. Many of these metrics are somewhat redundant, so any problematic deviation should likely show up in multiple diagnostics.** For example, if the expected GC content for your sample is 41%, but your data comes back as 43%, that single metric on it's own is likely not too problematic. However, if the GC content comes back as 60%, there's only 40% alignment to the reference genome and there appears to be a multi-modal distribution in the GC content distribution, then you should definitely pause and evaluate sources of variation that could be creating this pattern.
 
-**2) A poor QC report *DOES NOT* mean that you need to through out all of the data immediately.** Oftentimes, there are still salvagable data in a dataset that fails QC on some metrics. Perhaps it means you will need to remove adaptor contamination or other contaminants. While it is unfortunate to have to discard reads and weaken your depth for finding variants, having clean data will substanially help the analyses more accuarately call variants. Of course, some datasets are beyond salvagable, but these are generally rare. 
+**2) A poor QC report *DOES NOT* mean that you need to discard all of the data immediately.** Oftentimes, there are still salvagable data in a dataset that fails QC on some metrics. Perhaps it means you will need to remove adapter contamination or other contaminants. While it is unfortunate to have to discard reads and weaken your depth for finding variants, having clean data will substanially help the analyses more accuarately call variants. Of course, some datasets are beyond salvagable, but these are generally rare. 
 
 **3) As with any NGS QC analysis, be aware of the biological and technical aspects of your sample.** Perhaps your organism of interest or sample has some peculiar biological/technical aspect as this may or likely will come through in the QC analysis. This biological or technical aspect could skew some QC metrics or create patterns that we haven't shown here. For instance, our GC metrics were a bit elevated compared to the human genome, but we recalled that we are working from exome data and the human exome is more GC-rich than the rest of the genome, so our elevate GC percentages were reasonable. 
 
