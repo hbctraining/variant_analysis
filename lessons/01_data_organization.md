@@ -82,7 +82,7 @@ ssh username@o2.hms.harvard.edu
 
 You will receive a prompt for your password, and you should type in your associated password. 
 
-***Note: that the cursor will not move as you type in your password***.
+***Note: The cursor will not move as you type in your password***.
 
 A warning might pop up the first time you try to connect to a remote machine, type <kbd>Yes</kbd> or <kbd>Y</kbd>, then hit <kbd>Enter/Return</kbd>.
 
@@ -115,9 +115,9 @@ To this you will respond <kbd>y</kbd>, then hit <kbd>Enter/Return</kbd>.
 Next, it will prompt you with:
 
 ```
-By typing 'YES' I will comply with HMS RC guidelines for using scratch.
+By typing 'YES' I will comply with HMS RC guidelines for using Scratch.
 I also confirm that I understand that files in my scratch directory WILL NOT BE BACKED UP IN ANY WAY.
-I also understand that THIRTY DAYS after I last access a given file or directory in my scratch directory,
+I also understand that 45 DAYS after I last modify a given file or directory in my scratch directory,
 it will be DELETED with NO POSSIBILITY of retrieval.
 
 I understand HMS RC guidelines for using scratch: 
@@ -129,8 +129,8 @@ It should return:
 
 ```
 Your scratch directory was created at /n/scratch/users/r/rc_trainingXX.
-This has a limit of 10TiB of storage and 1 million files.
-You can check your scratch quota using the scratch_quota.sh command.
+This has a limit of 25TiB of storage and 2.5 million files.
+You can check your scratch quota using the quota-v2 command.
 ```
 
 Now that we have created our `scratch` space, you will need to start an interactive session. A login node's primary function is to enable users to log in to a cluster, it is not meant to be used for any actual work/computing. Since we will be doing some work, let's get on to a compute node:
@@ -193,7 +193,7 @@ $ cd raw_data
 $ cp /n/groups/hbctraining/variant_calling/raw_data/*.fq.gz .
 ```
 
-This may take up to a minute as there is a lot of data to copy. Now that we have created the directories that we are going to use in our `home` space. Let's move to our `/n/scratch` space so that we can set up the directories that we are going to there to hold our intermediate files:
+This may take up to a minute as there is a lot of data to copy. Now that we have created the directories that we are going to use in our `home` space. Let's move to our `/n/scratch` space so that we can set up the directories that we are going to use to hold our intermediate files:
 
 ```
 $ cd /n/scratch/users/${USER:0:1}/$USER
@@ -203,7 +203,7 @@ $ cd /n/scratch/users/${USER:0:1}/$USER
 > The `users` on the scratch space are organized into subdirectories starting with the first letter of their username. `${USER:0:1}` will return the first letter of the username. Test this using `echo ${USER:0:1}` at the command line.
 >
 > This is syntax for creating substrings in `bash`:
->`{VARIABLE:START:LENGTH}`
+>`${VARIABLE:START:LENGTH}`
 >  - `VARIABLE` is the variable that you would like to create a substring of
 >  - `START` is the 0-based indexing of the position to start the substring
  > - `LENGTH` is the number of characters following the starting position to include in the substring
