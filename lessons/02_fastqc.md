@@ -1,4 +1,10 @@
-# Evaluating Read Qualities with FastQC
+---
+title: "Evaluating Read Qualities with FastQC"
+author: "Will Gammerdinger, Meeta Mistry"
+date: "December 11, 2023"
+---
+
+Approximate time: 75 minutes
 
 ## Learning objectives
 - Implement FastQC to evaluate read quality
@@ -39,7 +45,7 @@ CACTTGTAAGGGCAGGCCCCCTTCACCCTCCCGCTCCTGGGGGANNNNNNNNNNANNNCGAGGCCCTGGGGTAGAGGGNN
 @?@DDDDDDHHH?GH:?FCBGGB@C?DBEGIIIIAEF;FCGGI#########################################################
 ```
 
-The line 4 has characters encoding the quality of each nucleotide in the read. The legend below provides the mapping of quality scores (Phred-33) to the quality encoding characters. *Different quality encoding scales exist (differing by offset in the ASCII table), but note the most commonly used one is fastqsanger, which is the scale output by Illumina since mid-2011.* 
+Line 4 has characters encoding the quality of each nucleotide in the read. The legend below provides the mapping of quality scores (Phred-33) to the quality encoding characters. *Different quality encoding scales exist (differing by offset in the ASCII table), but note the most commonly used one is fastqsanger, which is the scale output by Illumina since mid-2011.* 
 ```
  Quality encoding: !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHI
                    |         |         |         |         |
@@ -67,7 +73,7 @@ Therefore, for the first nucleotide in the read (C), there is less than a 1 in 1
 
 **Exercise**
 
-**1.** If the probability of an incorrect base call is 1 in 3,981, what is the associated PHRED score?
+**1.** If the probability of an incorrect base call is 1 in 3,982, what is the associated PHRED score?
 
 ***
 
@@ -111,7 +117,7 @@ Before we actually run this QC tool on our files, let's check what options are a
 $ fastqc -h
 ```
 
-It will give us an idea of the varous options we have available to modify the default behavior of the tool!
+It will give us an idea of the various options we have available to modify the default behavior of the tool!
 
 
 To run FastQC we need to specify two arguments: 
@@ -157,7 +163,7 @@ $ O2squeue
 
 ### Running FastQC
 
-Before we do anything else, we need to reload the module since we exited out of our single core interactive session.
+Before we do anything else, we need to reload the module since have a new interactive session.
 
 ```bash
 $ module load fastqc/0.12.1
@@ -175,11 +181,11 @@ The FastQC output that we are most interested in is the `html` file for each sam
 
 ## Evaluate QC metrics from FastQC
 
-The FastQC html reports are not viewable on the O2 Cluster, so we will need connect our local computers to the O2 Computing Cluster with a file transfer program in order to help us download the FastQC reports from O2. We will be using [FileZilla](https://filezilla-project.org/) in order to do this, but other file transfer software exists and can also be down through the command-line [`scp`](https://linux.die.net/man/1/scp) command.
+The FastQC HTML reports are not viewable on the O2 Cluster, so we will need connect our local computers to the O2 Computing Cluster with a file transfer program in order to help us download the FastQC reports from O2. We will be using [FileZilla](https://filezilla-project.org/) in order to do this, but other file transfer software exists and can also be down through the command-line [`scp`](https://linux.die.net/man/1/scp) command.
 
 > ### **What is FileZilla?**
 >
->FileZilla is a file transfer (FTP) client with lots of useful features and an intuitive graphical user interface. It basically allows you to reliably move files securely between two computers using a point and click environment. It has cross-platform compatability so you can install it on any operating system.
+>FileZilla is a file transfer protocol (FTP) client with lots of useful features and an intuitive graphical user interface. It basically allows you to reliably move files securely between two computers using a point and click environment. It has cross-platform compatability so you can install it on any operating system.
 
 ### Filezilla - Step 1
 
@@ -215,7 +221,7 @@ You will see messages printed in the message window in the top window pane, givi
 
 You will see two panels in the interface. On the left hand side you will see your the files in your laptop and on the right hand side you have your home directory on O2. Both panels have a directory tree at the top and a detailed listing of the selected directory's contents underneath. In the right hand panel, navigate to where the HTML files are located on O2 `~/variant_calling/results/fastqc/`. Then decide where you would like to copy those files to on your computer and move to that directory on the left hand panel.
 
-Once you have found the html output for `syn3_normal_1_fastqc.html` **copy it over** by double clicking it or drag it over to right hand side panel. Once you have the HTML file copied over to your laptop, you can leave the Filezilla interface. You can then locate the HTML file on your computer and open it up in a browser. 
+Once you have found the HTML output for `syn3_normal_1_fastqc.html` **copy it over** by double clicking it or drag it over to right hand side panel. Once you have the HTML file copied over to your laptop, you can leave the Filezilla interface. You can then locate the HTML file on your computer and open it up in a browser. 
 
 ## Interpreting the HTML report
 
@@ -227,21 +233,21 @@ Now we can take a look at the metrics and assess the quality of our sequencing d
 
 It is exceedingly **uncommon to have green checkmarks for everything** and even data with a **few red X's can still be good data**. You should not consider FastQC's scoring very strongly, but rather interpret the data yourself and make your own judgement. This is for two reasons:
 
-1) `FastQC` and the associated metrics are used as a first QC step for virtually all NGS analysis, but how RNA-seq, ChIP-seq, WGS sequencing look in these plots is going to vary widely. A "failure" in one or a handful of metrics could simply be the result of the type of experiement you are running.
+**1)** `FastQC` and the associated metrics are used as a first QC step for virtually all NGS analysis, but how RNA-seq, ChIP-seq, WGS sequencing look in these plots is going to vary widely. A "failure" in one or a handful of metrics could simply be the result of the type of experiment you are running.
 
-2) Similar to the previous point, your experiment could have some peculiarities to it. While this doesn't apply as much to WGS and WES data, you could imagine if you somehow biased your subset of reads sequenced that this could have biases in the QC of the reads. This is oftentimes more applicable to other types of NGS data analysis, but can also be true for WGS and WES as well. For example, the GC content of protein coding sequences is also generally higher than the GC content of the genome at large, so WES is introducing a GC bias that you might not see in WGS data.
+**2)** Similar to the previous point, your experiment could have some peculiarities to it. While this doesn't apply as much to WGS and WES data, you could imagine if you somehow biased your subset of reads sequenced that this could have biases in the QC of the reads. This is oftentimes more applicable to other types of NGS data analysis, but can also be true for WGS and WES as well. For example, the GC content of protein coding sequences is also generally higher than the GC content of the genome at large, so WES is introducing a slight GC bias that you might not see in WGS data.
 
 In general, when looking at at your data within `FastQC`, always keep your experimental design and dataset in consideration and don't read too much into the assessments that `FastQC` provides. 
 
 ### Sequence Quality
 
-As we continue down the report, we can skip a few figures until we get to the sequence quality figure. A few things we should know about this figure:
+The sequence quality figure is the first figure that we should see. A few things we should know about this figure:
   
-  1) X-axis is position in the read and the y-axis is PHRED score
+  **1)** The x-axis is position in the read and the y-axis is PHRED score
   
-  2) Typically, the shape of these figures have a steep incline in the first few bases before plateauing and finally tapering off a bit. The shape should be mostly smooth. If we saw large, abrupt drops in quality this could be reason to contact your sequencing facility.
+  **2)** Typically, the shape of these figures have a steep incline in the first few bases before plateauing and finally tapering off a bit. The shape should be mostly smooth. If we saw large, abrupt drops in quality this could be reason to contact your sequencing facility.
   
-  3) The right read (or R2) often has low-quality than the left read (or R1) and this difference in quality if just an artifact of pair-end Illumina sequencing.
+  **3)** While we are currently evaluting the left read of our paired-end reads (R1), the right read (or R2) often has lower quality than the left read and this difference in quality is just an artifact of the paired-end Illumina sequencing. If you were to download the FASTQC HTML for the left read (`syn3_normal_2_fastqc.html`), you would be able to observe this difference.
 
 <p align="center">
 <img src="../img/syn3_normal_per_base_sequence_quality.png" width="800">
@@ -261,13 +267,13 @@ We can see that our average quality scores peak well-above 28 and they appear to
 
 ### Per Base Sequence Content
 
-The next plot is showing the sequence content across the reads. The x-axis is the position in the read and the y-axis is the percent of each base. The red line is percent Thymine, the blue line is percent cytosine, green is percent Adenine and yellow is percent guanine, Ideally, you should see pretty flat lines free from spikes, but the beginning (~10 bases) can often be a bit bumpy due to primer bias. We can see this primer bias in our samples and the effect appears quite small. If you know the expected GC content of your sample, this could also be a place that you could check that your sample is in the range of what you would be expecting.
+The next plot is showing the sequence content across the reads. The x-axis is the position in the read and the y-axis is the percent of each base. The red line is percent thymine, the blue line is percent cytosine, green is percent adenine and yellow is percent guanine, Ideally, you should see pretty flat lines free from spikes, but the beginning (~10 bases) can often be a bit bumpy due to primer bias. We can see this primer bias in our samples and the effect appears quite small. If you know the expected GC content of your sample, this could also be a place that you could check that your sample is in the range of what you would be expecting.
 
 <p align="center">
 <img src="../img/syn3_normal_per_base_sequence_content.png" width="800">
 </p>
 
-As you look across out sample the lines have a bit of primer bias on the front and flatten out fairly quickly. 
+In our sample the lines have a bit of primer bias at the front and flatten out fairly quickly. This looks pretty good!
 
 ### GC Content Distribution
 
@@ -301,7 +307,7 @@ This figure appears to be about what one would hope to see as most of the reads 
 
 ### Overrepresented Sequences
 
-This table will display any overrepresented sequences and potential sources. It is not uncommon to get adaptor sequences in this table. In general, as long as their are only a handful or fewer overrepresented sequences with all of them being less than ~1%, then your sample should be fine. 
+This table will display any overrepresented sequences and potential sources. It is not uncommon to get adapter sequences in this table. In general, as long as their are only a handful or fewer overrepresented sequences with all of them being less than ~1%, then your sample should be fine. 
 
 <p align="center">
 <img src="../img/syn3_normal_overrepresented_sequences.png" width="400">
@@ -309,11 +315,9 @@ This table will display any overrepresented sequences and potential sources. It 
 
 These samples don't show any overrepresented sequences, which is great.
 
-FastQC has a really well documented [manual page](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) with [detailed explanations](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/) about every plot in the report. 
-
 ### Adapter Content
 
-One large source of overrepresented sequences can be the adapters used in library construction. On the x-axis we will plot the position in the read and on the y-axis it is th percent of adapter contamination for various adapter sets in that position, with each color line being a different potential adapter set. Since no adapters came up in our previous overrepresented sequences evaluation, we would not expect to see any sign of them in this plot. 
+One common source of overrepresented sequences can be the adapters used in library construction. On the x-axis we will plot the position in the read and on the y-axis it is the percent of adapter contamination for various adapter sets in that position, with each color line being a different potential adapter set. Since no adapters came up in our previous overrepresented sequences evaluation, we would not expect to see any sign of them in this plot. 
 
 <p align="center">
 <img src="../img/syn3_normal_adapter_content.png" width="800">
@@ -321,9 +325,11 @@ One large source of overrepresented sequences can be the adapters used in librar
 
 We don't see any signs of adapters in our data. 
 
+FastQC has a really well documented [manual page](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) with [detailed explanations](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/) about every plot in the report. 
+
 ### Overall conclusions
 
-It looks like our data looks good and there weren't any concerning issues that we need to address with the sequencing facility! We can proceed with our analysis!
+It looks like our data looks good and there weren't any concerning issues that we need to address with the sequencing facility! Traditionally, you would now repeat this process for each of the FASTQC HTML reports. However, we have evaluated them and can assure you that the other reports also look good, so we can now proceed with our analysis!
 
 ***
 
