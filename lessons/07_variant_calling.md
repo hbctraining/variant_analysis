@@ -118,7 +118,7 @@ MuTect2 can be run in **three different modes**:
 
 1. **Tumor-normal** mode: where a tumor sample is matched with a normal samples. **This is the mode we will be using.**
 2. **Tumor-only** mode: where a single sample is used as input.
-    * Note that it's ability to reliably call somatic variants is greatly diminished as it has difficulty distinguishing between high frequency variants and germline variants. In order to help, a panel of normals and a germline resource are strongly recommendeded when running in this mode.
+    * Note that the software's ability to reliably call somatic variants is greatly diminished as it has difficulty distinguishing between high-frequency variants and germline variants. In order to help, a panel of normals and a germline resource are strongly recommended when running in this mode.
 3. **Mitochondrial mode**: where specific parameters are added for appropriately calling on mitochondria. 
 
  
