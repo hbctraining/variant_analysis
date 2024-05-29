@@ -253,7 +253,7 @@ The sequence quality figure is the first figure that we should see. A few things
 <img src="../img/syn3_normal_per_base_sequence_quality.png" width="800">
 </p>
 
-The shape that we see is very typical of a good sequencing run. Imporantly, their aren't any sudden drops in read quality in these samples.
+The shape that we see is very typical of a good sequencing run. Importantly, there aren't any sudden drops in read quality in these samples.
 
 ### Average Sequence Quality
 
