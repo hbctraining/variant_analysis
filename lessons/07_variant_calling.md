@@ -42,6 +42,22 @@ In the above image we can see an example of a germline variant on the left. Appr
 
 **For this workshop, we have tumor/normal samples and so we will be calling somatic variants.**
 
+### Panel of Normals
+
+A panel of normals (PoN) is a resource derived from a set of healthy tissues with the goal of **correcting for recurrent technical artifacts within a sequencing experiment**. Ideally, a panel of normals should be comprised of:
+
+- Samples from healthy individuals which can be unrelated to the samples in the analysis
+- Preferably younger individuals to reduce the noise of somatic mutations or undiagnosed tumors
+- Undergo the same sample preperation and sequencing as your samples of interest
+- [Atleast 40 individuals](https://gatk.broadinstitute.org/hc/en-us/articles/360035890631-Panel-of-Normals-PON)
+
+<p align="center">
+<img src="../img/Panel_of_normals.png" width="600">
+</p>
+
+In the above image we can see that for the left "variant", the panel of normals and the tumor all have a thymine "variant" in this position relative to the reference. This would likely be a technical artifact that we would not want to consider. However for the right variant, we can see that while the tumor is still fixed for this position like the previous case, the panel of normals shows variation and this signifies that this position is likely not a technical artifact.
+
+An additional benefit of a good panel of normals is that it can act as an additional filter for germline variants. This is particularly true when you run tumor-only mode, discussed later. If you do not have access to a panel of normals, you can also use a panel of normals that the Broad Institute hosts which is derived from the [1000 Genomes Project](https://www.internationalgenome.org/). This data can be downloaded [here](https://storage.googleapis.com/gatk-best-practices/somatic-hg38/1000g_pon.hg38.vcf.gz). We will be using this data in our analysis and we have already placed it on the cluster. The Broad also provides instructions on how to make your own panel of normals [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035531132--How-to-Call-somatic-mutations-using-GATK4-Mutect2).
 
 ### GATK Toolkit
 [GATK (Genome Analysis Toolkit)](https://gatk.broadinstitute.org/hc/en-us/articles/360036194592-Getting-started-with-GATK4) is a popular open-source software package developed by the Broad Institute for analysis of high throughput sequencing (HTS) data. 
