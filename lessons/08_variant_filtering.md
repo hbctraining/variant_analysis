@@ -19,15 +19,13 @@ To perform the filtering, we will be using `FilterMutectCalls`, which utilizes b
      * Depth of coverage
      * Base quality: Low median base quality scores
      * Mapping quality: Low median mapping quality of alt reads
-     * Artifact loci - Known problematic loci are filtered based on high false positive rates.
-     * Clustered substitutions - Substitutions clustered together are more likely artifacts and are filtered.
+     * Artifact loci: Known problematic loci are filtered based on high false positive rates
+     * Clustered substitutions: Substitutions clustered together are more likely artifacts and are filtered
   
-
 * **Machine learning**: MuTect2 was trained on thousands of real and fake variants to learn patterns. It uses this knowledge to score each variant based on how likely it is to be real.
     * Employs probabilistic error models to characterize the probability distributions of various sequencing and alignment artifacts. This includes things like base quality scores, mapping quality, strand bias, etc.
     * For each raw variant call, MuTect2 calculates likelihoods of it being a real somatic mutation versus different error types based on the trained error models.
     * The quality score (QUAL) reported for each variant is based on the log-likelihood ratio of being a true mutation versus being an error. Higher scores indicate a variant is more likely real.
-
 
 > NOTE: While we are not concerned with cross-sample contamination for this dataset, if you were concerned about cross-sample contamination, then you would need to run `CalculateContamination` program within `GATK` to obtain a contamination table. You can use this contamination table as input into `FilterMutectCells` with the `--contamination-table` option.
 >
@@ -36,7 +34,6 @@ Once filtering is complete, **`FilterMutectCalls` will annotate the `FILTER` fie
 
 * Variants with **"PASS"** in FILTER passed all filters and are the ones MuTect2 deems most likely to be real somatic variants.
 * Variants with **"FAIL"** in the FILTER means that it did not pass MuTect2's internal filtering steps and quality checks.
-
 
 ### Running `FilterMutectCalls` 
 
@@ -92,7 +89,7 @@ gatk FilterMutectCalls \
   --output $MUTECT_FILTERED_VCF
 ```
 
-Let's breakdown this command:
+Let's break down this command:
 
 - `gatk FilterMutectCalls` Calls the `FilterMutectCalls` package within `GATK`
 - `--reference $REFERENCE_SEQUENCE` This is our reference genome
@@ -128,7 +125,7 @@ Low-complexity regions of the genome represent regions that have simple sequence
 
 > "low-complexity regions (LCRs), 2% of the human genome, harbor 80–90% of heterozygous INDEL calls and up to 60% of heterozygous SNPs" with false positive rates ranging from "10% to as high as 40%".
 
-As a result of the high error rates in these low-complexity regions, it is recommended to remove of these regions until better methods for variant calling in low-complexity regions can become established. The file that holds out LCR regions is in BED format. **For more detailed information on the BED file format, please see our [File Formats lesson](file_formats_reference.md#bed-files)**
+As a result of the high error rates in these low-complexity regions, it is recommended to remove of these regions until better methods for variant calling in low-complexity regions can become established. The file that holds our LCR regions is in BED format. **For more detailed information on the BED file format, please see our [File Formats lesson](file_formats_reference.md#bed-files)**
 
 ### Using SnpSift to remove LCRs
 
@@ -161,7 +158,6 @@ curl -o LCR-hs38_with_chr.bed.gz -L https://github.com/lh3/varcmp/blob/master/sc
  # YOU DON'T NEED TO DO THIS
  gunzip -c LCR-hs38_with_chr.bed.gz > LCR-hs38_with_chr.bed</pre>
 
- 
 When we inspect our BED file we can see that it simply has the required 3 columns denoting the positioning of low-complexitiy regions in GRCh38.
  
 <pre>
@@ -175,7 +171,7 @@ Unfortunately, this file is formatted with the chromosome names starting with <c
 sed 's/^chr//g' LCR-hs38_with_chr.bed &gt; LCR-hs38.bed
 </pre>
 
-We can break with command down:
+We can break this command down:
 
 <ul><li><code>sed</code> Calls the <code>sed</code> command</li>
 
@@ -184,8 +180,6 @@ We can break with command down:
 <li><code>&gt; LCR-hs38.bed</code> Write the output to this file</li></ul>
 <hr />
 </details>
-
-
 
 In order **to remove the LCRs from the VCF file, we will once again be using `SnpSift`**. As we mentioned earlier, we will be discussing `SnpSift` at length in the [variant prioritization lesson](13_variant_prioritization.md), but for now were are going to focus on using the `intervals` command build into `SnpSift`. Let's go back to our scripts directory and edit our variant filtering script.
 
@@ -229,7 +223,7 @@ bedtools intersect \
   -b $LCR_FILE > $LCR_FILTERED_VCF
 </pre>
   
-We can breakdown this command:
+We can break down this command:
   
 <ul><li><code>-header</code> This will maintain the header information from the <code>-a</code> file. However, it will not add the <code>bedtools</code> command to the header line like <code>SnpSift</code> does.</li>
   
