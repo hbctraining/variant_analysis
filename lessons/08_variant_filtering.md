@@ -291,7 +291,7 @@ sbatch variant_filtering_normal_tumor.sbatch
 Once it has completed, which should be quick, we can look at the output VCF file and note a **few items that have been added to the meta-information lines**:
 
 ```
-less /n/scratch/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-LCR-filt.vcf
+less /n/scratch/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.vcf
 ```
 
 **Scroll down** the VCF file past all of the contigs and you should see a line starting with:
