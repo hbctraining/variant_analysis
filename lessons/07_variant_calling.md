@@ -67,10 +67,6 @@ An additional benefit of a good panel of normals is that it can act as an additi
 
 ### Germline Resource
 
-<p align="center">
-<img src="../img/gnomAD_logo.png" width="600">
-</p>
-
 A germline resource contains many variants within a population and can be used in conjunction with other tools to help variant calling alogrithms determine if a variant is likely a germline or somatic mutation. The logic is: if a variant is a common variant in the population and it is present in the sample, then it is more likely to be a germline variant rather than a somatic variant. On the other hand, if a low-frequency variant in the population is present in an sample, then it is more likely to be somatic variant rather than a germline variant. This idea is illustrated below:
 
 <p align="center">
