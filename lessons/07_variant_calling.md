@@ -59,6 +59,12 @@ In the above image we can see that for the left "variant", the panel of normals 
 
 An additional benefit of a good panel of normals is that it can act as an additional filter for germline variants. This is particularly true when you run MuTect2 in tumor-only mode, discussed later. If you do not have access to a panel of normals, you can also use a panel of normals that the Broad Institute hosts which is derived from the [1000 Genomes Project](https://www.internationalgenome.org/). This data can be downloaded [here](https://storage.googleapis.com/gatk-best-practices/somatic-hg38/1000g_pon.hg38.vcf.gz). We will be using this data in our analysis and we have already placed it on the O2 cluster. The Broad Institute also provides instructions on how to make your own panel of normals [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035531132--How-to-Call-somatic-mutations-using-GATK4-Mutect2). It is not required to use a panel of normals when running Mutect2, but it is [recommended](https://gatk.broadinstitute.org/hc/en-us/articles/360037593851-Mutect2).
 
+> Note: When using a panel of normals VCF file in MuTect2, you will also need an index of the VCF file. We have already created the index for this workshop, but this can be accomplished in one of a few ways:
+> 1. If you are using the panel of normals provided by the Broad Institute, then they also provide a index that you can download from [here](https://storage.googleapis.com/gatk-best-practices/somatic-hg38/1000g_pon.hg38.vcf.gz.tbi).
+> 2. You can index your own VCF file with the `IndexFeatureFile` within GATK.
+> 3. You can also use other software packages like [tabix](https://www.htslib.org/doc/tabix.html) or [bcftools](https://samtools.github.io/bcftools/bcftools.html#index) to create index files for VCF files
+
+
 ### Germline Resource
 
 A germline resource contains many variants within a population and is used in conjunction with other tools to help variant calling alogrithms determine if a variant is likely a germline or somatic mutation. The logic is if a variant that is a common variant in the population and it is present in the sample, then it is more likely to be a germline variant rather than a somatic variant. While, if a low-frequency variant in the population is present in an sample, then it is more likely to be somatic rather than a germline variant. This idea is illustrated below:
@@ -68,6 +74,8 @@ A germline resource contains many variants within a population and is used in co
 </p>
 
 The Broad Institute provides a VCF file that uses the variants from [gnomAD](https://gnomad.broadinstitute.org/) that can be used as a germline reference [here](https://storage.googleapis.com/gatk-best-practices/somatic-hg38/af-only-gnomad.hg38.vcf.gz). Similarly to a panel of normals, this is not required for MuTect2 to call variants, however, it is also [recommended](https://gatk.broadinstitute.org/hc/en-us/articles/360037593851-Mutect2). 
+
+> Note: Similarly to the index file needed for the panel of normals VCF file, we will also need a index file for the germline resource VCF file. If you are using the Broad Institute's gnomAD VCF file, then you can download the index from [here](https://storage.googleapis.com/gatk-best-practices/somatic-hg38/af-only-gnomad.hg38.vcf.gz.tbi) or create it yourself using GATK, tabix or bcftools, discussed above.
 
 ### GATK Toolkit
 [GATK (Genome Analysis Toolkit)](https://gatk.broadinstitute.org/hc/en-us/articles/360036194592-Getting-started-with-GATK4) is a popular open-source software package developed by the Broad Institute for analysis of high throughput sequencing (HTS) data. 
