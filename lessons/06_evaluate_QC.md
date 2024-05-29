@@ -59,7 +59,7 @@ As we continue down the report, we can skip a few figures until we get to the se
 <img src="../img/Base_quality_scores.png" width="800">
 </p>
 
-The shape that we see is very typical of a good sequencing run. Imporantly. their aren't any sudden drops in read quality in these samples.
+The shape that we see is very typical of a good sequencing run. Importantly, there aren't any sudden drops in read quality in these samples.
 
 ### Average Sequence Quality
 
