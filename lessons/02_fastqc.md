@@ -307,7 +307,7 @@ This figure appears to be about what one would hope to see as most of the reads 
 
 ### Overrepresented Sequences
 
-This table will display any overrepresented sequences and potential sources. It is not uncommon to get adapter sequences in this table. In general, as long as their are only a handful or fewer overrepresented sequences with all of them being less than ~1%, then your sample should be fine. 
+This table will display any overrepresented sequences and potential sources. It is not uncommon to get adapter sequences in this table. In general, as long as there are only a handful or fewer of overrepresented sequences with all of them being less than ~1%, then your sample should be fine. 
 
 <p align="center">
 <img src="../img/syn3_normal_overrepresented_sequences.png" width="400">
@@ -317,7 +317,7 @@ These samples don't show any overrepresented sequences, which is great.
 
 ### Adapter Content
 
-One common source of overrepresented sequences can be the adapters used in library construction. On the x-axis we will plot the position in the read and on the y-axis it is the percent of adapter contamination for various adapter sets in that position, with each color line being a different potential adapter set. Since no adapters came up in our previous overrepresented sequences evaluation, we would not expect to see any sign of them in this plot. 
+One common source of overrepresented sequences can be the adapters used in library construction. On the x-axis we will plot the position in the read and on the y-axis is the percent of adapter contamination for various adapter sets in that position, with each color line being a different potential adapter set. Since no adapters came up in our previous overrepresented sequences evaluation, we would not expect to see any sign of them in this plot. 
 
 <p align="center">
 <img src="../img/syn3_normal_adapter_content.png" width="800">
