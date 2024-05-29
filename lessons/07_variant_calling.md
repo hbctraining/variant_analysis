@@ -38,18 +38,18 @@ Variant calling can be broadly broken up into two groups, germline and somatic. 
 <img src="../img/Germline_Somatic_Variants.png" width="600">
 </p>
 
-In the above image we can see an example of a germline variant on the left. Approximately half of the reads support each allele in both the tumor and normal sample reads. When compared to the somatic variant on the right, where we observe no variants in the normal sample reads but there is a variant present in the tumor sample reads. 
+In the above image we can see an example of a germline variant on the left. Approximately half of the reads support each allele in both the tumor and normal sample reads. This is compared to the somatic variant on the right, where we observe no variants in the normal sample reads but there is a variant present in the tumor sample reads. 
 
 **For this workshop, we have tumor/normal samples and so we will be calling somatic variants.**
 
 ### Panel of Normals
 
-A panel of normals (PoN) is a resource derived from a set of healthy tissues with the goal of **correcting for recurrent technical artifacts within a sequencing experiment**. Ideally, a panel of normals should be comprised of:
+A panel of normals (PoN) is a resource derived from a set of healthy tissues with the goal of **correcting for recurrent technical artifacts within a sequencing experiment**. Ideally, a panel of normals should:
 
-- Samples from healthy individuals, which can be unrelated to the samples in the analysis
-- Preferably younger individuals to reduce the noise of somatic mutations or undiagnosed tumors
-- Undergo the same sample preperation and sequencing as the samples of interest
-- [Atleast 40 individuals](https://gatk.broadinstitute.org/hc/en-us/articles/360035890631-Panel-of-Normals-PON)
+- Include samples from healthy individuals, which can be unrelated to the samples in the analysis
+- Preferably include younger individuals, to reduce the noise of somatic mutations or undiagnosed tumors
+- Undergo the same sample preparation and sequencing as the samples of interest
+- [Include at least 40 individuals](https://gatk.broadinstitute.org/hc/en-us/articles/360035890631-Panel-of-Normals-PON)
 
 <p align="center">
 <img src="../img/Panel_of_normals.png" width="600">
