@@ -19,7 +19,7 @@ Approximate time: 45 minutes
 
 
 ## Best practices for variant calling
-Now that we have inspected our reads and alignments for high-quality QC and also formatted our alignments for variant calling. Dozens of variant calling tools for NGS data have been published, and choosing which one to use can be a daunting task. Accurate variant detection in the the human genome is a key requirement for diagnostics in clinical sequencing, and so you want to make sure you are **using the caller which is appropriate for your data and study design**.
+Now that we have inspected our reads and alignments for high-quality QC and also formatted our alignments, we are ready for variant calling. Dozens of variant calling tools for NGS data have been published, and choosing which one to use can be a daunting task. Accurate variant detection in the the human genome is a key requirement for diagnostics in clinical sequencing, and so you want to make sure you are **using the caller which is appropriate for your data and study design**.
 
 <p align="center">
 <img src="../img/variant_callers.png" width="500"> <br>
@@ -28,7 +28,7 @@ Now that we have inspected our reads and alignments for high-quality QC and also
 
 ### Germline versus Somatic Variant Calling
 
-Variant calling can be broadly broken up into two groups, germline and somatic. These two types of variant calling methods have different assumptions regarding in the input data and thus are handled differently.
+Variant calling can be broadly broken up into two groups, germline and somatic. These two types of variant calling methods have different assumptions regarding the input data and thus are handled differently.
 
 * **Germline** variant calling refers to the process of calling **variants that are ubiquitous across the organism** (i.e. almost all cells carry these variants) and these are the types of variants that can be passed through the germline. Germline variant calling for the most part expects at most two alleles in relatively equal frequencies. 
 
@@ -46,18 +46,18 @@ In the above image we can see an example of a germline variant on the left. Appr
 
 A panel of normals (PoN) is a resource derived from a set of healthy tissues with the goal of **correcting for recurrent technical artifacts within a sequencing experiment**. Ideally, a panel of normals should be comprised of:
 
-- Samples from healthy individuals which can be unrelated to the samples in the analysis
+- Samples from healthy individuals, which can be unrelated to the samples in the analysis
 - Preferably younger individuals to reduce the noise of somatic mutations or undiagnosed tumors
-- Undergo the same sample preperation and sequencing as your samples of interest
+- Undergo the same sample preperation and sequencing as the samples of interest
 - [Atleast 40 individuals](https://gatk.broadinstitute.org/hc/en-us/articles/360035890631-Panel-of-Normals-PON)
 
 <p align="center">
 <img src="../img/Panel_of_normals.png" width="600">
 </p>
 
-In the above image we can see that for the left "variant", the panel of normals and the tumor all have a thymine "variant" in this position relative to the reference. This would likely be a technical artifact. However for the right variant, we can see that while the tumor is still fixed for this position like the previous case, the panel of normals shows variation and this signifies that this position is likely not a technical artifact.
+In the above image we can see that for the left "variant", the panel of normals and the tumor all have a thymine "variant" in this position relative to the reference. This would likely be a technical artifact. However for the right variant, we can see that while the tumor thymine allele is still present in all of the reads for this position like the previous case, the panel of normals shows variation and this signifies that this position is likely not a technical artifact.
 
-An additional benefit of a good panel of normals is that it can act as an additional filter for germline variants. This is particularly true when you run MuTect2 in tumor-only mode, discussed later. If you do not have access to a panel of normals, you can also use a panel of normals that the Broad Institute hosts which is derived from the [1000 Genomes Project](https://www.internationalgenome.org/). This data can be downloaded [here](https://storage.googleapis.com/gatk-best-practices/somatic-hg38/1000g_pon.hg38.vcf.gz). We will be using this data in our analysis and we have already placed it on the O2 cluster. The Broad Institute also provides instructions on how to make your own panel of normals [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035531132--How-to-Call-somatic-mutations-using-GATK4-Mutect2). It is not required to use a panel of normals when running Mutect2, but it is [recommended](https://gatk.broadinstitute.org/hc/en-us/articles/360037593851-Mutect2).
+An additional benefit of a good panel of normals is that it can act as an additional filter for germline variants. This is particularly true when you run MuTect2 in tumor-only mode (discussed briefly later). If you do not have access to a panel of normals, you can also use a panel of normals that the Broad Institute hosts which is derived from the [1000 Genomes Project](https://www.internationalgenome.org/). This data can be downloaded [here](https://storage.googleapis.com/gatk-best-practices/somatic-hg38/1000g_pon.hg38.vcf.gz). We will be using this data in our analysis and we have already placed it on the O2 cluster. The Broad Institute also provides instructions on how to make your own panel of normals [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035531132--How-to-Call-somatic-mutations-using-GATK4-Mutect2). It is not required to use a panel of normals when running Mutect2, but it is [recommended](https://gatk.broadinstitute.org/hc/en-us/articles/360037593851-Mutect2).
 
 > Note: When using a panel of normals VCF file in MuTect2, you will also need an index of the VCF file. We have already created the index for this workshop, but this can be accomplished in one of a few ways:
 > 1. If you are using the panel of normals provided by the Broad Institute, then they also provide a index that you can download from [here](https://storage.googleapis.com/gatk-best-practices/somatic-hg38/1000g_pon.hg38.vcf.gz.tbi).
@@ -67,15 +67,19 @@ An additional benefit of a good panel of normals is that it can act as an additi
 
 ### Germline Resource
 
-A germline resource contains many variants within a population and is used in conjunction with other tools to help variant calling alogrithms determine if a variant is likely a germline or somatic mutation. The logic is if a variant that is a common variant in the population and it is present in the sample, then it is more likely to be a germline variant rather than a somatic variant. While, if a low-frequency variant in the population is present in an sample, then it is more likely to be somatic rather than a germline variant. This idea is illustrated below:
+<p align="center">
+<img src="../img/gnomAD_logo.png" width="600">
+</p>
+
+A germline resource contains many variants within a population and can be used in conjunction with other tools to help variant calling alogrithms determine if a variant is likely a germline or somatic mutation. The logic is: if a variant is a common variant in the population and it is present in the sample, then it is more likely to be a germline variant rather than a somatic variant. While, if a low-frequency variant in the population is present in an sample, then it is more likely to be somatic variant rather than a germline variant. This idea is illustrated below:
 
 <p align="center">
 <img src="../img/Germline_resource.png" width="600">
 </p>
 
-The Broad Institute provides a VCF file that uses the variants from [gnomAD](https://gnomad.broadinstitute.org/) that can be used as a germline reference [here](https://storage.googleapis.com/gatk-best-practices/somatic-hg38/af-only-gnomad.hg38.vcf.gz). Similarly to a panel of normals, this is not required for MuTect2 to call variants, however, it is also [recommended](https://gatk.broadinstitute.org/hc/en-us/articles/360037593851-Mutect2). 
+The Broad Institute provides a [VCF file](https://storage.googleapis.com/gatk-best-practices/somatic-hg38/af-only-gnomad.hg38.vcf.gz) utilizing the variants from [gnomAD](https://gnomad.broadinstitute.org/), which can be used as a germline reference. Similarly to a panel of normals, this is not required for MuTect2 to call variants, however, it is also [recommended](https://gatk.broadinstitute.org/hc/en-us/articles/360037593851-Mutect2). 
 
-> Note: Similarly to the index file needed for the panel of normals VCF file, we will also need a index file for the germline resource VCF file. If you are using the Broad Institute's gnomAD VCF file, then you can download the index from [here](https://storage.googleapis.com/gatk-best-practices/somatic-hg38/af-only-gnomad.hg38.vcf.gz.tbi) or create it yourself using GATK, tabix or bcftools, discussed above.
+> Note: Similarly to the index file needed for the panel of normals VCF file, we will also need a index file for the germline resource VCF file. If you are using the Broad Institute's gnomAD VCF file, then you can download the index from [here](https://storage.googleapis.com/gatk-best-practices/somatic-hg38/af-only-gnomad.hg38.vcf.gz.tbi) or create it yourself using GATK, tabix or bcftools (discussed in the note above).
 
 ### GATK Toolkit
 [GATK (Genome Analysis Toolkit)](https://gatk.broadinstitute.org/hc/en-us/articles/360036194592-Getting-started-with-GATK4) is a popular open-source software package developed by the Broad Institute for analysis of high throughput sequencing (HTS) data. 
@@ -100,10 +104,10 @@ In terms of variant discovery, GATK offers the following tools:
 ## MuTect2
 
 ### Basic workflow 
-The alogrithm used for somatic variant discovery with Mutect2 is broken up into three major components:
+The algorithm used for somatic variant discovery with MuTect2 is broken up into three major components:
 
-- **Local Assembly** - The initial step is for Mutect2 to evaluates regions for somatic variations. Regions that surpass a log odds threshold for somatic variation comparing the existance and non-existance of a potential alternate allele are flagged as "active" regions and are slated for local reassembly and realignment. The local reassembly is done by creating a *de Bruijn* graph of the active region.
-- **Haplotype Assembly** - From this *de Bruijn* graph, each haplotype is assembled and the haplotype spans the variant in question and connects two points in the reference genome.
+- **Local Assembly** - The initial step is for MuTect2 to evaluates regions for somatic variations. Regions that surpass a log odds threshold for somatic variation comparing the existance and non-existance of a potential alternate allele are flagged as "active" regions and are slated for local reassembly and realignment. The local reassembly is done by creating a *de Bruijn* graph of the active region.
+- **Haplotype Assembly** - From this *de Bruijn* graph, each haplotype is assembled and the haplotype spans the variant in question and connects to two points in the reference genome.
 - **Somatic Genotyping** - From here, most likely haplotypes are assembled and variants are called from these haplotypes. 
 
 <p align="center">
@@ -114,12 +118,12 @@ MuTect2 can be run in **three different modes**:
 
 1. **Tumor-normal** mode: where a tumor sample is matched with a normal samples. **This is the mode we will be using.**
 2. **Tumor-only** mode: where a single sample is used as input.
-    * Note that it's ability to reliably call somatic variants is greatly diminished as it has difficulty distinguishing between high frequency variants and germline variants.
+    * Note that it's ability to reliably call somatic variants is greatly diminished as it has difficulty distinguishing between high frequency variants and germline variants. In order to help, a panel of normals and a germline resource are strongly recommendeded when running in this mode.
 3. **Mitochondrial mode**: where specific parameters are added for appropriately calling on mitochondria. 
 
  
 ### Running MuTect2
-Let's start or variant calling analysis by writing out a new `sbatch` submission script for `MuTect2`:
+Let's start our variant calling analysis by writing out a new `sbatch` submission script for `MuTect2`:
 
 ```bash
 cd ~/variant_calling/scripts/
@@ -216,31 +220,7 @@ Let's breakdown this command:
 - Parameters related to `--annotation`: These are a variety of additional annotations that we are going to add to the output VCF file. These are **not required for `MuTect2` to run**, but they provide additional details about our variants.
 - `--output $VCF_OUTPUT_FILE`: This is our output VCF file
 
-In order to run `MuTect2` we also **need to have a FASTA index file of our reference sequence in addition to our sequence dictionary**. Similarly to the sequence dictionary and `bwa` indicies, we have already created this index for you. However, we have two dropdowns below to walk you through how to do it, should you ever need to do it on your own.
-
-> 
-> <details>
->  <summary><b>Click here for the commands to create a sequence directory</b></summary>
->  We can create the required sequence dictionary in <code>Picard</code>. But first, let's double check we have the <code>Picard</code> module loaded:
->  <pre>
->  module load picard/2.27.5</pre>
->  
->  The command to do create the sequence dictionary is:<br>
->  <pre>
->  # YOU DON'T NEED TO RUN THIS
->  java -jar $PICARD/picard.jar CreateSequenceDictionary \
->  --REFERENCE /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
->  --OUTPUT /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.dict</pre>
->  
->  The components of this command are:
->  <ul><li><code>java -jar $PICARD/picard.jar CreateSequenceDictionary</code> This calls the <code>CreateSequenceDictionary</code> command within <code>Picard</code></li>
->  <li><code>--REFERENCE /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa</code> This is the reference sequence to create the sequence dictionary from.</li>
->  <li><code>--OUTPUT /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.dict</code> This is the output sequence dictionary.</li></ul>
->   
-> Like indexing, once you have created the sequence dictionary for a reference genome, you won't need to do it again.
-> <hr />
-> </details>
-
+In order to run `MuTect2` we also **need to have a FASTA index file of our reference sequence in addition to our sequence dictionary**. Similarly to the sequence dictionary, VCF indices and `bwa` indicies, we have already created this index for you. However, we have two dropdowns below to walk you through how to do it, should you ever need to do it on your own.
 
 >
 ><details>
@@ -264,6 +244,29 @@ In order to run `MuTect2` we also **need to have a FASTA index file of our refer
 >  Once the indexing is complete, then you should have a index file (<code>reference_sequence.fa.fai</code>) in same directory as your reference sequence <code>reference_sequence.fa</code>.
 > <hr />
 ></details>
+
+> 
+> <details>
+>  <summary><b>Click here for the commands to create a sequence directory</b></summary>
+>  We can create the required sequence dictionary in <code>Picard</code>. But first, let's double check we have the <code>Picard</code> module loaded:
+>  <pre>
+>  module load picard/2.27.5</pre>
+>  
+>  The command to do create the sequence dictionary is:<br>
+>  <pre>
+>  # YOU DON'T NEED TO RUN THIS
+>  java -jar $PICARD/picard.jar CreateSequenceDictionary \
+>  --REFERENCE /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
+>  --OUTPUT /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.dict</pre>
+>  
+>  The components of this command are:
+>  <ul><li><code>java -jar $PICARD/picard.jar CreateSequenceDictionary</code> This calls the <code>CreateSequenceDictionary</code> command within <code>Picard</code></li>
+>  <li><code>--REFERENCE /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa</code> This is the reference sequence to create the sequence dictionary from.</li>
+>  <li><code>--OUTPUT /n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.dict</code> This is the output sequence dictionary.</li></ul>
+>   
+> Like indexing, once you have created the sequence dictionary for a reference genome, you won't need to do it again.
+> <hr />
+> </details>
 
 <details>
   <summary><b>Click here to see what our final <code>sbatch</code>code script for calling variants with <code>MuTect2</code> should look like</b></summary> 
@@ -311,11 +314,11 @@ sbatch mutect2_normal_tumor.sbatch
 ```
 
 ## VCF (Variant Call Format)
-The output from MuTect2 is a VCF file; the defacto file format for storing genetic variation. The Variant Call Format (VCF) is a standardized, **text-file format for describing variants identifed from a sequencing experiment**. This allows for downstream processes to be streamlined and also allows for researchers to easily collaborate and manipulate a shared set of variant calls. 
+The output from MuTect2 is a VCF file; the *de facto* file format for storing genetic variation. The Variant Call Format (VCF) is a standardized, **text-file format for describing variants identifed from a sequencing experiment**. This allows for downstream processes to be streamlined and also allows for researchers to easily collaborate and wrangle a shared set of variant calls. 
 
 Since it is a text file, we could easily take a quick peek at our VCF file using the `less` command. However, our script might still be runnning!
 
-Instead we will use the figure below taken from the [TCGA VCF 1.1 Specification pages](https://docs.gdc.cancer.gov/Encyclopedia/pages/TCGA_VCF_1.1v2/) to summarize the components of a VCF.
+Instead, we will use the figure below taken from the [TCGA VCF 1.1 Specification pages](https://docs.gdc.cancer.gov/Encyclopedia/pages/TCGA_VCF_1.1v2/) to summarize the components of a VCF.
 
 <p align="center">
 <img src="../img/vcfExample_VCF.png" width="900">
@@ -324,11 +327,11 @@ Instead we will use the figure below taken from the [TCGA VCF 1.1 Specification 
 A VCF file is composed of **three main parts**:
 
 ### 1. Header 
-This contains Meta-information Lines that provide supplemental information and they always **start with `##`**
+This contains meta-information Lines that provide supplemental information and they always **start with `##`**
   * Lines can be applicable to all variant records in the file (e.g., date of creation of file) OR
   * Lines can be specific to individual variants (e.g. flag to indicate whether a given variant exists in dbSNP)
     
-### 2. Fixed Fields 
+### 2a. Fixed Fields 
 
 A line **starting with a single `#`** and contains headers for all columns in the Body of the file. The following **eight mandatory fields** will be found in every VCF file:
 
@@ -347,7 +350,7 @@ A line **starting with a single `#`** and contains headers for all columns in th
 | DP | Combined Depth across all samples |
 | NS | Number of samples with data |
 
-
+### 2b. Optional Fields 
 - **"FORMAT" onwards are optional fields** and are included to encapsulate per-sample/genome genotype data.
   * A colon-separated list of abbreviated catergories corresponding to the colon-separated genotype fields. Common catergories include:
 
@@ -369,20 +372,18 @@ These are the data lines where the variant calls will be found with each field c
 
 **Exercise**
 
-**1.** First let's move into out `variant_calling` directory and copy over a sample VCF file:
+First let's move into out `variant_calling` directory and copy over a sample VCF file:
 
 ``` bash
 cd ~/variant_calling/
 cp /n/groups/hbctraining/variant_calling/sample_data/sample.vcf .
 ```
 
-**2.** Using `grep`, extract only the meta-information lines from the VCF file. 
+**1.** Using `grep`, extract only the meta-information lines from the VCF file. 
 
-**3.** Using `grep`, extract the lines containing the names of all of the software packages that were used in the creation of this VCF file?
+**2.** For the variant at position 806262 on chromosome 19, what is the reference allele?
 
 ***
-
-## gnomAD
 
 ## Additional Resources
 
