@@ -321,9 +321,19 @@ The next four lines tell us about our `SnpSift` commands:
 * `##SnpSiftVersion=` states the version of SnpSift that was used to produce this file.
 * `##SnpSiftCmd=` provides the `filter` and `intervals` commands that were used by `SnpSift` to carry out the filtering.
 
+We can also check **how many variants are contained in our filtered file**:
+
+```
+grep -v "^#" /n/scratch/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.vcf | wc -l
+```
+
+What this command does is use `grep -v` to search for lines in our filtered VCF that do *not* start with a `#` (and are therefore not comments, like we were looking at above, or the header row of the VCF), and then use `wc -l` to count the number of lines in that output.
+
+We should see 1362 variants in our filtered VCF.
+
 ---
 
-Now, we have successfuly filtered our raw VCF file to only include high-qulaity variant calls, we are ready to begin annotating our variants.
+Now, we have successfuly filtered our raw VCF file to only include high-quality variant calls, we are ready to begin annotating our variants.
 
 [Next lesson >>](09_variant_annotation.md)
 
