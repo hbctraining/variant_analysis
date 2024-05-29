@@ -334,9 +334,11 @@ cp /n/groups/hbctraining/variant_calling/sample_data/sample.vcf .
 
 **2.** Using `grep`, extract only the meta-information lines from the VCF file. 
 
-**5.** Using `grep`, extract the lines containing the names of all of the software packages that were used in the creation of this VCF file?
+**3.** Using `grep`, extract the lines containing the names of all of the software packages that were used in the creation of this VCF file?
 
 ***
+
+## gnomAD
 
 ## Additional Resources
 
