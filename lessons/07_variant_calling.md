@@ -327,13 +327,13 @@ Instead, we will use the figure below taken from the [TCGA VCF 1.1 Specification
 A VCF file is composed of **three main parts**:
 
 ### 1. Header 
-This contains meta-information Lines that provide supplemental information and they always **start with `##`**
+This contains meta-information lines that provide supplemental information and they always **start with `##`**
   * Lines can be applicable to all variant records in the file (e.g., date of creation of file) OR
   * Lines can be specific to individual variants (e.g. flag to indicate whether a given variant exists in dbSNP)
     
 ### 2a. Fixed Fields 
 
-A line **starting with a single `#`** and contains headers for all columns in the Body of the file. The following **eight mandatory fields** will be found in every VCF file:
+A line **starting with a single `#`** that contains headers for all columns in the Body of the file. The following **eight mandatory fields** will be found in every VCF file:
 
 - **CHROM** - Chromosome where the variant was found
 - **POS** - A 1-based index for the position on the chromosome where the variant was found. For multibase variants, this corresponds to the first base's position.
@@ -372,7 +372,7 @@ These are the data lines where the variant calls will be found with each field c
 
 **Exercise**
 
-First let's move into out `variant_calling` directory and copy over a sample VCF file:
+First let's move into our `variant_calling` directory and copy over a sample VCF file:
 
 ``` bash
 cd ~/variant_calling/
