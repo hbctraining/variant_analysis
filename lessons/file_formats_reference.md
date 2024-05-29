@@ -315,8 +315,6 @@ cp /n/groups/hbctraining/variant_calling/sample_data/sample.vcf .
 
 **5.** Using `grep`, extract the lines containing the names of all of the software packages that were used in the creation of this VCF file?
 
-**Bonus Challenge:** **6.** For the variant at position 806262 on chromosome 19, what is the reference allele?
-
 ## BED Files
 
 **B**rowser **E**xtensible **D**ata (BED) is a tab-delimited file format that contains information on genomic features. A BED file's first three columns (Chromosome, Starting Position and Ending Position) are required fields. Some BED files have additional columns but these are not required.
