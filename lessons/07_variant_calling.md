@@ -55,7 +55,7 @@ A panel of normals (PoN) is a resource derived from a set of healthy tissues wit
 <img src="../img/Panel_of_normals.png" width="600">
 </p>
 
-In the above image we can see that for the left "variant", the panel of normals and the tumor all have a thymine "variant" in this position relative to the reference. This would likely be a technical artifact. However for the right variant, we can see that while the tumor thymine allele is still present in all of the reads for this position like the previous case, the panel of normals shows variation and this signifies that this position is likely not a technical artifact.
+In the above image we can see that for the left "variant", the panel of normals and the tumor all have a thymine "variant" in this position relative to the reference. This would likely be a technical artifact. However, for the right variant, we can see that while the tumor thymine allele is still present in all of the reads for this position like the previous case, the panel of normals shows variation and this signifies that this position is likely not a technical artifact.
 
 An additional benefit of a good panel of normals is that it can act as an additional filter for germline variants. This is particularly true when you run MuTect2 in tumor-only mode (discussed briefly later). If you do not have access to a panel of normals, you can also use a panel of normals that the Broad Institute hosts which is derived from the [1000 Genomes Project](https://www.internationalgenome.org/). This data can be downloaded [here](https://storage.googleapis.com/gatk-best-practices/somatic-hg38/1000g_pon.hg38.vcf.gz). We will be using this data in our analysis and we have already placed it on the O2 cluster. The Broad Institute also provides instructions on how to make your own panel of normals [here](https://gatk.broadinstitute.org/hc/en-us/articles/360035531132--How-to-Call-somatic-mutations-using-GATK4-Mutect2). It is not required to use a panel of normals when running Mutect2, but it is [recommended](https://gatk.broadinstitute.org/hc/en-us/articles/360037593851-Mutect2).
 
@@ -71,7 +71,7 @@ An additional benefit of a good panel of normals is that it can act as an additi
 <img src="../img/gnomAD_logo.png" width="600">
 </p>
 
-A germline resource contains many variants within a population and can be used in conjunction with other tools to help variant calling alogrithms determine if a variant is likely a germline or somatic mutation. The logic is: if a variant is a common variant in the population and it is present in the sample, then it is more likely to be a germline variant rather than a somatic variant. While, if a low-frequency variant in the population is present in an sample, then it is more likely to be somatic variant rather than a germline variant. This idea is illustrated below:
+A germline resource contains many variants within a population and can be used in conjunction with other tools to help variant calling alogrithms determine if a variant is likely a germline or somatic mutation. The logic is: if a variant is a common variant in the population and it is present in the sample, then it is more likely to be a germline variant rather than a somatic variant. On the other hand, if a low-frequency variant in the population is present in an sample, then it is more likely to be somatic variant rather than a germline variant. This idea is illustrated below:
 
 <p align="center">
 <img src="../img/Germline_resource.png" width="600">
