@@ -187,7 +187,7 @@ Let's breakdown this command and discuss each argument:
 
 ### Annotate SNPs with dbSNP
 
-dbSNP is a public-domain archive maintained by NCBI for simple genetic polymorphisms in humans. It is designed as a repository for researchers to be able to submit novel variants to as well as query for variants submitted by others. Tha variants within dbSNP include:
+dbSNP is a public-domain archive maintained by NCBI for simple genetic polymorphisms in humans. It is designed as a repository for researchers to be able to submit novel variants to as well as query for variants submitted by others. The variants within dbSNP include:
 
 - SNPs
 - Small-scale insertions/deletions
