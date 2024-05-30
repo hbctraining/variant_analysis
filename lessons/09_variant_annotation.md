@@ -17,21 +17,26 @@ Now that we have a filtered VCF file for our samples, we want to annotate those 
 
 [SnpEff](http://pcingola.github.io/SnpEff/) uses transcriptome annotations to predict the functional impacts of mutations in a VCF file and will modify the INFO file of the VCF file to carry the predicted functional impacts.
 
-### Databases
+### Searching for SnpEff Databases
 
-Thie first step in annotating your VCF file is finding the appropriate SnpEff database to use so that the annotations are consistent with your version of the reference genome. These databases hold the gene model information that is critical for annotating a variant. `SnpEff` has tens of thousands of genome databases pre-built that you can use and they represent many publicly availible genomes. In the rare case that your genome is not represented, you can build one to use by following the instructions [here](http://pcingola.github.io/SnpEff/se_build_db/). However, unless you are working with a rare organism or an unpublished reference genome, it is highly unlikely that you will need to build the database yourself. To see if your genome of interest is in the `SnpEff` database, we first need to load the the `SnpEff` module:
+The first step in annotating your VCF file is finding the appropriate SnpEff database to use so that the annotations are consistent with your version of the reference genome. These databases hold the gene model information that is critical for annotating variants. There are two paths getting a SnpEff database for your analysis:
+
+- `SnpEff` has tens of thousands of genome databases pre-built that you can use and they represent many publicly availible genomes. **We will be using a pre-built database.**
+- In the rare case that your genome is not represented, you can build one to use by following the instructions [here](http://pcingola.github.io/SnpEff/se_build_db/). Unless you are working with a rare organism or an unpublished reference genome, it is highly unlikely that you will need to build the database yourself. 
+
+To see if your genome of interest is in the `SnpEff` database, we first need to load the `SnpEff` module:
 
 ```
 module load snpEff/4.3g
 ```
 
-Now that you had loaded the `SnpEff` module, you can use the following command to display all of the currently availible genomes and pipe them into a `less` buffer page:
+With the `SnpEff` module loaded, let's use the following command to browse all of the currently availible genomes:
 
 ```
 java -jar $SNPEFF/snpEff.jar databases | less
 ```
 
-The first column is the database name and the second column in the `Genus_species` for the organism. There is also a link to where the database can be downloaded at but it can mostly be ignored as SnpEff will download it if it needs it automatically. As you can see there are tens of thousands of these pre-built genomes. So let's exit the `less` buffer page and see which GRCh databases are availible:
+The first column is the database name and the second column in the `Genus_species` for the organism. There is also a database download link where the database can be downloaded at but this can be ignored as SnpEff will automatically download the database if needed. As you can see there are tens of thousands of these pre-built genomes. So let's exit the `less` buffer page and see which GRCh databases are availible:
 
 ```
 java -jar $SNPEFF/snpEff.jar databases | grep "GRCh" 
@@ -45,15 +50,21 @@ Before we get into `SnpEff` we need to discuss cancer-mode in `SnpEff`. In order
 
 **1)** Understand what cancer-mode is
 
-**2)** Format our VCF file accordingly to acommodate for cancer-mode
+**2)** Format our VCF file accordingly to accommodate for cancer-mode
 
 #### Understanding Cancer-mode
 
-Let's assume a given position in the reference genome has a Thymine. However, since their is variation amongst humans, the individual sampled actually has a variant, Adenine, in this position. Complicating matters even more, a tumor sample from this individual could have a Guanine in this position. In this case, the VCF record for this position would have the REF field as T, and the ALT field as A,G. It is important to note that the REF field ***ALWAYS*** stays as the base found in the reference genome. The REF field should not be changed to A! However, when `SnpEff` comes along to annotate it, it is going to think there has been a T -> A transversion and also a T -> G transversion, when in reality it has been a A -> G transition. Thus, we would like `SnpEff` to appropiately annotate this and to do so, we need to use cancer-mode. A more detailed explaination of `SnpEff`'s cancer-mode can be found on their [website](http://pcingola.github.io/SnpEff/se_cansersamples/).
+There can be loci in the genome where, due to variation in the population, an individual's germline alleles differs from the reference sequence. Furthermore, if a somatic mutation happens at one of these loci then, the mutational event will look like a change from the reference allele to the somatic mutation rather than a change from the normal sample allele to the the somatic mutant. SnpEff's cancer-more is designed to address this. The illustration below shows an example of this case. 
+
+<p align="center">
+<img src="../img/Cancer_mode.png" width="600">
+</p>
+
+A more detailed explaination of `SnpEff`'s cancer-mode can be found on their [website](https://pcingola.github.io/SnpEff/snpeff/cansersamples/).
 
 #### Setting up Cancer-mode
 
-In order to run cancer-mode, we will need to append our VCF file with an additional header line that contains information that `SnpEff` can use when determining, which sample is the normal sample and which sample is the tumor sample. We are going to do this by appending the header lines with a package within `bcftools`, which was created by the same person who created `samtools`. First, move to your `scripts` directory and create a new file named `syn3_normal_syn3_tumor_pedigree_header.txt` using `vim`:
+In order to run cancer-mode, we will need to append our VCF file with an additional header line that contains information that `SnpEff` can use when determining, which sample is the normal sample and which sample is the tumor sample. We are going to do this by appending the header lines with a package within `[bcftools](https://samtools.github.io/bcftools/bcftools.html)`. First, move to your `scripts` directory and create a new file named `syn3_normal_syn3_tumor_pedigree_header.txt` using `vim`:
 
 ```
 cd ~/variant_calling/scripts/
@@ -66,9 +77,9 @@ Once inside this file, we just need to add this text to the file:
 ##PEDIGREE=<Derived=syn3_tumor,Original=syn3_normal>
 ```
 
-Then save and exit the file.
+This text will act as the additional header information that we need to add. Then save and exit the file.
 
-Next, we can start writing our `sbatch` submission script named `variant_annotation_normal_tumor.sbatch` using `vim`.:
+Next, we can start writing our `sbatch` submission script named `variant_annotation_normal_tumor.sbatch` using `vim`:
 
 ```
 vim variant_annotation_normal_tumor.sbatch
@@ -159,24 +170,20 @@ java -jar -Xmx4g $SNPEFF/snpEff.jar  eff \
 Let's breakdown this command and discuss each argument:
 
 - `java -jar $SNPEFF/snpEff.jar  eff` `Snpeff` This calls the `eff` package within `SnpEff` to annotate variants.
-
 - `-dataDir $DATADIR` This is the path to the data directory that holds the `SnpEff` annotations
-
 - `-cancer` Performs cancer-mode 
-
 - `-noLog` This does not report command usage to <code>SnpEff</code>'s server
-
 - `-csvStats $CSV_STATS` This produces a flat-text file with summary statistics regarding the variants annotated. (Optional)
-
 - `-s $HTML_REPORT` This creates an HTML file with summary statistics regarding the variants annotated. This HTML file is mostly just an HTML stylized version of the CSV file above. (Optional)
-
 - `$REFERENCE_DATABASE` This is the `SnpEff` database we are going to use for the annotation.
-
 - `$FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER` This is the input VCF file to be annotated
-
 - `> $SNPEFF_ANNOTATED_VCF_FILE` The output of `SnpEff` will be redirected into this VCF file.
 
 ### Annotate SNPs with dbSNP
+
+<p align="center">
+<img src="../img/dbSNP_logo.png" width="800">
+</p>
 
 In addition to adding the annotations that `SnpEff` provides regarding types of mutations, we can also add annotations from dbSNP regarding our variants. These annotations will add lots of information to the `INFO` field, but it will also populate the `ID` field in the VCF file with the dbSNP ID for each variant, if it exists. In order to do these annotations, we need to have access to a dbSNP VCF file with the annotations along with an index of the VCF file (a `.tbi` file). There are two ways to provide these annotations:
 
