@@ -257,15 +257,10 @@ java -jar $SNPEFF/SnpSift.jar annotate \
 Let's discuss each part of this command:
 
 - `java -jar $SNPEFF/SnpSift.jar annotate` This calls the `annotate` function within the `SnpSift` package
-
 - `$DBSNP_DATABASE` This is the dbSNP database that we want to use for annotations
-
 - `-tabix` This is letting `SnpSift` know that the dbSNP database has a VCF index that it can use to speed up the annotation
-
 - `-noLog` This does not report command usage to <code>SnpEff</code>'s server
-
 - `$SNPEFF_ANNOTATED_VCF_FILE` This is the input VCF file we want to be annotated
-
 - `> $DBSNP_ANNOTATED_VCF_FILE` This is the dbSNP annotated output VCF file
 
 <details>
