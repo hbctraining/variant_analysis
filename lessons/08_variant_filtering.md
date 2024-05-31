@@ -100,7 +100,7 @@ More information on `FilterMutectCalls` can be found [here](https://gatk.broadin
 
 ## Filter using SnpSift
 
-Now, we are going to **filter for only variants that had a FILTER result of "PASS"**. We are going to use `SnpSift`, which is part of the [`SnpEff` and `SnpSift` suite](http://pcingola.github.io/SnpEff/) of tools. We will later be using `SnpEff` to annotate our variants and `SnpSift` to prioritize our variants, but for now we are just going to use `SnpSift` to filter out our variants. If some of the syntax for this command is unclear, that is fine. We are going to spend time covering the syntax later during the [Variant Prioritization section](13_variant_prioritization.md). 
+Now, we are going to **filter for only variants that had a FILTER result of "PASS"**. We are going to use `SnpSift`, which is part of the [`SnpEff` and `SnpSift` suite](http://pcingola.github.io/SnpEff/) of tools. We will later be using `SnpEff` to annotate our variants and `SnpSift` to prioritize our variants, but for now we are just going to use `SnpSift` to filter out our variants. If some of the syntax for this command is unclear, that is fine. We are going to spend time covering the syntax later during the [Variant Prioritization section](10_variant_prioritization.md). 
 
 Let's add our `SnpSift` command after the `FilterMutectCalls` command:
 
