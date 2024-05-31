@@ -1,11 +1,18 @@
-# Variant Annotation
+---
+title: "Variant Annotation"
+author: "Will Gammerdinger, Meeta Mistry"
+date: "May 27, 2024"
+---
+
+Approximate time: 45 minutes
+
 
 ## Learning Objectives
 
 - Annotate a VCF file for functional impacts with `SnpEff`
 - Differentiate between an unannotated and annotated VCF file
 
-## Introduction
+# Variant Annotation
 
 Now that we have a filtered VCF file for our samples, we want to annotate those variants to figure out what impacts they could have on our samples. Information we might be interested in knowing:
 
@@ -21,7 +28,7 @@ In order to do these types of analyses, we have to merge our variants with annot
 
 ## SnpEff
 
-[SnpEff](http://pcingola.github.io/SnpEff/) uses transcriptome annotations to predict the functional impacts of mutations in a VCF file and will modify the INFO file of the VCF file to carry the predicted functional impacts.
+[SnpEff](http://pcingola.github.io/SnpEff/) uses transcriptome annotations to predict the functional impacts of mutations in a VCF file and will modify the INFO field of the VCF file to carry the predicted functional impacts.
 
 ### Searching for SnpEff Databases
 
@@ -36,13 +43,13 @@ To see if your genome of interest is in the `SnpEff` database, we first need to 
 module load snpEff/4.3g
 ```
 
-With the `SnpEff` module loaded, let's use the following command to browse all of the currently availible genomes:
+With the `SnpEff` module loaded, let's use the following command to browse all of the currently available genomes:
 
 ```
 java -jar $SNPEFF/snpEff.jar databases | less
 ```
 
-The first column is the database name and the second column in the `Genus_species` for the organism. There is also a database download link where the database can be downloaded at but this can be ignored as SnpEff will automatically download the database if needed. As you can see there are tens of thousands of these pre-built databases. So let's exit the `less` buffer page and see which GRCh databases are availible:
+The first column is the database name and the second column in the `Genus_species` for the organism. There is also a database download link where the database can be downloaded at but this can be ignored as SnpEff will automatically download the database if needed. As you can see there are tens of thousands of these pre-built databases. So let's exit the `less` buffer page and **see which GRCh databases are available**:
 
 ```
 java -jar $SNPEFF/snpEff.jar databases | grep "GRCh" 
