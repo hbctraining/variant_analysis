@@ -67,7 +67,7 @@ Before we get into `SnpEff` we need to discuss cancer-mode in `SnpEff`. In order
 
 #### Understanding Cancer-mode
 
-There can be loci in the genome where, due to variation in the population, an individual's germline alleles differs from the reference sequence. Furthermore, if a somatic mutation happens at one of these loci, then from SnpEff's perspective the mutational event will look like a change from the reference allele to the somatic mutant rather than a change from the normal sample allele to the the somatic mutant. SnpEff's cancer-more is designed to address this. The illustration below shows an example of this case. 
+There can be loci in the genome where, due to variation in the population, an individual's germline alleles differs from the reference sequence. Furthermore, if a somatic mutation happens at one of these loci, then from SnpEff's perspective the mutational event will look like a change from the reference allele to the somatic mutant rather than a change from the normal sample allele to the the somatic mutant. SnpEff's cancer-mode is designed to address this. The illustration below shows an example of this case. 
 
 <p align="center">
 <img src="../img/Cancer_mode.png" width="600">
@@ -77,7 +77,7 @@ A more detailed explaination of `SnpEff`'s cancer-mode can be found on their [we
 
 #### Setting up Cancer-mode
 
-In order to run cancer-mode, we will need to append our VCF file with an additional header line that contains information that `SnpEff` can use when determining, which sample is the normal sample and which sample is the tumor sample. We are going to do this by appending the header lines with a package within [`bcftools`](https://samtools.github.io/bcftools/bcftools.html). First, move to your `scripts` directory and create a new file named `syn3_normal_syn3_tumor_pedigree_header.txt` using `vim`:
+In order to run cancer-mode, we will need to append to our VCF file an additional header line that contains information that `SnpEff` can use when determining, which sample is the normal sample and which sample is the tumor sample. To append the header lines we will be using a package within [`bcftools`](https://samtools.github.io/bcftools/bcftools.html). First, move to your `scripts` directory and create a new file named `syn3_normal_syn3_tumor_pedigree_header.txt` using `vim`:
 
 ```
 cd ~/variant_calling/scripts/
@@ -205,7 +205,7 @@ dbSNP is a public-domain archive maintained by NCBI for simple genetic polymorph
 <img src="../img/dbSNP_logo.png" width="800">
 </p>
 
-In addition to adding the annotations that `SnpEff` provides regarding types of mutations, we can also add annotations from dbSNP regarding our variants. These annotations will add lots of information to the `INFO` field, but it will also populate the `ID` field in the VCF file with the dbSNP ID for each variant, if it exists. In order to do these annotations, we need to have access to a dbSNP VCF file with the annotations along with an index of the VCF file (a `.tbi` file). We will be implementing these annotations by using `SnpSift`, which is part of the `SnpEff` package.
+In addition to adding the annotations that `SnpEff` provides regarding types of mutations, we can also add annotations from dbSNP regarding our variants. These annotations will add lots of information to the `INFO` field, but it will also populate the `ID` field in the VCF file with the dbSNP ID for each variant, if it exists. In order to do these annotations, we need to have access to a dbSNP VCF file with the annotations along with an index of the VCF file (a `.tbi` file). **Note, that we have already created these files for you.** 
 
 <details>
   <summary><b>Click here to see how to obtain the dbSNP VCF file and how to index it</b></summary>
@@ -249,6 +249,10 @@ After this finishes, we can see that we now have a <code>GRCh38.p7.dbSNP.vcf.gz.
 <hr />
 </details>
 
+
+
+We will be implementing these dbSNP annotations by using `SnpSift`, which is part of the `SnpEff` package.
+
 Let's go ahead and add the `SnpSift` line that we are going to use to annotate our VCF file:
 
 ```
@@ -265,6 +269,7 @@ Let's discuss each part of this command:
 
 - `java -jar $SNPEFF/SnpSift.jar annotate` This calls the `annotate` function within the `SnpSift` package
 - `$DBSNP_DATABASE` This is the dbSNP database that we want to use for annotations
+  - We had set this variable earlier in the lesson to point to the database we had created for you `DBSNP_DATABASE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.dbSNP.vcf.gz`
 - `-tabix` This is letting `SnpSift` know that the dbSNP database has a VCF index that it can use to speed up the annotation
 - `-noLog` This does not report command usage to <code>SnpEff</code>'s server
 - `$SNPEFF_ANNOTATED_VCF_FILE` This is the input VCF file we want to be annotated
@@ -327,8 +332,9 @@ Let's explain each part of this command:
 <hr />
 </details>
 
+
 <details>
-  <summary><b>Click here to see what our final <code>sbatch</code>code script for annotating our variants called with <code>MuTect2</code> should look like</b></summary> 
+  <summary><b>Click here to see what our final <code>sbatch</code>code script for annotating our variants should look like</b></summary> 
   <pre>
 #!/bin/bash
 # Using SnpEff to annotate our variants<br>
