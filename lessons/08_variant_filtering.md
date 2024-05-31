@@ -114,7 +114,7 @@ java -jar $SNPEFF/SnpSift.jar filter \
 
   - `java -jar $SNPEFF/SnpSift.jar filter` is a `java` packaged program, so it needs to be called with `java -jar` followed by the path where the JAR file is located on the cluster. `$SNPEFF` is just a bash variable that contains the path to JAR file. This calls the `filter` function within the `SnpSift` package
   
-  - `-noLog` Does not report usage statistics to `SnpEff`'s servers. According to their [documentation](https://pcingola.github.io/SnpEff/se_commandline/#logging), it is so that they can monitor which features people are and aren't using. 
+  - `-noLog` Does not report usage statistics to `SnpEff`'s servers. According to their [documentation](https://pcingola.github.io/SnpEff/snpeff/commandline/#logging), it is so that they can monitor which features people are and aren't using. 
   - `"( FILTER = 'PASS' )"` This is the syntax that `SnpSift` uses to only retain variant calls with `PASS` in the `FILTER` field of the VCF file
   - `$MUTECT_FILTERED_VCF` This is the **input VCF** file
   - `> $PASSING_FILTER_VCF` This is the **output VCF** file
@@ -181,7 +181,7 @@ We can break this command down:
 <hr />
 </details>
 
-In order **to remove the LCRs from the VCF file, we will once again be using `SnpSift`**. As we mentioned earlier, we will be discussing `SnpSift` at length in the [variant prioritization lesson](13_variant_prioritization.md), but for now were are going to focus on using the `intervals` command build into `SnpSift`. Let's go back to our scripts directory and edit our variant filtering script.
+In order **to remove the LCRs from the VCF file, we will once again be using `SnpSift`**. As we mentioned earlier, we will be discussing `SnpSift` at length in the [variant prioritization lesson](10_variant_prioritization.md), but for now were are going to focus on using the `intervals` command build into `SnpSift`. Let's go back to our scripts directory and edit our variant filtering script.
 
 Add the `filter` command from `SnpSift` to our `sbatch` script in order remove all sites that overlap with the BED file:
 
