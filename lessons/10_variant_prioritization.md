@@ -1,13 +1,23 @@
-# Variant Prioritization
+---
+title: "Variant Prioritization"
+author: "Will Gammerdinger, Meeta Mistry"
+date: "May 27, 2024"
+---
 
 ## Learning Objectives
 
-- Filter records in a VCF file various effects/impacts
+- Filter records in a VCF file various effects and impacts
 - Extract fields of interest from VCF file
 
 ## Prioritizing Variants
 
-Now that we have annotated and filtered our variants, we are likely interested in subsetting our variants to find those of most interest to our study. Perhaps we are interested in finding variants that substantially disrupt a transcript, such as a variant causing a premature stop codon, or just find all of the missense mutations in the sample. `SnpSift` is part of the `SnpEff` suite and it is built explicitly for this purpose.
+Now that we have annotated and filtered our variants, we are likely interested in subsetting our variants to find those of most interest to our study. Perhaps we are interested in finding variants that:
+
+- Occur in a gene of interest
+- Create missense mutation or silent mutations
+- Create mutations that are predicted to have a high impact on the protein
+  
+`SnpSift` is part of the `SnpEff` suite and it is built for this purpose.
 
 <p align="center">
 <img src="../img/Prioritize_variants_workflow.png" width="400">
@@ -19,7 +29,7 @@ Let's start by discussing some of the ways you can filter your data with `SnpSif
 
 ### Fields
 
-First, you can filter your SnpEff annotated VCF file based upon the first seven fields of the VCF file:
+First, you can filter your SnpEff annotated VCF file based upon any of the first seven fields of the VCF file:
 
 - **CHROM**
 - **POS**
@@ -39,7 +49,10 @@ module load snpEff/4.3g
 Now that we have loaded the SnpEff module we can utilize the `SnpSift` to find all of the variants on  Chromosome `1` and pipe the output into `less`:
 
 ```
-java -jar $SNPEFF/SnpSift.jar filter -noLog "( CHROM = '1' )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | less
+java -jar $SNPEFF/SnpSift.jar filter \
+  -noLog \
+  "( CHROM = '1' )" \
+  mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | less
 ```
 
 Let's break down the syntax a bit:
@@ -56,14 +69,15 @@ Let's break down the syntax a bit:
 
 #### Revisiting "( FILTER = 'PASS' )"
 
-Now, we that we have a basic understanding of some of the syntax used in `SnpSift`, we can revisit the [filtering command that we used earlier](https://github.com/hbctraining/variant_analysis/blob/main/lessons/10_variant_filtering.md#filter-vcf-files-for-only-variants-with-pass-in-the-filter-field-using-snpsift). There we used:
+Now, we that we have a basic understanding of some of the syntax used in `SnpSift`, we can revisit the [filtering command that we used earlier](08_variant_filtering.md#filter-using-snpsift). There we used:
 
 ```
+# YOU DO NOT NEED TO RUN THIS
 # Filter for only SNPs with PASS in the FILTER field
 java -jar $SNPEFF/SnpSift.jar filter \
--noLog \
-"( FILTER = 'PASS' )" \
-$MUTECT_FILTERED_VCF > $PASSING_FILTER_VCF
+  -noLog \
+  "( FILTER = 'PASS' )" \
+  $MUTECT_FILTERED_VCF > $PASSING_FILTER_VCF
 ```
 
 As we can see here, we are telling `SnpSift` to look at the `FILTER` field and requiring the output to have the value of `PASS` there.
@@ -75,7 +89,9 @@ It is likely that you could want to filter on multiple criteria. You can do that
 For example, let's consider a case where you want to filter your filter for any variant on Chromosome `1` ***OR*** Chromosome `2`. That might look like:
 
 ```
-java -jar $SNPEFF/SnpSift.jar filter "( CHROM = '1' ) | ( CHROM = '2' )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | less
+java -jar $SNPEFF/SnpSift.jar filter \
+  "( CHROM = '1' ) | ( CHROM = '2' )" \
+  mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | less
 ```
 
 >Note: The `"( CHROM = '1' ) | ( CHROM = '2' )"` syntax allows us to filter for Chromosome `1` **or** Chromosome `2` by using the `|` to separate our criteria within the double quotes. While you might be most familiar with the `|` symbol as the pipe command in `bash`, it is not uncommon in other instances or languages like `R` for it to stand for "or". In fact, in bash, "or" is `||`, so it is closely related. The important point here is that the `|` within the double quotes stands for "or" when using `SnpSift` and it is not a pipe.
@@ -83,7 +99,10 @@ java -jar $SNPEFF/SnpSift.jar filter "( CHROM = '1' ) | ( CHROM = '2' )" mutect2
 Alternatively, we could be interested in variants on Chromosome `1` between positions `1000000` and `2000000`. It would look like:
 
 ```
-java -jar $SNPEFF/SnpSift.jar filter -noLog "( CHROM = '1' ) & ( POS > 1000000 ) & ( POS < 2000000 )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf   | less
+java -jar $SNPEFF/SnpSift.jar filter \
+  -noLog \
+  "( CHROM = '1' ) & ( POS > 1000000 ) & ( POS < 2000000 )" \
+  mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf   | less
 ```
 
 ### INFO Field
@@ -95,7 +114,9 @@ java -jar $SNPEFF/SnpSift.jar filter -noLog "( CHROM = '1' ) & ( POS > 1000000 )
 If you are interested in all of the variants corresponding to a single gene of interest, you can filter by the gene name in this case `CPSF3L`:
 
 ```
-java -jar $SNPEFF/SnpSift.jar filter -noLog "( ANN[*].GENE = 'CPSF3L' )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf   | less
+java -jar $SNPEFF/SnpSift.jar filter \
+  -noLog \
+  "( ANN[*].GENE = 'CPSF3L' )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf | less
 ```
 
 To filter by the gene name you will need `"( ANN[*].GENE = 'INSERT_GENE_NAME' )"`. 
@@ -110,7 +131,10 @@ To filter by the gene name you will need `"( ANN[*].GENE = 'INSERT_GENE_NAME' )"
 It is also quite common to want to filter your output by the effects the variants have on the annotated gene models. The syntax for this is quite similar to the example for genes:
 
 ```
-java -jar $SNPEFF/SnpSift.jar filter -noLog "( ANN[*].EFFECT has 'missense_variant' )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | less
+java -jar $SNPEFF/SnpSift.jar filter \
+  -noLog \
+  "( ANN[*].EFFECT has 'missense_variant' )" \
+  mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | less
 ```
 
 To filter by a variant effect, the filter syntax is `"( ANN[*].EFFECT has 'VARIANT_EFFECT' )"`
@@ -160,7 +184,9 @@ More information on these categories can be found [here](https://pcingola.github
 Let's go ahead and filter out all of our `HIGH` impact muations:
 
 ```
-java -jar $SNPEFF/SnpSift.jar filter -noLog "( ANN[*].IMPACT has 'HIGH' )"  mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | less
+java -jar $SNPEFF/SnpSift.jar filter \
+  -noLog "( ANN[*].IMPACT has 'HIGH' )" \
+  mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | less
 ```
 
 > ***Note:*** Similarly to `EFFECT`, oftentimes you will want to use `has` rather than `=`.
@@ -168,7 +194,9 @@ java -jar $SNPEFF/SnpSift.jar filter -noLog "( ANN[*].IMPACT has 'HIGH' )"  mute
 Let's go ahead and redirect the output of these "high-impact" mutations to a new VCF file:
 
 ```
-java -jar $SNPEFF/SnpSift.jar filter -noLog "( ANN[*].IMPACT has 'HIGH' )"  mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  > mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.high_impact.vcf 
+java -jar $SNPEFF/SnpSift.jar filter \
+  -noLog "( ANN[*].IMPACT has 'HIGH' )"  \
+  mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  > mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.high_impact.vcf 
 ```
 
 #### Other ANN fields
@@ -186,7 +214,11 @@ A full list of `ANN` fields can be found [here](http://pcingola.github.io/SnpEff
 A useful tool within the `SnpSift` toolkit is the `perl` script named `vcfEffOnePerLine.pl`. This script allows the user to separate each effect onto its own line instead of having them lumped into a single line. In order to utilize this script we need to pipe the output of our `filter` command into `$SNPEFF/scripts/vcfEffOnePerLine.pl`. We can use it on our previous example to demonstrate (be patient, it might take ~15 seconds to run):
 
 ```
-java -jar $SNPEFF/SnpSift.jar filter -noLog "( ANN[*].IMPACT has 'HIGH' )"  mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf | $SNPEFF/scripts/vcfEffOnePerLine.pl | less
+java -jar $SNPEFF/SnpSift.jar filter \
+  -noLog \
+  "( ANN[*].IMPACT has 'HIGH' )"  \
+  mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf | \
+  $SNPEFF/scripts/vcfEffOnePerLine.pl | less
 ```
 
 Now, we can see that each variant has a separate entry depending on its effect.
@@ -218,45 +250,38 @@ If we wanted to parse out the missense mutations, create a single line for each 
 
 ```
 java -jar $SNPEFF/SnpSift.jar filter \
--noLog \
-"( ANN[*].EFFECT has 'missense_variant' )"  \
-mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | \
-$SNPEFF/scripts/vcfEffOnePerLine.pl | \
-java -jar $SNPEFF/SnpSift.jar extractFields \
-- \
-"CHROM" "POS" "ANN[*].GENE" "ANN[*].TRID" "EFF[*].HGVS_P" "ANN[*].HGVS_C" "ANN[*].EFFECT" | less
+  -noLog \
+  "( ANN[*].EFFECT has 'missense_variant' )"  \
+  mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | \
+  $SNPEFF/scripts/vcfEffOnePerLine.pl | \
+  java -jar $SNPEFF/SnpSift.jar extractFields \
+  - \
+  "CHROM" "POS" "ANN[*].GENE" "ANN[*].TRID" "EFF[*].HGVS_P" "ANN[*].HGVS_C" "ANN[*].EFFECT" | less
 ```
 
 Let's breakdown this command:
 
 - `java -jar $SNPEFF/SnpSift.jar filter` This calls the `filter` package within `SnpSift`
-
 - `-noLog` This does not report command usage to `SnpEff`'s server
-
 - `"( ANN[*].EFFECT has 'missense_variant' )"` Filter out lines where `missense_variant` is annotation in ***ANY*** annotation.
-
 - `mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf |` This is our input file and then pipe this output.
-
 - `$SNPEFF/scripts/vcfEffOnePerLine.pl` Place each effect on it's own line and pipe this output.
-
 - `java -jar $SNPEFF/SnpSift.jar extractFields` This calls the `extractFields` package within `SnpSift`
-
 - `-` The use of `-` is very commonly used to define the input as coming from standard input, or in other words, the input is being piped into the command. 
-
 - `"CHROM" "POS" "ANN[*].GENE" "ANN[*].TRID" "EFF[*].HGVS_P" "ANN[*].HGVS_C" "ANN[*].EFFECT"` This is defining the fields that we would like to filter. 
 
 Notice, however, that some of the fields don't correspond to a `missense_variant`. This is because when we initially extracted sites we filtered sites where at least one effect was a `missense_variant`, then we separated the variants into separate lines before extracting our fields of interest. At this point if we wanted to  only keep the missense variant lines, so we can pipe the output into a simple `grep` command:
 
 ```
 java -jar $SNPEFF/SnpSift.jar filter \
--noLog \
-"( ANN[*].EFFECT has 'missense_variant' )"  \
-mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | \
-$SNPEFF/scripts/vcfEffOnePerLine.pl | \
-java -jar $SNPEFF/SnpSift.jar extractFields \
-- \
-"CHROM" "POS" "ANN[*].GENE" "ANN[*].TRID" "EFF[*].HGVS_P" "ANN[*].HGVS_C" "ANN[*].EFFECT" | \
-grep 'missense_variant' | less
+  -noLog \
+  "( ANN[*].EFFECT has 'missense_variant' )"  \
+  mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | \
+  $SNPEFF/scripts/vcfEffOnePerLine.pl | \
+  java -jar $SNPEFF/SnpSift.jar extractFields \
+  - \
+  "CHROM" "POS" "ANN[*].GENE" "ANN[*].TRID" "EFF[*].HGVS_P" "ANN[*].HGVS_C" "ANN[*].EFFECT" | \
+  grep 'missense_variant' | less
 ```
 
 This provides us with an clean, organized, tab-delimited table of our output. 
