@@ -1,4 +1,8 @@
-# Variant Filtering
+---
+title: "Variant Filtering"
+author: "Will Gammerdinger, Meeta Mistry"
+date: "May 27, 2024"
+---
 
 ## Learning Objectives
 
