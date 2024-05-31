@@ -34,7 +34,7 @@ Some examples of metrics reported include (but, are not limited to):
 > **NOTE:** This lesson assumes **you have successfuly completed the code for [alignment processing](04_alignment_file_processing.md).**  If for some reason you did not successfully run the Picard alignment processing steps scripts you will want to copy over the required files using the commands provided below:
 >
 > ```bash
->  cp /n/groups/hbctraining/variant_calling/intermediate_files/alignments/syn3_*_GRCh38.p7.coordinate_sorted.bam /n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/
+>  cp /n/groups/hbctraining/variant_calling/intermediate_files/alignments/syn3_*_GRCh38.p7.coordinate_sorted.ba? /n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/
 > ```
 > 
 
