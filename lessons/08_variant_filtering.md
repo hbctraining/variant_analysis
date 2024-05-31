@@ -181,7 +181,7 @@ We can break this command down:
 <hr />
 </details>
 
-In order **to remove the LCRs from the VCF file, we will once again be using `SnpSift`**. As we mentioned earlier, we will be discussing `SnpSift` at length in the [variant prioritization lesson](10_variant_prioritization.md), but for now were are going to focus on using the `intervals` command build into `SnpSift`. Let's go back to our scripts directory and edit our variant filtering script.
+In order **to remove the LCRs from the VCF file, we will once again be using `SnpSift`**. As we mentioned earlier, we will be discussing `SnpSift` at length in the [Variant Prioritization lesson](10_variant_prioritization.md), but for now were are going to focus on using the `intervals` command built into `SnpSift`. Let's go back to our scripts directory and edit our variant filtering script.
 
 Add the `filter` command from `SnpSift` to our `sbatch` script in order remove all sites that overlap with the BED file:
 
@@ -327,7 +327,7 @@ We can also check **how many variants are contained in our filtered file**:
 grep -v "^#" /n/scratch/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.vcf | wc -l
 ```
 
-What this command does is use `grep -v` to search for lines in our filtered VCF that do *not* start with a `#` (and are therefore not comments, like we were looking at above, or the header row of the VCF), and then use `wc -l` to count the number of lines in that output.
+What this command does is use `grep -v` to search for lines in our filtered VCF that do *not* start with a `#` (and are therefore not metadata, like we were looking at above, or the header row of the VCF), and then use `wc -l` to count the number of lines in that output.
 
 We should see 1362 variants in our filtered VCF.
 
