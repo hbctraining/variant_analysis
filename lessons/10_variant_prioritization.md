@@ -42,7 +42,7 @@ First, you can filter your SnpEff annotated VCF file based upon any of the first
 Let's go ahead and do our first `SnpSift` command to extract variants, but before we do let's move to the directory with our VCF files and load the `SnpEff` module:
 
 ```
-cd /n/scratch3/users/${USER:0:1}/$USER/variant_calling/vcf_files/
+cd /n/scratch/users/${USER:0:1}/$USER/variant_calling/vcf_files/
 module load snpEff/4.3g
 ```
 
@@ -58,13 +58,9 @@ java -jar $SNPEFF/SnpSift.jar filter \
 Let's break down the syntax a bit:
 
 - `java -jar $SNPEFF/SnpSift.jar filter` This calls the `filter` package within `SnpSift`.
-
 - `-noLog` This does not report command usage to `SnpEff`'s server
-
 - `"( CHROM = '1' )"` This is the syntax needed to extract variants on Chromosome `1`. The left side of the equals sign corresponds to the VCF field you wish to filter by and the right side is the string you would like to match.
-
 - `mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf` This is the input VCF file. Importantly, this needs to go at the end.
-
 - `| less` Piping the output into a `less` buffer page for inspection.
 
 #### Revisiting "( FILTER = 'PASS' )"
@@ -126,6 +122,14 @@ To filter by the gene name you will need `"( ANN[*].GENE = 'INSERT_GENE_NAME' )"
 > 1       1324300 .       G       A       .       PASS    AS_FilterStatus=SITE;AS_SB_TABLE=47,6|11,0;ClippingRankSum=0.39;DP=68;ECNT=1;FS=2.373;GERMQ=93;MBQ=27,27;MFRL=337,338;MMQ=60,60;MPOS=27;MQ=60;MQ0=0;MQRankSum=0;NALOD=1.54;NLOD=9.88;POPAF=6;ReadPosRankSum=-0.125;TLOD=24.65;ANN=A|upstream_gene_variant|MODIFIER|CPTP|CPTP|transcript|NM_001029885.1|protein_coding||c.-2611G>A|||||463|,A|upstream_gene_variant|MODIFIER|CPTP|CPTP|transcript|XM_005244802.1|protein_coding||c.-3008G>A|||||456|,A|upstream_gene_variant|MODIFIER|CPTP|CPTP|transcript|XM_005244801.3|protein_coding||c.-2611G>A|||||843|,A|upstream_gene_variant|MODIFIER|CPTP|CPTP|transcript|XM_011542200.2|protein_coding||c.-2611G>A|||||1315|,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|XM_011541647.1|protein_coding|1/18|c.28+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|NM_001256456.1|protein_coding|1/18|c.-428+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|NM_001256460.1|protein_coding|1/17|c.-167+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|NM_001256462.1|protein_coding|1/14|c.28+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|NM_001256463.1|protein_coding|1/14|c.28+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|NM_017871.5|protein_coding|1/16|c.28+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|XM_017001558.1|protein_coding|1/18|c.-438+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|XM_017001557.1|protein_coding|1/17|c.-361+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|XM_011541648.1|protein_coding|1/18|c.-91+281C>T||||||,A|intron_variant|MODIFIER|CPSF3L|CPSF3L|transcript|XM_011541650.1|protein_coding|1/16|c.-254+281C>T||||||  GT:AD:AF:DP:F1R2:F2R1:SB        0/0:33,0:0.028:33:12,0:20,0:32,1,0,0    0/1:20,11:0.367:31:6,6:12,5:15,5,11,0
 > ```
 
+You can also filter on the transcript ID which in this case is the NCBI accession number. 
+
+```
+java -jar $SNPEFF/SnpSift.jar filter \
+  -noLog \
+  "( ANN[*].TRID = 'XM_017001557.1' )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf | less
+```
+
 #### Effects
 
 It is also quite common to want to filter your output by the effects the variants have on the annotated gene models. The syntax for this is quite similar to the example for genes:
@@ -143,27 +147,19 @@ To filter by a variant effect, the filter syntax is `"( ANN[*].EFFECT has 'VARIA
 
 There are many different variant effects and some of the more common ones are:
 
-- `missense_variant` for missense/non-synonymous variants 
-
-- `frameshift_variant` for frameshift variants
-
-- `stop_gain` for nonsense variants
-
-- `stop_lost` for variants that lose a stop codon
-
-- `start_gain` for variants that gain a start codon
-
-- `start_lost` for variants that lose a start codon
-
-- `synonymous_variant` for synonymous/silent variants
-
-- `splice_donor_variant` for a variant in the splice donor site
-
-- `splice_acceptor_variant` for a variant in the splice acceptor site
-
-- `5_prime_UTR_variant` for a variant in the 5' untranslated region 
-
-- `3_prime_UTR_variant` for a variant in the 3' untranslated region 
+| SnpEff Annotation | Type of variant |
+|-------------------|-----------------|
+| `missense_variant` | missense/non-synonymous variants |
+| `frameshift_variant` | frameshift variants |
+| `stop_gain` | nonsense variants |
+| `stop_lost` | variants that lose a stop codon |
+| `start_gain` | variants that gain a start codon |
+| `start_lost` | variants that lose a start codon |
+| `synonymous_variant` | synonymous/silent variants |
+| `splice_donor_variant` | variants in the splice donor site |
+| `splice_acceptor_variant` | variants in the splice acceptor site |
+| `5_prime_UTR_variant` | variants in the 5' untranslated region | 
+| `3_prime_UTR_variant` | variants in the 3' untranslated region | 
 
 Many more effects can be found [here](https://pcingola.github.io/SnpEff/se_inputoutput/#effect-prediction-details).
 
@@ -181,7 +177,7 @@ Many more effects can be found [here](https://pcingola.github.io/SnpEff/se_input
 
 More information on these categories can be found [here](https://pcingola.github.io/SnpEff/se_inputoutput/#impact-prediction) and a complete listing of the categories for each effect can be found [here](https://pcingola.github.io/SnpEff/se_inputoutput/#effect-prediction-details). 
 
-Let's go ahead and filter out all of our `HIGH` impact muations:
+Let's go ahead and select out all of our `HIGH` impact muations:
 
 ```
 java -jar $SNPEFF/SnpSift.jar filter \
@@ -211,7 +207,7 @@ A full list of `ANN` fields can be found [here](http://pcingola.github.io/SnpEff
 
 ## vcfEffOnePerLine
 
-A useful tool within the `SnpSift` toolkit is the `perl` script named `vcfEffOnePerLine.pl`. This script allows the user to separate each effect onto its own line instead of having them lumped into a single line. In order to utilize this script we need to pipe the output of our `filter` command into `$SNPEFF/scripts/vcfEffOnePerLine.pl`. We can use it on our previous example to demonstrate (be patient, it might take ~15 seconds to run):
+A useful tool within the `SnpSift` toolkit is the `perl` script named `vcfEffOnePerLine.pl`. This script allows the user to separate each effect onto its own line instead of having them lumped into a single line. In order to utilize this script we need to pipe the output of our `filter` command into `$SNPEFF/scripts/vcfEffOnePerLine.pl`. We can use it on our previous example to demonstrate:
 
 ```
 java -jar $SNPEFF/SnpSift.jar filter \
@@ -246,7 +242,7 @@ This step is particularly helpful for cleaning up the files for use in the next 
 
 Lastly, we have another extremely useful feature of `SnpSift` and that is the `extractFields` command. This allows us to parse the VCF file and print only the fields we are interested in. 
 
-If we wanted to parse out the missense mutations, create a single line for each effect, then extract the fields for chromosome, position, gene ID as well as the alteration in terms of protein and DNA space and also the predicted effect, then we could create am output like that using:
+If we wanted to parse out the missense mutations, create a single line for each effect, then extract the fields for chromosome, position, gene ID as well as the alteration in terms of protein and DNA space and also the predicted effect, then we could create an output like that using:
 
 ```
 java -jar $SNPEFF/SnpSift.jar filter \
