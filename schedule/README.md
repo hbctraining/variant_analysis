@@ -122,10 +122,10 @@ II. **Complete the exercises**:
 
 | Time |  Topic  | Instructor |
 |:-----------:|:----------:|:--------:|
-| 9:30 - 10:00 | Self-learning lessons review | All |
+| 9:30 - 10:00 | Self-learning lessons review | Meeta |
 | 10:00 - 11:00 | [Variant Prioritization with SnpSift](../lessons/10_variant_prioritization.md) | Will |
 | 11:00 - 11:30 | [Visualization in IGV](../lessons/11_IGV.md) | Will |
-| 11:30 - 12:00 | Q & A | All |
+| 11:30 - 12:00 | Q & A (review of Automation) | All |
 
 ### Questions?
 * ***If you get stuck due to an error*** while runnning code in the lesson, [email us](mailto:hbctraining@hsph.harvard.edu) 
