@@ -11,25 +11,31 @@ date: "May 27, 2024"
 
 ## Prioritizing Variants
 
-Now that we have annotated and filtered our variants, we are likely interested in subsetting our variants to find those of most interest to our study. Perhaps we are interested in finding variants that:
+Variant prioritization is the process of assessing the potential significance and pathogenicity of genetic variants identified through DNA sequencing. As we have seen from our example, thousands of genetic variants can be identified and the next task is to identify what subset of those we would like to focus on. Some factors to consider when ranking varaints include:
 
-- Occur in a gene of interest
-- Create missense mutation or silent mutations
-- Create mutations that are predicted to have a high impact on the protein
-  
-`SnpSift` is part of the `SnpEff` suite and it is built for this purpose.
+- Location in the genome and/or in specific genes of interest
+- Predicted effect on the gene or protein (i.e missense mutation or silent mutations)
+- Frequency in population databases
+- Previous reports of the variant being associated with disease
+
+Through systematically analyzing these various attributes, variant prioritization helps geneticists and clinicians focus on the subset of variants most likely to explain an individual's condition for further review and validation.
 
 <p align="center">
 <img src="../img/Prioritize_variants_workflow.png" width="400">
 </p>
 
-Let's start by discussing some of the ways you can filter your data with `SnpSift`.
+## Snpsift: Filter 
 
-## Filter
+`SnpSift` is part of the `SnpEff` suite and it is built for variant prioritization. Let's start by discussing some of the ways you can filter your data with `SnpSift`.
 
-### Fields
+Before we do anything, let's move to the directory with our VCF files and load the `SnpEff` module:
 
-First, you can filter your SnpEff annotated VCF file based upon any of the first seven fields of the VCF file:
+```
+cd /n/scratch/users/${USER:0:1}/$USER/variant_calling/vcf_files/
+module load snpEff/4.3g
+```
+
+**SnpSift filter** is one of the most useful SnpSift commands. Using SnpSift filter you can filter VCF files **using arbitrary expressions.** In the most simple case, you can filter your SnpEff annotated VCF file based upon any of the **first seven fields** of the VCF file:
 
 - **CHROM**
 - **POS**
@@ -39,14 +45,7 @@ First, you can filter your SnpEff annotated VCF file based upon any of the first
 - **QUAL**
 - **FILTER**
 
-Let's go ahead and do our first `SnpSift` command to extract variants, but before we do let's move to the directory with our VCF files and load the `SnpEff` module:
-
-```
-cd /n/scratch/users/${USER:0:1}/$USER/variant_calling/vcf_files/
-module load snpEff/4.3g
-```
-
-Now that we have loaded the SnpEff module we can utilize the `SnpSift` to find all of the variants on  Chromosome `1` and pipe the output into `less`:
+Let's start with a command to filter and keep all of the variants on  Chromosome `1`. We will  pipe the output into `less` so we can easily scroll through the result:
 
 ```
 java -jar $SNPEFF/SnpSift.jar filter \
@@ -59,30 +58,30 @@ Let's break down the syntax a bit:
 
 - `java -jar $SNPEFF/SnpSift.jar filter` This calls the `filter` package within `SnpSift`.
 - `-noLog` This does not report command usage to `SnpEff`'s server
-- `"( CHROM = '1' )"` This is the syntax needed to extract variants on Chromosome `1`. The left side of the equals sign corresponds to the VCF field you wish to filter by and the right side is the string you would like to match.
+- `"( CHROM = '1' )"` This is the syntax needed to extract variants on Chromosome `1`.
+  - The **left side of the equals sign corresponds to the VCF field** you wish to filter by.
+  - The **right side is the string you would like to match**.
 - `mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf` This is the input VCF file. Importantly, this needs to go at the end.
-- `| less` Piping the output into a `less` buffer page for inspection.
 
-#### Revisiting "( FILTER = 'PASS' )"
 
-Now, we that we have a basic understanding of some of the syntax used in `SnpSift`, we can revisit the [filtering command that we used earlier](08_variant_filtering.md#filter-using-snpsift). There we used:
-
-```
-# YOU DO NOT NEED TO RUN THIS
-# Filter for only SNPs with PASS in the FILTER field
-java -jar $SNPEFF/SnpSift.jar filter \
-  -noLog \
-  "( FILTER = 'PASS' )" \
-  $MUTECT_FILTERED_VCF > $PASSING_FILTER_VCF
-```
-
-As we can see here, we are telling `SnpSift` to look at the `FILTER` field and requiring the output to have the value of `PASS` there.
+> #### Revisiting "( FILTER = 'PASS' )"
+> Recall that we had used `SnpSift`, in the [filtering command that we used earlier](08_variant_filtering.md#filter-using-snpsift) in the workshop. In that lesson we used `SnpSift`to look at the `FILTER` field and reatin varaints with the value of `PASS`.
+> 
+> ```
+> # YOU DO NOT NEED TO RUN THIS
+> # Filter for only SNPs with PASS in the FILTER field
+> java -jar $SNPEFF/SnpSift.jar filter \
+>   -noLog \
+>   "( FILTER = 'PASS' )" \
+>   $MUTECT_FILTERED_VCF > $PASSING_FILTER_VCF
+> ```
+> 
 
 ### Multiple Filters
 
-It is likely that you could want to filter on multiple criteria. You can do that by separating the filter criteria with either and `&` (and) or `|` (or).
+It is likely that you could want to filter on multiple criteria. You can do that by **separating the filter criteria with either and `&` (and) or `|` (or).**
 
-For example, let's consider a case where you want to filter your filter for any variant on Chromosome `1` ***OR*** Chromosome `2`. That might look like:
+For example, let's consider a case where you want to filter for any variants on Chromosome `1` ***OR*** Chromosome `2`. That command would look like:
 
 ```
 java -jar $SNPEFF/SnpSift.jar filter \
@@ -90,9 +89,9 @@ java -jar $SNPEFF/SnpSift.jar filter \
   mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | less
 ```
 
->Note: The `"( CHROM = '1' ) | ( CHROM = '2' )"` syntax allows us to filter for Chromosome `1` **or** Chromosome `2` by using the `|` to separate our criteria within the double quotes. While you might be most familiar with the `|` symbol as the pipe command in `bash`, it is not uncommon in other instances or languages like `R` for it to stand for "or". In fact, in bash, "or" is `||`, so it is closely related. The important point here is that the `|` within the double quotes stands for "or" when using `SnpSift` and it is not a pipe.
+> **NOTE**: The `"( CHROM = '1' ) | ( CHROM = '2' )"` syntax allows us to filter for Chromosome `1` **or** Chromosome `2` by using the `|` to separate our criteria within the double quotes. While you might be most familiar with the `|` symbol as the pipe command in `bash`, it is not uncommon in other instances or languages like `R` for it to stand for "or". In fact, in bash, "or" is `||`, so it is closely related. The important point here is that **the `|` within the double quotes stands for "or" when using `SnpSift` and it is not a pipe.**
 
-Alternatively, we could be interested in variants on Chromosome `1` between positions `1000000` and `2000000`. It would look like:
+Alternatively, we could be interested in variants on Chromosome `1` between positions `1000000` and `2000000`. This command would look like:
 
 ```
 java -jar $SNPEFF/SnpSift.jar filter \
@@ -101,11 +100,9 @@ java -jar $SNPEFF/SnpSift.jar filter \
   mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf   | less
 ```
 
-### INFO Field
+### INFO Field: Gene
 
-`SnpSift` also allows the user to filter based upon the `INFO` field. This is particularly helpful since `SnpEff`'s annotations are placed into the `INFO` field. There are many `INFO` field filters that one can apply but we will discuss some of the more popular ones. Filtering the `INFO` will importantly always begin with an `ANN` in the filtering criteria.
-
-#### Gene
+`SnpSift` also allows the user to filter based upon the `INFO` field. This is particularly helpful since `SnpEff`'s annotations are placed into the `INFO` field. There are many `INFO` field filters that one can apply but we will discuss some of the more popular ones. **Filtering the `INFO` will importantly always begin with an `ANN` in the filtering criteria**.
 
 If you are interested in all of the variants corresponding to a single gene of interest, you can filter by the gene name in this case `CPSF3L`:
 
@@ -130,22 +127,9 @@ java -jar $SNPEFF/SnpSift.jar filter \
   "( ANN[*].TRID = 'XM_017001557.1' )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf | less
 ```
 
-#### Effects
+### INFO Field: Effects
 
-It is also quite common to want to filter your output by the effects the variants have on the annotated gene models. The syntax for this is quite similar to the example for genes:
-
-```
-java -jar $SNPEFF/SnpSift.jar filter \
-  -noLog \
-  "( ANN[*].EFFECT has 'missense_variant' )" \
-  mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | less
-```
-
-To filter by a variant effect, the filter syntax is `"( ANN[*].EFFECT has 'VARIANT_EFFECT' )"`
-
-> Note: Importantly, notice the use of `has` instead of `=` here. Sometimes effects field will contain mutliple effects such as `missense_variant&splice_donor_variant`. Using `ANN[*].EFFECT = missense_variant` here ***WILL NOT*** return this line, because the line is not equal to `missense_variant`, however `ANN[*].EFFECT has missense_variant` ***WILL*** return this line. Oftentimes for effects, one would be interested in the `has` query as opposed to the `=` one.
-
-There are many different variant effects and some of the more common ones are:
+There are many different variant effects and some of the more common ones are listed below:
 
 | SnpEff Annotation | Type of variant |
 |-------------------|-----------------|
@@ -163,16 +147,27 @@ There are many different variant effects and some of the more common ones are:
 
 Many more effects can be found [here](https://pcingola.github.io/SnpEff/se_inputoutput/#effect-prediction-details).
 
-#### Impacts
+If you want to filter your output by the effects the variants have on the annotated gene models, the syntax for this is quite similar to the example for genes:
+
+```
+java -jar $SNPEFF/SnpSift.jar filter \
+  -noLog \
+  "( ANN[*].EFFECT has 'missense_variant' )" \
+  mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | less
+```
+
+To filter by a variant effect, the filter syntax is `"( ANN[*].EFFECT has 'VARIANT_EFFECT' )"`
+
+> **NOTE**: Importantly, notice the use of `has` instead of `=` here. Sometimes effects field will contain mutliple effects such as `missense_variant&splice_donor_variant`. Using `ANN[*].EFFECT = missense_variant` here ***WILL NOT*** return this line, because the line is not equal to `missense_variant`, however `ANN[*].EFFECT has missense_variant` ***WILL*** return this line. Oftentimes for effects, one would be interested in the `has` query as opposed to the `=` one.
+
+
+### INFO Field: Impacts
 
 `SnpEff` also predicts the deleterious nature of a variant by binning it into one of several categories:
 
-- `HIGH` These are variants that will almost certainly have a deleterious impact on the transcript. Examples of this would be the loss or gain of a stop codon or a frameshift mutation. 
-
+- `HIGH` These are variants that will **almost certainly have a deleterious impact on the transcript**. Examples of this would be the loss or gain of a stop codon or a frameshift mutation. 
 - `MODERATE` These are variants where the impact may have a deleterious impact on the transcript. Examples of this would be missense/non-synonymous variants and in-frame deletions/insertions.
-
-- `LOW` These are variants that are unlikely to have a deleterious impact on the transcript. Examples of this would be silent/synonymous variants and alterations between different stop codons.
-
+- `LOW` These are variants that are **unlikely to have a deleterious impact on the transcript**. Examples of this would be silent/synonymous variants and alterations between different stop codons.
 - `MODIFER` These variants are typically in non-coding regions and their impacts are difficult to assertain. 
 
 More information on these categories can be found [here](https://pcingola.github.io/SnpEff/se_inputoutput/#impact-prediction) and a complete listing of the categories for each effect can be found [here](https://pcingola.github.io/SnpEff/se_inputoutput/#effect-prediction-details). 
@@ -185,7 +180,7 @@ java -jar $SNPEFF/SnpSift.jar filter \
   mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  | less
 ```
 
-> ***Note:*** Similarly to `EFFECT`, oftentimes you will want to use `has` rather than `=`.
+> ***NOTE:*** Similarly to `EFFECT`, oftentimes you will want to use `has` rather than `=`.
 
 Let's go ahead and redirect the output of these "high-impact" mutations to a new VCF file:
 
@@ -195,7 +190,7 @@ java -jar $SNPEFF/SnpSift.jar filter \
   mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  > mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.high_impact.vcf 
 ```
 
-#### Other ANN fields
+### INFO: Other ANN fields
 
 In addition to `GENE`, `EFFECT` and `IMPACT`, there are a whole host of other `ANN` fields. Some of the other `ANN` fields that we will come across later are:
 
@@ -205,9 +200,9 @@ In addition to `GENE`, `EFFECT` and `IMPACT`, there are a whole host of other `A
 
 A full list of `ANN` fields can be found [here](http://pcingola.github.io/SnpEff/ss_filter/#snpeff-ann-fields).
 
-## vcfEffOnePerLine
+## Snpsift: `vcfEffOnePerLine`
 
-A useful tool within the `SnpSift` toolkit is the `perl` script named `vcfEffOnePerLine.pl`. This script allows the user to separate each effect onto its own line instead of having them lumped into a single line. In order to utilize this script we need to pipe the output of our `filter` command into `$SNPEFF/scripts/vcfEffOnePerLine.pl`. We can use it on our previous example to demonstrate:
+A useful tool within the `SnpSift` toolkit is the `perl` script named `vcfEffOnePerLine.pl`. This script allows the user to **separate each effect onto its own line instead of having them lumped into a single line**. In order to utilize this script we need to pipe the output of our `filter` command into `$SNPEFF/scripts/vcfEffOnePerLine.pl`. We can use it on our previous example to demonstrate:
 
 ```
 java -jar $SNPEFF/SnpSift.jar filter \
@@ -238,7 +233,7 @@ Which was previously:
 
 This step is particularly helpful for cleaning up the files for use in the next step, `extractFields`.
 
-## extractFields
+## Snpsift: `extractFields`
 
 Lastly, we have another extremely useful feature of `SnpSift` and that is the `extractFields` command. This allows us to parse the VCF file and print only the fields we are interested in. 
 
@@ -282,7 +277,9 @@ java -jar $SNPEFF/SnpSift.jar filter \
 
 This provides us with an clean, organized, tab-delimited table of our output. 
 
-## Exercises
+***
+
+**Exercises**
 
 **1)** Extract from `mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf ` all of the `MODERATE`-impact mutations on Chromosome 12.
 
