@@ -24,7 +24,7 @@ Through systematically analyzing these various attributes, variant prioritizatio
 <img src="../img/Prioritize_variants_workflow.png" width="400">
 </p>
 
-## Snpsift: Filter 
+## Snpsift: `filter` 
 
 `SnpSift` is part of the `SnpEff` suite and it is built for variant prioritization. Let's start by discussing some of the ways you can filter your data with `SnpSift`.
 
