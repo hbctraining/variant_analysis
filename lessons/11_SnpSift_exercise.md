@@ -4,7 +4,7 @@ author: "Will Gammerdinger, Meeta Mistry"
 date: "May 27, 2024"
 ---
 
-In this exercise we will use the VCF file that we have generated  in order to practice parsing our apart our VCF. The VCF file is availible for download [here]().
+In this exercise we will use the VCF file that we have generated  in order to practice parsing our apart our VCF. The VCF file is also availible for download [here](https://hbctraining.github.io/variant_analysis/data/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf).
 
 # Exercises
 
