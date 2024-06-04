@@ -290,7 +290,7 @@ This provides us with an clean, organized, tab-delimited table of our output.
 **4)** Redirect the output from **Exercise 3)** into a new file called `mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.chr12_moderate-impact.txt`
 
 
-[Next Lesson >>](11_IGV.md)
+[Next Lesson >>](11_SnpSift_exercise.md)
 
 [Back to Schedule](../schedule/README.md)
 
