@@ -17,6 +17,6 @@ In this exercise we will use the VCF file that we have generated  in order to pr
 **4)** Extract all of the high impact mutations on Chromosome 12 or moderate impact mutations on Chromosome 3.
 
 
-[Next Lesson >>](11_IGV.md)
+[Next Lesson >>](12_IGV.md)
 
 [Back to Schedule](../schedule/README.md)
