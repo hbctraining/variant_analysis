@@ -45,7 +45,7 @@ Within the 'Site Manager' window, do the following:
 Once you are connected to O2, navigate the O2 window to where your VCF files are stored:
 
 ```
-/n/scratch3/users/r/rctrainingXX/variant_calling/vcf_files
+/n/scratch/users/r/rctrainingXX/variant_calling/vcf_files
 ```
 
 From here you should see you your annotated VCF file:
