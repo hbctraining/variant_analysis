@@ -118,7 +118,7 @@ REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_gen
 LEFT_READS=/home/$USER/variant_calling/raw_data/syn3_normal_1.fq.gz
 RIGHT_READS=`echo ${LEFT_READS%1.fq.gz}2.fq.gz`
 SAMPLE=`basename $LEFT_READS _1.fq.gz
-SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.sam
+SAM_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.sam
 ```
 
 To:
@@ -184,7 +184,7 @@ Once again, we will remove the `sbatch` directives:
 Next, we will change the following lines to accept positional parameters by changing:
 
 ```
-SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.sam
+SAM_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.sam
 REPORTS_DIRECTORY=/home/${USER}/variant_calling/reports/picard/syn3_normal/
 SAMPLE_NAME=syn3_normal
 ```
@@ -265,7 +265,7 @@ Then change the `bash` variables from:
 
 ```
 # Assign variables
-INPUT_BAM=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam
+INPUT_BAM=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/syn3_normal_GRCh38.p7.coordinate_sorted.bam
 REFERENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
 OUTPUT_METRICS_FILE=/home/${USER}/variant_calling/reports/picard/syn3_normal/syn3_normal_GRCh38.p7.CollectAlignmentSummaryMetrics.txt
 ```
@@ -405,10 +405,10 @@ Next, change the rest of the variable lines from:
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7.fa
 REFERENCE_DICTIONARY=`echo ${REFERENCE_SEQUENCE%fa}dict`
 NORMAL_SAMPLE_NAME=syn3_normal
-NORMAL_BAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${NORMAL_SAMPLE_NAME}_GRCh38.p7.coordinate_sorted.bam
+NORMAL_BAM_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/${NORMAL_SAMPLE_NAME}_GRCh38.p7.coordinate_sorted.bam
 TUMOR_SAMPLE_NAME=syn3_tumor
-TUMOR_BAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${TUMOR_SAMPLE_NAME}_GRCh38.p7.coordinate_sorted.bam
-VCF_OUTPUT_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_${NORMAL_SAMPLE_NAME}_${TUMOR_SAMPLE_NAME}_GRCh38.p7-raw.vcf
+TUMOR_BAM_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/${TUMOR_SAMPLE_NAME}_GRCh38.p7.coordinate_sorted.bam
+VCF_OUTPUT_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_${NORMAL_SAMPLE_NAME}_${TUMOR_SAMPLE_NAME}_GRCh38.p7-raw.vcf
 ```
 
 To:
@@ -480,7 +480,7 @@ Next we need to alter some of our variables from:
 
 ```
 REFERENCE_SEQUENCE=/n/groups/hbctraining/variant_calling/reference/GRCh38.p7_genomic.fa
-RAW_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf.gz
+RAW_VCF_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/vcf_files/syn3_normal_syn3_tumor_GRCh38.p7-raw.vcf.gz
 LCR_FILE=/n/groups/hbctraining/variant_calling/reference/LCR-hs38.bed
 ```
 
@@ -563,7 +563,7 @@ CSV_STATS=`echo -e "${REPORTS_DIRECTORY}annotation_${SAMPLE_NAME}_${REFERENCE_SE
 HTML_REPORT=`echo -e "${REPORTS_DIRECTORY}annotation_${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-effects-stats.html"`
 REFERENCE_DATABASE=GRCh38.p7.RefSeq
 DATADIR=/n/groups/hbctraining/variant_calling/reference/snpeff/data/
-FILTERED_VCF_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-pass-filt-LCR.vcf
+FILTERED_VCF_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/vcf_files/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}-pass-filt-LCR.vcf
 PEDIGREE_HEADER_FILE=/home/$USER/variant_calling/scripts/syn3_normal_syn3_tumor_pedigree_header.txt
 FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER=${FILTERED_VCF_FILE%.vcf}.pedigree_header.vcf
 SNPEFF_ANNOTATED_VCF_FILE=${FILTERED_VCF_FILE_WITH_PEDIGREE_HEADER%.vcf}.snpeff.vcf
@@ -752,7 +752,7 @@ for SAMPLE in $FASTQ_DIRECTORY*_1.fq.gz; do
   # Print to standard output the job that has been submitted
   echo -e "FastQC job for sample $SAMPLE_NAME submitted as job ID $FASTQC_JOB_ID"
   # Assign a path and name for the alignments
-  SAM_FILE=/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.sam
+  SAM_FILE=/n/scratch/users/${USER:0:1}/${USER}/variant_calling/alignments/${SAMPLE_NAME}_${REFERENCE_SEQUENCE_NAME}.sam
   # Submit the bwa sbatch script and save the output to a variable named $BWA_JOB_SUBMISSION
   BWA_JOB_SUBMISSION=$(sbatch -p priority -t 0-04:00:00 -c 8 --mem 16G -o bwa_alignment_${SAMPLE_NAME}_%j.out -e bwa_alignment_${SAMPLE_NAME}_%j.err --dependency=afterok:$FASTQC_JOB_ID bwa_alignment_automated.sbatch $REFERENCE_SEQUENCE $SAMPLE $SAMPLE_NAME $SAM_FILE)
   # Parse out the job ID from outout from the bwa submission
@@ -796,7 +796,7 @@ TUMOR_ARRAY_POSITION=`for SAMPLE_POSITION in {0..1}; do if [[ "${SAMPLE_NAME_ARR
 # Assign variables that will be used by Mutect2 
 NORMAL_BAM_MUTECT_INPUT=${COORDINATE_SORTED_BAM_ARRAY[$NORMAL_ARRAY_POSITION]}
 TUMOR_BAM_MUTECT_INPUT=${COORDINATE_SORTED_BAM_ARRAY[$TUMOR_ARRAY_POSITION]}
-MUTECT2_VCF_OUTPUT=`echo -e "/n/scratch3/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2${SAMPLE_NAME_STRING}_${REFERENCE_SEQUENCE_NAME}-raw.vcf"`
+MUTECT2_VCF_OUTPUT=`echo -e "/n/scratch/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2${SAMPLE_NAME_STRING}_${REFERENCE_SEQUENCE_NAME}-raw.vcf"`
 
 # Submit the Mutect2 sbatch script and save the output to a variable named $MUTECT2_JOB_SUBMISSION 
 MUTECT2_JOB_SUBMISSION=$(sbatch -p priority -t 1-00:00:00 -c 1 --mem 16G -o mutect2_variant_calling${SAMPLE_NAME_STRING}_%j.out -e mutect2_variant_calling${SAMPLE_NAME_STRING}_%j.err --dependency=afterok${DEPENDENT_PICARD_METRICS_JOB_IDS} mutect2_automated.sbatch  $REFERENCE_SEQUENCE $NORMAL_SAMPLE $NORMAL_BAM_MUTECT_INPUT $TUMOR_SAMPLE $TUMOR_BAM_MUTECT_INPUT $MUTECT2_VCF_OUTPUT)
