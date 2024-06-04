@@ -1,4 +1,8 @@
-# Integrative Genomics Viewer
+---
+title: "Integrative Genomics Viewer"
+author: "Will Gammerdinger, Meeta Mistry"
+date: "May 27, 2024"
+---
 
 ## Learning Objectives
 
@@ -48,13 +52,13 @@ Once you are connected to O2, navigate the O2 window to where your VCF files are
 /n/scratch/users/r/rctrainingXX/variant_calling/vcf_files
 ```
 
-From here you should see you your annotated VCF file:
+From here you should see your annotated VCF file:
 
 ```
 mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf
 ```
 
-Drag this file over to your your computer and places it in the appropriate directory. We are going to place ours in Desktop.
+Drag this file over to your computer and place it in the appropriate directory. We are going to place ours in Desktop.
 
 <p align="center">
 <img src="../img/Move_VCF_file.png" width="1000">
@@ -132,7 +136,7 @@ Now our IGV window should have additional tracks and look like:
 
 ### Navigating IGV
 
-Now that we have our tracks of interest loaded, we likely want to navigate them to view our variants.
+Now that we have our tracks of interest loaded, we likely want to navigate around them to view our variants.
 
 #### Zooming in/out on Regions
 
@@ -176,7 +180,7 @@ Alternatively, if there is a gene we are particularly interested in going to, we
 <img src="../img/Gene_jump_IGV.png" width="400">
 </p>
 
-If we zoom in enough we can get down to seeing individual variants. Underneath the top part of the variant track, we can see the tracks for the variant in the normal and tumor samples. The intensity of the variant marks on those tracks is proportional to the frequency of the variant in the sample:
+If we zoom in enough we can get down to seeing individual variants. Underneath the top part of the variant track, we can see the tracks for the variant in the normal and tumor samples. 
 
 <p align="center">
 <img src="../img/Zoomed_variant_IGV.png" width="800">
@@ -195,7 +199,7 @@ First, we might want to be interested in resizing the tracks. Currently, we have
 <img src="../img/Resize_button_IGV.png" width="400">
 </p>
 
-Now the tracks should fit into the window space a but better and look like:
+Now the tracks should fit into the window space a bit better and look like:
 
 <p align="center">
 <img src="../img/Resized_to_window_IGV.png" width="800">
