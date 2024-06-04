@@ -32,7 +32,7 @@ Within the 'Site Manager' window, do the following:
 2. Host: transfer.rc.hms.harvard.edu 
 3. Protocol: SFTP - SSH File Transfer Protocol
 4. Logon Type: Normal
-5. User: Username (i.e rc_trainingXX) 
+5. User: Username (i.e., rc_trainingXX) 
 6. Password: O2 password
 7. Click 'Connect'
 
@@ -49,7 +49,7 @@ Within the 'Site Manager' window, do the following:
 Once you are connected to O2, navigate the O2 window to where your VCF files are stored:
 
 ```
-/n/scratch/users/r/rctrainingXX/variant_calling/vcf_files
+/n/scratch/users/r/rc_trainingXX/variant_calling/vcf_files
 ```
 
 From here you should see your annotated VCF file:
