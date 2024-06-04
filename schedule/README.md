@@ -123,8 +123,9 @@ II. **Complete the exercises**:
 | Time |  Topic  | Instructor |
 |:-----------:|:----------:|:--------:|
 | 9:30 - 10:00 | Self-learning lessons review | Meeta |
-| 10:00 - 11:00 | [Variant Prioritization with SnpSift](../lessons/10_variant_prioritization.md) | Will |
-| 11:00 - 11:30 | [Visualization in IGV](../lessons/11_IGV.md) | Will |
+| 10:00 - 10:30 | [Variant Prioritization with SnpSift](../lessons/10_variant_prioritization.md) | Will |
+| 10:30 - 11:00 | [Exercise](../lessons/11_SnpSift_exercise.md) ([Key](../lessons/SnpSift_exercise_KEY.md)) |
+| 11:00 - 11:30 | [Visualization in IGV](../lessons/12_IGV.md) | Will |
 | 11:30 - 12:00 | Q & A (review of Automation) | All |
 
 ### Questions?
