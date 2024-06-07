@@ -44,7 +44,7 @@ The first step when using the Oncoprinter is to format the data into the form th
 
 In our code below we are just going to focus on missense, frameshift, stop codon gain and inframe mutations. However, for your data, you could be interested in other types of mutational events, so please modify the code as needed. Let's start this process by moving into our scripts directory and creating a bash script to wrangle our VCF file into the format required by Oncoprinter: 
 
-> Note: There is a great resource from the Human Genome Variation Society describing much of the nomenclature used to describe varaints [here](https://www.hgvs.org/mutnomen/recs-prot.html).
+> Note: There is a great resource from the Human Genome Variation Society describing much of the nomenclature used to describe variants [here](https://www.hgvs.org/mutnomen/recs-prot.html).
 
 ```
 cd ~/variant_calling/scripts/
