@@ -8,7 +8,7 @@ Approximate time: 15 minutes
 
 ## Learning Objectives
 
-- Create oncoprint on cBioPortal using data analyzed in class 
+- Create an Oncoprint on cBioPortal using data analyzed in class 
 
 ## Oncoprints
 
@@ -28,13 +28,13 @@ There are several tools for creating Oncoprints, such as [oncoplot within maftoo
 
 ## Wrangling our data for an Oncoprint
 
-The first step in using the Oncoprinter for our data is to fortmat the data in the form that the Oncoprinter will recognize. The Oncoprinter is expecting our input to have four columns:
+The first step when using the Oncoprinter is to format the data into the form that Oncoprinter will recognize. The Oncoprinter is expecting our input to have four columns:
 
 - Name of the sample
 - Gene Symbol
 - Description of the alteration event
   - If it is a mutation, then a description of the amino acid change
-  - If it is a copy number variant, then is it a amplification or deletion
+  - If it is a copy number variant, then is it an amplification or deletion
 - Classification of the variant
   - `MISSENSE` for missense mutations
   - `INFRAME` for inframe mutations
@@ -42,7 +42,7 @@ The first step in using the Oncoprinter for our data is to fortmat the data in t
   - `PROMOTER` for promoter mutations
   - `OTHER` for any other kind of mutations
 
-In our code below we are just going to focus on missense, frameshift, stop codon gain and inframe mutations. However, for your data, you could be interested in other types of mutational events, so please modify the code as needed. We are going to move into our scripts directory and create a bash script to wrangle our VCF into the format required by Oncoprinter: 
+In our code below we are just going to focus on missense, frameshift, stop codon gain and inframe mutations. However, for your data, you could be interested in other types of mutational events, so please modify the code as needed. Let's start this process by moving into our scripts directory and creating a bash script to wrangle our VCF file into the format required by Oncoprinter: 
 
 > Note: There is a great resource from the Human Genome Variation Society describing much of the nomenclature used to describe varaints [here](https://www.hgvs.org/mutnomen/recs-prot.html).
 
@@ -56,7 +56,7 @@ We can copy and paste this code into our bash script:
 ```
 #!/bin/bash
 # This script was wrttien by the Training Team at the Harvard Chan Bioinformatics Core on June 6th, 2024  as part of training materials for the Introduction to Variant Analysis workshop.
-# This is a working sample of code you might want to consider, when developing an Oncoprint for use in cBioPortal's Oncoprinter.
+# This is a working sample of code you might want to consider when developing an Oncoprint for use in cBioPortal's Oncoprinter.
 # You may need to alter this code for your needs.
 # USAGE: sh VCF_to_oncoprint.sh <INPUT_VCF_FILE> <SAMPLE_NAME>
 
@@ -109,7 +109,7 @@ java -jar $SNPEFF/SnpSift.jar filter \
 
 There are four main parts to the above code:
 
-- Extracting genes amino acid alteration and SnpEff effect from the VCF file like we have previously practiced using SnpSift
+- Extracting gene's amino acid alteration and SnpEff effect from the VCF file like we have previously practiced using SnpSift
 - Adding a sample name column
 - Altering the 3-letter amino acid abbreviations to single-letter abbreviations (this is optional)
 - Changing the SnpEff effects into the format that Oncoprinter recognizes 
@@ -128,19 +128,19 @@ less /n/scratch/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3
 
 Once you have done this for a given sample, you would use the `cat` command to combine all of your samples together into a single text file. However, we will just be working with a single sample in this example since we don't have access to other samples.
 
-During this process, you would also likely subset the output to your genes of interest. In order to simulate this, we are going going to grab the first handful of genes in the output to copy and paste into the Oncoprinter input field:
+During this process, you would also likely subset the output to your genes of interest. In order to simulate this, we are going going to grab the first handful of genes in the output to copy and paste into the [Oncoprinter](https://www.cbioportal.org/oncoprinter) input field:
 
 <p align="center">
 <img src="../img/Oncoprinter_input.png" width="600">
 </p>
 
-Once you have placed the input into the Oncoprinter's input field, you can scroll to the bottom of the page and clikc the the `Submit` button. This will generate an Oncoprint for you.
+Once you have placed the input into the Oncoprinter's input field, you can scroll to the bottom of the page and click the `Submit` button. This will generate an Oncoprint for you.
 
 <p align="center">
 <img src="../img/Oncoprinter_output.png" width="600">
 </p>
 
-In order to export the Oncoprint, you can click on the `Download` dropdown and select the file format that you'd like to use:
+In order to export the Oncoprint, you can click on the `Download` dropdown and select the file format that you'd like to export to:
 
 <p align="center">
 <img src="../img/Oncoprinter_save_output.png" width="600">
