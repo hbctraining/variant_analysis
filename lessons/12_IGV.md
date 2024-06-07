@@ -346,6 +346,8 @@ We can now see that we have loaded our previous IGV session! ***It is VERY IMPOR
 
 **8)** *Bonus Challenge* Change the type of plot for "GC%" from a line plot to a heatmap.
 
+[Next Lesson >>](13_oncoprint_creation.md)
+
 [Back to Schedule](../schedule/README.md)
 
 ***
