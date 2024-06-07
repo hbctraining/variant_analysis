@@ -117,13 +117,13 @@ There are four main parts to the above code:
 In order to run the code, we will need to execute:
 
 ```
-sh VCF_to_oncoprint.sh /n/scratch/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_hg38-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  syn3
+sh VCF_to_oncoprint.sh /n/scratch/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf  syn3
 ```
 
 We can now inspect our new Oncoprinter formatted text file with:
 
 ```
-less /n/scratch/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_hg38-pass-filt-LCR.pedigree_header.snpeff.dbSNP.oncoprint.txt
+less /n/scratch/users/${USER:0:1}/${USER}/variant_calling/vcf_files/mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.oncoprint.txt
 ```
 
 Once you have done this for a given sample, you would use the `cat` command to combine all of your samples together into a single text file. However, we will just be working with a single sample in this example since we don't have access to other samples.
