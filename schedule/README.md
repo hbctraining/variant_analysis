@@ -140,7 +140,7 @@ II. **Complete the exercises**:
 | 9:30 - 10:30 | Introduction to cBioPortal | Dr. Tali Mazor |
 | 10:30 - 11:30 | cBioPortal Practical | Dr. Tali Mazor |
 | 11:30 - 11:45 | [Oncoprint Integration](../lessons/13_oncoprint_creation.md) | Will |
-| 11:45 - 12:00 | [Wrap up](../lectures/Variant_calling_wrapup_all.pdf) | Will |
+| 11:45 - 12:00 | [Wrap up](../lectures/workshop_wrapup_slides.pdf) | Will |
 
 ## File Format Reference
 * [File Formats](../lessons/file_formats_reference.md)
