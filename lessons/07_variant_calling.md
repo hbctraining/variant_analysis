@@ -19,7 +19,7 @@ Approximate time: 45 minutes
 
 
 ## Best practices for variant calling
-Now that we have inspected our reads and alignments for high-quality QC and also formatted our alignments, we are ready for variant calling. Dozens of variant calling tools for NGS data have been published, and choosing which one to use can be a daunting task. Accurate variant detection in the the human genome is a key requirement for diagnostics in clinical sequencing, and so you want to make sure you are **using the caller which is appropriate for your data and study design**.
+Now that we have inspected our reads and alignments for high-quality QC and also formatted our alignments, we are ready for variant calling. Dozens of variant calling tools for NGS data have been published, and choosing which one to use can be a daunting task. Accurate variant detection in the human genome is a key requirement for diagnostics in clinical sequencing, and so you want to make sure you are **using the caller which is appropriate for your data and study design**.
 
 <p align="center">
 <img src="../img/variant_callers.png" width="500"> <br>
