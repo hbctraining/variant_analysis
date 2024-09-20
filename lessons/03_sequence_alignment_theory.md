@@ -166,7 +166,7 @@ Let's use the read group from our example `bwa` command above to demonstrate the
 
 **Exercises**
 
-**1.** The read group field LB (Library) is a required field to when adding read groups using `Picard`'s `AddOrReplaceReadGroups`, but we don't currently have this field in our read group information. How would we alter out the `bwa` command to include `LB` as well?
+**1.** The read group field LB (Library) is a required field to when adding read groups using `Picard`'s `AddOrReplaceReadGroups`, but we don't currently have this field in our read group information. How would we alter our `bwa` command to include `LB` as well?
 
 **2.** If we wanted to increase the number of threads used by `bwa` for processing our alignment to 12, how  would we need to modify our `bwa` command to accommodate this?
 
