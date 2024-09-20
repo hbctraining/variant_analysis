@@ -9,7 +9,7 @@ Approximate time: 45 minutes
 ## Learning Objectives
 
 - Differentiate between germline and somatic variant calling
-- Call somatics variants from `bam` files using `MuTect2`
+- Call somatic variants from `bam` files using `MuTect2`
 
 # Variant Calling
 
