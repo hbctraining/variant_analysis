@@ -26,7 +26,7 @@ The alignment files that come from `bwa` are raw alignment and need some process
 [Picard](https://broadinstitute.github.io/picard/) is a set of command line tools for **processing high-throughput sequencing (HTS) data and formats such as SAM/BAM/CRAM and VCF**. It is maintained by the Broad Institute, and is open-source under the MIT license and free for all uses. Picard is written in Java and does not have functionality for multi-threading.
 
 > ### Why not use `samtools`?
-> The processing of the alignment files (SAM/BAM files) can also be done with [`samtools`](https://github.com/samtools/samtools). While there are some advantages to using samtools (i.e. more user-friendly, multi-threading capability), there are slight formatting differences which can cause errors downstream. Since we will be using GATK later in this workshop (also from the Broad Institute), Picard seemed like a more suitable fit.
+> The processing of the alignment files (SAM/BAM files) can also be done with [`samtools`](https://github.com/samtools/samtools). While there are some advantages to using samtools (i.e. more user-friendly, multi-threading capability), there are slight formatting differences which we may want to take advantage of downstream. Since we will be using GATK later in this workshop (also from the Broad Institute), Picard seemed like a more suitable fit.
 >
 > **Near the end of the lesson, there will be a dropdown, if you would like to know how to do the processing steps in `samtools`.**
 
