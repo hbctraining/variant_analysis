@@ -29,7 +29,7 @@ java -jar $SNPEFF/SnpSift.jar filter   "( CHROM = '11' ) & ( ( ANN[*].EFFECT has
 **4)** Extract all of the high impact mutations on Chromosome 12 or moderate impact mutations on Chromosome 3.
 
 ```
-java -jar $SNPEFF/SnpSift.jar filter   "( ( CHROM = '12')  &  ( ANN[*].IMPACT has 'HIGH' ) ) | ( ( CHROM = '13') & ( ANN[*].IMPACT has 'MODERATE' ) )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf
+java -jar $SNPEFF/SnpSift.jar filter   "( ( CHROM = '12')  &  ( ANN[*].IMPACT has 'HIGH' ) ) | ( ( CHROM = '3') & ( ANN[*].IMPACT has 'MODERATE' ) )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf
 ```
 
 [Next Lesson >>](11_IGV.md)
