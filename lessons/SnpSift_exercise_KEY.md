@@ -23,7 +23,7 @@ java -jar $SNPEFF/SnpSift.jar filter   "( CHROM = '2' ) & ( POS > '8000000' ) & 
 **3)** Extract all of the mutations that alter a splice site on Chromosome 11.
 
 ```
-java -jar $SNPEFF/SnpSift.jar filter   "( CHROM = 'X' ) & ( ( ANN[*].EFFECT has 'splice_donor_variant' ) | ( ANN[*].EFFECT has 'splice_acceptor_variant' ) )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf
+java -jar $SNPEFF/SnpSift.jar filter   "( CHROM = '11' ) & ( ( ANN[*].EFFECT has 'splice_donor_variant' ) | ( ANN[*].EFFECT has 'splice_acceptor_variant' ) )" mutect2_syn3_normal_syn3_tumor_GRCh38.p7-pass-filt-LCR.pedigree_header.snpeff.dbSNP.vcf
 ```
 
 **4)** Extract all of the high impact mutations on Chromosome 12 or moderate impact mutations on Chromosome 3.
