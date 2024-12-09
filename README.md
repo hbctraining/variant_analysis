@@ -26,7 +26,7 @@ This workshop series is designed for users with a background in the fundamentals
 
 ### Lessons
 * [Workshop schedule (trainer-led learning)](schedule/README.md)
-* [Self-learning]()
+* [Self-learning](schedule/self-learning.md)
 
 ### Installation Requirements
 ***All:***
